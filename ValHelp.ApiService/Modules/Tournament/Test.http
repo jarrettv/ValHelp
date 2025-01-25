@@ -1,0 +1,103 @@
+@base_url = http://localhost:5556
+
+### Get all hunts
+GET {{base_url}}/api/hunts/list
+
+### Create hunt
+POST {{base_url}}/api/hunts
+Content-Type: application/json
+
+{
+  "name": "Hunt 1",
+  "desc": "Hunt 1 description",
+  "scoring": {  
+    "Death": -20,
+    "Relog": -10,
+    "TrophyBoar": 10,
+    "TrophyDeer": 10,
+    "TrophyNeck": 10,
+    "TrophyEikthyr": 40,
+    "TrophyGreydwarf": 20,
+    "TrophyGreydwarfBrute": 20,
+    "TrophyGreydwarfShaman": 20,
+    "TrophySkeletonPoison": 20,
+    "TrophySkeleton": 20,
+    "TrophyFrostTroll": 20,
+    "TrophySkeletonHildir": 25,
+    "TrophyTheElder": 60,
+    "TrophyAbomination": 20,
+    "TrophyBlob": 20,
+    "TrophyDraugr": 20,
+    "TrophyDraugrElite": 20,
+    "TrophyLeech": 20,
+    "TrophySurtling": 20,
+    "TrophyWraith": 20,
+    "TrophyBonemass": 100,
+    "TrophyCultist": 30,
+    "TrophyHatchling": 30,
+    "TrophyFenring": 30,
+    "TrophySGolem": 30,
+    "TrophyUlv": 30,
+    "TrophyWolf": 30,
+    "TrophyCultist_Hildir": 45,
+    "TrophyDragonQueen": 100,
+    "TrophyDeathsquito": 30,
+    "TrophyGoblin": 30,
+    "TrophyGoblinBrute": 30,
+    "TrophyGoblinShaman": 30,
+    "TrophyGrowth": 30,
+    "TrophyLox": 30,
+    "TrophyGoblinBruteBrosShaman": 65,
+    "TrophyGoblinBruteBrosBrute": 65,
+    "TrophyGoblinKing": 160,
+    "TrophyDvergr": 40,
+    "TrophyHare": 40,
+    "TrophyGjall": 40,
+    "TrophySeeker": 40,
+    "TrophySeekersoldier": 40,
+    "TrophyTick": 40,
+    "TrophySeekerQueen": 1000,
+    "TrophyAsksvin": 50,
+    "TrophyBonemawSerpent": 50,
+    "TrophyFallenValkyrie": 50,
+    "TrophyCharredArcher": 50,
+    "TrophyMorgen": 50,
+    "TrophyVolture": 50,
+    "TrophyWarlock": 50,
+    "TrophyCharredMelee": 50,
+    "TrophyFader": 1000,
+    "TrophySerpent": 45,
+    "TrophyKvastur": 25
+  },
+  "start_at": "2024-12-12T17:00:00Z",
+  "end_at": "2024-12-12T21:00:00Z",
+  "seed": "N/A",
+  "prizes": { "1st": "$50" },
+  "status": 0,
+  "created_by": "jarrettv",
+  "updated_by": "jarrettv"
+}
+
+### Get hunt by id
+GET {{base_url}}/api/hunts/1
+
+### Track a hunt
+POST {{base_url}}/api/trackhunt
+
+Content-Type: application/json
+
+{
+    "current_score": 80,
+    "deaths": 0,
+    "logouts": 0,
+    "player_location": "(5.73, 35.53, 3.60)",
+    "player_name": "jarrettv",
+    "session_id": "JJJqEfFUeF",
+    "trophies": "TrophyGreydwarf, TrophyDeer, TrophyBoar, TrophyNeck, TrophyEikthyr",
+    "extra": {
+        "put": "anything",
+        "try": "use",
+        "short": "keys"
+    }
+}
+
