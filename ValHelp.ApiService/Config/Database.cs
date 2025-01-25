@@ -1,6 +1,4 @@
 using System.Data.Common;
-using Azure.Core;
-using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ValHelp.ApiService.Config;
