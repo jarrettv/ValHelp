@@ -1,5 +1,6 @@
 
 using ValHelp.ApiService.Config;
+using ValHelp.ApiService.Modules.Admin;
 using ValHelp.ApiService.Modules.Tournament;
 
 
@@ -30,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapTournamentEndpoints();
+app.MapDbEndpoints();
 app.MapDefaultEndpoints();
 
 app.Run();

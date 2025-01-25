@@ -8,7 +8,7 @@ public static class Database
 {
   public static void AddDatabase(this WebApplicationBuilder builder)
   {
-    builder.AddNpgsqlDbContext<AppDbContext>("valhelp-db");
+    builder.AddNpgsqlDbContext<AppDbContext>("valhelp");
     // builder.AddNpgsqlDataSource("valhelp", configureDataSourceBuilder: (dataSourceBuilder) =>
     // {
     //   if (!string.IsNullOrEmpty(dataSourceBuilder.ConnectionStringBuilder.Password))
