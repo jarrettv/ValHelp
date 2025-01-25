@@ -1,0 +1,24 @@
+services:
+  valhelp-db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: valhelp
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+  valhelp-otel:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+    restart: always
+    ports:
+      - "18888:18888"
+      - "4317:18889"
+    environment:
+      ASPIRE_ALLOW_UNSECURED_TRANSPORT: "true"
+
+volumes:
+  pgdata:
