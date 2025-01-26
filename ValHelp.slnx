@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/api/">
+    <Project Path="api\ValHelpApi.csproj" />
+  </Folder>
+</Solution>
