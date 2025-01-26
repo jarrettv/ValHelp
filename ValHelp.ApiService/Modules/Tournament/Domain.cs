@@ -12,7 +12,7 @@ public class Hunt
   public DateTime StartAt { get; set; }
   public DateTime EndAt { get; set; }
   public string Seed { get; set; } = null!;
-  public Dictionary<string, int> Prizes { get; set; } = null!;
+  public Dictionary<string, string> Prizes { get; set; } = null!;
   public HuntStatus Status { get; set; }
   public DateTime CreatedAt { get; set; }
   public string CreatedBy { get; set; } = null!;
@@ -37,6 +37,7 @@ public class HuntPlayer
 {
   public int HuntId { get; set; }
   public string PlayerId { get; set; } = null!;
+  public string Name { get; set; } = null!;
   public string Stream { get; set; } = null!;
   public HuntPlayerStatus Status { get; set; }
   public int Score { get; set; }

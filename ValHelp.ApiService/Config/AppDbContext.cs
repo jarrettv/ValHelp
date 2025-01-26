@@ -1,4 +1,7 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValHelp.ApiService.Modules.Tournament;
 
 namespace ValHelp.ApiService.Config;
@@ -11,42 +14,50 @@ public class AppDbContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    base.OnModelCreating(modelBuilder);
+
+
     modelBuilder.Entity<Hunt>()
       .Property(h => h.Scoring)
-      .HasColumnType("jsonb");
+      .HasColumnType("jsonb")
+            .HasConversion(CreateDictionaryConverter<int>(), new ValueComparer<Dictionary<string, int>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
+                c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
 
     modelBuilder.Entity<Hunt>()
       .Property(h => h.Prizes)
-      .HasColumnType("jsonb");
+      .HasColumnType("jsonb")
+            .HasConversion(CreateDictionaryConverter<string>(), new ValueComparer<Dictionary<string, string>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
+                c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
 
     modelBuilder.Entity<HuntPlayer>()
       .ToTable("hunts_player")
       .HasKey(hp => new { hp.HuntId, hp.PlayerId });
-    modelBuilder.Entity<HuntPlayer>()
-      .Property(hp => hp.Trophies)
-      .HasColumnType("jsonb");
 
-    modelBuilder.Entity<TrackHunt>()
-      .ToTable("track_hunt");
-    modelBuilder.Entity<TrackHunt>()
-      .Property(th => th.Trophies)
-      .HasColumnType("jsonb");
+    modelBuilder.Entity<TrackHunt>();
 
-    base.OnModelCreating(modelBuilder);
   }
 
   public DbSet<Hunt> Hunts { get; set; }
   public DbSet<HuntPlayer> HuntPlayers { get; set; }
   public DbSet<TrackHunt> TrackHunts { get; set; }
-}
 
-public static class StringExtensions
-{
-  public static string ToSnakeCase(this string input)
+
+  private static ValueConverter<Dictionary<string, T>, string> CreateDictionaryConverter<T>()
   {
-    if (string.IsNullOrEmpty(input)) { return input; }
-
-    var startUnderscores = System.Text.RegularExpressions.Regex.Match(input, @"^_+");
-    return startUnderscores + System.Text.RegularExpressions.Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+    var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    return new ValueConverter<Dictionary<string, T>, string>(
+        v => JsonSerializer.Serialize(v, options),
+        v => JsonSerializer.Deserialize<Dictionary<string, T>>(v, options) ?? new Dictionary<string, T>());
+  }
+  private static ValueComparer<string[]> CreateStringArrayComparer()
+  {
+    return new ValueComparer<string[]>(
+        (c1, c2) => c1.SequenceEqual(c2),
+        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+        c => c.ToArray());
   }
 }

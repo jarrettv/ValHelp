@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: App Host Debug",
+            "name": "C#: ValHelp Api Debug",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}/ValHelp.ApiService/ValHelp.ApiService.csproj",
