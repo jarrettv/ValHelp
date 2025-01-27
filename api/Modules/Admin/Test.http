@@ -1,4 +1,3 @@
-@base_url = http://localhost:5556
 
 ### Setup database
 GET {{base_url}}/admin/db/migrate

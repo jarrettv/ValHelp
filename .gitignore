@@ -133,6 +133,7 @@ node_modules/
 
 # vscode python env files
 .env
+.env.azure
 
 # Storage emulator storage files
 **/.azurite/*

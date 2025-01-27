@@ -1,0 +1,8 @@
+{
+  "$shared": {
+    "host": "http://localhost:5556"
+  },
+  "azure": {
+    "host": "https://valhelp.azurewebsites.net"
+  }
+}

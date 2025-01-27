@@ -1,5 +1,3 @@
-@base_url = http://localhost:5556
-
 ### Get all hunts
 GET {{base_url}}/api/hunts/list
 
@@ -9,8 +7,8 @@ POST {{base_url}}/api/hunts
 Content-Type: application/json
 
 {
-  "name": "Hunt 1",
-  "desc": "Hunt 1 description",
+  "name": "Hunt New Test",
+  "desc": "Hunt brand new backend test description",
   "startAt": "{{$datetime iso8601}}",
   "endAt": "{{$datetime iso8601 4 h}}",
   "scoring": {  
@@ -72,7 +70,7 @@ Content-Type: application/json
     "TrophySerpent": 45,
     "TrophyKvastur": 25
   },
-  "seed": "R2D2c3po",
+  "seed": "N/A",
   "prizes": { "1st": "$50" },
   "status": 20
 }
@@ -89,9 +87,9 @@ Content-Type: application/json
 
 {
   "huntId": {{hunt.id}},
-  "playerId": "pixeldiablo",
-  "name": "pixeldiablo",
-  "stream": "https://www.youtube.com/@pixeldiablo"
+  "playerId": "jarrettv",
+  "name": "jv",
+  "stream": "https://www.youtube.com/@lokijv"
 }
 
 ### Track a hunt
@@ -100,12 +98,12 @@ POST {{base_url}}/api/trackhunt
 Content-Type: application/json
 
 {
-  "current_score": 80,
+  "current_score": 90,
   "deaths": 0,
   "logouts": 0,
   "player_location": "(5.73, 35.53, 3.60)",
   "player_name": "{{huntplayer.playerId}}",
-  "session_id": "R2D2c3po",
+  "session_id": "N/A",
   "trophies": "TrophyGreydwarf, TrophyDeer, TrophyBoar, TrophyNeck, TrophyEikthyr",
   "gamemode": "TrophySaga"
 }
