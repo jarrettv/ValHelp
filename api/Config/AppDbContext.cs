@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ValHelpApi.Modules.Admin;
 using ValHelpApi.Modules.Tournament;
 
 namespace ValHelpApi.Config;
@@ -39,11 +40,18 @@ public class AppDbContext : DbContext
 
     modelBuilder.Entity<TrackHunt>();
 
+    modelBuilder.Entity<User>()
+      .ToTable("users")
+      .HasIndex(u => u.DiscordId)
+      .IsUnique();
+
   }
 
   public DbSet<Hunt> Hunts { get; set; }
   public DbSet<HuntPlayer> HuntPlayers { get; set; }
   public DbSet<TrackHunt> TrackHunts { get; set; }
+
+  public DbSet<User> Users { get; set; }
 
 
   private static ValueConverter<Dictionary<string, T>, string> CreateDictionaryConverter<T>()

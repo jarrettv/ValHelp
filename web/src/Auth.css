@@ -1,0 +1,30 @@
+
+#auth-page h2 {
+  color: #7289DA;
+  line-height: 1rem;
+}
+
+#discord {
+  background-color: #7289DAdd;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#discord>svg {
+  margin-right: 0.6rem;
+  margin-top:-0.2rem;
+  width:1.4rem;
+  vertical-align: middle;
+}
+
+#discord:hover {
+  background-color: #7289DA;
+}

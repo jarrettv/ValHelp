@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router'
+import { Link } from 'react-router'
 
 export default function Layout() {
   return (
@@ -13,7 +14,8 @@ export default function Layout() {
             {/* <User width="32" height="32" style="vertical-align:middle;margin:0 0.5rem" /> */}
             <span id="user-name">Unknown</span>
           </div>
-          <a href="/auth/login" id="user-login" style={{margin:"0.5rem 0 0 1rem"}}>Login</a>
+          <Link to="/auth/login" id="user-login" style={{margin:"0.5rem 0 0 1rem"}}>Login</Link>
+          <Link to="/auth/profile" id="user-profile" style={{margin:"0.5rem 0 0 1rem"}}>Profile</Link>
         </div>
       </header>
       <article>

@@ -11,13 +11,21 @@ builder.AddDatabase();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost5173", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
-
-#if DEBUG
-var config = app.Configuration as IConfigurationRoot;
-app.Logger.LogInformation(config?.GetDebugView());
-#endif
-
+app.UseCors("AllowLocalhost5173");
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseExceptionHandler();
 app.UseFileServer();
 
@@ -27,5 +35,6 @@ if (app.Environment.IsDevelopment())
     app.MapDbEndpoints();
 }
 app.MapTournamentEndpoints();
+app.MapAuthEndpoints();
 app.MapDefaultEndpoints();
 app.Run();
