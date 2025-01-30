@@ -4,6 +4,7 @@ import './index.css'
 import Layout from './Layout.tsx'
 import Home from './Home.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
+import { AuthProvider } from './contexts/AuthContext';
 import Auth from './Auth.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Profile from './Profile.tsx'
@@ -14,6 +15,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -23,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
           </Route>
         </Routes>
       </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   </StrictMode>
 );

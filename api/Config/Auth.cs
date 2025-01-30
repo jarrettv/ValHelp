@@ -15,7 +15,6 @@ public static class Auth
     builder.Services.AddAuthentication(options =>
     {
       options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = DiscordAuthenticationDefaults.AuthenticationScheme;
     })
       .AddCookie()
       .AddDiscord(options =>

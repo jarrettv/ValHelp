@@ -12,13 +12,28 @@ public static class AuthEndpoints
   public static void MapAuthEndpoints(this WebApplication app)
   {
     var api = app.MapGroup("api/auth");
+
+    api.MapGet("status", async (ClaimsPrincipal user, AppDbContext db) =>
+    {
+      if (user.Identity?.IsAuthenticated == true)
+      {
+        var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var currentUser = await db.Users
+          .Where(u => u.Id == userId)
+          .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive })
+          .SingleAsync();
+
+        return TypedResults.Ok(currentUser);
+      }
+      return TypedResults.Ok(new { Id = 0, Username = "", AvatarUrl = "", IsActive = false });
+    });
     
     api.MapGet("discord", async (HttpContext ctx) =>
     {
       await ctx.ChallengeAsync("Discord");
     });
 
-    api.MapPost("logout", async (HttpContext ctx) =>
+    api.MapGet("logout", async (HttpContext ctx) =>
     {
       await ctx.SignOutAsync();
       ctx.Response.Redirect("/");
