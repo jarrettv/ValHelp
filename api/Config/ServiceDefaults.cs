@@ -67,6 +67,8 @@ public static class Extensions
 
         builder.AddOpenTelemetryExporters();
 
+        builder.Services.AddSingleton(TracerProvider.Default.GetTracer("ValHelpApi"));
+
         return builder;
     }
 

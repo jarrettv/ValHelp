@@ -1,99 +1,83 @@
 ### Get all hunts
-GET {{base_url}}/api/hunts/list
+GET {{base_url}}/api/events
+
+### Get latest hunts
+GET {{base_url}}/api/events/latest
+
+### Get upcoming hunts
+GET {{base_url}}/api/events/upcoming
+
 
 ### Create hunt
 # @name hunt
-POST {{base_url}}/api/hunts
+POST {{base_url}}/api/events
 Content-Type: application/json
 
 {
-  "name": "Hunt New Test",
-  "desc": "Hunt brand new backend test description",
-  "startAt": "{{$datetime iso8601}}",
-  "endAt": "{{$datetime iso8601 4 h}}",
-  "scoring": {  
-    "Death": -20,
-    "Relog": -10,
-    "TrophyBoar": 10,
-    "TrophyDeer": 10,
-    "TrophyNeck": 10,
-    "TrophyEikthyr": 40,
-    "TrophyGreydwarf": 20,
-    "TrophyGreydwarfBrute": 20,
-    "TrophyGreydwarfShaman": 20,
-    "TrophySkeletonPoison": 20,
-    "TrophySkeleton": 20,
-    "TrophyFrostTroll": 20,
-    "TrophySkeletonHildir": 25,
-    "TrophyTheElder": 60,
-    "TrophyAbomination": 20,
-    "TrophyBlob": 20,
-    "TrophyDraugr": 20,
-    "TrophyDraugrElite": 20,
-    "TrophyLeech": 20,
-    "TrophySurtling": 20,
-    "TrophyWraith": 20,
-    "TrophyBonemass": 100,
-    "TrophyCultist": 30,
-    "TrophyHatchling": 30,
-    "TrophyFenring": 30,
-    "TrophySGolem": 30,
-    "TrophyUlv": 30,
-    "TrophyWolf": 30,
-    "TrophyCultist_Hildir": 45,
-    "TrophyDragonQueen": 100,
-    "TrophyDeathsquito": 30,
-    "TrophyGoblin": 30,
-    "TrophyGoblinBrute": 30,
-    "TrophyGoblinShaman": 30,
-    "TrophyGrowth": 30,
-    "TrophyLox": 30,
-    "TrophyGoblinBruteBrosShaman": 65,
-    "TrophyGoblinBruteBrosBrute": 65,
-    "TrophyGoblinKing": 160,
-    "TrophyDvergr": 40,
-    "TrophyHare": 40,
-    "TrophyGjall": 40,
-    "TrophySeeker": 40,
-    "TrophySeekerBrute": 40,
-    "TrophyTick": 40,
-    "TrophySeekerQueen": 1000,
-    "TrophyAsksvin": 50,
-    "TrophyBonemawSerpent": 50,
-    "TrophyFallenValkyrie": 50,
-    "TrophyCharredArcher": 50,
-    "TrophyMorgen": 50,
-    "TrophyVolture": 50,
-    "TrophyWarlock": 50,
-    "TrophyCharredMelee": 50,
-    "TrophyFader": 1000,
-    "TrophySerpent": 45,
-    "TrophyKvastur": 25
-  },
-  "seed": "N/A",
-  "prizes": { "1st": "$50" },
+  "id": 10,
+  "name": "Edit view test",
+  "desc": "Event brand new backend test description",
+  "mode": "TrophyHunt",
+  "scoringCode": "hunt-2024-11",
+  "startAt": "{{$datetime iso8601 -4 h}}",
+  "hours": 5,
+  "seed": "tkPNcLYEYg",
   "status": 20
 }
 
 ### Get hunt by id
 # @ref hunt
-GET {{base_url}}/api/hunts/{{hunt.id}}
+GET {{base_url}}/api/events/{{hunt.id}}
 
 ### Add player to hunt
 # @name huntplayer
 # @ref hunt
-POST {{base_url}}/api/hunts/players
+POST {{base_url}}/api/events/{{hunt.id}}/players
 Content-Type: application/json
 
 {
-  "huntId": {{hunt.id}},
-  "playerId": "jarrettv",
+  "userId": 1,
   "name": "jv",
   "stream": "https://www.youtube.com/@lokijv"
 }
 
+### Add player2 to hunt
+# @name huntplayer
+# @ref hunt
+POST {{base_url}}/api/events/{{hunt.id}}/players
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "name": "oathorse",
+  "stream": "https://www.youtube.com/@lokijv"
+}
+
+### Add player to hunt
+# @name huntplayer
+POST {{base_url}}/api/events/2/players
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "name": "oathorse",
+  "score": 0
+}
+
+### Add player to hunt
+# @name huntplayer
+POST {{base_url}}/api/events/2/players
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "name": "jv",
+  "score": 0,
+  "stream": "https://www.youtube.com/@lokijv"
+}
+
+
 ### Track a hunt
-# @ref huntplayer
 POST {{base_url}}/api/trackhunt
 Content-Type: application/json
 
@@ -102,9 +86,104 @@ Content-Type: application/json
   "deaths": 0,
   "logouts": 0,
   "player_location": "(5.73, 35.53, 3.60)",
-  "player_name": "{{huntplayer.playerId}}",
+  "player_name": "oathorse",
+  "player_id": "618218180929650698",
+  "session_id": "N/A",
+  "trophies": "TrophyBoar, TrophyDeer, TrophyNeck, TrophyEikthyr, TrophyGreydwarf",
+  "gamemode": "TrophyHunt"
+}
+
+### Track a hunt
+POST {{base_url}}/api/trackhunt
+Content-Type: application/json
+
+{
+  "current_score": 90,
+  "deaths": 0,
+  "logouts": 0,
+  "player_location": "(5.73, 35.53, 3.60)",
+  "player_name": "oathorse",
+  "player_id": "618218180929650698",
   "session_id": "N/A",
   "trophies": "TrophyGreydwarf, TrophyDeer, TrophyBoar, TrophyNeck, TrophyEikthyr",
-  "gamemode": "TrophySaga"
+  "gamemode": "TrophyHunt"
 }
+
+### Send player activities
+# @ref hunt
+POST {{base_url}}/api/events/{{hunt.id}}/players
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "score": 90,
+  "logs": [
+    {
+      "code": "TrophyBoar",
+      "at": "2025-02-01T22:46:32.371994Z"
+    },
+    {
+      "code": "TrophyDeer",
+      "at": "2025-02-01T22:47:34.823971Z"
+    },
+    {
+      "code": "TrophyNeck",
+      "at": "2025-02-01T22:48:23.583877Z"
+    },
+    {
+      "code": "TrophyEikthyr",
+      "at": "2025-02-01T22:49:14.954452Z"
+    },
+    {
+      "code": "TrophyGreydwarf",
+      "at": "2025-02-01T22:56:20.369848Z"
+    }
+  ]
+}
+
+### Track logs
+POST {{base_url}}/api/track/logs
+Content-Type: application/json
+
+{
+  "id": "618218180929650698",
+  "user": "jarrettv",
+  "seed": "tkPNcLYEYg",
+  "mode": "TrophyHunt",
+  "score": 20,
+  "logs": [
+    {
+      "code": "TrophyBoar",
+      "at": "2025-02-01T22:46:32Z"
+    },
+    {
+      "code": "TrophyEikthyr",
+      "at": "2025-02-01T22:49:14Z"
+    },
+    {
+      "code": "PenaltyDeath",
+      "at": "2025-02-01T22:59:20Z"
+    },
+    {
+      "code": "PenaltyLogout",
+      "at": "2025-02-01T23:10:20Z"
+    }
+  ]
+}
+
+### Track log
+POST {{base_url}}/api/track/log
+Content-Type: application/json
+
+{
+  "id": "618218180929650698",
+  "seed": "tkPNcLYEYg",
+  "score": 40,
+  "code": "TrophyGreydwarf",
+  "at": "2025-02-01T22:56:20Z"
+}
+
+### Tracker standings
+GET {{base_url}}/api/track/standings?seed=tkPNcLYEYg&mode=TrophyHunt
+
 

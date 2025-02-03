@@ -93,7 +93,7 @@ namespace ValHelpApi.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Hunt", b =>
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,6 +120,15 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_at");
 
+                    b.Property<float>("Hours")
+                        .HasColumnType("real")
+                        .HasColumnName("hours");
+
+                    b.Property<string>("Mode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("mode");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
@@ -130,10 +139,10 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("prizes");
 
-                    b.Property<string>("Scoring")
+                    b.Property<string>("ScoringCode")
                         .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("scoring");
+                        .HasColumnType("text")
+                        .HasColumnName("scoring_code");
 
                     b.Property<string>("Seed")
                         .IsRequired()
@@ -158,33 +167,33 @@ namespace ValHelpApi.Migrations
                         .HasColumnName("updated_by");
 
                     b.HasKey("Id")
-                        .HasName("pk_hunts");
+                        .HasName("pk_events");
 
-                    b.ToTable("hunts", (string)null);
+                    b.HasIndex("ScoringCode")
+                        .HasDatabaseName("ix_events_scoring_code");
+
+                    b.ToTable("events", (string)null);
                 });
 
-            modelBuilder.Entity("ValHelpApi.Modules.Tournament.HuntPlayer", b =>
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Player", b =>
                 {
-                    b.Property<int>("HuntId")
+                    b.Property<int>("EventId")
                         .HasColumnType("integer")
-                        .HasColumnName("hunt_id");
+                        .HasColumnName("event_id");
 
-                    b.Property<string>("PlayerId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("player_id");
-
-                    b.Property<int>("Deaths")
-                        .HasColumnType("integer")
-                        .HasColumnName("deaths");
+                        .HasColumnName("avatar_url");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<int>("Relogs")
-                        .HasColumnType("integer")
-                        .HasColumnName("relogs");
 
                     b.Property<int>("Score")
                         .HasColumnType("integer")
@@ -199,19 +208,48 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("stream");
 
-                    b.PrimitiveCollection<List<string>>("Trophies")
-                        .IsRequired()
-                        .HasColumnType("text[]")
-                        .HasColumnName("trophies");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("HuntId", "PlayerId")
-                        .HasName("pk_hunts_player");
+                    b.HasKey("EventId", "UserId")
+                        .HasName("pk_players");
 
-                    b.ToTable("hunts_player", (string)null);
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_players_user_id");
+
+                    b.ToTable("players", (string)null);
+                });
+
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Scoring", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasColumnType("text")
+                        .HasColumnName("code");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.PrimitiveCollection<List<string>>("Modes")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("modes");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Scores")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("scores");
+
+                    b.HasKey("Code")
+                        .HasName("pk_scorings");
+
+                    b.ToTable("scorings", (string)null);
                 });
 
             modelBuilder.Entity("ValHelpApi.Modules.Tournament.TrackHunt", b =>
@@ -244,6 +282,11 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("logouts");
 
+                    b.Property<string>("PlayerId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("player_id");
+
                     b.Property<string>("PlayerLocation")
                         .IsRequired()
                         .HasColumnType("text")
@@ -270,17 +313,142 @@ namespace ValHelpApi.Migrations
                     b.ToTable("track_hunts", (string)null);
                 });
 
-            modelBuilder.Entity("ValHelpApi.Modules.Tournament.HuntPlayer", b =>
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.TrackLog", b =>
                 {
-                    b.HasOne("ValHelpApi.Modules.Tournament.Hunt", null)
-                        .WithMany("Players")
-                        .HasForeignKey("HuntId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Property<DateTime>("At")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("at");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Mode")
                         .IsRequired()
-                        .HasConstraintName("fk_hunts_player_hunts_hunt_id");
+                        .HasColumnType("text")
+                        .HasColumnName("mode");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
+
+                    b.Property<string>("Seed")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("seed");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("user");
+
+                    b.HasKey("At", "Id")
+                        .HasName("pk_track_logs");
+
+                    b.ToTable("track_logs", (string)null);
                 });
 
-            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Hunt", b =>
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Event", b =>
+                {
+                    b.HasOne("ValHelpApi.Modules.Tournament.Scoring", "Scoring")
+                        .WithMany()
+                        .HasForeignKey("ScoringCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_events_scorings_scoring_code");
+
+                    b.Navigation("Scoring");
+                });
+
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Player", b =>
+                {
+                    b.HasOne("ValHelpApi.Modules.Tournament.Event", "Event")
+                        .WithMany("Players")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_players_events_event_id");
+
+                    b.HasOne("ValHelpApi.Modules.Admin.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_players_users_user_id");
+
+                    b.OwnsMany("ValHelpApi.Modules.Tournament.PlayerLog", "Logs", b1 =>
+                        {
+                            b1.Property<int>("PlayerEventId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("PlayerUserId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<DateTime>("At")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("Code")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("PlayerEventId", "PlayerUserId", "__synthesizedOrdinal");
+
+                            b1.ToTable("players");
+
+                            b1.ToJson("logs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlayerEventId", "PlayerUserId")
+                                .HasConstraintName("fk_players_players_player_event_id_player_user_id");
+                        });
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Logs");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.TrackLog", b =>
+                {
+                    b.OwnsMany("ValHelpApi.Modules.Tournament.PlayerLog", "Logs", b1 =>
+                        {
+                            b1.Property<DateTime>("TrackLogAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("TrackLogId")
+                                .HasColumnType("text");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<DateTime>("At")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("Code")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("TrackLogAt", "TrackLogId", "__synthesizedOrdinal");
+
+                            b1.ToTable("track_logs");
+
+                            b1.ToJson("logs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TrackLogAt", "TrackLogId")
+                                .HasConstraintName("fk_track_logs_track_logs_track_log_at_track_log_id");
+                        });
+
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("ValHelpApi.Modules.Tournament.Event", b =>
                 {
                     b.Navigation("Players");
                 });

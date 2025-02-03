@@ -1,3 +1,88 @@
+h2 {
+  font-size:1.4rem;
+  font-weight: normal;
+  margin: 0.5rem 0;
+  filter: brightness(0.8);
+}
+.competition {
+  margin: 1rem 0;
+  min-width: 400px;
+  max-width: 620px;
+  background-color: #7289DA22;
+  border-radius: 0.4rem;
+  padding: 0.4rem 1rem;
+}
+.competition.empty {
+  color: #fff5;
+}
+.competition a {
+  color: #7289DA;
+  margin: 0.8rem 0.3rem;
+}
+.competition h3 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+.competition-info {
+  padding-left:0.7rem;
+  flex:1;
+}
+.competition>div>svg {
+  vertical-align: middle;
+  width: 32px;
+}
+.competition h3>small {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  font-weight: normal;
+  opacity: 0.6;
+}
+
+@media (max-width: 780px) {
+  .competition h3>small {
+    display: none;
+  }
+}
+
+.competition .timing {
+  margin-top: -0.8rem;
+  opacity: 0.8;
+}
+
+.competition .status {
+  background-color: #fff1a228;
+  color: gold;
+  padding: 0.3rem 1rem;
+  border-radius: 0.4rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+.competition .status.active {
+  animation: fadeInOut 3s linear 10 forwards;
+}
+
+.competition .seed {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.competition .register {
+  display: block;
+  background-color: #7289DA77;
+  color:white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.competition .register:hover {
+  background-color: #5b6eae;
+}
+
 nav {
   display: flex;
   flex-direction: column;
@@ -30,4 +115,16 @@ nav small {
   opacity: 0.7;
   font-size:1.1rem;
   margin-left:0.8rem;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }

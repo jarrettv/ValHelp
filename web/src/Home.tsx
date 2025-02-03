@@ -1,40 +1,34 @@
 import Food from "./components/Food";
 import Swords from "./components/Swords";
-import Trophy from "./components/Trophy";
 import "./Home.css"
+import Badge from "./components/Badge";
+import Calendar from "./components/Calendar";
+import EventLatest from "./components/EventsLatest";
+import EventsUpcoming from "./components/EventsUpcoming";
+import { Link } from "react-router";
+
 
 export default function Home() {
   return (
     <>
-      <section style={{ maxWidth: '500px', margin: '0 auto' }}>
-        <div style={{ margin: '1.5rem 0' }}>
-          <p>
-            Welcome to <strong>Valheim Help</strong> where you can find tools and information to help
-            you enjoy gaming in Valheim. Our goal is to get you info fast without
-            distractions.
-          </p>
-
-          <p>
-            This website is open-source and accepts contributions on <a
-              href="https://github.com/jarrettv/valheim-help">Github</a
-            >. If you find mistakes or want improvements, please consider
-            contributing to the project with a pull request.
-          </p>
-
-          <p>
-            If you find the project useful, consider <a
-              href="https://github.com/sponsors/jarrettv">becoming a sponsor.</a>
-          </p>
+      <section style={{margin: "0 auto", display:"flex", flexWrap: "wrap", justifyContent: "space-around", maxWidth: "1000px"}}>
+        <div style={{marginRight: "1rem"}}>
+          <h2>Latest Events</h2>
+          <EventLatest />
+        </div>
+        <div>
+          <h2>Upcoming Events</h2>
+          <EventsUpcoming />
         </div>
       </section>
       <nav>
-        <a href="/trophy/calc">
-          <Trophy style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Trophy Hunt Calculator
-        </a>
+        <Link to="/events/host">
+          <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Host Event <small>Open or Private</small>
+        </Link>
         <a href="/trophy/tracker">
-          <Trophy style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Trophy Hunt Tracker
+          <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          High Scores <small>PB Tracking</small>
         </a>
         <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
@@ -44,6 +38,7 @@ export default function Home() {
           <Food style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Food <small>Recipes &amp; Stats</small>
         </a>
-      </nav></>
+      </nav>
+    </>
   )
 }

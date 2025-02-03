@@ -15,17 +15,17 @@ public static class AuthEndpoints
 
     api.MapGet("status", async (ClaimsPrincipal user, AppDbContext db) =>
     {
+      var none = new { Id = 0, Username = "", AvatarUrl = "", IsActive = false };
       if (user.Identity?.IsAuthenticated == true)
       {
         var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var currentUser = await db.Users
           .Where(u => u.Id == userId)
           .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive })
-          .SingleAsync();
-
+          .SingleOrDefaultAsync() ?? none;
         return TypedResults.Ok(currentUser);
       }
-      return TypedResults.Ok(new { Id = 0, Username = "", AvatarUrl = "", IsActive = false });
+      return TypedResults.Ok(none);
     });
     
     api.MapGet("discord", async (HttpContext ctx) =>
@@ -101,4 +101,5 @@ public static class AuthEndpoints
   }
 
   public record ProfileReq(string Username, string? Youtube, string? Twitch);
+
 }

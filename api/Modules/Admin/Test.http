@@ -1,3 +1,97 @@
 
 ### Setup database
-GET {{base_url}}/admin/db/migrate
+GET {{base_url}}/api/db/migrate
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "jv",
+  "email": "example@email.com",
+  "discordId": "126084695824924673",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/126084695824924673/3f71ed008f7aa248df3a6d1c95d5d095.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "oathorse",
+  "email": "example@email.com",
+  "discordId": "618218180929650698",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/618218180929650698/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "isActive": true
+}
+
+
+### Seed scoring
+POST {{base_url}}/api/scoring
+Content-Type: application/json
+
+{
+  "code": "hunt-2024-11",
+  "name": "Trophy Hunt 2024 Nov",
+  "modes": ["TrophyHunt"],
+  "scores": {  
+    "PenaltyDeath": -20,
+    "PenaltyLogout": -10,
+    "TrophyBoar": 10,
+    "TrophyDeer": 10,
+    "TrophyNeck": 10,
+    "TrophyEikthyr": 40,
+    "TrophyGreydwarf": 20,
+    "TrophyGreydwarfBrute": 20,
+    "TrophyGreydwarfShaman": 20,
+    "TrophySkeletonPoison": 20,
+    "TrophySkeleton": 20,
+    "TrophyFrostTroll": 20,
+    "TrophySkeletonHildir": 25,
+    "TrophyTheElder": 60,
+    "TrophyAbomination": 20,
+    "TrophyBlob": 20,
+    "TrophyDraugr": 20,
+    "TrophyDraugrElite": 20,
+    "TrophyLeech": 20,
+    "TrophySurtling": 20,
+    "TrophyWraith": 20,
+    "TrophyBonemass": 100,
+    "TrophyCultist": 30,
+    "TrophyHatchling": 30,
+    "TrophyFenring": 30,
+    "TrophySGolem": 30,
+    "TrophyUlv": 30,
+    "TrophyWolf": 30,
+    "TrophyCultist_Hildir": 45,
+    "TrophyDragonQueen": 100,
+    "TrophyDeathsquito": 30,
+    "TrophyGoblin": 30,
+    "TrophyGoblinBrute": 30,
+    "TrophyGoblinShaman": 30,
+    "TrophyGrowth": 30,
+    "TrophyLox": 30,
+    "TrophyGoblinBruteBrosShaman": 65,
+    "TrophyGoblinBruteBrosBrute": 65,
+    "TrophyGoblinKing": 160,
+    "TrophyDvergr": 40,
+    "TrophyHare": 40,
+    "TrophyGjall": 40,
+    "TrophySeeker": 40,
+    "TrophySeekerBrute": 40,
+    "TrophyTick": 40,
+    "TrophySeekerQueen": 1000,
+    "TrophyAsksvin": 50,
+    "TrophyBonemawSerpent": 50,
+    "TrophyFallenValkyrie": 50,
+    "TrophyCharredArcher": 50,
+    "TrophyMorgen": 50,
+    "TrophyVolture": 50,
+    "TrophyWarlock": 50,
+    "TrophyCharredMelee": 50,
+    "TrophyFader": 1000,
+    "TrophySerpent": 45,
+    "TrophyKvastur": 25
+  }
+}

@@ -5,6 +5,14 @@ public static class Database
 {
   public static void AddDatabase(this WebApplicationBuilder builder)
   {
-    builder.AddNpgsqlDbContext<AppDbContext>("valhelp", null, options => options.UseSnakeCaseNamingConvention());
+    builder.Services.AddDbContextPool<AppDbContext>(options =>
+    {
+      var cs = builder.Configuration.GetConnectionString("valhelp");
+      options.UseSnakeCaseNamingConvention();
+      options.UseNpgsql(cs, o => 
+      {
+        //o.ConfigureDataSource(b => b.EnableDynamicJson());
+      });
+    });
   }
 }

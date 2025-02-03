@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import "./Profile.css";
-import { SpinnerRoundFilled } from "spinners-react";
 import { FormEvent } from "react";
+import Spinner from "./components/Spinner";
 
 export default function Profile() {
   const { isPending, error, data } = useQuery({
-    queryKey: ['repoData'],
+    queryKey: ['profile'],
     queryFn: () =>
       fetch('/api/auth/profile').then((res) =>
         res.json()
@@ -36,7 +36,7 @@ export default function Profile() {
       mutation.mutate(formObject as any);
     };
 
-  if (isPending) return <section className="loading"><SpinnerRoundFilled color="#fcce03" /></section>
+  if (isPending) return <section className="loading"><Spinner color="#fcce03" /></section>
 
   if (error) return <section className="alert error">An error has occurred: {error.message}</section>
 

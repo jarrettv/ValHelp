@@ -1,4 +1,4 @@
-
+using System.Threading.Channels;
 using ValHelpApi.Config;
 using ValHelpApi.Modules.Admin;
 using ValHelpApi.Modules.Tournament;
@@ -10,6 +10,9 @@ builder.AddAuth();
 builder.AddDatabase();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());
+builder.Services.AddHostedService<StatusUpdater>();
+builder.Services.AddHostedService<Tracker>();
 
 builder.Services.AddCors(options =>
 {
