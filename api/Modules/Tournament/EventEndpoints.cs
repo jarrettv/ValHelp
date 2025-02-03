@@ -20,9 +20,9 @@ public static class EventEndpoints
     api.MapGet("upcoming", GetEventsUpcoming);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
     api.MapPost("{id:int}/players", PostPlayer);
+    api.MapGet("{id:int}/players", GetPlayers);
     api.MapGet("", GetEvents);
   }
-
 
   public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players);
   public record EventRowPlayer(int Id, string Name, string AvatarUrl, int Score);
@@ -242,4 +242,23 @@ public static class EventEndpoints
       player.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray(), player.UpdatedAt);
     return TypedResults.Ok(resp);
   }
+
+  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, int Score, PlayerLogRow[] logs);
+  private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
+  {
+    await Task.Delay(300);
+    var players = await db.Players
+      .Where(hp => hp.EventId == id)
+      .Select(hp => new EventPlayersRow(
+        hp.UserId,
+        hp.Name,
+        hp.AvatarUrl,
+        hp.Score,
+        hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+      ))
+      .ToArrayAsync();
+
+    return TypedResults.Ok(players);
+  }
+
 }

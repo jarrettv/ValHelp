@@ -212,7 +212,7 @@ const trophies = [
   {
     name: "Seeker soldier",
     biome: "Mistlands",
-    code: "TrophySeekersoldier"
+    code: "TrophySeekerBrute"
   },
   {
     name: "Tick",

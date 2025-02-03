@@ -1,8 +1,8 @@
-export const PlayerTrophy = (props: { trophy: string }) => {
-  const { trophy } = props;
+export const PlayerTrophy = (props: { code: string }) => {
+  const { code } = props;
   return (
     <div className="trophy">
-      <img src={`/img/trophies/${trophy}.png`} alt={trophy} />
+      <img src={`/img/trophies/${code}.png`} alt={code} />
     </div>
   );
 };
