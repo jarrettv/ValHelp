@@ -3,7 +3,8 @@ import HuntPlacement from "./HuntPlacement";
 import Trophy from "./Trophy";
 import TimeUntil from "./TimeUntil";
 import TimeAgo from "./TimeAgo";
-import { EventRow, EventStatus } from "../hooks/useEvents";
+import { EventRow } from "../hooks/useEvents";
+import { EventStatus } from "../domain/event";
 
 interface EventHighlightProps {
   event: EventRow;

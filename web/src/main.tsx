@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index path="/" element={<Home />} />
             <Route path="/auth/login" element={<Auth />} />
             <Route path="/auth/profile" element={<Profile />} />
-            <Route path="/events" element={<Events />} />
+            <Route path="/events/all" element={<Events />} />
             <Route path="/events/:id" element={<Event />} />
             <Route path="/events/host" element={<EventEdit />} />
             <Route path="/events/:id/edit" element={<EventEdit />} />

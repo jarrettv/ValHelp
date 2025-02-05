@@ -1,25 +1,27 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import "./Profile.css";
 import { FormEvent, useEffect, useState } from "react";
 import Spinner from "./components/Spinner";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useNavigate } from "react-router";
 import TimeAgo from "./components/TimeAgo";
+import { useAuth } from "./contexts/AuthContext";
 
 export default function EventEdit() {
   const { id } = useParams();
+  const { status } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [eventId, setEventId] = useState(Number(id) ?? 0);
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
 
   const { isPending, error, data } = useQuery({
-    queryKey: ['event-host', eventId],
+    queryKey: ['event', Number(id) ?? 'host'],
     queryFn: () =>
       fetch(`/api/events/${id || 'host'}`).then((res) =>
         res.json()
-      ),
+      )
   })
-
 
   useEffect(() => {
     if (data) {
@@ -42,8 +44,8 @@ export default function EventEdit() {
         throw new Error(problem.detail);
       } else {
         var data = await response.json();
-        setEventId(data.id);
-        return data;
+        queryClient.invalidateQueries({ queryKey: ['event', data.id] });
+        return navigate(`/events/${data.id}`);
       }
     },
   });
@@ -66,6 +68,22 @@ export default function EventEdit() {
     mutation.mutate(formObject as any);
   };
 
+  const canDelete = status!.id === 1;
+
+  const onDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      const response = await fetch(`/api/events/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        queryClient.invalidateQueries({ queryKey: ['event', id] });
+        return navigate(`/events/all`);
+      } else {
+        alert("Failed to delete event");
+      }
+    }
+  };
+
   if (isPending) return <section className="loading"><Spinner color="#fcce03" /></section>
 
   if (error) return <section className="alert error">An error has occurred: {error.message}</section>
@@ -73,11 +91,11 @@ export default function EventEdit() {
   return (
     <section id="event-page">
       <form className="competition" onSubmit={handleSubmit}>
-        {eventId === 0 && (
-          <div className="alert info">Thank you for hosting a new event, good luck organizer</div>
+        {Number(id ?? 0) === 0 && (
+          <div className="alert info">Odin thanks you for organizing a new event</div>
         )}
-        {eventId > 1 && (
-          <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{margin:"0"}} to={`/events/${eventId}`}>Back</Link></div>
+        {Number(id ?? 0) > 1 && (
+          <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{ margin: "0" }} to={`/events/${id}`}>Back</Link></div>
         )}
         {mutation.isSuccess && (
           <div className="alert success" onClick={() => mutation.reset()}>✅ Event saved</div>
@@ -91,58 +109,58 @@ export default function EventEdit() {
         <input type="hidden" name="id" value={id ?? "0"} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
-            <label htmlFor="id">Name</label>
-            <input style={{width:'13rem'}} type="text" required id="name" name="name" defaultValue={data.name} />
+            <label htmlFor="name">Name <small style={{opacity:0.6}}>(max 26 characters)</small></label>
+            <input maxLength={26} style={{ width: '13rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
           </fieldset>
           <fieldset>
             <div className="radio-group">
-            {data.status < 20 && (
-              <>
-            <label>
-              <input type="radio" name="status" value="0" defaultChecked={data.status === 0} />
-              Draft
-            </label>
-            <label>
-              <input type="radio" name="status" value="10" defaultChecked={data.status === 10} />
-              Ready
-            </label></>)}
-            {data.status >= 20 && (
-              <>
-            <label>
-              <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
-              Live
-            </label>
-            <label>
-              <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
-              Over
-            </label></>)}
-            
+              {data.status < 20 && (
+                <>
+                  <label>
+                    <input type="radio" name="status" value="0" defaultChecked={data.status === 0} />
+                    Draft
+                  </label>
+                  <label>
+                    <input type="radio" name="status" value="10" defaultChecked={data.status === 10} />
+                    Ready
+                  </label></>)}
+              {data.status >= 20 && (
+                <>
+                  <label>
+                    <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
+                    Live
+                  </label>
+                  <label>
+                    <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
+                    Over
+                  </label></>)}
+
             </div>
           </fieldset>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          
-        <fieldset>
-          <label htmlFor="mode" style={{ display: 'block', width: '6rem' }}>Mode</label>
-          <select id="mode" required name="mode" defaultValue={data.mode}>
-            <option value="TrophyHunt">Trophy Hunt (classic)</option>
-            <option value="TrophyRush">Trophy Rush</option>
-            <option value="TrophySaga">Trophy Saga</option>
-            <option value="TrophyRun">Trophy Run (coming soon)</option>
-          </select>
-        </fieldset>
-        <fieldset>
-          <label htmlFor="scoringCode" style={{ display: 'block', width: '6rem' }}>Scoring</label>
-          <select id="scoringCode" required name="scoringCode" defaultValue={data.scoringCode}>
-            <option value="hunt-2024-11">Hunt Scoring 2024 Nov</option>
-          </select>
-        </fieldset>
-        </div>
-        <fieldset>
-          <label htmlFor="seed">Seed</label>
-          <input style={{width:'7rem'}} type="text" required id="seed" name="seed" defaultValue={data.seed} />
-        </fieldset>
+          <div>
+
+            <fieldset>
+              <label htmlFor="mode" style={{ display: 'block', width: '6rem' }}>Mode</label>
+              <select id="mode" required name="mode" defaultValue={data.mode}>
+                <option value="TrophyHunt">Trophy Hunt (classic)</option>
+                <option value="TrophyRush">Trophy Rush</option>
+                <option value="TrophySaga">Trophy Saga</option>
+                <option value="TrophyRun">Trophy Run (coming soon)</option>
+              </select>
+            </fieldset>
+            <fieldset>
+              <label htmlFor="scoringCode" style={{ display: 'block', width: '6rem' }}>Scoring</label>
+              <select id="scoringCode" required name="scoringCode" defaultValue={data.scoringCode}>
+                <option value="hunt-2024-11">Hunt Scoring 2024 Nov</option>
+              </select>
+            </fieldset>
+          </div>
+          <fieldset>
+            <label htmlFor="seed">Seed</label>
+            <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
+          </fieldset>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
@@ -154,11 +172,14 @@ export default function EventEdit() {
             <input type="range" required id="hours" name="hours" min="1" max="8" defaultValue={data.hours} onChange={(e) => setHours(Number(e.target.value))} />
           </fieldset>
         </div>
-        <fieldset style={{marginTop:'-1rem'}}>
+        <fieldset style={{ marginTop: '-1rem' }}>
           <label htmlFor="desc">Description</label>
           <textarea id="desc" required name="desc" defaultValue={data.desc} />
         </fieldset>
-        <button type="submit">Save</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {canDelete && <button type="button" style={{ backgroundColor: '#882222', width: '6rem', marginRight: '2rem' }} onClick={() => onDelete()}>Delete</button>}
+          <button type="submit">Save</button>
+        </div>
       </form>
     </section>
   )

@@ -28,7 +28,6 @@ export default function EventPreview({ event }: EventPreviewProps) {
         <Link to={`/events/${event.id}`}>View</Link>
       </div>
       {isStartingSoon && <div className="status active">✨ Starting soon ✨</div>}
-      {!isStartingSoon && <Link className="register" to={`/events/${event.id}/register`}>Register</Link>}
       <div style={{ display: "flex", alignItems: "center", margin: "0.3rem 0 0 3rem" }}>
         {event.players.slice(0, 5).map(player => (
           <img

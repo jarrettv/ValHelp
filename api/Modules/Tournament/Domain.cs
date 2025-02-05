@@ -39,6 +39,7 @@ public enum EventStatus
   Live = 20, // between StartAt and EndAt
   Over = 30, // after EndAt
   Old = 50, // after 4 months
+  Archive = 55, // force hide
   Deleted = 60
 }
 
@@ -103,12 +104,13 @@ public class Player
 
 public record PlayerLog(string Code, DateTime At);
 
-public enum PlayerStatus
+public enum PlayerStatus // positive for in, negative for out
 {
-  Player = 0,
-  PlayerAdmin = 1,
-  NonPlayerAdmin = 2,
-  Disqualified = 10,
+  PlayerOut = -2,
+  AdminOut = -1,
+  PlayerIn = 0,
+  AdminIn = 1,
+  Disqualified = -10,
 }
 
 public class Item

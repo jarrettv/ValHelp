@@ -1,16 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { EventStatus } from '../domain/event';
 
 export interface EventsResponse {
   data: EventRow[];
-}
-
-export enum EventStatus {
-  Draft = 0,
-  New = 10,
-  Live = 20,
-  Over = 30,
-  Old = 50,
-  Deleted = 60
 }
 
 export interface EventRow {

@@ -19,6 +19,20 @@ h2 {
   color: #7289DA;
   margin: 0.8rem 0.3rem;
 }
+button.link {
+  background-color: #7289DA77;
+  color:white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+button.link:hover {
+  background-color: #5b6eae;
+  transition: background-color 0.3s ease;
+}
 .competition h3 {
   font-size: 1.2rem;
   margin: 0.5rem 0;
@@ -50,14 +64,17 @@ h2 {
 }
 
 .competition .status {
-  background-color: #fff1a228;
-  color: gold;
+  background-color: #a2c6ff28;
+  color: rgb(173, 224, 255);
   padding: 0.3rem 1rem;
   border-radius: 0.4rem;
   margin: 0.5rem 0;
   text-align: center;
 }
+
 .competition .status.active {
+  background-color: #fff1a228;
+  color: gold;
   animation: fadeInOut 3s linear 10 forwards;
 }
 
@@ -67,19 +84,19 @@ h2 {
   text-align: center;
 }
 
-.competition .register {
-  display: block;
+.register-button {
   background-color: #7289DA77;
   color:white;
   padding: 0.5rem 1rem;
   border-radius: 0.4rem;
+  border: none;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.competition .register:hover {
+.register-button:hover {
   background-color: #5b6eae;
 }
 

@@ -42,7 +42,7 @@ export interface Player {
 }
 
 export enum PlayerStatus {
-  Normal = 0,
+  Registered = 0,
   PlayerAdmin = 1,
   NonPlayerAdmin = 2,
   Disqualified = 10

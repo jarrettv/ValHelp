@@ -172,7 +172,7 @@ public static class EventEndpoints
       hunt.CreatedAt = now;
       hunt.CreatedBy = user!.Username;
       hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl, 
-        Status = PlayerStatus.PlayerAdmin, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
+        Status = PlayerStatus.AdminIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
       db.Events.Add(hunt);
     }
 
@@ -202,11 +202,17 @@ public static class EventEndpoints
   }
 
   public record PlayerLogRow(string Code, DateTime At);
-  public record PlayerReq(int UserId, string? Stream, int? Score, PlayerLogRow[]? logs);
+  public record PlayerReq(int UserId, string Name, string Stream, string In);
   public record PlayerResp(int EventId, int UserId, string Name, string AvatarUrl, string Stream, int Score, PlayerLogRow[] logs, DateTime UpdatedAt);
-  private static async Task<Results<Ok<PlayerResp>, ValidationProblem, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal user)
+  private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp)
   {
     // TODO: Validate request
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var auth = userId == 1 || cp.IsInRole("Admin") || req.UserId == userId;
+    if (!auth)
+    {
+      return TypedResults.Unauthorized();
+    }
 
     var player = await db.Players
       .Where(hp => hp.EventId == id)
@@ -219,22 +225,20 @@ public static class EventEndpoints
         .Where(u => u.Id == req.UserId)
         .Select(u => new { u.Username, u.AvatarUrl, u.Youtube, u.Twitch })
         .SingleAsync();
-      player = new Player { EventId = id, UserId = req.UserId, Name = userInfo.Username, AvatarUrl = userInfo.AvatarUrl };
-      player.Stream = req.Stream ?? userInfo.Youtube ?? userInfo.Twitch ?? "N/A";
+      player = new Player { EventId = id, UserId = req.UserId, AvatarUrl = userInfo.AvatarUrl };
       db.Players.Add(player);
     }
 
+    player.Name = req.Name;
     player.Stream = req.Stream ?? player.Stream ?? "N/A";
-    player.Score = req.Score ?? player.Score;
-    if (req.logs != null)
+      
+    if (player.Status == PlayerStatus.AdminIn || player.Status == PlayerStatus.AdminOut)
     {
-      foreach (var log in req.logs)
-      {
-        if (!player.Logs.Any(x => x.Code == log.Code && x.At == log.At))
-        {
-          player.Logs.Add(new PlayerLog(log.Code, log.At));
-        }
-      }
+      player.Status = req.In == "on" ? PlayerStatus.AdminIn : PlayerStatus.AdminOut;
+    }
+    else
+    {
+      player.Status = req.In == "on" ? PlayerStatus.PlayerIn : PlayerStatus.PlayerOut;
     }
 
     player.UpdatedAt = DateTime.UtcNow;
@@ -245,7 +249,7 @@ public static class EventEndpoints
     return TypedResults.Ok(resp);
   }
 
-  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, int Score, PlayerLogRow[] logs);
+  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, PlayerLogRow[] logs);
   private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
   {
     await Task.Delay(300);
@@ -255,6 +259,7 @@ public static class EventEndpoints
         hp.UserId,
         hp.Name,
         hp.AvatarUrl,
+        hp.Status,
         hp.Score,
         hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
       ))

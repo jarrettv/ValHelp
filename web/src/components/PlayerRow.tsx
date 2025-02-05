@@ -13,6 +13,8 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player }) => {
   const { status } = useAuth();
   const playerStatus = status?.id === player.userId ? "active" : "normal";
 
+  if (player.status < 0) { return <></>; }
+
   return (
     <div className={`player-row ${playerStatus}`}>
       <div className="player-info">
@@ -21,9 +23,9 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player }) => {
         <div className="player-score">{player.score}</div>
       </div>
       <div className="player-logs">
-        {player.logs.map((log, index) => 
-          log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> : 
-          log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
+        {player.logs.map((log, index) =>
+          log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
+            log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
         )}
       </div>
     </div>
