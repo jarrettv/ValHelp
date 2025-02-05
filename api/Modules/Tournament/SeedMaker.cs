@@ -38,9 +38,9 @@ public class SeedMaker : BackgroundService
       var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
       var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(-5).AddSeconds(-58);
       var events = await db.Events
-        .Where(h => h.Status < EventStatus.Over && h.Status >= EventStatus.New)
+        .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
         .Where(h => h.Seed == "(random)")
-        .Where(h => h.StartAt > fiveMinutesToGo)
+        .Where(h => fiveMinutesToGo > h.StartAt)
         .ToListAsync();
       
       foreach (var ev in events)
