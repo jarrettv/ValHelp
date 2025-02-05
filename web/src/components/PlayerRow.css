@@ -17,10 +17,23 @@
 .player-row .player-avatar {
   width: 2rem;
   height: 2rem;
-  border-radius: 10%;
+  border-radius: 15%;
   margin-right: 10px;
+  border:2px solid #0005;
 }
 
+.player-row.out {
+  opacity: 0.1;
+}
+.player-row.active .player-avatar {
+  border: 2px solid rgba(253, 226, 68, 0.692);
+}
+.player-row.admin .player-avatar {
+  border: 2px solid rgb(255, 255, 255);
+}
+.player-row.disqualified .player-avatar {
+  border: 2px solid rgb(255, 0, 0);
+}
 
 .player-row .player-score {
   font-size: 1.3rem;

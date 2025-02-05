@@ -2,20 +2,24 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import "./Profile.css";
 import { FormEvent, useEffect, useState } from "react";
 import Spinner from "./components/Spinner";
+import { Link, useParams } from "react-router";
+import TimeAgo from "./components/TimeAgo";
 
-export default function EventHost() {
+export default function EventEdit() {
+  const { id } = useParams();
+
+  const [eventId, setEventId] = useState(Number(id) ?? 0);
+  const [hours, setHours] = useState(4);
+  const [startAt, setStartAt] = useState('');
 
   const { isPending, error, data } = useQuery({
-    queryKey: ['event-host'],
+    queryKey: ['event-host', eventId],
     queryFn: () =>
-      fetch(`/api/events/host`).then((res) =>
+      fetch(`/api/events/${id || 'host'}`).then((res) =>
         res.json()
       ),
   })
 
-  const [id, setId] = useState(0);
-  const [hours, setHours] = useState(4);
-  const [startAt, setStartAt] = useState('');
 
   useEffect(() => {
     if (data) {
@@ -38,7 +42,7 @@ export default function EventHost() {
         throw new Error(problem.detail);
       } else {
         var data = await response.json();
-        setId(data.id);
+        setEventId(data.id);
         return data;
       }
     },
@@ -68,7 +72,13 @@ export default function EventHost() {
 
   return (
     <section id="event-page">
-      <form onSubmit={handleSubmit}>
+      <form className="competition" onSubmit={handleSubmit}>
+        {eventId === 0 && (
+          <div className="alert info">Thank you for hosting a new event, good luck organizer</div>
+        )}
+        {eventId > 1 && (
+          <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{margin:"0"}} to={`/events/${eventId}`}>Back</Link></div>
+        )}
         {mutation.isSuccess && (
           <div className="alert success" onClick={() => mutation.reset()}>✅ Event saved</div>
         )}
@@ -78,14 +88,16 @@ export default function EventHost() {
         {mutation.isPending && (
           <div className="alert">Saving event...</div>
         )}
-        <input type="hidden" name="id" value={id} />
+        <input type="hidden" name="id" value={id ?? "0"} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
             <label htmlFor="id">Name</label>
-            <input style={{width:'15rem'}} type="text" required id="name" name="name" defaultValue={data.name} />
+            <input style={{width:'13rem'}} type="text" required id="name" name="name" defaultValue={data.name} />
           </fieldset>
           <fieldset>
             <div className="radio-group">
+            {data.status < 20 && (
+              <>
             <label>
               <input type="radio" name="status" value="0" defaultChecked={data.status === 0} />
               Draft
@@ -93,7 +105,18 @@ export default function EventHost() {
             <label>
               <input type="radio" name="status" value="10" defaultChecked={data.status === 10} />
               Ready
+            </label></>)}
+            {data.status >= 20 && (
+              <>
+            <label>
+              <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
+              Live
             </label>
+            <label>
+              <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
+              Over
+            </label></>)}
+            
             </div>
           </fieldset>
         </div>

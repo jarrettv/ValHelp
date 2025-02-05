@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### Add player to hunt
 # @name huntplayer
-POST {{base_url}}/api/events/13/players
+POST {{base_url}}/api/events/4/players
 Content-Type: application/json
 
 {
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 ### Add player to hunt
 # @name huntplayer
-POST {{base_url}}/api/events/13/players
+POST {{base_url}}/api/events/3/players
 Content-Type: application/json
 
 {

@@ -41,7 +41,7 @@ export const useEventsLatest = () => {
   return useQuery({queryKey: ['events-latest'], queryFn: fetchEventsLatest, staleTime: 10000, refetchInterval: 10000});
 };
 
-const fetchEvents = async (): Promise<EventsResponse> => {
+const fetchUpcomingEvents = async (): Promise<EventsResponse> => {
   const response = await fetch('/api/events/upcoming');
   if (!response.ok) {
     throw new Error('Failed to fetch hunts');
@@ -50,5 +50,17 @@ const fetchEvents = async (): Promise<EventsResponse> => {
 };
 
 export const useEventsUpcoming = () => {
-  return useQuery({queryKey: ['events-upcoming'], queryFn: fetchEvents, staleTime: 60000 * 5, refetchInterval: 60000 * 5});
+  return useQuery({queryKey: ['events-upcoming'], queryFn: fetchUpcomingEvents, staleTime: 60000 * 5, refetchInterval: 60000 * 5});
+};
+
+const fetchEvents = async (): Promise<EventsResponse> => {
+  const response = await fetch('/api/events');
+  if (!response.ok) {
+    throw new Error('Failed to fetch hunts');
+  }
+  return response.json();
+};
+
+export const useEvents = () => {
+  return useQuery({queryKey: ['events-all'], queryFn: fetchEvents});
 };

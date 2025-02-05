@@ -105,7 +105,9 @@ public record PlayerLog(string Code, DateTime At);
 
 public enum PlayerStatus
 {
-  Normal = 0,
+  Player = 0,
+  PlayerAdmin = 1,
+  NonPlayerAdmin = 2,
   Disqualified = 10,
 }
 

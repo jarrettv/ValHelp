@@ -3,14 +3,18 @@ import { Player } from '../domain/event';
 import "./PlayerRow.css";
 import { PlayerTrophy } from './PlayerTrophy';
 import { PlayerPenalty } from './PlayerPenalty';
+import { useAuth } from '../contexts/AuthContext';
 
 interface PlayerRowProps {
   player: Player;
 }
 
 const PlayerRow: React.FC<PlayerRowProps> = ({ player }) => {
+  const { status } = useAuth();
+  const playerStatus = status?.id === player.userId ? "active" : "normal";
+
   return (
-    <div className="player-row">
+    <div className={`player-row ${playerStatus}`}>
       <div className="player-info">
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
         <div className="player-name">{player.name}</div>

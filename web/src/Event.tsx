@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useActiveEvent, usePlayers } from "./hooks/useEvent";
 import Spinner from "./components/Spinner";
 import Trophy from "./components/Trophy";
@@ -9,17 +9,20 @@ import getFriendlyDateRange from "./utils/date";
 import React from "react";
 import { Scoring } from "./components/Scoring";
 import PlayerStandings from "./components/EventStandings";
+import { useAuth } from "./contexts/AuthContext";
 
 export default function Event() {
   const { id } = useParams();
   var { data, isPending } = useActiveEvent(parseInt(id!));
   var { data: players } = usePlayers(parseInt(id!));
+  const { status } = useAuth();
 
   return (<>
     {isPending && <div><Spinner /></div>}
     {!isPending && data && (
 
       <div className="competition">
+        { status?.isActive && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link></div>}
         <div style={{ display: "flex" }}>
           <Trophy />
           <div className="competition-info">
@@ -39,6 +42,7 @@ export default function Event() {
         <div className={data.status === EventStatus.Live ? "player-standings live" : "player-standings"}>
             <PlayerStandings players={players ?? []} />
         </div>
+        
         {players?.length === 0 && <div className="card">No players yet</div>}
         <p>
           {data.desc.split('\n').map((item, idx) => (

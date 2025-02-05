@@ -14,12 +14,12 @@ public static class EventEndpoints
   {
     var api = app.MapGroup("api/events");
 
-    api.MapPost("", PostEvent);
-    api.MapGet("host", GetEventHost);
+    api.MapPost("", PostEvent).RequireAuthorization();
+    api.MapGet("host", GetEventEdit);
     api.MapGet("latest", GetEventsLatest);
     api.MapGet("upcoming", GetEventsUpcoming);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
-    api.MapPost("{id:int}/players", PostPlayer);
+    api.MapPost("{id:int}/players", PostPlayer).RequireAuthorization();
     api.MapGet("{id:int}/players", GetPlayers);
     api.MapGet("", GetEvents);
   }
@@ -100,7 +100,7 @@ public static class EventEndpoints
     )).ToArray(), rows.Length));
   }
 
-  public static async Task<Results<UnauthorizedHttpResult, Ok<EventRequest>>> GetEventHost(ClaimsPrincipal user, AppDbContext db)
+  public static async Task<Results<UnauthorizedHttpResult, Ok<EventRequest>>> GetEventEdit(ClaimsPrincipal user, AppDbContext db)
   {
     if (!user.Identity?.IsAuthenticated ?? false)
     {
@@ -149,9 +149,12 @@ public static class EventEndpoints
   public record EventResponse(int Id);
 
   public static async Task<Results<NotFound, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
-    PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal user)
+    PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp)
   {
     // TODO: Validate request
+
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var user = await db.Users.FindAsync(userId);
 
     Event? hunt = null;
     var now = DateTime.UtcNow;
@@ -166,14 +169,13 @@ public static class EventEndpoints
     else
     {
       hunt = new Event();
-    }
-
-    if (hunt.Id == 0)
-    {
       hunt.CreatedAt = now;
-      hunt.CreatedBy = user.Identity?.Name ?? "unknown";
+      hunt.CreatedBy = user!.Username;
+      hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl, 
+        Status = PlayerStatus.PlayerAdmin, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
       db.Events.Add(hunt);
     }
+
     hunt.Name = req.Name.Trim();
     hunt.StartAt = req.StartAt;
     hunt.EndAt = req.StartAt.AddHours(req.Hours);
@@ -185,7 +187,7 @@ public static class EventEndpoints
     hunt.Seed = req.Seed;
     hunt.Prizes = new Dictionary<string, string>() { { "1st", "(unknown)" } };
     hunt.UpdatedAt = now;
-    hunt.UpdatedBy = user.Identity?.Name ?? "unknown";
+    hunt.UpdatedBy = user!.Username;
     await db.SaveChangesAsync();
 
     var resp = new EventResponse(hunt.Id);

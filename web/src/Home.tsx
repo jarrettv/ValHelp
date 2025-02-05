@@ -6,9 +6,11 @@ import Calendar from "./components/Calendar";
 import EventLatest from "./components/EventsLatest";
 import EventsUpcoming from "./components/EventsUpcoming";
 import { Link } from "react-router";
+import { useAuth } from "./contexts/AuthContext";
 
 
 export default function Home() {
+  const { status } = useAuth();
   return (
     <>
       <section style={{margin: "0 auto", display:"flex", flexWrap: "wrap", justifyContent: "space-around", maxWidth: "1000px"}}>
@@ -22,13 +24,14 @@ export default function Home() {
         </div>
       </section>
       <nav>
+        { status?.isActive &&
         <Link to="/events/host">
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Host Event <small>Open or Private</small>
-        </Link>
-        <a href="/trophy/tracker">
+        </Link> }
+        <a href="/events">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          High Scores <small>PB Tracking</small>
+          All Events <small>Current and Historic</small>
         </a>
         <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
