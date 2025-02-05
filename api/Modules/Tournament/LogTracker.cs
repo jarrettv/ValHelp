@@ -4,14 +4,14 @@ using OpenTelemetry.Trace;
 using ValHelpApi.Config;
 
 namespace ValHelpApi.Modules.Tournament;
-public class Tracker : BackgroundService
+public class LogTracker : BackgroundService
 {
   private readonly Tracer _tracer;
-  private readonly ILogger<Tracker> _logger;
+  private readonly ILogger<LogTracker> _logger;
   private readonly Channel<TrackLog> _channel;
   private readonly IServiceScopeFactory _serviceScopeFactory;
 
-  public Tracker(Tracer tracer, ILogger<Tracker> logger, Channel<TrackLog> channel, IServiceScopeFactory serviceProvider)
+  public LogTracker(Tracer tracer, ILogger<LogTracker> logger, Channel<TrackLog> channel, IServiceScopeFactory serviceProvider)
   {
     _tracer = tracer;
     _logger = logger;

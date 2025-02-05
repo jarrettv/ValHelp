@@ -13,67 +13,65 @@ public static class ModEndpoints
   public static void MapModEndpoints(this WebApplication app)
   {
     app.MapPost("api/trackhunt", PostTrackHunt);
+    app.MapPost("api/track/hunt", PostTrackHunt2);
     app.MapPost("api/track/log", PostTrackLog);
     app.MapPost("api/track/logs", PostTrackLogs);
     app.MapGet("api/track/standings", GetTrackStandings);
   }
 
   public record TrackHuntRequest(string Player_Id, string Player_Name, string Player_Location, string Session_Id, int Current_Score, int Deaths, int Logouts, string Trophies, string Gamemode, JsonNode Extra);
-  public record TrackHuntResponse(DateTime At, int? EventId, int? UserId);
+  public record TrackHuntResponse(DateTime At);
 
-  public static async Task<Results<ValidationProblem, Ok<TrackHuntResponse>>>
-    PostTrackHunt(TrackHuntRequest req, AppDbContext db, ClaimsPrincipal user)
+  public static async Task<Results<ValidationProblem, Ok<TrackHuntResponse>>> PostTrackHunt(TrackHuntRequest req, Channel<TrackHunt> channel)
   {
     // TODO: Validate request
 
-    var trackHunt = new TrackHunt();
-    trackHunt.CreatedAt = DateTime.UtcNow;
-    trackHunt.PlayerId = req.Player_Id;
-    trackHunt.PlayerName = req.Player_Name;
-    trackHunt.PlayerLocation = req.Player_Location;
-    trackHunt.SessionId = req.Session_Id;
-    trackHunt.CurrentScore = req.Current_Score;
-    trackHunt.Deaths = req.Deaths;
-    trackHunt.Logouts = req.Logouts;
-    trackHunt.Trophies = req.Trophies.Split(',').Select(t => t.Trim()).ToList();
-    trackHunt.Gamemode = req.Gamemode;
+    var hunt = new TrackHunt();
+    hunt.CreatedAt = DateTime.UtcNow;
+    hunt.PlayerId = req.Player_Id;
+    hunt.PlayerName = req.Player_Name;
+    hunt.PlayerLocation = req.Player_Location;
+    hunt.SessionId = req.Session_Id;
+    hunt.CurrentScore = req.Current_Score;
+    hunt.Deaths = req.Deaths;
+    hunt.Logouts = req.Logouts;
+    hunt.Trophies = req.Trophies.Split(',').Select(t => t.Trim()).ToList();
+    hunt.Gamemode = req.Gamemode;
     
-    db.TrackHunts.Add(trackHunt);
-    await db.SaveChangesAsync();
+    await channel.Writer.WriteAsync(hunt);
+    return TypedResults.Ok(new TrackHuntResponse(hunt.CreatedAt));
+  }
+  
+  public record TrackHunt2Req(string Id, string User, string Seed, string Mode, int Score, int Deaths, int Relogs, int Slashdies, string[] Trophies);
 
-    int? liveEventId = await db.Events
-      .Where(h => h.Status == EventStatus.Live)
-      .Where(h => h.Seed == trackHunt.SessionId)
-      .Select(h => h.Id)
-      .FirstOrDefaultAsync();
+  public static async Task<Results<ValidationProblem, Ok<TrackHuntResponse>>> PostTrackHunt2(TrackHunt2Req req, Channel<TrackHunt> channel)
+  {
+    // TODO: Validate request and use ValidationProblem
 
-    if (liveEventId == null)
-    {
-      return TypedResults.Ok(new TrackHuntResponse(trackHunt.CreatedAt, null, null));
-    }
+    var hunt = new TrackHunt();
+    hunt.CreatedAt = DateTime.UtcNow;
+    hunt.PlayerId = req.Id;
+    hunt.PlayerName = req.User;
+    hunt.PlayerLocation = "";
+    hunt.SessionId = req.Seed;
+    hunt.CurrentScore = req.Score;
+    hunt.Deaths = req.Deaths;
+    hunt.Logouts = req.Relogs;
+    //hunt.Slashdies = req.Slashdies;
+    hunt.Trophies = req.Trophies.ToList();
+    hunt.Gamemode = req.Mode;
 
-    var player = await db.Players
-      .Where(hp => hp.EventId == liveEventId)
-      .Where(hp => hp.User.DiscordId == req.Player_Id)
-      .FirstOrDefaultAsync();
-
-    if (player == null)
-    {
-      return TypedResults.Ok(new TrackHuntResponse(trackHunt.CreatedAt, null, null));
-    }
-
-    player.Update(trackHunt.CreatedAt, trackHunt.CurrentScore, trackHunt.Trophies, trackHunt.Deaths, trackHunt.Logouts);
-    await db.SaveChangesAsync();
-
-    return TypedResults.Ok(new TrackHuntResponse(trackHunt.CreatedAt, liveEventId, player.UserId));
+    await channel.Writer.WriteAsync(hunt);
+    return TypedResults.Ok(new TrackHuntResponse(hunt.CreatedAt));
   }
 
-  public record TrackLogReq(string Id, string Seed, int Score, string Code, DateTime At);
+
+  public record TrackLogReq(string Id, string Seed, int Score, string Code);
   public record TrackLogResp(DateTime At, string Id);
 
   public static async Task<Results<ValidationProblem, Ok<TrackLogResp>>> PostTrackLog(TrackLogReq req, Channel<TrackLog> channel)
   {
-    return await PostTrackLogs(new TrackLogsReq(req.Id, "", req.Seed, "", req.Score, [new TrackerLog(req.Code, req.At)]), channel);
+    return await PostTrackLogs(new TrackLogsReq(req.Id, "", req.Seed, "", req.Score, [new TrackerLog(req.Code, DateTime.UtcNow)]), channel);
   }
 
   public record TrackLogsReq(string Id, string User, string Seed, string Mode, int Score, TrackerLog[] Logs);
@@ -95,6 +93,7 @@ public static class ModEndpoints
     return TypedResults.Ok(new TrackLogResp(log.At, log.Id));
   }
 
+
   public record TrackStandingsPlayer(string Id, string Name, string AvatarUrl, int Score);
   public record TrackStandingsResp(string Name, string Mode, DateTime StartAt, DateTime EndAt, EventStatus Status, TrackStandingsPlayer[] Players);
 
@@ -107,7 +106,7 @@ public static class ModEndpoints
       .Where(h => h.Seed == seed)
       .Where(h => h.Mode == mode)
       .Select(h => new TrackStandingsResp(h.Name, h.Mode, h.StartAt, h.EndAt, h.Status, 
-        h.Players.Select(hp => new TrackStandingsPlayer(hp.User.DiscordId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()))
+        h.Players.Where(x => x.Status >= 0).Select(hp => new TrackStandingsPlayer(hp.User.DiscordId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()))
       .FirstOrDefaultAsync();
 
     if (resp == null)

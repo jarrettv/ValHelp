@@ -170,6 +170,25 @@ Content-Type: application/json
   ]
 }
 
+### Track hunt v2
+POST {{base_url}}/api/track/state
+Content-Type: application/json
+
+{
+  "id": "618218180929650698",
+  "user": "oathorse",
+  "seed": "tkPNcLYEYg",
+  "mode": "TrophyRush",
+  "score": 90,
+  "state":
+  {
+    "trophies": "Deer, Boar, Neck, Eikthyr",
+    "penalties": "Deaths=0, Logouts=0, SlashDies=0",
+    "bonuses": "Meadows",
+    "mods": "TromboneMod"
+  }
+}
+
 ### Track log
 POST {{base_url}}/api/track/log
 Content-Type: application/json
@@ -178,8 +197,7 @@ Content-Type: application/json
   "id": "618218180929650698",
   "seed": "tkPNcLYEYg",
   "score": 90,
-  "code": "TrophyDraugr",
-  "at": "2025-02-01T22:56:20Z"
+  "code": "TrophyDraugr"
 }
 
 ### Tracker standings

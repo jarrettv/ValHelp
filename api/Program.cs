@@ -11,8 +11,11 @@ builder.AddDatabase();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());
+builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackHunt>());
 builder.Services.AddHostedService<StatusUpdater>();
-builder.Services.AddHostedService<Tracker>();
+builder.Services.AddHostedService<LogTracker>();
+builder.Services.AddHostedService<HuntTracker>();
+builder.Services.AddHostedService<SeedMaker>();
 
 builder.Services.AddCors(options =>
 {
