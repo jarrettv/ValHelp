@@ -26,7 +26,7 @@ export default function Events() {
 
         </>
       ))}
-      {data.data.length === 0 && <section className="competition empty">No upcoming events</section>}
+      {data.data.length === 0 && <section className="competition empty">No events</section>}
     </div>
   );
 };

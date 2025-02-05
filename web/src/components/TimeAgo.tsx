@@ -32,7 +32,10 @@ const TimeAgo: React.FC<TimeAgoProps> = ({ targetTime }) => {
     if (milliseconds <= 5 * 60 * 1000) {
       return "minutes";
     }
-    if (days >= 1) {
+    if (days == 1) {
+      return `${days} day`;
+    }
+    if (days > 1) {
       return `${days} days`;
     }
     if (hours == 0) {

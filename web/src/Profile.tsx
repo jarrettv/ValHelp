@@ -59,7 +59,7 @@ export default function Profile() {
           </a>
         </div>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form className="competition" onSubmit={handleSubmit}>
         {mutation.isSuccess && (
           <div className="alert success" onClick={() => mutation.reset()}>✅ Profile updated</div>
         )}
@@ -70,16 +70,16 @@ export default function Profile() {
           <div className="alert">Updating profile...</div>
         )}
         <fieldset>
-          <label htmlFor="username">Username</label>
-          <input type="text" id="username" name="username" defaultValue={data.username} />
+          <label htmlFor="username">Username <small style={{opacity:0.5}}>visible to everyone</small></label><br/>
+          <input required type="text" id="username" name="username" defaultValue={data.username} />
         </fieldset>
         <fieldset>
           <label htmlFor="youtube">Youtube Channel Link</label>
-          <input type="text" id="youtube" name="youtube" defaultValue={data.youtube} />
+          <input style={{width:'95%'}} type="text" id="youtube" name="youtube" defaultValue={data.youtube} />
         </fieldset>
         <fieldset>
           <label htmlFor="twitch">Twitch Channel Link</label>
-          <input type="text" id="twitch" name="twitch" defaultValue={data.twitch} />
+          <input style={{width:'95%'}} type="text" id="twitch" name="twitch" defaultValue={data.twitch} />
         </fieldset>
         <button type="submit">Update Profile</button>
       </form>
