@@ -29,10 +29,10 @@ export default function Home() {
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Host Event <small>Open or Private</small>
         </Link> }
-        <a href="/events/all">
+        <Link to="/events/all">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           All Events <small>Current and Historic</small>
-        </a>
+        </Link>
         <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Gear <small>Weapons &amp; Armor Info</small>
