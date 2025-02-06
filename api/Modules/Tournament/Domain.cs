@@ -94,13 +94,18 @@ public class Player
     foreach (var playerLog in log.Logs)
     {
       var existingLogs = Logs.Where(x => x.Code == playerLog.Code);
+      bool found = false;
       foreach (var existingLog in existingLogs)
       {
         // if playerLog is within a few seconds of existingLog, skip
         if (Math.Abs((existingLog.At - playerLog.At).TotalSeconds) < 4)
         {
+          found = true;
           continue;
         }
+      }
+      if (!found)
+      {
         Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
       }
     }
