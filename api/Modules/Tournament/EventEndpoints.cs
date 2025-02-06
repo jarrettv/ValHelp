@@ -37,7 +37,7 @@ public static class EventEndpoints
         h.StartAt,
         h.EndAt,
         h.Status,
-        h.Players.Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()
+        h.Players.Where(x => x.Status >= 0).Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()
       ))
       .ToArrayAsync();
 
@@ -55,7 +55,7 @@ public static class EventEndpoints
         h.StartAt,
         h.EndAt,
         h.Status,
-        Players = h.Players.Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
+        Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
       })
       .OrderBy(x => x.Status)
       .ThenByDescending(x => x.StartAt)
@@ -83,7 +83,7 @@ public static class EventEndpoints
         h.StartAt,
         h.EndAt,
         h.Status,
-        Players = h.Players.Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
+        Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
       })
       .OrderByDescending(x => x.StartAt)
       .Take(4)
@@ -252,7 +252,6 @@ public static class EventEndpoints
   public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, PlayerLogRow[] logs);
   private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
   {
-    await Task.Delay(300);
     var players = await db.Players
       .Where(hp => hp.EventId == id)
       .Select(hp => new EventPlayersRow(
