@@ -93,8 +93,14 @@ public class Player
     Score = log.Score;
     foreach (var playerLog in log.Logs)
     {
-      if (!Logs.Any(x => x.Code == playerLog.Code && x.At == playerLog.At))
+      var existingLogs = Logs.Where(x => x.Code == playerLog.Code);
+      foreach (var existingLog in existingLogs)
       {
+        // if playerLog is within a few seconds of existingLog, skip
+        if (Math.Abs((existingLog.At - playerLog.At).TotalSeconds) < 4)
+        {
+          continue;
+        }
         Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
       }
     }
