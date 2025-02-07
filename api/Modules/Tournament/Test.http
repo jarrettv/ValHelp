@@ -201,6 +201,7 @@ Content-Type: application/json
 }
 
 ### Tracker standings
-GET {{base_url}}/api/track/standings?seed=tkPNcLYEYg&mode=TrophyHunt
+GET {{base_url}}/api/track/standings?seed=lR3GRFfdsz&mode=TrophySaga
+
 
 

@@ -36,7 +36,7 @@ public class SeedMaker : BackgroundService
     using (var scope = _serviceProvider.CreateScope())
     {
       var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-      var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(-5).AddSeconds(-58);
+      var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(5);
       var events = await db.Events
         .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
         .Where(h => h.Seed == "(random)")
@@ -52,7 +52,7 @@ public class SeedMaker : BackgroundService
           "TrophyRush" => "rush",
           _ => "run"
         };
-        ev.Seed = $"{abbr}{RandomString(4)}{ev.Id:00}";
+        ev.Seed = $"{abbr}{RandomString(6)}";
         _logger.LogInformation("Event {eventId} has a new random seed {seed}", ev.Id, ev.Seed);
       }
       await db.SaveChangesAsync();
@@ -62,7 +62,7 @@ public class SeedMaker : BackgroundService
   private static string RandomString(int length)
   {
     // TODO: prevent bad words
-    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
     var random = new Random();
     return new string(Enumerable.Repeat(chars, length)
       .Select(s => s[random.Next(s.Length)]).ToArray());

@@ -43,4 +43,5 @@ if (app.Environment.IsDevelopment())
 app.MapTournamentEndpoints();
 app.MapAuthEndpoints();
 app.MapDefaultEndpoints();
+app.MapFallbackToFile("index.html");
 app.Run();

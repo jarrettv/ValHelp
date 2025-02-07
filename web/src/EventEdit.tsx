@@ -25,7 +25,11 @@ export default function EventEdit() {
 
   useEffect(() => {
     if (data) {
-      setStartAt(data.startAt.slice(0, 16));
+      // convert startAt to local time
+      const date = new Date(data.startAt);
+      const timezoneOffset = date.getTimezoneOffset() * 60000;
+      const localISOTime = new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+      setStartAt(localISOTime);
       setHours(data.hours);
     }
   }, [data]);
@@ -49,15 +53,6 @@ export default function EventEdit() {
       }
     },
   });
-
-  useEffect(() => {
-    if (startAt) {
-      const date = new Date(startAt);
-      const timezoneOffset = date.getTimezoneOffset() * 60000;
-      const localISOTime = new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
-      setStartAt(localISOTime);
-    }
-  }, [startAt]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
