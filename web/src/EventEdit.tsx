@@ -45,7 +45,7 @@ export default function EventEdit() {
       });
       if (!response.ok) {
         var problem = await response.json();
-        throw new Error(problem.detail);
+        throw new Error(problem.title);
       } else {
         var data = await response.json();
         queryClient.invalidateQueries({ queryKey: ['event', data.id] });
@@ -149,12 +149,17 @@ export default function EventEdit() {
               <label htmlFor="scoringCode" style={{ display: 'block', width: '6rem' }}>Scoring</label>
               <select id="scoringCode" required name="scoringCode" defaultValue={data.scoringCode}>
                 <option value="hunt-2024-11">Hunt Scoring 2024 Nov</option>
+                <option value="rush-2024-11">Rush Scoring 2024 Nov</option>
+                <option value="saga-2025-01">Saga Scoring 2025 Jan</option>
               </select>
             </fieldset>
           </div>
           <fieldset>
             <label htmlFor="seed">Seed</label>
+            <div>
             <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
+            </div>
+            <div style={{maxWidth:'12rem',fontSize:'0.77rem',marginTop:'0.3rem',lineHeight:'0.8rem',color:'#999'}}>🎲 Use <code>(random)</code> to roll seed just before start</div>
           </fieldset>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>

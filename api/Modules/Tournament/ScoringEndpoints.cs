@@ -27,6 +27,7 @@ public static class ScoringEndpoints
       scoring = new Scoring
       {
         Code = req.Code,
+        IsActive = true,
       };
       db.Scorings.Add(scoring);
     }

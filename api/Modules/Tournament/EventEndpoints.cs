@@ -151,7 +151,29 @@ public static class EventEndpoints
   public static async Task<Results<NotFound, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
     PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp)
   {
-    // TODO: Validate request
+    var scoring = await db.Scorings
+      .Where(s => s.IsActive)
+      .Where(s => s.Code == req.ScoringCode)
+      .FirstOrDefaultAsync();
+
+    if (scoring == null)
+    {
+      return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+      {
+        { "scoringCode", new[] { "Scoring must match the chosen mode" } }
+      }, title: "Scoring must match the chosen mode");
+    }
+
+    if (req.Name.Length < 5 || req.Name.Length > 26)
+    {
+      return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+      {
+        { "name", new[] { "Name must be between 5 and 26 characters" } }
+      }, title: "Name must be between 5 and 26 characters");
+    }
+
+
+    // TODO: Validate more of the request
 
     var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     var user = await db.Users.FindAsync(userId);

@@ -66,7 +66,7 @@ export default function Register({ eventId, player }: RegisterProps) {
           <img src={userStatus!.avatarUrl} alt={userStatus!.username} style={{width:'2.5rem',height:'2.5rem',borderRadius:"12%", marginRight: '1rem'}} />
           <fieldset>
             <label htmlFor="name">Name <small style={{opacity:0.6}}>(max 15 characters)</small></label>
-            <input required maxLength={15} style={{ width: '13rem' }} type="text" id="name" name="name" defaultValue={player?.name ?? userStatus!.username} />
+            <input required maxLength={15} style={{ width: '13rem' }} type="text" id="name" name="name" defaultValue={player?.name ?? userStatus!.username.substring(0, 14)} />
           </fieldset>
           <fieldset>
             <label htmlFor="in">Register</label>

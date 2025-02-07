@@ -1,9 +1,11 @@
+/// <reference types="react/canary" />
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import Layout from './Layout.tsx'
 import Home from './Home.tsx'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { AuthProvider } from './contexts/AuthContext';
 import Auth from './Auth.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -29,6 +31,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/events/:id" element={<Event />} />
             <Route path="/events/host" element={<EventEdit />} />
             <Route path="/events/:id/edit" element={<EventEdit />} />
+            <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </BrowserRouter>
