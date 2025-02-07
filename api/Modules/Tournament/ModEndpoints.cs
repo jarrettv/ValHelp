@@ -99,7 +99,7 @@ public static class ModEndpoints
 
   public static async Task<Results<Ok<TrackStandingsResp>, NotFound>> GetTrackStandings([FromQuery]string seed, [FromQuery]string mode, AppDbContext db)
   {
-    var later = DateTime.UtcNow.AddHours(2);
+    var later = DateTime.UtcNow.AddHours(-2);
 
     var resp = await db.Events
       .Where(h => h.Status == EventStatus.Live || (h.Status == EventStatus.Over && later < h.EndAt))
