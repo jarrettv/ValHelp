@@ -14,6 +14,13 @@
   color: #fff;
 }
 
+.player-row .player-info .player-name>a{
+  color: #fff9e4;
+}
+.player-row .player-info .player-name>a:hover{
+  color: gold;
+}
+
 .player-avatar {
   width: 2rem;
   height: 2rem;

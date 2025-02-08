@@ -9,7 +9,7 @@ import Twitch from './Twitch';
 
 interface PlayerRowProps {
   player: Player;
-  mode: "info" | "logs" | "compact";
+  mode: "info" | "logs" ;
 }
 
 const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
@@ -22,8 +22,9 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
     <div className={`player-row ${playerStatus}`}>
       <div className="player-info">
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
-        <div className="player-name">{player.name}</div>
-        <div className="player-score">{player.score}</div>
+        {player.stream.length > 5 && <div className="player-name"><a title="Watch Stream" href={player.stream} target="_blank">{player.name}</a></div> }
+        {player.stream.length <= 5 && <div className="player-name">{player.name}</div> }
+        {mode === "logs" && <div className="player-score">{player.score}</div>}
       </div>
       {mode === "info" && <div className="player-info">
         {player.logs.filter(log => log.code.startsWith("Stream")).map((log) => (
