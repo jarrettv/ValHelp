@@ -279,7 +279,7 @@ public static class EventEndpoints
     return TypedResults.Ok(resp);
   }
 
-  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, PlayerLogRow[] logs);
+  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, string Stream, PlayerLogRow[] logs);
   private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
   {
     var players = await db.Players
@@ -290,6 +290,7 @@ public static class EventEndpoints
         hp.AvatarUrl,
         hp.Status,
         hp.Score,
+        hp.Stream,
         hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
       ))
       .ToArrayAsync();

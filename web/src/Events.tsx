@@ -19,7 +19,7 @@ export default function Events() {
   return (
     <div>
       {data.data
-      .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+      .sort((a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime())
       .map(event => (
         <>
         { event.status < EventStatus.Live && <EventPreview key={event.id} event={event} /> }

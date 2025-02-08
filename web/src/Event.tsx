@@ -23,7 +23,7 @@ export default function Event() {
     {!isPending && data && (
 
       <div className="competition">
-        { (players ?? []).find(x => Math.abs(x.status) === 1) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        { (players ?? []).filter(x => x.userId === status?.id && Math.abs(x.status) === 1) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
         
         <Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link>
         </div>}
