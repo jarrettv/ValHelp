@@ -35,6 +35,7 @@ Content-Type: application/json
   "code": "hunt-2024-11",
   "name": "Trophy Hunt 2024 Nov",
   "modes": ["TrophyHunt"],
+  "isActive": true,
   "scores": {  
     "PenaltyDeath": -20,
     "PenaltyLogout": -10,
@@ -104,6 +105,7 @@ Content-Type: application/json
   "code": "saga-2024-12",
   "name": "Trophy Saga 2024 Dec",
   "modes": ["TrophySaga"],
+  "isActive": true,
   "scores": {  
     "PenaltyDeath": -30,
     "PenaltyLogout": -10,
@@ -174,6 +176,7 @@ Content-Type: application/json
   "code": "rush-2024-11",
   "name": "Trophy Rush 2024 Nov",
   "modes": ["TrophyRush"],
+  "isActive": true,
   "scores": {  
     "PenaltyDeath": -10,
     "PenaltyLogout": -5,

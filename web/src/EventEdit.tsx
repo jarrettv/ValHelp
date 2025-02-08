@@ -85,7 +85,7 @@ export default function EventEdit() {
 
   return (
     <section id="event-page">
-      <form className="competition" style={{maxWidth:'530px'}} onSubmit={handleSubmit}>
+      <form className="competition" style={{ maxWidth: '530px' }} onSubmit={handleSubmit}>
         {Number(id ?? 0) === 0 && (
           <div className="alert info">Odin thanks you for organizing a new event</div>
         )}
@@ -104,7 +104,7 @@ export default function EventEdit() {
         <input type="hidden" name="id" value={id ?? "0"} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
-            <label htmlFor="name">Name <small style={{opacity:0.6}}>(max 26 characters)</small></label>
+            <label htmlFor="name">Name <small style={{ opacity: 0.6 }}>(max 26 characters)</small></label>
             <input maxLength={26} style={{ width: '13rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
           </fieldset>
           <fieldset>
@@ -119,7 +119,7 @@ export default function EventEdit() {
                     <input type="radio" name="status" value="10" defaultChecked={data.status === 10} />
                     Ready
                   </label></>)}
-              {data.status >= 20 && (
+              {(data.status === 20 || data.status === 30) && (
                 <>
                   <label>
                     <input type="radio" name="status" value="20" defaultChecked={data.status === 20} />
@@ -129,6 +129,13 @@ export default function EventEdit() {
                     <input type="radio" name="status" value="30" defaultChecked={data.status === 30} />
                     Over
                   </label></>)}
+              {(data.status > 30) && (
+                <>
+                  <label>
+                    <input type="radio" name="status" value={data.status} defaultChecked={true} />
+                    Old/Deleted
+                  </label>
+                </>)}
 
             </div>
           </fieldset>
@@ -157,9 +164,9 @@ export default function EventEdit() {
           <fieldset>
             <label htmlFor="seed">Seed</label>
             <div>
-            <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
+              <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
             </div>
-            <div style={{maxWidth:'12rem',fontSize:'0.77rem',marginTop:'0.3rem',lineHeight:'0.8rem',color:'#999'}}>🎲 Use <code>(random)</code> to roll seed just before start</div>
+            <div style={{ maxWidth: '12rem', fontSize: '0.77rem', marginTop: '0.3rem', lineHeight: '0.8rem', color: '#999' }}>🎲 Use <code>(random)</code> to roll seed just before start</div>
           </fieldset>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
