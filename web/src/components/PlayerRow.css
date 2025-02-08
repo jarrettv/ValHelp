@@ -13,13 +13,20 @@
   color: #fff;
 }
 
-.player-row .player-info .player-name>a{
+.player-row .player-info a{
   margin:0;
   color: #fff9e4;
 }
-.player-row .player-info .player-name>a:hover{
+.player-row .player-info a:hover{
   color: gold;
 }
+
+@media (max-width: 560px) {
+  .player-row .player-info a>span {
+    display: none;
+  }
+}
+
 
 .player-avatar {
   width: 2rem;
