@@ -48,7 +48,7 @@ export default function Event() {
 
         {data.status === EventStatus.New && <Register eventId={data.id} player={(players ?? []).find(x => x.userId === status?.id)} />}
         <div className={data.status === EventStatus.Live ? "player-standings live" : "player-standings"}>
-            <PlayerStandings players={players ?? []} />
+            <PlayerStandings players={players ?? []} eventStatus={data.status} />
         </div>
         
         {players?.length === 0 && <div className="card">No players yet</div>}

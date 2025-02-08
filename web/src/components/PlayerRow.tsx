@@ -4,12 +4,15 @@ import "./PlayerRow.css";
 import { PlayerTrophy } from './PlayerTrophy';
 import { PlayerPenalty } from './PlayerPenalty';
 import { useAuth } from '../contexts/AuthContext';
+import Youtube from './Youtube';
+import Twitch from './Twitch';
 
 interface PlayerRowProps {
   player: Player;
+  mode: "info" | "logs" | "compact";
 }
 
-const PlayerRow: React.FC<PlayerRowProps> = ({ player }) => {
+const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
   const { status } = useAuth();
   const playerStatus = status?.id === player.userId ? "active" : "normal";
 
@@ -22,12 +25,20 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player }) => {
         <div className="player-name">{player.name}</div>
         <div className="player-score">{player.score}</div>
       </div>
-      <div className="player-logs">
+      {mode === "info" && <div className="player-info">
+        {player.logs.filter(log => log.code.startsWith("Stream")).map((log) => (
+          <div key={log.code}>
+            {log.code.startsWith("StreamYoutube") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Youtube width="30" height="30" style={{ verticalAlign: "middle" }} /> {log.code.split('=')[1].split(',')[0]}</a>}
+            {log.code.startsWith("StreamTwitch") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Twitch width="30" height="30" style={{ verticalAlign: "middle" }} /> {log.code.split('=')[1].split(',')[0]}</a>}
+          </div>
+        ))}
+      </div>}
+      {mode === "logs" && <div className="player-logs">
         {player.logs.map((log, index) =>
           log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
             log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
         )}
-      </div>
+      </div>}
     </div>
   );
 };
