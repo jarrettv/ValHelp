@@ -85,7 +85,7 @@ export default function EventEdit() {
 
   return (
     <section id="event-page">
-      <form className="competition" onSubmit={handleSubmit}>
+      <form className="competition" style={{maxWidth:'530px'}} onSubmit={handleSubmit}>
         {Number(id ?? 0) === 0 && (
           <div className="alert info">Odin thanks you for organizing a new event</div>
         )}

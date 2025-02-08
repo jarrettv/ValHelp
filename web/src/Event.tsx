@@ -23,7 +23,10 @@ export default function Event() {
     {!isPending && data && (
 
       <div className="competition">
-        { status?.isActive && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link></div>}
+        { (players ?? []).find(x => Math.abs(x.status) === 1) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        
+        <Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link>
+        </div>}
         <div style={{ display: "flex" }}>
           <Trophy style={{opacity:data.status === EventStatus.Draft ? 0.2 : 1}} />
           <div className="competition-info">

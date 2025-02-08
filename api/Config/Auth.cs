@@ -36,7 +36,7 @@ public static class Auth
             {
               DiscordId = discordUser.FindFirstValue(ClaimTypes.NameIdentifier)!,
               Username = discordUser.FindFirstValue(ClaimTypes.Name)!,
-              Email = discordUser.FindFirstValue(ClaimTypes.Email)!,
+              Email = discordUser.FindFirstValue(ClaimTypes.Email) ?? $"{discordUser.FindFirstValue(ClaimTypes.Name)}@valheim.help",
               CreatedAt = DateTime.UtcNow,
               UpdatedAt = DateTime.UtcNow,
               IsActive = true,

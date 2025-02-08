@@ -4,7 +4,7 @@
 }
 
 .player-row .player-info {
-  min-width: 16rem;
+  min-width: 15rem;
   display:flex;
   padding-right: 0.8rem;
 }

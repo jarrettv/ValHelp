@@ -148,7 +148,7 @@ public static class EventEndpoints
   public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status);
   public record EventResponse(int Id);
 
-  public static async Task<Results<NotFound, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
+  public static async Task<Results<NotFound, UnauthorizedHttpResult, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
     PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp)
   {
     var scoring = await db.Scorings
@@ -182,10 +182,18 @@ public static class EventEndpoints
     var now = DateTime.UtcNow;
     if (req.Id > 0)
     {
-      hunt = await db.Events.FindAsync(req.Id);
+      hunt = await db.Events
+        .Include(x => x.Players)
+        .FirstOrDefaultAsync(h => h.Id == req.Id);
       if (hunt == null)
       {
         return TypedResults.NotFound();
+      }
+      var authorized = userId == 1 || cp.IsInRole("admin") || 
+        hunt.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.AdminIn || x.Status == PlayerStatus.AdminOut));
+      if (!authorized)
+      {
+        return TypedResults.Unauthorized();
       }
     }
     else
