@@ -28,11 +28,12 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
       </div>
       {mode === "info" && <div className="player-info">
         {player.logs.filter(log => log.code.startsWith("Stream")).map((log) => (
-          <div key={log.code}>
-            {log.code.startsWith("StreamYoutube") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Youtube width="30" height="30" style={{ verticalAlign: "middle" }} /> {log.code.split('=')[1].split(',')[0]}</a>}
-            {log.code.startsWith("StreamTwitch") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Twitch width="30" height="30" style={{ verticalAlign: "middle" }} /> {log.code.split('=')[1].split(',')[0]}</a>}
+          <div key={log.code} style={{fontSize:'0.8rem'}}>
+            {log.code.startsWith("StreamYoutube") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Youtube width="30" height="30" style={{ verticalAlign: "middle", marginRight:'0.2rem' }} />{log.code.split('=')[1].split(',')[0]}</a>}
+            {log.code.startsWith("StreamTwitch") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Twitch width="30" height="30" style={{ verticalAlign: "middle", marginRight:'0.2rem' }} />{log.code.split('=')[1].split(',')[0]}</a>}
           </div>
         ))}
+        {player.logs.filter(log => log.code.startsWith("Stream")).length === 0 && player.stream.length > 5 && <a href={player.stream} target="_blank">Watch Stream</a>}
       </div>}
       {mode === "logs" && <div className="player-logs">
         {player.logs.map((log, index) =>

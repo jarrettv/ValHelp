@@ -9,7 +9,7 @@ interface PlayerStandingsProps {
 
 const PlayerStandings: React.FC<PlayerStandingsProps> = ({ players, eventStatus }) => {
   const sortedPlayers = players.sort((a, b) => b.score - a.score);
-  const mode = eventStatus === EventStatus.Live ? "logs" : "info";
+  const mode = eventStatus >= EventStatus.Live ? "logs" : "info";
 
   return (
     <div style={{marginTop:"1.4rem"}}>

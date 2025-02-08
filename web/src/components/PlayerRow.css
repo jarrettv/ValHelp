@@ -4,17 +4,17 @@
 }
 
 .player-row .player-info {
-  min-width: 15rem;
   display:flex;
   padding-right: 0.8rem;
 }
 
 .player-row .player-info .player-name {
-  font-weight: bold;
+  min-width: 11rem;
   color: #fff;
 }
 
 .player-row .player-info .player-name>a{
+  margin:0;
   color: #fff9e4;
 }
 .player-row .player-info .player-name>a:hover{
