@@ -18,12 +18,13 @@ export default function Event() {
   var { data: players } = usePlayers(parseInt(id!));
   const { status } = useAuth();
 
+
   return (<>
     {isPending && <div><Spinner /></div>}
     {!isPending && data && (
 
       <div className="competition">
-        { (players ?? []).filter(x => x.userId === status?.id && Math.abs(x.status) === 1) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        { data.isOwner && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
         
         <Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link>
         </div>}
@@ -41,6 +42,7 @@ export default function Event() {
           </div>
         </div>
         {data.status === EventStatus.Draft && <div className="status info">Draft events aren't visible until you mark them ready</div>}
+        {data.status === EventStatus.New && ((new Date(data.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 60) && <div className="status active">✨ Starting soon ✨</div>}
         {data.status === EventStatus.Live && <div className="status active">LIVE for another <TimeUntil targetTime={new Date(data.endAt)} />, data will refresh periodically</div>}
         {data.status >= EventStatus.Over && <div className="status">Ended <TimeAgo targetTime={new Date(data.endAt)} /> ago</div>}
 

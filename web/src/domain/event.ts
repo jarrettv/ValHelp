@@ -13,6 +13,7 @@ export interface Event {
   createdBy: string;
   updatedBy: string;
   updatedAt: Date;
+  isOwner: boolean;
 }
 
 export enum EventStatus {
@@ -42,10 +43,11 @@ export interface Player {
 }
 
 export enum PlayerStatus {
-  Registered = 0,
-  PlayerAdmin = 1,
-  NonPlayerAdmin = 2,
-  Disqualified = 10
+  PlayerOut = -2,
+  OwnerOut = -1,
+  PlayerIn = 0,
+  OwnerIn = 1,
+  Disqualified = -10
 }
 
 export interface EventRow {

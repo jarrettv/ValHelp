@@ -118,9 +118,9 @@ public record PlayerLog(string Code, DateTime At);
 public enum PlayerStatus // positive for in, negative for out
 {
   PlayerOut = -2,
-  AdminOut = -1,
+  OwnerOut = -1,
   PlayerIn = 0,
-  AdminIn = 1,
+  OwnerIn = 1,
   Disqualified = -10,
 }
 

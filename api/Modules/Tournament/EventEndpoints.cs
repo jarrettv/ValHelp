@@ -24,7 +24,7 @@ public static class EventEndpoints
     api.MapGet("", GetEvents);
   }
 
-  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players);
+  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string CreatedBy);
   public record EventRowPlayer(int Id, string Name, string AvatarUrl, int Score);
   public record EventsResponse(EventRow[] Data, int Total);
   public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db)
@@ -38,6 +38,7 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         h.Players.Where(x => x.Status >= 0).Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()
+        , h.CreatedBy
       ))
       .ToArrayAsync();
 
@@ -56,6 +57,7 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
+        , h.CreatedBy
       })
       .OrderBy(x => x.Status)
       .ThenByDescending(x => x.StartAt)
@@ -69,6 +71,7 @@ public static class EventEndpoints
       x.EndAt,
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
+      , x.CreatedBy
     )).ToArray(), rows.Length));
   }
 
@@ -84,6 +87,7 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
+        , h.CreatedBy
       })
       .OrderByDescending(x => x.StartAt)
       .Take(4)
@@ -97,6 +101,7 @@ public static class EventEndpoints
       x.EndAt,
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
+      , x.CreatedBy
     )).ToArray(), rows.Length));
   }
 
@@ -110,16 +115,18 @@ public static class EventEndpoints
 
     // TODO: get defaults from database
 
-    var nextSaturday = DateTime.UtcNow.AddDays(6 - (int)DateTime.UtcNow.DayOfWeek + 7).Date.AddHours(14);
-    var defaultDesc = "Best score wins! New game, fresh character, seed will be chosen 5 minutes before the event begins\n\nHOW TO BEGIN:\nCreate a new character\nHave the seed created and ready by :00 on the hour\nStart the world at :00 (don't preload the world)\n\nRules:\nUsing Valheim seed finder is not allowed\nNo stream sniping other competitors\nNo clipping\nNo console commands\nUsing /printseeds is banned.\nUsing /die is allowed (however -20 points)\nNo emote animation cancelling.\nIf PC crashes, you may relog in and continue just make sure to immediately restart stream\n\nMUST BE STREAMING (Visible gameplay + audio is required)\nPreferred Youtube/Twitch as livestreaming service.\nPlease turn on past broadcasting on twitch so we can review video if needed.\n\nPoint system (All trophies only count once) example: 37 deer trophies = 10 points";
-    var req = new EventRequest(0, "New Tournament", defaultDesc, "TrophyHunt", "hunt-2024-11",
+    var nextSaturday = DateTime.Today.AddDays(6 - (int)DateTime.UtcNow.DayOfWeek + 7).AddHours(14);
+    var defaultDesc = "Best score wins! New game, fresh character, seed will be chosen 5 minutes before the event begins\n\nHOW TO BEGIN:\nCreate a new character\nHave the seed created and ready by :00 on the hour\nStart the world at :00 (don't preload the world)\n\nRules:\nUsing Valheim seed finder is not allowed\nNo stream sniping other competitors\nNo clipping\nNo console commands\nUsing /printseeds is banned\nUsing /die is allowed (however -20 points)\nNo emote animation cancelling\nIf PC crashes, you may relog in and continue just make sure to immediately restart stream\n\nMUST BE STREAMING (Visible gameplay + audio is required)\nPreferred Youtube/Twitch as livestreaming service\nPlease turn on past broadcasting on twitch so we can review video if needed.\n\nPoint system (All trophies only count once) example: 37 deer trophies = 10 points";
+    var req = new EventRequest(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11",
       nextSaturday, 4, "(random)", (int)EventStatus.Draft);
     return TypedResults.Ok(req);
   }
 
-  public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours, string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt);
-  public static async Task<Results<NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db)
+  public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours, string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, bool IsOwner);
+  public static async Task<Results<NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, ClaimsPrincipal cp)
   {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
     var hunt = await db.Events
       .Where(h => h.Id == id)
       .Select(h => new EventDetails(
@@ -135,13 +142,14 @@ public static class EventEndpoints
         (int)h.Status,
         h.CreatedBy,
         h.UpdatedBy,
-        h.UpdatedAt
-      ))
-      .FirstOrDefaultAsync();
+        h.UpdatedAt,
+        h.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.OwnerIn || x.Status == PlayerStatus.OwnerOut))
+      )).FirstOrDefaultAsync();
     if (hunt == null)
     {
       return TypedResults.NotFound();
     }
+
     return TypedResults.Ok(hunt);
   }
 
@@ -190,7 +198,7 @@ public static class EventEndpoints
         return TypedResults.NotFound();
       }
       var authorized = userId == 1 || cp.IsInRole("admin") || 
-        hunt.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.AdminIn || x.Status == PlayerStatus.AdminOut));
+        hunt.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.OwnerIn || x.Status == PlayerStatus.OwnerOut));
       if (!authorized)
       {
         return TypedResults.Unauthorized();
@@ -202,7 +210,7 @@ public static class EventEndpoints
       hunt.CreatedAt = now;
       hunt.CreatedBy = user!.Username;
       hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl, 
-        Status = PlayerStatus.AdminIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
+        Status = PlayerStatus.OwnerIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
       db.Events.Add(hunt);
     }
 
@@ -262,9 +270,9 @@ public static class EventEndpoints
     player.Name = req.Name;
     player.Stream = req.Stream ?? player.Stream ?? "N/A";
       
-    if (player.Status == PlayerStatus.AdminIn || player.Status == PlayerStatus.AdminOut)
+    if (player.Status == PlayerStatus.OwnerIn || player.Status == PlayerStatus.OwnerOut)
     {
-      player.Status = req.In == "on" ? PlayerStatus.AdminIn : PlayerStatus.AdminOut;
+      player.Status = req.In == "on" ? PlayerStatus.OwnerIn : PlayerStatus.OwnerOut;
     }
     else
     {

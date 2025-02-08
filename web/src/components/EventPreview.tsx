@@ -22,14 +22,14 @@ export default function EventPreview({ event }: EventPreviewProps) {
       <div style={{ display: "flex" }}>
         <Trophy />
         <div className="competition-info">
-          <h3>{event.name} <small>by Archy</small></h3>
+          <h3>{event.name} <small>by {event.createdBy}</small></h3>
           <div className="timing">{new Date(event.startAt).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })} {new Date(event.startAt).toLocaleTimeString().replace(':00:00 ', '').toLowerCase()}-{new Date(event.endAt).toLocaleTimeString().replace(':00:00 ', '').toLowerCase()}</div>
         </div>
         <Link to={`/events/${event.id}`}>View</Link>
       </div>
       {isStartingSoon && <div className="status active">✨ Starting soon ✨</div>}
       <div style={{ display: "flex", alignItems: "center", margin: "0.3rem 0 0 3rem" }}>
-        {event.players.slice(0, 5).map(player => (
+        {event.players.map(player => (
           <img
             key={player.id}
             src={player.avatarUrl}

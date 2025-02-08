@@ -12,6 +12,7 @@ export interface EventRow {
   endAt: Date;
   status: EventStatus;
   players: EventRowPlayer[];
+  createdBy: string;
 }
 
 export interface EventRowPlayer {
