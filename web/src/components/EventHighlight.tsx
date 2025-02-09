@@ -19,7 +19,7 @@ export default function EventHighlight({ event }: EventHighlightProps) {
   };
 
   return (
-    <div className="competition">
+    <div className="competition row">
       <div style={{ display: "flex" }}>
         <Trophy />
         <div className="competition-info">

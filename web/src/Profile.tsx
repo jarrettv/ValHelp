@@ -47,7 +47,7 @@ export default function Profile() {
           <img src={data.avatarUrl} alt="Avatar" width="100%" />
         </div>
         <div className="profile">
-          <h2>{data.username}</h2>
+          <h3>{data.username}</h3>
           <div style={{ opacity: 0.7 }}>{data.discordId}</div>
         </div>
         <div>
@@ -59,7 +59,7 @@ export default function Profile() {
           </a>
         </div>
       </div>
-      <form className="competition" onSubmit={handleSubmit}>
+      <form className="area" onSubmit={handleSubmit}>
         {mutation.isSuccess && (
           <div className="alert success" onClick={() => mutation.reset()}>✅ Profile updated</div>
         )}

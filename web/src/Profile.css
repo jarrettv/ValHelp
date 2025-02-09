@@ -4,7 +4,11 @@
   align-items: center;
 }
 
-#profile-page h2 {
+#profile-page .area {
+  max-width: 400px;;
+}
+
+#profile-page h3 {
   color: #7289DA;
   line-height: 1rem;
   margin: 0.4rem 0;

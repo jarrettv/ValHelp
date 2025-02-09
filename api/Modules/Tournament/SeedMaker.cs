@@ -62,7 +62,7 @@ public class SeedMaker : BackgroundService
   private static string RandomString(int length)
   {
     // TODO: prevent bad words
-    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+    const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     var random = new Random();
     return new string(Enumerable.Repeat(chars, length)
       .Select(s => s[random.Next(s.Length)]).ToArray());

@@ -33,7 +33,7 @@ app.UseCors("AllowLocalhost5173");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
-app.UseFileServer();
+app.MapStaticAssets();
 
 if (app.Environment.IsDevelopment())
 {

@@ -8,6 +8,6 @@
 }
 
 .event-standings>div:nth-child(even) {
-  background-color: #0002;
-  border-radius:4px;
+  background-color: #0001;
+  box-shadow: 1rem 0 #0001, -1rem 0 #0001;
 }

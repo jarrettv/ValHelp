@@ -19,7 +19,7 @@ export default function EventPreview({ event }: EventPreviewProps) {
   }, [event.startAt]);
   
   return (
-    <div className="competition">
+    <div className="competition row">
       <div style={{ display: "flex" }}>
         <Trophy />
         <div className="competition-info">
