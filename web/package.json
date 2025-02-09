@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "postbuild": "xcopy dist ..\\api\\wwwroot\\ /s /y",
     "lint": "eslint .",
     "preview": "vite preview"
   },
