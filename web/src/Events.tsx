@@ -1,6 +1,6 @@
 import EventPreview from "./components/EventPreview";
 import EventHighlight from "./components/EventHighlight";
-import "./Home.css"
+import "./Events.css"
 import { useEvents } from "./hooks/useEvents";
 import { EventStatus } from "./domain/event";
 

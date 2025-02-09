@@ -1,0 +1,13 @@
+
+.event-standings{
+  margin-top: 0.8rem;
+}
+
+.competition.live .event-standings {
+  animation: pulse 5s ease-in-out infinite;
+}
+
+.event-standings>div:nth-child(even) {
+  background-color: #0002;
+  border-radius:4px;
+}

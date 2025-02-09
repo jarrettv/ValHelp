@@ -1,11 +1,28 @@
 .player-row {
   display: flex;
-  margin-bottom: 0.5rem;
+  padding: 0.4rem 0.2rem;
+  justify-content: space-between;
 }
 
 .player-row .player-info {
   display:flex;
   padding-right: 0.8rem;
+}
+
+@media (max-width: 560px) {
+  .player-row {
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-bottom: 0.2rem;
+  }
+  .player-row .player-logs {
+    padding-left:3rem;
+    padding-right:3rem;
+  }
+  .player-row .player-score {
+    flex:1;
+  text-align: right;
+  }
 }
 
 .player-row .player-info .player-name {
@@ -58,19 +75,17 @@
 .player-row .player-logs {
   display: flex;
   flex-wrap: wrap;
+  padding-right: 0.6rem;
 }
 .player-row .player-logs img {
-  border: 2px solid #fff5;
+  outline: 2px solid #fff5;
+  outline-offset:-2px;
   border-radius: 50%;
   background-color: #3f4247;
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 2.2rem;
+  height: 2.2rem;
   margin-right: -0.7rem;
   margin-bottom: -0.7rem;
-}
-
-.player-standings.live {
-  animation: pulse 5s ease-in-out infinite;
 }
 
 @keyframes pulse {

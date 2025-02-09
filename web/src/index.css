@@ -31,6 +31,15 @@ body {
   min-height: 100vh;
 }
 
+h2 {
+  text-align: center;
+  font-family: Norse;
+  font-size: 3rem;
+  font-weight: normal;
+  margin: 0.5rem 0;
+  filter: brightness(0.8);
+}
+
 
 main {
   display: grid;
@@ -67,6 +76,7 @@ header img {
 }
 
 header h1 {
+  font-family: Norse;
   margin: 0.3rem 0 0.3rem 2rem;
   font-size: 2rem;
   font-weight: normal;
@@ -118,6 +128,12 @@ section.loading {
   border-radius: 1rem;
   padding: 1.4rem 2rem;
   background-color: #7289DA22;
+}
+
+.trophy-icon {
+  margin-top: 0.5rem;
+  width:2.8rem;
+  vertical-align: middle;
 }
 
 .alert {
@@ -186,4 +202,17 @@ form .radio-group label {
 
 form .radio-group input[type="radio"] {
   accent-color: #7289DA;
+}
+
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }

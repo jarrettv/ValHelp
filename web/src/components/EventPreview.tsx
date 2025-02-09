@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import Trophy from "./Trophy";
 import { EventRow } from "../hooks/useEvents";
 import { useEffect, useState } from "react";
+import { getFriendlyDateRange, getShortDateRange } from "../utils/date";
 
 interface EventPreviewProps {
   event: EventRow;
@@ -23,7 +24,12 @@ export default function EventPreview({ event }: EventPreviewProps) {
         <Trophy />
         <div className="competition-info">
           <h3>{event.name} <small>by {event.createdBy}</small></h3>
-          <div className="timing">{new Date(event.startAt).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })} {new Date(event.startAt).toLocaleTimeString().replace(':00:00 ', '').toLowerCase()}-{new Date(event.endAt).toLocaleTimeString().replace(':00:00 ', '').toLowerCase()}</div>
+          <div className="timing wide">
+            {getFriendlyDateRange(new Date(event.startAt), new Date(event.endAt))}
+          </div>
+          <div className="timing mobile">
+            {getShortDateRange(new Date(event.startAt), new Date(event.endAt))}
+          </div>
         </div>
         <Link to={`/events/${event.id}`}>View</Link>
       </div>

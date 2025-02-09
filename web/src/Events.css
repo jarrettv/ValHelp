@@ -1,0 +1,101 @@
+
+.competition {
+  margin: 1rem auto;
+  min-width: 360px;
+  max-width: 620px;
+  background-color: #7289DA22;
+  border-radius: 0.4rem;
+  padding: 0.4rem 1rem;
+}
+.competition.empty {
+  color: #fff5;
+}
+.competition a {
+  color: #7289DA;
+  margin: 0.8rem 0.3rem;
+}
+button.link {
+  background-color: #7289DA77;
+  color:white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+button.link:hover {
+  background-color: #5b6eae;
+  transition: background-color 0.3s ease;
+}
+.competition h3 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+.competition-info {
+  padding-left:0.7rem;
+  flex:1;
+}
+
+.competition h3>small {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  font-weight: normal;
+  opacity: 0.6;
+}
+
+@media (max-width: 780px) {
+  .competition h3>small {
+    display: none;
+  }
+}
+
+.competition .timing {
+  margin-top: -0.8rem;
+  opacity: 0.8;
+}
+.competition .timing.mobile {
+  display: none;
+}
+
+@media (max-width: 500px) {
+  .competition .timing.mobile { display: block;}
+  .competition .timing.wide { display: none;}
+}
+
+.competition .status {
+  background-color: #a2c6ff28;
+  color: rgb(173, 224, 255);
+  padding: 0.3rem 1rem;
+  border-radius: 0.4rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.competition .status.active {
+  background-color: #fff1a228;
+  color: gold;
+  animation: fadeInOut 3s linear 10 forwards;
+}
+
+.competition .seed {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.register-button {
+  background-color: #7289DA77;
+  color:white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+  background-color: #5b6eae;
+}
