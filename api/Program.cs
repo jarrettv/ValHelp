@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddAuth();
 builder.AddDatabase();
+builder.Services.AddHybridCache();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());

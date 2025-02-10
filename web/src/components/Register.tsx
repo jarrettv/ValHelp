@@ -31,7 +31,7 @@ export default function Register({ eventId, player }: RegisterProps) {
         var problem = await response.json();
         throw new Error(problem.detail);
       } else {
-        queryClient.invalidateQueries({ queryKey: ['event-players', eventId] });
+        queryClient.invalidateQueries({ queryKey: ['event', eventId] });
         setShowForm(false);
       }
     },

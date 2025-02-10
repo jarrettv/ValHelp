@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using ValHelpApi.Config;
 
 namespace ValHelpApi.Modules.Tournament;
@@ -36,6 +37,7 @@ public class SeedMaker : BackgroundService
     using (var scope = _serviceProvider.CreateScope())
     {
       var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+      var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
       var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(5);
       var events = await db.Events
         .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
@@ -53,9 +55,11 @@ public class SeedMaker : BackgroundService
           _ => "run"
         };
         ev.Seed = $"{abbr}{RandomString(6)}";
+        ev.UpdatedAt = DateTime.UtcNow;
         _logger.LogInformation("Event {eventId} has a new random seed {seed}", ev.Id, ev.Seed);
+        await db.SaveChangesAsync();
+        await cache.RemoveAsync($"event-{ev.Id}");
       }
-      await db.SaveChangesAsync();
     }
   }
 

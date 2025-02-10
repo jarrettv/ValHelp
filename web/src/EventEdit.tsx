@@ -63,7 +63,7 @@ export default function EventEdit() {
     mutation.mutate(formObject as any);
   };
 
-  const canDelete = status!.id === 1;
+  const canDelete = status?.id === 1;
 
   const onDelete = async () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
@@ -74,7 +74,8 @@ export default function EventEdit() {
         queryClient.invalidateQueries({ queryKey: ['event', id] });
         return navigate(`/events/all`);
       } else {
-        alert("Failed to delete event");
+        var problem = await response.json();
+        alert(problem.title);
       }
     }
   };
@@ -105,7 +106,7 @@ export default function EventEdit() {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
             <label htmlFor="name">Name <small style={{ opacity: 0.6 }}>(max 26 characters)</small></label>
-            <input maxLength={26} style={{ width: '13rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
+            <input maxLength={26} style={{ width: '11rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
           </fieldset>
           <fieldset>
             <div className="radio-group">
@@ -185,6 +186,7 @@ export default function EventEdit() {
         </fieldset>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {canDelete && <button type="button" style={{ backgroundColor: '#882222', width: '6rem', marginRight: '2rem' }} onClick={() => onDelete()}>Delete</button>}
+          <button className="link" style={{width:"8rem", marginRight:"2rem"}} onClick={() => navigate(`/events/${data.id}`)}>Cancel</button>
           <button type="submit">Save</button>
         </div>
       </form>

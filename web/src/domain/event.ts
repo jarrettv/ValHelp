@@ -13,7 +13,7 @@ export interface Event {
   createdBy: string;
   updatedBy: string;
   updatedAt: Date;
-  isOwner: boolean;
+  players: Player[];
 }
 
 export enum EventStatus {

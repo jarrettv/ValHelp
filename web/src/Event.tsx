@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router";
-import { useActiveEvent, usePlayers } from "./hooks/useEvent";
+import { useActiveEvent } from "./hooks/useEvent";
 import Spinner from "./components/Spinner";
 import Trophy from "./components/Trophy";
 import TimeUntil from "./components/TimeUntil";
@@ -15,7 +15,6 @@ import { Event as Ev, EventStatus } from "./domain/event";
 export default function Event() {
   const { id } = useParams();
   var { data, isPending } = useActiveEvent(parseInt(id!));
-  var { data: players } = usePlayers(parseInt(id!));
   const { status } = useAuth();
 
   return (<>
@@ -23,7 +22,7 @@ export default function Event() {
     {!isPending && data && (
 
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>
-        { data.isOwner && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        { data.players.find(x => x.userId == status?.id) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
         
         <Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link>
         </div>}
@@ -45,11 +44,11 @@ export default function Event() {
         </div>
         <EventStatusArea event={data} />
         
-        {data.status === EventStatus.New && <Register eventId={data.id} player={(players ?? []).find(x => x.userId === status?.id)} />}
+        {data.status === EventStatus.New && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
 
-        <EventStandings players={players ?? []} eventStatus={data.status} />
+        <EventStandings players={data.players} eventStatus={data.status} />
 
-        {players?.length === 0 && <div className="card">No players yet</div>}
+        {data.players.length === 0 && <div className="card">No players yet</div>}
         <p>
           {data.desc.split('\n').map((item, idx) => (
             <React.Fragment key={idx}>
@@ -73,11 +72,15 @@ function EventStatusArea({ event }: { event: Ev}) {
     const random = ev.seed === "(random)";
     const soon = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 60;
     const lessThan5m = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 5;
+    const started = new Date().getTime() > new Date(ev.startAt).getTime();
 
-    if (ev.status === EventStatus.New && soon && !random && lessThan5m) return "seed";
+
+    if (ev.status === EventStatus.New && started && !random) return "start";
+    if (ev.status === EventStatus.New && lessThan5m && !random) return "seed";
+    if (ev.status === EventStatus.New && lessThan5m && random) return "roll";
     if (ev.status === EventStatus.New && soon && random) return "rand";
     if (ev.status === EventStatus.New && soon) return "soon";
-    if (ev.status === EventStatus.New) return "new";
+    if (ev.status === EventStatus.New) return "wait";
 
     if (ev.status === EventStatus.Live) return "live";
     if (ev.status === EventStatus.Over) return "over";
@@ -89,12 +92,14 @@ function EventStatusArea({ event }: { event: Ev}) {
   return (
     <>
       {state === "draft" && <div className="status info">Draft events aren't visible until you mark them ready</div>}
-      {state === "seed" && <div className="status active">✨ Starting soon ✨ Seed is {event.seed}</div>}
-      {state === "rand" && <div className="status active">✨ Starting soon ✨ Seed roll in <TimeUntil targetTime={new Date(new Date(event.startAt).getTime() - 1000 * 60 * 5)} /> ✨</div>}
-      {state === "seed" && <div className="status active">✨ Starting in {event.seed} ✨</div>}
+      {state === "wait" && <div className="status info">Event scheduled <TimeUntil targetTime={new Date(event.endAt)} /> from now</div>}
+      {state === "rand" && <div className="status active">✨ Seed will roll in <TimeUntil targetTime={new Date(new Date(event.startAt).getTime() - 1000 * 60 * 5)} /> ✨</div>}
+      {state === "roll" && <div className="status active">✨ Rolling a random seed... ✨</div>}
+      {state === "seed" && <div className="status active">✨ Seed available, starting in <TimeUntil targetTime={new Date(event.startAt)} /> ✨</div>}
+      {state === "soon" && <div className="status active">✨ Starting in <TimeUntil targetTime={new Date(event.startAt)} />✨</div>}
+      {state === "start" && <div className="status active">✨ Starting NOW ✨</div>}
       {state === "live" && <div className="status active">LIVE for another <TimeUntil targetTime={new Date(event.endAt)} /></div>}
-      {state === "new" && <div className="status info">Event doesn't start for another <TimeUntil targetTime={new Date(event.endAt)} /></div>}
-      {state === "over" && <div className="status info">Ended <TimeAgo targetTime={new Date(event.endAt)} /> ago</div>}
+      {state === "over" && <div className="status info">Event ended <TimeAgo targetTime={new Date(event.endAt)} /> ago</div>}
       {state === "old" && <div className="status info">Event ended a long time ago</div>}
     </>
   );

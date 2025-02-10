@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using ValHelpApi.Config;
 
 namespace ValHelpApi.Modules.Tournament;
@@ -36,6 +37,7 @@ public class StatusUpdater : BackgroundService
     using (var scope = _serviceProvider.CreateScope())
     {
       var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+      var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
       var hunts = await db.Events
         .Where(h => h.Status < EventStatus.Over && h.Status >= EventStatus.New)
         .ToListAsync();
@@ -46,18 +48,21 @@ public class StatusUpdater : BackgroundService
         {
           hunt.Status = EventStatus.Over;
           _logger.LogInformation("Event {eventId} is now over", hunt.Id);
+          await db.SaveChangesAsync();
+          await cache.RemoveAsync($"event-{hunt.Id}");
         }
         else if (hunt.Status == EventStatus.New && hunt.StartAt < DateTime.UtcNow)
         {
           hunt.Status = EventStatus.Live;
           _logger.LogInformation("Event {eventId} is now live", hunt.Id);
+          await db.SaveChangesAsync();
+          await cache.RemoveAsync($"event-{hunt.Id}");
         }
         else
         {
           _logger.LogDebug("Event {eventId} status is unchanged", hunt.Id);
         }
       }
-      await db.SaveChangesAsync();
     }
   }
 }

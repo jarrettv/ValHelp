@@ -1,12 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { Event, Player } from '../domain/event';
+import { Event } from '../domain/event';
 
 const fetchEvent = async (id: number): Promise<Event> => {
-  const response = await fetch(`/api/events/${id}`);
+  const response = await fetch(`/api/events/${id}`,
+    {
+      headers: {
+        "If-None-Match": localStorage.getItem(`etag-${id}`) || ""
+      }
+    }
+  );
+  if (response.status === 304) {
+    var json = localStorage.getItem(`event-${id}`);
+    return JSON.parse(json!) as Event;
+  }
   if (!response.ok) {
     throw new Error('Failed to fetch event details');
   }
-  return response.json();
+  const data = await response.json();
+  const newEtag = response.headers.get("ETag");
+  if (newEtag) {
+    localStorage.setItem(`etag-${id}`, newEtag);
+    localStorage.setItem(`event-${id}`, JSON.stringify(data));
+  }
+  return data;
 };
 
 export const useEvent = (id: number) => {
@@ -14,17 +30,17 @@ export const useEvent = (id: number) => {
 };
 
 export const useActiveEvent = (id: number) => {
-  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), staleTime: 10000, refetchInterval: 30000 });
+  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval: 5000 });
 };
 
-const fetchPlayers = async (id: number): Promise<Player[]> => {
-  const response = await fetch(`/api/events/${id}/players`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch event players');
-  }
-  return response.json();
-};
+// const fetchPlayers = async (id: number): Promise<Player[]> => {
+//   const response = await fetch(`/api/events/${id}/players`);
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch event players');
+//   }
+//   return response.json();
+// };
 
-export const usePlayers = (id: number) => {
-  return useQuery({ queryKey: ['event-players', id], queryFn: () => fetchPlayers(id), refetchInterval: 5000 });
-};
+// export const usePlayers = (id: number) => {
+//   return useQuery({ queryKey: ['event-players', id], queryFn: () => fetchPlayers(id), refetchInterval: 5000 });
+// };

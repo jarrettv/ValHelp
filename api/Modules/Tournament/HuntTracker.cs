@@ -1,5 +1,6 @@
 using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using OpenTelemetry.Trace;
 using ValHelpApi.Config;
 
@@ -78,5 +79,8 @@ public class HuntTracker : BackgroundService
 
     player.Update(hunt.CreatedAt, hunt.CurrentScore, hunt.Trophies, hunt.Deaths, hunt.Logouts);
     await db.SaveChangesAsync(stoppingToken);
+    
+    var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
+    await cache.RemoveAsync($"event-{liveEventId}");
   }
 }

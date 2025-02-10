@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using ValHelpApi.Config;
 
 namespace ValHelpApi.Modules.Tournament;
@@ -19,6 +20,7 @@ public static class EventEndpoints
     api.MapGet("latest", GetEventsLatest);
     api.MapGet("upcoming", GetEventsUpcoming);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
+    api.MapDelete("{id:int}", DeleteEvent).RequireAuthorization();
     api.MapPost("{id:int}/players", PostPlayer).RequireAuthorization();
     api.MapGet("{id:int}/players", GetPlayers);
     api.MapGet("", GetEvents);
@@ -57,7 +59,8 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
-        , h.CreatedBy
+        ,
+        h.CreatedBy
       })
       .OrderBy(x => x.Status)
       .ThenByDescending(x => x.StartAt)
@@ -87,7 +90,8 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
-        , h.CreatedBy
+        ,
+        h.CreatedBy
       })
       .OrderByDescending(x => x.StartAt)
       .Take(4)
@@ -122,42 +126,77 @@ public static class EventEndpoints
     return TypedResults.Ok(req);
   }
 
-  public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours, string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, bool IsOwner);
-  public static async Task<Results<NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, ClaimsPrincipal cp)
+  public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,
+    string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, EventPlayersRow[] Players);
+  public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx, 
+    ClaimsPrincipal cp, HybridCache cache, CancellationToken token)
   {
-    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+    //var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-    var hunt = await db.Events
-      .Where(h => h.Id == id)
-      .Select(h => new EventDetails(
-        h.Id,
-        h.Name,
-        h.Desc,
-        h.Mode,
-        h.Scoring.Scores,
-        h.StartAt,
-        h.EndAt,
-        h.Hours,
-        h.Seed,
-        (int)h.Status,
-        h.CreatedBy,
-        h.UpdatedBy,
-        h.UpdatedAt,
-        h.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.OwnerIn || x.Status == PlayerStatus.OwnerOut))
-      )).FirstOrDefaultAsync();
+    var hunt = await cache.GetOrCreateAsync($"event-{id}", async cancel => await GetEventFromDatabase(id, db, cancel), cancellationToken: token);
+
     if (hunt == null)
     {
       return TypedResults.NotFound();
     }
 
+    var etag = ctx.Request.Headers.IfNoneMatch.FirstOrDefault();
+    DateTime? updatedAt = null;
+    if (!string.IsNullOrWhiteSpace(etag))
+    {
+      updatedAt = DateTime.Parse(etag, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    }
+
+    var maxPlayerUpdatedAt = hunt.Players.Max(p => p.UpdatedAt);
+    var maxUpdatedAt = hunt.UpdatedAt > maxPlayerUpdatedAt ? hunt.UpdatedAt : maxPlayerUpdatedAt;
+    if (updatedAt != null && maxUpdatedAt == updatedAt)
+    {
+      return TypedResults.StatusCode(StatusCodes.Status304NotModified);
+    }
+
+    ctx.Response.Headers.ETag = maxUpdatedAt.ToString("O");
     return TypedResults.Ok(hunt);
+  }
+
+  private static async Task<EventDetails?> GetEventFromDatabase(int id, AppDbContext db, CancellationToken token)
+  {
+    return await db.Events
+        .Where(h => h.Id == id)
+        //.Where(h => updatedAt == null || h.UpdatedAt > updatedAt)
+        .Where(h => h.Status < EventStatus.Deleted)
+        .Select(h => new EventDetails(
+          h.Id,
+          h.Name,
+          h.Desc,
+          h.Mode,
+          h.Scoring.Scores,
+          h.StartAt,
+          h.EndAt,
+          h.Hours,
+          h.Seed,
+          (int)h.Status,
+          h.CreatedBy,
+          h.UpdatedBy,
+          h.UpdatedAt,
+          h.Players.Select(hp => new EventPlayersRow(
+          hp.UserId,
+          hp.Name,
+          hp.AvatarUrl,
+          hp.Status,
+          hp.Score,
+          hp.Stream,
+          hp.UpdatedAt,
+          hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+        )).ToArray()
+
+        )).FirstOrDefaultAsync(token);
   }
 
   public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status);
   public record EventResponse(int Id);
 
   public static async Task<Results<NotFound, UnauthorizedHttpResult, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
-    PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp)
+    PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
   {
     var scoring = await db.Scorings
       .Where(s => s.IsActive)
@@ -197,7 +236,7 @@ public static class EventEndpoints
       {
         return TypedResults.NotFound();
       }
-      var authorized = userId == 1 || cp.IsInRole("admin") || 
+      var authorized = userId == 1 || cp.IsInRole("admin") ||
         hunt.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.OwnerIn || x.Status == PlayerStatus.OwnerOut));
       if (!authorized)
       {
@@ -209,7 +248,7 @@ public static class EventEndpoints
       hunt = new Event();
       hunt.CreatedAt = now;
       hunt.CreatedBy = user!.Username;
-      hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl, 
+      hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl,
         Status = PlayerStatus.OwnerIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
       db.Events.Add(hunt);
     }
@@ -227,6 +266,7 @@ public static class EventEndpoints
     hunt.UpdatedAt = now;
     hunt.UpdatedBy = user!.Username;
     await db.SaveChangesAsync();
+    await cache.RemoveAsync($"event-{hunt.Id}");
 
     var resp = new EventResponse(hunt.Id);
     if (hunt.CreatedAt == now)
@@ -239,10 +279,47 @@ public static class EventEndpoints
     }
   }
 
+  public static async Task<Results<UnauthorizedHttpResult, ValidationProblem, Ok, NotFound>> DeleteEvent(int id, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
+  {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var user = await db.Users.FindAsync(userId);
+
+    var hunt = await db.Events
+      .Include(x => x.Players)
+      .FirstOrDefaultAsync(h => h.Id == id);
+    if (hunt == null)
+    {
+      return TypedResults.NotFound();
+    }
+
+    var authorized = userId == 1 || cp.IsInRole("admin") ||
+      hunt.Players.Any(x => x.UserId == userId && (x.Status == PlayerStatus.OwnerIn || x.Status == PlayerStatus.OwnerOut));
+    if (!authorized)
+    {
+      return TypedResults.Unauthorized();
+    }
+
+    if (hunt.Status == EventStatus.Live)
+    {
+      return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+      {
+        { "status", new[] { "Cannot delete a live event" } }
+      }, title: "Cannot delete a live event");
+    }
+
+    hunt.Status = EventStatus.Deleted;
+    hunt.UpdatedAt = DateTime.UtcNow;
+    hunt.UpdatedBy = user!.Username;
+    await db.SaveChangesAsync();
+    await cache.RemoveAsync($"event-{hunt.Id}");
+
+    return TypedResults.Ok();
+  }
+
   public record PlayerLogRow(string Code, DateTime At);
   public record PlayerReq(int UserId, string Name, string Stream, string In);
   public record PlayerResp(int EventId, int UserId, string Name, string AvatarUrl, string Stream, int Score, PlayerLogRow[] logs, DateTime UpdatedAt);
-  private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp)
+  private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
   {
     // TODO: Validate request
     var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -269,7 +346,7 @@ public static class EventEndpoints
 
     player.Name = req.Name;
     player.Stream = req.Stream ?? player.Stream ?? "N/A";
-      
+
     if (player.Status == PlayerStatus.OwnerIn || player.Status == PlayerStatus.OwnerOut)
     {
       player.Status = req.In == "on" ? PlayerStatus.OwnerIn : PlayerStatus.OwnerOut;
@@ -281,13 +358,14 @@ public static class EventEndpoints
 
     player.UpdatedAt = DateTime.UtcNow;
     await db.SaveChangesAsync();
+    await cache.RemoveAsync($"event-{id}");
 
     var resp = new PlayerResp(id, req.UserId, player.Name, player.AvatarUrl, player.Stream, player.Score,
       player.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray(), player.UpdatedAt);
     return TypedResults.Ok(resp);
   }
 
-  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, string Stream, PlayerLogRow[] logs);
+  public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, string Stream, DateTime UpdatedAt, PlayerLogRow[] logs);
   private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
   {
     var players = await db.Players
@@ -299,6 +377,7 @@ public static class EventEndpoints
         hp.Status,
         hp.Score,
         hp.Stream,
+        hp.UpdatedAt,
         hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
       ))
       .ToArrayAsync();
