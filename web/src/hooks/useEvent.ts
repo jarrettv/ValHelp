@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Event } from '../domain/event';
+import { Event, EventStatus } from '../domain/event';
 
 const fetchEvent = async (id: number): Promise<Event> => {
   const response = await fetch(`/api/events/${id}`,
@@ -26,11 +26,12 @@ const fetchEvent = async (id: number): Promise<Event> => {
 };
 
 export const useEvent = (id: number) => {
-  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id) });
-};
-
-export const useActiveEvent = (id: number) => {
-  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval: 5000 });
+  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval(query) {
+    if (query.state.data && query.state.data?.status <= EventStatus.Live) {
+      return 5000;
+    }
+    return false;
+  } });
 };
 
 // const fetchPlayers = async (id: number): Promise<Player[]> => {

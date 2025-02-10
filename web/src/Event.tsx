@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router";
-import { useActiveEvent } from "./hooks/useEvent";
+import { useEvent } from "./hooks/useEvent";
 import Spinner from "./components/Spinner";
 import Trophy from "./components/Trophy";
 import TimeUntil from "./components/TimeUntil";
@@ -14,7 +14,7 @@ import { Event as Ev, EventStatus } from "./domain/event";
 
 export default function Event() {
   const { id } = useParams();
-  var { data, isPending } = useActiveEvent(parseInt(id!));
+  var { data, isPending } = useEvent(parseInt(id!));
   const { status } = useAuth();
 
   return (<>
