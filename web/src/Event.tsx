@@ -74,7 +74,6 @@ function EventStatusArea({ event }: { event: Ev}) {
     const lessThan5m = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 5;
     const started = new Date().getTime() > new Date(ev.startAt).getTime();
 
-
     if (ev.status === EventStatus.New && started && !random) return "start";
     if (ev.status === EventStatus.New && lessThan5m && !random) return "seed";
     if (ev.status === EventStatus.New && lessThan5m && random) return "roll";
@@ -87,7 +86,16 @@ function EventStatusArea({ event }: { event: Ev}) {
 
     return "old";
   }
-  const state = calcState(event);
+
+  const [state, setState] = React.useState(calcState(event));
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setState(calcState(event));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [event]);
 
   return (
     <>
@@ -96,7 +104,7 @@ function EventStatusArea({ event }: { event: Ev}) {
       {state === "rand" && <div className="status active">✨ Seed will roll in <TimeUntil targetTime={new Date(new Date(event.startAt).getTime() - 1000 * 60 * 5)} /> ✨</div>}
       {state === "roll" && <div className="status active">✨ Rolling a random seed... ✨</div>}
       {state === "seed" && <div className="status active">✨ Seed available, starting in <TimeUntil targetTime={new Date(event.startAt)} /> ✨</div>}
-      {state === "soon" && <div className="status active">✨ Starting in <TimeUntil targetTime={new Date(event.startAt)} />✨</div>}
+      {state === "soon" && <div className="status active">✨ Starting in <TimeUntil targetTime={new Date(event.startAt)} /> ✨</div>}
       {state === "start" && <div className="status active">✨ Starting NOW ✨</div>}
       {state === "live" && <div className="status active">LIVE for another <TimeUntil targetTime={new Date(event.endAt)} /></div>}
       {state === "over" && <div className="status info">Event ended <TimeAgo targetTime={new Date(event.endAt)} /> ago</div>}
