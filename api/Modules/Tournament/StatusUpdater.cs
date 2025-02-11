@@ -47,6 +47,7 @@ public class StatusUpdater : BackgroundService
         if (hunt.Status == EventStatus.Live && hunt.EndAt < DateTime.UtcNow)
         {
           hunt.Status = EventStatus.Over;
+          hunt.UpdatedAt = DateTime.UtcNow;
           _logger.LogInformation("Event {eventId} is now over", hunt.Id);
           await db.SaveChangesAsync();
           await cache.RemoveAsync($"event-{hunt.Id}");
@@ -54,6 +55,7 @@ public class StatusUpdater : BackgroundService
         else if (hunt.Status == EventStatus.New && hunt.StartAt < DateTime.UtcNow)
         {
           hunt.Status = EventStatus.Live;
+          hunt.UpdatedAt = DateTime.UtcNow;
           _logger.LogInformation("Event {eventId} is now live", hunt.Id);
           await db.SaveChangesAsync();
           await cache.RemoveAsync($"event-{hunt.Id}");
