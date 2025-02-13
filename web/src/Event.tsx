@@ -100,7 +100,7 @@ function EventStatusArea({ event }: { event: Ev}) {
   return (
     <>
       {state === "draft" && <div className="status info">Draft events aren't visible until you mark them ready</div>}
-      {state === "wait" && <div className="status info">Event scheduled <TimeUntil targetTime={new Date(event.endAt)} /> from now</div>}
+      {state === "wait" && <div className="status info">Event scheduled <TimeUntil targetTime={new Date(event.startAt)} /> from now</div>}
       {state === "rand" && <div className="status active">✨ Seed will roll in <TimeUntil targetTime={new Date(new Date(event.startAt).getTime() - 1000 * 60 * 5)} /> ✨</div>}
       {state === "roll" && <div className="status active">✨ Rolling a random seed... ✨</div>}
       {state === "seed" && <div className="status active">✨ Seed available, starting in <TimeUntil targetTime={new Date(event.startAt)} /> ✨</div>}

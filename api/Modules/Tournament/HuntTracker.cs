@@ -24,7 +24,7 @@ public class HuntTracker : BackgroundService
   {
     await Task.Delay(3000, stoppingToken);
 
-    _logger.LogInformation("Tracker channel is now reading");
+    _logger.LogInformation($"{nameof(HuntTracker)} channel is now reading");
     await foreach (var hunt in _channel.Reader.ReadAllAsync(stoppingToken))
     {
       using (var scope = _serviceScopeFactory.CreateScope()) // Create a new DI scope
@@ -44,7 +44,7 @@ public class HuntTracker : BackgroundService
         }
       }
     }
-    _logger.LogInformation("Tracker is stopping");
+    _logger.LogInformation($"{nameof(HuntTracker)} is stopping");
   }
 
   private async Task ProcessHunt(IServiceScope scope, TrackHunt hunt, CancellationToken stoppingToken)

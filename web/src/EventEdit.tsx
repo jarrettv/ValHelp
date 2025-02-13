@@ -5,6 +5,7 @@ import Spinner from "./components/Spinner";
 import { Link, useParams, useNavigate } from "react-router";
 import TimeAgo from "./components/TimeAgo";
 import { useAuth } from "./contexts/AuthContext";
+import { useEvent } from "./hooks/useEvent";
 
 export default function EventEdit() {
   const { id } = useParams();
@@ -15,13 +16,7 @@ export default function EventEdit() {
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ['event', Number(id) ?? 'host'],
-    queryFn: () =>
-      fetch(`/api/events/${id || 'host'}`).then((res) =>
-        res.json()
-      )
-  })
+  const { isPending, error, data } = useEvent(Number(id ?? '0'));
 
   useEffect(() => {
     if (data) {
@@ -63,7 +58,7 @@ export default function EventEdit() {
     mutation.mutate(formObject as any);
   };
 
-  const canDelete = status?.id === 1;
+  const canDelete = status!.id === 1 || data?.players.some((p) => p.userId === status!.id && Math.abs(p.status) === 1);
 
   const onDelete = async () => {
     if (window.confirm("Are you sure you want to delete this event?")) {

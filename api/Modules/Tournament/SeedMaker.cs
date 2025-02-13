@@ -8,7 +8,7 @@ public class SeedMaker : BackgroundService
 {
   private readonly ILogger<SeedMaker> _logger;
   private readonly IServiceScopeFactory _serviceProvider;
-  private readonly TimeSpan _updateInterval = TimeSpan.FromMinutes(1); // Adjust the interval as needed
+  private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(20); // Adjust the interval as needed
 
   public SeedMaker(ILogger<SeedMaker> logger, IServiceScopeFactory serviceProvider)
   {
@@ -20,7 +20,7 @@ public class SeedMaker : BackgroundService
   {
     await Task.Delay(3000, stoppingToken);
 
-    _logger.LogInformation("SeedMaker is now making seeds");
+    _logger.LogInformation($"{nameof(SeedMaker)} is now making seeds");
 
     while (!stoppingToken.IsCancellationRequested)
     {
@@ -28,7 +28,7 @@ public class SeedMaker : BackgroundService
       await Task.Delay(_updateInterval, stoppingToken);
     }
 
-    _logger.LogInformation("SeedMaker is stopping");
+    _logger.LogInformation($"{nameof(SeedMaker)} is stopping");
   }
 
   private async Task UpdateEventSeeds()
@@ -38,7 +38,7 @@ public class SeedMaker : BackgroundService
     {
       var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
       var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
-      var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(5);
+      var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(5.3);
       var events = await db.Events
         .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
         .Where(h => h.Seed == "(random)")

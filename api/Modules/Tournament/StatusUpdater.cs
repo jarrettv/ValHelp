@@ -8,8 +8,7 @@ public class StatusUpdater : BackgroundService
 {
   private readonly ILogger<StatusUpdater> _logger;
   private readonly IServiceScopeFactory _serviceProvider;
-  private readonly TimeSpan _updateInterval = TimeSpan.FromMinutes(1); // Adjust the interval as needed
-
+  private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(10);
   public StatusUpdater(ILogger<StatusUpdater> logger, IServiceScopeFactory serviceProvider)
   {
     _logger = logger;
@@ -20,7 +19,7 @@ public class StatusUpdater : BackgroundService
   {
     await Task.Delay(3000, stoppingToken);
 
-    _logger.LogInformation("StatusUpdater is now updating statuses");
+    _logger.LogInformation($"{nameof(StatusUpdater)} is now updating statuses");
 
     while (!stoppingToken.IsCancellationRequested)
     {
@@ -28,7 +27,7 @@ public class StatusUpdater : BackgroundService
       await Task.Delay(_updateInterval, stoppingToken);
     }
 
-    _logger.LogInformation("StatusUpdater is stopping");
+    _logger.LogInformation($"{nameof(StatusUpdater)} is stopping");
   }
 
   private async Task UpdateEventStatuses()

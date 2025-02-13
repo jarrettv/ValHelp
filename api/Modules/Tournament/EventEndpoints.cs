@@ -29,10 +29,13 @@ public static class EventEndpoints
   public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string CreatedBy);
   public record EventRowPlayer(int Id, string Name, string AvatarUrl, int Score);
   public record EventsResponse(EventRow[] Data, int Total);
-  public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db)
+  public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db, ClaimsPrincipal cp)
   {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
     var hunts = await db.Events
       .Where(h => h.Status < EventStatus.Deleted)
+      .Where(h => h.Status != EventStatus.Draft || h.Players.Any(x => x.UserId == userId))
       .Select(h => new EventRow(
         h.Id,
         h.Name,
@@ -161,35 +164,35 @@ public static class EventEndpoints
   private static async Task<EventDetails?> GetEventFromDatabase(int id, AppDbContext db, CancellationToken token)
   {
     return await db.Events
-        .Where(h => h.Id == id)
-        //.Where(h => updatedAt == null || h.UpdatedAt > updatedAt)
-        .Where(h => h.Status < EventStatus.Deleted)
-        .Select(h => new EventDetails(
-          h.Id,
-          h.Name,
-          h.Desc,
-          h.Mode,
-          h.Scoring.Scores,
-          h.StartAt,
-          h.EndAt,
-          h.Hours,
-          h.Seed,
-          (int)h.Status,
-          h.CreatedBy,
-          h.UpdatedBy,
-          h.UpdatedAt,
-          h.Players.Select(hp => new EventPlayersRow(
-          hp.UserId,
-          hp.Name,
-          hp.AvatarUrl,
-          hp.Status,
-          hp.Score,
-          hp.Stream,
-          hp.UpdatedAt,
-          hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
-        )).ToArray()
-
-        )).FirstOrDefaultAsync(token);
+      .AsNoTracking()
+      .Where(h => h.Id == id)
+      //.Where(h => updatedAt == null || h.UpdatedAt > updatedAt)
+      .Where(h => h.Status < EventStatus.Deleted)
+      .Select(h => new EventDetails(
+        h.Id,
+        h.Name,
+        h.Desc,
+        h.Mode,
+        h.Scoring.Scores,
+        h.StartAt,
+        h.EndAt,
+        h.Hours,
+        h.Seed,
+        (int)h.Status,
+        h.CreatedBy,
+        h.UpdatedBy,
+        h.UpdatedAt,
+        h.Players.Select(hp => new EventPlayersRow(
+        hp.UserId,
+        hp.Name,
+        hp.AvatarUrl,
+        hp.Status,
+        hp.Score,
+        hp.Stream,
+        hp.UpdatedAt,
+        hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+      )).ToArray()
+    )).FirstOrDefaultAsync(token);
   }
 
   public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status);

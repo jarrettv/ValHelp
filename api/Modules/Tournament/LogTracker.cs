@@ -24,7 +24,7 @@ public class LogTracker : BackgroundService
   {
     await Task.Delay(3000, stoppingToken);
 
-    _logger.LogInformation("Tracker channel is now reading");
+    _logger.LogInformation($"{nameof(LogTracker)} channel is now reading");
     await foreach (var log in _channel.Reader.ReadAllAsync(stoppingToken))
     {
       using (var scope = _serviceScopeFactory.CreateScope()) // Create a new DI scope
@@ -44,7 +44,7 @@ public class LogTracker : BackgroundService
         }
       }
     }
-    _logger.LogInformation("Tracker is stopping");
+    _logger.LogInformation($"{nameof(LogTracker)} is stopping");
   }
 
   private async Task ProcessLog(IServiceScope scope, TrackLog log, CancellationToken stoppingToken)

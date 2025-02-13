@@ -5,6 +5,7 @@ export interface Event {
   endAt: Date;
   status: EventStatus;
   mode: string;
+  scoringCode: string;
   scoring:  { [key: string]: number };
   hours: number;
   desc: string;
