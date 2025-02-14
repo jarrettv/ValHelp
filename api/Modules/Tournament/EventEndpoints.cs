@@ -34,8 +34,7 @@ public static class EventEndpoints
     var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var hunts = await db.Events
-      .Where(h => h.Status < EventStatus.Deleted)
-      .Where(h => h.Status != EventStatus.Draft || h.Players.Any(x => x.UserId == userId))
+      .Where(h => h.Status > EventStatus.Draft && h.Status < EventStatus.Deleted)
       .Select(h => new EventRow(
         h.Id,
         h.Name,

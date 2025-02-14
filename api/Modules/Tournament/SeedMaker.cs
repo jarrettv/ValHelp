@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using ValHelpApi.Config;
@@ -8,7 +9,8 @@ public class SeedMaker : BackgroundService
 {
   private readonly ILogger<SeedMaker> _logger;
   private readonly IServiceScopeFactory _serviceProvider;
-  private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(20); // Adjust the interval as needed
+  private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(60); // Adjust the interval as needed
+  private readonly ConcurrentDictionary<int, DateTime> _scheduledEvents = new();
 
   public SeedMaker(ILogger<SeedMaker> logger, IServiceScopeFactory serviceProvider)
   {
@@ -22,6 +24,8 @@ public class SeedMaker : BackgroundService
 
     _logger.LogInformation($"{nameof(SeedMaker)} is now making seeds");
 
+    _ = Task.Run(() => SchedulerLoop(stoppingToken), stoppingToken);
+
     while (!stoppingToken.IsCancellationRequested)
     {
       await UpdateEventSeeds();
@@ -34,33 +38,69 @@ public class SeedMaker : BackgroundService
   private async Task UpdateEventSeeds()
   {
     _logger.LogDebug("UpdateEventSeeds");
-    using (var scope = _serviceProvider.CreateScope())
+    using var scope = _serviceProvider.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var soon = DateTime.UtcNow.AddMinutes(10);
+    var eventsNeedingRandomSeed = await db.Events
+      .AsNoTracking()
+      .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
+      .Where(h => h.Seed == "(random)")        
+      .Where(h => soon > h.StartAt)
+      .Select(x => new { x.Id, x.StartAt})
+      .ToListAsync();
+
+    foreach (var ev in eventsNeedingRandomSeed)
     {
-      var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-      var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
-      var fiveMinutesToGo = DateTime.UtcNow.AddMinutes(5.3);
-      var events = await db.Events
-        .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
-        .Where(h => h.Seed == "(random)")
-        .Where(h => fiveMinutesToGo > h.StartAt)
-        .ToListAsync();
-      
-      foreach (var ev in events)
-      {
-        var abbr = ev.Mode switch
-        {
-          "TrophyHunt" => "hunt",
-          "TrophySaga" => "saga",
-          "TrophyRush" => "rush",
-          _ => "run"
-        };
-        ev.Seed = $"{abbr}{RandomString(6)}";
-        ev.UpdatedAt = DateTime.UtcNow;
-        _logger.LogInformation("Event {eventId} has a new random seed {seed}", ev.Id, ev.Seed);
-        await db.SaveChangesAsync();
-        await cache.RemoveAsync($"event-{ev.Id}");
-      }
+      var eventSeedTime = ev.StartAt.AddMinutes(-5); // 5 minutes before the event starts
+      // add or update with the latest time
+      _ = _scheduledEvents.AddOrUpdate(ev.Id, eventSeedTime, (key, oldValue) => eventSeedTime);
+      _logger.LogDebug("Event {eventId} needs a random seed at {time}", ev.Id, eventSeedTime);
     }
+  }
+
+  private async Task SchedulerLoop(CancellationToken stoppingToken)
+  {
+    while (!stoppingToken.IsCancellationRequested)
+    {
+      var now = DateTime.UtcNow;
+      var eventsToProcess = _scheduledEvents
+        .Where(kvp => kvp.Value <= now)
+        .Select(kvp => kvp.Key)
+        .ToList();
+
+      foreach (var eventId in eventsToProcess)
+      {
+        _scheduledEvents.TryRemove(eventId, out _);
+        await OnSeedSchedule(eventId, stoppingToken);
+      }
+
+      await Task.Delay(1000, stoppingToken); // Check every second
+    }
+  }
+
+  private async Task OnSeedSchedule(int eventId, CancellationToken stoppingToken)
+  {
+    _logger.LogDebug("OnSeedSchedule for event {eventId}", eventId);
+    using var scope = _serviceProvider.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
+
+    var hunt = await db.Events
+      .Where(h => h.Id == eventId)
+      .Where(h => h.Status == EventStatus.New || h.Status == EventStatus.Live)
+      .Where(h => h.Seed == "(random)")
+      .SingleOrDefaultAsync(stoppingToken);
+
+    if (hunt == null)
+    {
+      _logger.LogWarning("Event {eventId} must have changed", eventId);
+      return;
+    }
+
+    hunt.Seed = RandomString(8);
+    hunt.UpdatedAt = DateTime.UtcNow;
+    await db.SaveChangesAsync(stoppingToken);
+    await cache.RemoveAsync($"event-{eventId}");
   }
 
   private static string RandomString(int length)
