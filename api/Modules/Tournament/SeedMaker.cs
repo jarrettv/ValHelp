@@ -24,18 +24,20 @@ public class SeedMaker : BackgroundService
 
     _logger.LogInformation($"{nameof(SeedMaker)} is now making seeds");
 
+    // this loop allows us to be accurate down to the second
     _ = Task.Run(() => SchedulerLoop(stoppingToken), stoppingToken);
 
+    // this loop gets the events that need random seeds from the database
     while (!stoppingToken.IsCancellationRequested)
     {
-      await UpdateEventSeeds();
+      await GetEventSeeds();
       await Task.Delay(_updateInterval, stoppingToken);
     }
 
     _logger.LogInformation($"{nameof(SeedMaker)} is stopping");
   }
 
-  private async Task UpdateEventSeeds()
+  private async Task GetEventSeeds()
   {
     _logger.LogDebug("UpdateEventSeeds");
     using var scope = _serviceProvider.CreateScope();

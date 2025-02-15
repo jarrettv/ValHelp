@@ -31,7 +31,7 @@ public static class EventEndpoints
   public record EventsResponse(EventRow[] Data, int Total);
   public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db, ClaimsPrincipal cp)
   {
-    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+    //var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var hunts = await db.Events
       .Where(h => h.Status > EventStatus.Draft && h.Status < EventStatus.Deleted)

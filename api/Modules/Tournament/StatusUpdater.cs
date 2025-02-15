@@ -24,18 +24,20 @@ public class StatusUpdater : BackgroundService
 
     _logger.LogInformation($"{nameof(StatusUpdater)} is now updating statuses");
 
+    // this loop allows us to be accurate down to the second
     _ = Task.Run(() => SchedulerLoop(stoppingToken), stoppingToken);
 
+    // this loop gets the events that need status updates from the database
     while (!stoppingToken.IsCancellationRequested)
     {
-      await UpdateEventStatuses();
+      await GetEventsToRefreshStatus();
       await Task.Delay(_updateInterval, stoppingToken);
     }
 
     _logger.LogInformation($"{nameof(StatusUpdater)} is stopping");
   }
 
-  private async Task UpdateEventStatuses()
+  private async Task GetEventsToRefreshStatus()
   {
     _logger.LogDebug("UpdateEventStatuses");
     using var scope = _serviceProvider.CreateScope();

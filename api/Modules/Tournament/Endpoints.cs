@@ -7,5 +7,6 @@ public static class Endpoints
     app.MapEventEndpoints();
     app.MapModEndpoints();
     app.MapScoringEndpoints();
+    app.MapImportEndpoints();
   }
 }

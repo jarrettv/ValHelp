@@ -51,11 +51,34 @@ public class AppDbContext : DbContext
     modelBuilder.Entity<User>()
       .HasIndex(u => u.DiscordId)
       .IsUnique();
+    
+    
+    modelBuilder.Entity<Hunt>()
+      .Property(h => h.Prizes)
+      .HasColumnType("jsonb")
+            .HasConversion(CreateDictionaryConverter<string>(), new ValueComparer<Dictionary<string, string>>(
+                (c1, c2) => c1!.SequenceEqual(c2!),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
+                c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
+    modelBuilder.Entity<Hunt>()
+      .Property(h => h.Scoring)
+      .HasColumnType("jsonb")
+            .HasConversion(CreateDictionaryConverter<int>(), new ValueComparer<Dictionary<string, int>>(
+                (c1, c2) => c1!.SequenceEqual(c2!),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
+                c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
 
+    modelBuilder.Entity<HuntsPlayer>()
+      .HasKey(hp => new { hp.HuntId, hp.PlayerId });
+    
+    modelBuilder.Entity<HuntsPlayer>()
+      .OwnsMany(x => x.Trophies, x => x.ToJson());
   }
 
   public DbSet<Event> Events { get; set; }
   public DbSet<Player> Players { get; set; }
+  public DbSet<Hunt> Hunts { get; set; }
+  public DbSet<HuntsPlayer> HuntsPlayers { get; set; }
   public DbSet<TrackHunt> TrackHunts { get; set; }
   public DbSet<TrackLog> TrackLogs { get; set; }
 

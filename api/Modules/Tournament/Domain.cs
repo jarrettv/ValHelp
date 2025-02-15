@@ -141,6 +141,56 @@ public class Item
   public bool IsActive { get; set; } = true;
 }
 
+public class Hunt
+{
+  public int Id { get; set; }
+  public string Name { get; set; } = null!;
+  public string Desc { get; set; } = null!;
+  public Dictionary<string, int> Scoring { get; set; } = null!;
+  public DateTime StartAt { get; set; }
+  public DateTime EndAt { get; set; }
+  public string Seed { get; set; } = null!;
+  public Dictionary<string, string> Prizes { get; set; } = null!;
+  public HuntStatus Status { get; set; }
+  public DateTime CreatedAt { get; set; }
+  public string CreatedBy { get; set; } = null!;
+  public DateTime UpdatedAt { get; set; }
+  public string UpdatedBy { get; set; } = null!;
+
+  public List<HuntsPlayer> Players { get; set; } = [];
+}
+
+public enum HuntStatus
+{
+  Draft = 0,
+  New = 10,
+  Live = 20, // between StartAt and EndAt
+  Ended = 30, // after EndAt
+  Over = 50, // after 4 months
+  Archive = 55, // force hide
+  Deleted = 60
+}
+
+public class HuntsPlayer
+{
+  public int HuntId { get; set; }
+  public Hunt Hunt { get; set; } = null!;
+  public string PlayerId { get; set; } = null!;
+  public string Name { get; set; } = null!;
+  public string Stream { get; set; } = null!;
+  public HuntsPlayerStatus Status { get; set; }
+  public int Score { get; set; }
+  public int Deaths { get; set; }
+  public int Relogs { get; set; }
+  public List<string> Trophies { get; set; } = [];
+  public DateTime UpdatedAt { get; set; }
+}
+
+public enum HuntsPlayerStatus
+{
+  Normal = 0,
+}
+
 public class TrackHunt
 {
   public int Id { get; set; }
