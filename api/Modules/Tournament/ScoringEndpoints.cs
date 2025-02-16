@@ -34,7 +34,7 @@ public static class ScoringEndpoints
 
     scoring.Name = req.Name;
     scoring.Scores = req.Scores;
-    scoring.Modes = req.Modes.ToList();
+    scoring.Modes = req.Modes;
     scoring.IsActive = req.IsActive;
     await db.SaveChangesAsync();
 

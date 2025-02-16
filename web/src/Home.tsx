@@ -25,7 +25,7 @@ export default function Home() {
       </section>
       <nav>
         { status?.isActive &&
-        <Link to="/events/host">
+        <Link to="/events/0/edit">
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Host Event <small>Open or Private</small>
         </Link> }

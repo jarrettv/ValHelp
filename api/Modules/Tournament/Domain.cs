@@ -7,7 +7,7 @@ public class Scoring
   public string Code { get; set; } = null!;
   public string Name { get; set; } = null!;
   public Dictionary<string, int> Scores { get; set; } = null!;
-  public List<string> Modes { get; set; } = null!;
+  public string[] Modes { get; set; } = null!;
   public bool IsActive { get; set; } = true;
 }
 
@@ -59,7 +59,7 @@ public class Player
   public List<PlayerLog> Logs { get; set; } = [];
   public DateTime UpdatedAt { get; set; }
 
-  public void Update(DateTime at, int score, List<string>? trophies, int deaths, int logouts)
+  public void Update(DateTime at, int score, string[]? trophies, int deaths, int logouts)
   {
     Score = score;
 
@@ -67,6 +67,10 @@ public class Player
     {
       foreach (var trophy in trophies)
       {
+        if (string.IsNullOrWhiteSpace(trophy))
+        {
+          continue;
+        }
         if (!Logs.Any(x => x.Code == trophy))
         {
           Logs.Add(new PlayerLog(trophy, at));
@@ -74,14 +78,12 @@ public class Player
       }
     }
 
-    var deathsCount = Logs.Where(x => x.Code == "PenaltyDeath").Count();
-    for (var i = deathsCount; i < deaths; i++)
+    while (Logs.Count(x => x.Code == "PenaltyDeath") < deaths)
     {
       Logs.Add(new PlayerLog("PenaltyDeath", at));
     }
 
-    var logoutsCount = Logs.Where(x => x.Code == "PenaltyLogout").Count();
-    for (var i = logoutsCount; i < logouts; i++)
+    while (Logs.Count(x => x.Code == "PenaltyLogout") < logouts)
     {
       Logs.Add(new PlayerLog("PenaltyLogout", at));
     }
@@ -182,7 +184,7 @@ public class HuntsPlayer
   public int Score { get; set; }
   public int Deaths { get; set; }
   public int Relogs { get; set; }
-  public List<string> Trophies { get; set; } = [];
+  public string[] Trophies { get; set; } = [];
   public DateTime UpdatedAt { get; set; }
 }
 
@@ -204,7 +206,7 @@ public class TrackHunt
 
   public int Deaths { get; set; }
   public int Logouts { get; set; }
-  public List<string> Trophies { get; set; } = [];
+  public string[] Trophies { get; set; } = [];
 
   public string Gamemode { get; set; } = null!;
 

@@ -29,7 +29,6 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/:id" element={<Event />} />
-            <Route path="/events/host" element={<EventEdit />} />
             <Route path="/events/:id/edit" element={<EventEdit />} />
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
           </Route>

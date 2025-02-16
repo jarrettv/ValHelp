@@ -8,7 +8,7 @@
             "name": "C#: ValHelp Api Debug",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/ValHelpApi/ValHelpApi.csproj",
+            "projectPath": "${workspaceFolder}/api/ValHelpApi.csproj",
             "env": {
                 "POSTGRES_USER": "postgres",
                 "POSTGRES_PASSWORD": "postgres",

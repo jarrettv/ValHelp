@@ -12,6 +12,15 @@ public class AppDbContext : DbContext
   public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
   {
   }
+  public DbSet<Event> Events { get; set; }
+  public DbSet<Player> Players { get; set; }
+  public DbSet<TrackHunt> TrackHunts { get; set; }
+  public DbSet<TrackLog> TrackLogs { get; set; }
+
+  public DbSet<User> Users { get; set; }
+  public DbSet<Scoring> Scorings { get; set; }
+  public DbSet<Hunt> Hunts { get; set; }
+  public DbSet<HuntsPlayer> HuntsPlayers { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -70,20 +79,8 @@ public class AppDbContext : DbContext
 
     modelBuilder.Entity<HuntsPlayer>()
       .HasKey(hp => new { hp.HuntId, hp.PlayerId });
-    
-    modelBuilder.Entity<HuntsPlayer>()
-      .OwnsMany(x => x.Trophies, x => x.ToJson());
   }
 
-  public DbSet<Event> Events { get; set; }
-  public DbSet<Player> Players { get; set; }
-  public DbSet<Hunt> Hunts { get; set; }
-  public DbSet<HuntsPlayer> HuntsPlayers { get; set; }
-  public DbSet<TrackHunt> TrackHunts { get; set; }
-  public DbSet<TrackLog> TrackLogs { get; set; }
-
-  public DbSet<User> Users { get; set; }
-  public DbSet<Scoring> Scorings { get; set; }
 
   private static ValueConverter<Dictionary<string, T>, string> CreateDictionaryConverter<T>()
   {

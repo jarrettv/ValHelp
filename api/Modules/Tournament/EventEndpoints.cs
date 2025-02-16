@@ -16,7 +16,7 @@ public static class EventEndpoints
     var api = app.MapGroup("api/events");
 
     api.MapPost("", PostEvent).RequireAuthorization();
-    api.MapGet("host", GetEventEdit);
+    api.MapGet("0", GetEventEdit);
     api.MapGet("latest", GetEventsLatest);
     api.MapGet("upcoming", GetEventsUpcoming);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
@@ -111,7 +111,7 @@ public static class EventEndpoints
     )).ToArray(), rows.Length));
   }
 
-  public static async Task<Results<UnauthorizedHttpResult, Ok<EventRequest>>> GetEventEdit(ClaimsPrincipal user, AppDbContext db)
+  public static async Task<Results<UnauthorizedHttpResult, Ok<EventDetails>>> GetEventEdit(ClaimsPrincipal user, AppDbContext db)
   {
     if (!user.Identity?.IsAuthenticated ?? false)
     {
@@ -122,10 +122,34 @@ public static class EventEndpoints
     // TODO: get defaults from database
 
     var nextSaturday = DateTime.Today.AddDays(6 - (int)DateTime.UtcNow.DayOfWeek + 7).AddHours(14);
-    var defaultDesc = "Best score wins! New game, fresh character, seed will be chosen 5 minutes before the event begins\n\nHOW TO BEGIN:\nCreate a new character\nHave the seed created and ready by :00 on the hour\nStart the world at :00 (don't preload the world)\n\nRules:\nUsing Valheim seed finder is not allowed\nNo stream sniping other competitors\nNo clipping\nNo console commands\nUsing /printseeds is banned\nUsing /die is allowed (however -20 points)\nNo emote animation cancelling\nIf PC crashes, you may relog in and continue just make sure to immediately restart stream\n\nMUST BE STREAMING (Visible gameplay + audio is required)\nPreferred Youtube/Twitch as livestreaming service\nPlease turn on past broadcasting on twitch so we can review video if needed.\n\nPoint system (All trophies only count once) example: 37 deer trophies = 10 points";
-    var req = new EventRequest(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11",
-      nextSaturday, 4, "(random)", (int)EventStatus.Draft);
-    return TypedResults.Ok(req);
+    var defaultDesc = """
+Best score wins! New game, fresh character, seed will be chosen 5 minutes before the event begins
+
+HOW TO BEGIN:
+» Create a new character
+» Have the seed created and ready by :00 on the hour
+» Start the world at :00 (don't preload the world)
+
+RULES:
+» Using Valheim seed finder is not allowed
+» No stream sniping other competitors
+» No clipping
+» No console commands
+» Using /printseeds is banned
+» Using /die is allowed (however -20 points)
+» No emote animation cancelling
+
+If PC crashes, you may relog in and continue just make sure to immediately restart stream
+
+MUST BE STREAMING (Visible gameplay + audio is required)
+Preferred Youtube/Twitch as livestreaming service.
+Please turn on past broadcasting on twitch so we can review video if needed.
+
+Point system (All trophies only count once) example: 37 deer trophies = 10 points
+""";
+
+    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>());
+    return TypedResults.Ok(resp);
   }
 
   public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,

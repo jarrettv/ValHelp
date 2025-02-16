@@ -14,4 +14,7 @@ public class User
   public string Youtube { get; set; } = "";
   public string Twitch { get; set; } = "";
   public bool IsActive { get; set; }
+
+  public string SteamId {get; set;} = "";
+  public string AltName {get; set;} = "";
 }

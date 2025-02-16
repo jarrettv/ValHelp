@@ -35,7 +35,7 @@ public static class ModEndpoints
     hunt.CurrentScore = req.Current_Score;
     hunt.Deaths = req.Deaths;
     hunt.Logouts = req.Logouts;
-    hunt.Trophies = req.Trophies.Split(',').Select(t => t.Trim()).ToList();
+    hunt.Trophies = req.Trophies.Split(',').Select(t => t.Trim()).ToArray();
     hunt.Gamemode = req.Gamemode;
     
     await channel.Writer.WriteAsync(hunt);
@@ -58,7 +58,7 @@ public static class ModEndpoints
     hunt.Deaths = req.Deaths;
     hunt.Logouts = req.Relogs;
     //hunt.Slashdies = req.Slashdies;
-    hunt.Trophies = req.Trophies.ToList();
+    hunt.Trophies = req.Trophies.ToArray();
     hunt.Gamemode = req.Mode;
 
     await channel.Writer.WriteAsync(hunt);

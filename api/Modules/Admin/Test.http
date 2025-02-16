@@ -2,16 +2,36 @@
 ### Setup database
 GET {{base_url}}/api/db/migrate
 
-### Seed a user
-POST {{base_url}}/api/db/seed-user
+### Seed users
+GET {{base_url}}/api/db/seed-users
+
+### Seed scorings
+GET {{base_url}}/api/db/seed-scorings
+
+### Seed events
+GET {{base_url}}/api/db/seed-events
+
+### Seed players
+GET {{base_url}}/api/db/seed-players
+
+### Seed track logs
+GET {{base_url}}/api/db/seed-tracklogs
+
+### Seed track hunts
+GET {{base_url}}/api/db/seed-trackhunts
+
+### Seed hunts
+GET {{base_url}}/api/db/seed-hunts
+
+### Seed hunts players
+GET {{base_url}}/api/db/seed-huntsplayers
+
+### Import a hunt
+POST {{base_url}}/api/import
 Content-Type: application/json
 
 {
-  "username": "jv",
-  "email": "example@email.com",
-  "discordId": "126084695824924673",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/126084695824924673/3f71ed008f7aa248df3a6d1c95d5d095.webp?size=240",
-  "isActive": true
+  "huntId": 4
 }
 
 ### Seed a user
@@ -23,6 +43,66 @@ Content-Type: application/json
   "email": "example@email.com",
   "discordId": "618218180929650698",
   "avatarUrl": "https://cdn.discordapp.com/avatars/618218180929650698/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "Henrik",
+  "email": "henrik@valheim.help",
+  "discordId": "132419724381257738",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/132419724381257738/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "Archy",
+  "email": "archy@valheim.help",
+  "discordId": "204705568118538240",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/204705568118538240/a9a3bbd0e1994e8f8860ddb99967a851.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "Henrik",
+  "email": "henrik@valheim.help",
+  "discordId": "132419724381257738",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/132419724381257738/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "Warband",
+  "email": "warband@valheim.help",
+  "discordId": "486516490988814347",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/486516490988814347/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "isActive": true
+}
+
+### Seed a user
+POST {{base_url}}/api/db/seed-user
+Content-Type: application/json
+
+{
+  "username": "HaWk3y3",
+  "email": "hawk3y3@valheim.help",
+  "discordId": "392539316854980609",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/486516490988814347/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
   "isActive": true
 }
 
