@@ -40,10 +40,10 @@ const Users: React.FC = () => {
       <thead>
         <tr>
           <th>Username</th>
-          <th>Email</th>
-          <th>Discord</th>
           <th>Steam</th>
           <th>Alt Name</th>
+          <th>Discord</th>
+          <th>Email</th>
           <th>Last Login</th>
         </tr>
       </thead>
@@ -55,10 +55,10 @@ const Users: React.FC = () => {
               <img src={user.avatarUrl} alt="Avatar" width="30" height="30" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
               {user.username}
             </td>
-            <td>{user.email}</td>
-            <td>{user.discordId}</td>
             <td>{user.steamId}</td>
             <td>{user.altName}</td>
+            <td>{user.discordId}</td>
+            <td>{user.email}</td>
             <td>{user.isActive ? '✅' : '❌'}<TimeAgo targetTime={new Date(user.lastLoginAt)} /></td>
           </tr>
         ))}
