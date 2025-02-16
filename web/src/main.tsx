@@ -13,6 +13,7 @@ import Profile from './Profile.tsx'
 import Event from './Event.tsx'
 import EventEdit from './EventEdit.tsx'
 import Events from './Events.tsx'
+import Users from './Users.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<Layout />}>
             <Route index path="/" element={<Home />} />
             <Route path="/auth/login" element={<Auth />} />
+            <Route path="/auth/users" element={<Users />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/:id" element={<Event />} />

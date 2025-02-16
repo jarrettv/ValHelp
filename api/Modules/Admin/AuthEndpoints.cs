@@ -27,6 +27,14 @@ public static class AuthEndpoints
       }
       return TypedResults.Ok(none);
     });
+
+    api.MapGet("users", async (AppDbContext db) =>
+    {
+      var users = await db.Users
+        .Select(x => new { x.Id, x.Username, x.Email, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.SteamId, x.AltName, x.IsActive })
+        .ToListAsync();
+      return TypedResults.Ok(users);
+    }).RequireAuthorization("Admin");
     
     api.MapGet("discord", async (HttpContext ctx) =>
     {
