@@ -2,6 +2,9 @@
 ### Setup database
 GET {{base_url}}/api/db/migrate
 
+### Seed all data from CSV files
+GET {{base_url}}/api/db/seed-all
+
 ### Seed users
 GET {{base_url}}/api/db/seed-users
 
@@ -54,7 +57,7 @@ Content-Type: application/json
   "username": "Henrik",
   "email": "henrik@valheim.help",
   "discordId": "132419724381257738",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/132419724381257738/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/132419724381257738/a9a3bbd0e1994e8f8860ddb99967a851.webp?size=240",
   "isActive": true
 }
 
@@ -63,22 +66,11 @@ POST {{base_url}}/api/db/seed-user
 Content-Type: application/json
 
 {
-  "username": "Archy",
+  "username": "archy2cold",
   "email": "archy@valheim.help",
   "discordId": "204705568118538240",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/204705568118538240/a9a3bbd0e1994e8f8860ddb99967a851.webp?size=240",
-  "isActive": true
-}
-
-### Seed a user
-POST {{base_url}}/api/db/seed-user
-Content-Type: application/json
-
-{
-  "username": "Henrik",
-  "email": "henrik@valheim.help",
-  "discordId": "132419724381257738",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/132419724381257738/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "avatarUrl": "https://cdn.discordapp.com/avatars/204705568118538240/dbe9c963fe521c33b45f93df7b76ee8d.webp?size=240",
+  "steamId": "Archy",
   "isActive": true
 }
 
@@ -90,7 +82,8 @@ Content-Type: application/json
   "username": "Warband",
   "email": "warband@valheim.help",
   "discordId": "486516490988814347",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/486516490988814347/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "avatarUrl": "https://yt3.googleusercontent.com/R3tet0hNJoTpR67vGnO5Avg7XnGUiRfMCETsRbDuvlCSGFRPSCBRHXMzvecwM5W_dvvuvMNXfEE=s160-c-k-c0x00ffffff-no-rj",
+  "steamId": "yellow ham grindset",
   "isActive": true
 }
 
@@ -102,7 +95,9 @@ Content-Type: application/json
   "username": "HaWk3y3",
   "email": "hawk3y3@valheim.help",
   "discordId": "392539316854980609",
-  "avatarUrl": "https://cdn.discordapp.com/avatars/486516490988814347/5b6666eb98c57c3c7a3f95e86da809ba.webp?size=240",
+  "avatarUrl": "https://yt3.googleusercontent.com/8SrhPMKAyXO1QftRokpB_66k8a2FrJqbPGkh-GYyah_4ZSamax9f1zpSc_7sb0Onaw7iprOXKfo=s160-c-k-c0x00ffffff-no-rj",
+  "steamId": "Hawk3y3",
+  "altName": "ohawk3y3o",
   "isActive": true
 }
 

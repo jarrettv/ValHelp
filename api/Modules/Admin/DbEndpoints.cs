@@ -17,6 +17,34 @@ public static class DbEndpoints
         return Results.Ok("Database migrated");
       }).AllowAnonymous();
 
+      api.MapGet("seed-all", async (AppDbContext db) =>
+      {
+        var users = await CsvHelper.ReadFile("users", new UserMap());
+        db.Users.AddRange(users);
+        var scorings = await CsvHelper.ReadFile("scorings", new ScoringMap());
+        db.Scorings.AddRange(scorings);
+        await db.SaveChangesAsync();
+        var events = await CsvHelper.ReadFile("events", new EventMap());
+        db.Events.AddRange(events);
+        await db.SaveChangesAsync();
+        var players = await CsvHelper.ReadFile("players", new PlayerMap());
+        db.Players.AddRange(players);
+        await db.SaveChangesAsync();
+        var trackLogs = await CsvHelper.ReadFile("track_logs", new TrackLogMap());
+        db.TrackLogs.AddRange(trackLogs);
+        await db.SaveChangesAsync();
+        var trackHunts = await CsvHelper.ReadFile("track_hunts", new TrackHuntMap());
+        db.TrackHunts.AddRange(trackHunts);
+        await db.SaveChangesAsync();
+        var hunts = await CsvHelper.ReadFile("hunts", new HuntMap());
+        db.Hunts.AddRange(hunts);
+        await db.SaveChangesAsync();
+        var huntsPlayers = await CsvHelper.ReadFile("hunts_player", new HuntsPlayerMap());
+        db.HuntsPlayers.AddRange(huntsPlayers);
+        await db.SaveChangesAsync();
+        return Results.Ok("Database seeded");
+      }).AllowAnonymous();
+
       api.MapGet("seed-users", async (AppDbContext db) =>
       {
         var users = await CsvHelper.ReadFile("users", new UserMap());
@@ -86,7 +114,7 @@ public static class DbEndpoints
         var user = db.Users.SingleOrDefault(u => u.DiscordId == req.DiscordId);
         if (user != null)
         {
-          return TypedResults.Conflict(new { id = user.Id });
+          return TypedResults.Ok(new { id = user.Id });
         }
 
         user = new User
@@ -105,7 +133,7 @@ public static class DbEndpoints
         db.Users.Add(user);
         await db.SaveChangesAsync();
         return TypedResults.Ok(new { id = user.Id });
-      }).AllowAnonymous();//.RequireAuthorization("Admin");
+      }).AllowAnonymous();
 
     }
   }

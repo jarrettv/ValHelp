@@ -11,7 +11,7 @@ public static class CsvHelper
 {
     public static async Task<List<T>> ReadFile<T>(string tableName, ClassMap<T> classMap) where T : class
     {
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "..\\data", $"{tableName}_rows.csv");
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\valhelp-data", $"{tableName}_rows.csv");
         using (var reader = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
