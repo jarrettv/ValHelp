@@ -22,6 +22,17 @@ public static class CsvHelper
         }
     }
 
+    public static List<T> ParseCsv<T>(string csvData, ClassMap<T> classMap) where T : class
+    {
+        using (var reader = new StringReader(csvData))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            csv.Context.RegisterClassMap(classMap);
+            var records = csv.GetRecords<T>().ToList();
+            return records;
+        }
+    }
+
 }
 public class UtcDateTimeConverter : DefaultTypeConverter
 {

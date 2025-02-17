@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ValHelpApi.Config;
 
@@ -35,7 +34,9 @@ public static class AuthEndpoints
         .ToListAsync();
       return TypedResults.Ok(users);
     }).RequireAuthorization("Admin");
-    
+
+    api.MapPost("users", PostUsers).RequireAuthorization("Admin");
+
     api.MapGet("discord", async (HttpContext ctx) =>
     {
       await ctx.ChallengeAsync("Discord");
@@ -107,6 +108,58 @@ public static class AuthEndpoints
       return TypedResults.Ok(currentUser);
     }).RequireAuthorization();
   }
+
+
+  public static async Task<Results<Ok, BadRequest>> PostUsers(HttpRequest request, AppDbContext db, ILoggerFactory logger)
+  {
+    var log = logger.CreateLogger("PostUsers");
+
+    try
+    {
+      using var reader = new StreamReader(request.Body);
+      var csvData = await reader.ReadToEndAsync();
+      var alts = CsvHelper.ParseCsv(csvData, new UserAltsMap());
+      foreach (var alt in alts)
+      {
+        var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
+        if (user == null)
+        {
+          log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
+          user = new User
+          {
+            Username = alt.Username,
+            Email = $"{alt.Username.ToLower()}@valheim.help",
+            DiscordId = alt.DiscordId,
+            AvatarUrl = "https://valheim.help/favicon.webp",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            LastLoginAt = DateTime.UtcNow,
+            IsActive = true,
+          };
+        }
+
+        if (user.Username != alt.Username)
+        {
+          log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
+        }
+
+        user.AltName = alt.AltName;
+        user.SteamId = alt.SteamId;
+        db.Users.Update(user);
+
+        log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
+      }
+
+      await db.SaveChangesAsync();
+    }
+    catch (Exception ex)
+    {
+      log.LogError(ex, "Error updating alts");
+      return TypedResults.BadRequest();
+    }
+    return TypedResults.Ok();
+  }
+
 
   public record ProfileReq(string Username, string? Youtube, string? Twitch);
 
