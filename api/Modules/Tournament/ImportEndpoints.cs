@@ -13,19 +13,17 @@ public static class ImportEndpoints
   {
     var api = app.MapGroup("api/import");
 
-    if (app.Environment.IsDevelopment())
-    {
-      api.MapPost("", PostImport).AllowAnonymous();
-    }
+    api.MapGet("", GetImport).RequireAuthorization("Admin");
   }
 
   public record ImportRequest(int[] HuntIds);
   public record ImportResponse(DateTime At);
 
-  public static async Task<Results<BadRequest, Ok<ImportResponse>>> PostImport(ImportRequest req, ClaimsPrincipal user,
+  public static async Task<Results<BadRequest, Ok<ImportResponse>>> GetImport(ClaimsPrincipal user,
     AppDbContext db, ILoggerFactory logger)
   {
     var log = logger.CreateLogger("Import");
+    var huntIds = new[] {2,4,5,6,7,12,13,14,16,17,18,20,21,22,24};
 
     var users = await db.Users
       .AsNoTracking()
@@ -35,7 +33,7 @@ public static class ImportEndpoints
     var hunts = await db.Hunts
       .AsNoTracking()
       .Include(h => h.Players)
-      .Where(h => req.HuntIds.Contains(h.Id))
+      .Where(h => huntIds.Contains(h.Id))
       .ToArrayAsync();
 
     foreach (var hunt in hunts)
