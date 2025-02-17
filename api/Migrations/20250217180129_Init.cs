@@ -65,7 +65,7 @@ namespace ValHelpApi.Migrations
                     current_score = table.Column<int>(type: "integer", nullable: false),
                     deaths = table.Column<int>(type: "integer", nullable: false),
                     logouts = table.Column<int>(type: "integer", nullable: false),
-                    trophies = table.Column<string[]>(type: "text[]", nullable: false),
+                    trophies = table.Column<string>(type: "text", nullable: false),
                     gamemode = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

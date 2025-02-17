@@ -5,10 +5,7 @@ GET {{base_url}}/api/db/migrate
 ### Seed all data from CSV files
 GET {{base_url}}/api/db/seed-all
 
-### Update alts for data import purposes
-GET {{base_url}}/api/db/update-alts
-
-### Import a hunt
+### Import all the old hunts
 GET {{base_url}}/api/import
 
 ### Seed a user

@@ -36,7 +36,9 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
         {player.logs.filter(log => log.code.startsWith("Stream")).length === 0 && player.stream.length > 5 && <a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a>}
       </div>}
       {mode === "logs" && <div className="player-logs">
-        {player.logs.map((log, index) =>
+        {player.logs
+        .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
+        .map((log, index) =>
           log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
             log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
         )}

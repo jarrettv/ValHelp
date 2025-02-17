@@ -432,9 +432,9 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("session_id");
 
-                    b.PrimitiveCollection<string[]>("Trophies")
+                    b.Property<string>("Trophies")
                         .IsRequired()
-                        .HasColumnType("text[]")
+                        .HasColumnType("text")
                         .HasColumnName("trophies");
 
                     b.HasKey("Id")

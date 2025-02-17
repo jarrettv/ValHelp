@@ -19,7 +19,7 @@ public static class DbEndpoints
 
       api.MapGet("seed-all", async (AppDbContext db) =>
       {
-        var users = await CsvHelper.ReadFile("public_users_export_2025-02-16_183536", new UserMap());
+        var users = await CsvHelper.ReadFile("public_users_export_2025-02-17_115757", new UserMap());
         db.Users.AddRange(users);
         var scorings = await CsvHelper.ReadFile("scorings_rows", new ScoringMap());
         db.Scorings.AddRange(scorings);
@@ -40,7 +40,7 @@ public static class DbEndpoints
         var trackLogs = await CsvHelper.ReadFile("public_track_logs_export_2025-02-16_183559", new TrackLogMap());
         db.TrackLogs.AddRange(trackLogs);
         await db.SaveChangesAsync();
-        var trackHunts = await CsvHelper.ReadFile("public_track_hunts_export_2025-02-16_183236", new TrackHuntMap());
+        var trackHunts = await CsvHelper.ReadFile("public_track_hunts_export_2025-02-17_115429", new TrackHuntMap());
         db.TrackHunts.AddRange(trackHunts);
         await db.SaveChangesAsync();
         var hunts = await CsvHelper.ReadFile("hunts_rows", new HuntMap());

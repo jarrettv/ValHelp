@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -24,7 +25,7 @@ public static class ImportEndpoints
   {
     var log = logger.CreateLogger("Import");
     var huntIds = new[] {2,4,5,6,7,12,13,14,16,17,18,20,21,22,24};
-
+    //var huntIds = new [] { 12 };
     var users = await db.Users
       .AsNoTracking()
       .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.DiscordId, x.SteamId, x.AltName })
@@ -41,7 +42,6 @@ public static class ImportEndpoints
       var trackLogs = await db.TrackHunts
         .AsNoTracking()
         .Where(x => x.SessionId == hunt.Seed)
-        .OrderBy(x => x.CreatedAt)
         .ToArrayAsync();
 
       log.LogInformation("Importing hunt {huntId} found logs {logs}", hunt.Id, trackLogs.Length);
@@ -89,13 +89,13 @@ public static class ImportEndpoints
         };
 
         var userLogs = trackLogs
-          .Where(x => x.PlayerName == player.PlayerId || x.PlayerId == u.DiscordId)
+          .Where(x => x.PlayerName == player.PlayerId)
           .OrderBy(x => x.CreatedAt)
-          .ToList();
+          .ToImmutableArray();
 
         foreach (var ul in userLogs)
         {
-          p.Update(ul.CreatedAt, ul.CurrentScore, ul.Trophies, ul.Deaths, ul.Logouts);
+          p.Update(ul.CreatedAt, ul.CurrentScore, ul.Trophies.Split(','), ul.Deaths, ul.Logouts);
         }
 
         p.Update(player.UpdatedAt, player.Score, player.Trophies, player.Deaths, player.Relogs);

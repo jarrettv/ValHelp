@@ -12,7 +12,7 @@ using ValHelpApi.Config;
 namespace ValHelpApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250217044224_Init")]
+    [Migration("20250217180129_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -435,9 +435,9 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("session_id");
 
-                    b.PrimitiveCollection<string[]>("Trophies")
+                    b.Property<string>("Trophies")
                         .IsRequired()
-                        .HasColumnType("text[]")
+                        .HasColumnType("text")
                         .HasColumnName("trophies");
 
                     b.HasKey("Id")

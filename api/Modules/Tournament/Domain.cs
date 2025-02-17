@@ -71,9 +71,9 @@ public class Player
         {
           continue;
         }
-        if (!Logs.Any(x => x.Code == trophy))
+        if (!Logs.Any(x => x.Code == trophy.Trim()))
         {
-          Logs.Add(new PlayerLog(trophy, at));
+          Logs.Add(new PlayerLog(trophy.Trim(), at));
         }
       }
     }
@@ -206,7 +206,7 @@ public class TrackHunt
 
   public int Deaths { get; set; }
   public int Logouts { get; set; }
-  public string[] Trophies { get; set; } = [];
+  public string Trophies { get; set; } = "";
 
   public string Gamemode { get; set; } = null!;
 

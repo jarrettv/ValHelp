@@ -77,7 +77,7 @@ public class HuntTracker : BackgroundService
       return;
     }
 
-    player.Update(hunt.CreatedAt, hunt.CurrentScore, hunt.Trophies, hunt.Deaths, hunt.Logouts);
+    player.Update(hunt.CreatedAt, hunt.CurrentScore, hunt.Trophies.Split(','), hunt.Deaths, hunt.Logouts);
     await db.SaveChangesAsync(stoppingToken);
     
     var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
