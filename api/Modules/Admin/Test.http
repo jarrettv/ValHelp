@@ -2,11 +2,12 @@
 ### Setup database
 GET {{base_url}}/api/db/migrate
 
+### Seed all data from CSV files
+GET {{base_url}}/api/db/seed-all
+
 ### Update alts for data import purposes
 GET {{base_url}}/api/db/update-alts
 
-### Seed all data from CSV files
-GET {{base_url}}/api/db/seed-all
 
 ### Import a hunt
 POST {{base_url}}/api/import

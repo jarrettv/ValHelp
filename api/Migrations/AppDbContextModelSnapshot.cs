@@ -300,9 +300,9 @@ namespace ValHelpApi.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("HuntId", "PlayerId")
-                        .HasName("pk_hunts_players");
+                        .HasName("pk_hunts_player");
 
-                    b.ToTable("hunts_players", (string)null);
+                    b.ToTable("hunts_player", (string)null);
                 });
 
             modelBuilder.Entity("ValHelpApi.Modules.Tournament.Player", b =>
@@ -497,7 +497,7 @@ namespace ValHelpApi.Migrations
                         .HasForeignKey("HuntId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_hunts_players_hunts_hunt_id");
+                        .HasConstraintName("fk_hunts_player_hunts_hunt_id");
 
                     b.Navigation("Hunt");
                 });

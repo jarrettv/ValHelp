@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -44,7 +43,7 @@ namespace ValHelpApi.Migrations
                     code = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     scores = table.Column<string>(type: "jsonb", nullable: false),
-                    modes = table.Column<List<string>>(type: "text[]", nullable: false),
+                    modes = table.Column<string[]>(type: "text[]", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -66,7 +65,7 @@ namespace ValHelpApi.Migrations
                     current_score = table.Column<int>(type: "integer", nullable: false),
                     deaths = table.Column<int>(type: "integer", nullable: false),
                     logouts = table.Column<int>(type: "integer", nullable: false),
-                    trophies = table.Column<List<string>>(type: "text[]", nullable: false),
+                    trophies = table.Column<string[]>(type: "text[]", nullable: false),
                     gamemode = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -107,7 +106,9 @@ namespace ValHelpApi.Migrations
                     avatar_url = table.Column<string>(type: "text", nullable: false),
                     youtube = table.Column<string>(type: "text", nullable: false),
                     twitch = table.Column<string>(type: "text", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false)
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    steam_id = table.Column<string>(type: "text", nullable: false),
+                    alt_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,7 +116,7 @@ namespace ValHelpApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "hunts_players",
+                name: "hunts_player",
                 columns: table => new
                 {
                     hunt_id = table.Column<int>(type: "integer", nullable: false),
@@ -126,14 +127,14 @@ namespace ValHelpApi.Migrations
                     score = table.Column<int>(type: "integer", nullable: false),
                     deaths = table.Column<int>(type: "integer", nullable: false),
                     relogs = table.Column<int>(type: "integer", nullable: false),
-                    trophies = table.Column<List<string>>(type: "text[]", nullable: false),
+                    trophies = table.Column<string[]>(type: "text[]", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_hunts_players", x => new { x.hunt_id, x.player_id });
+                    table.PrimaryKey("pk_hunts_player", x => new { x.hunt_id, x.player_id });
                     table.ForeignKey(
-                        name: "fk_hunts_players_hunts_hunt_id",
+                        name: "fk_hunts_player_hunts_hunt_id",
                         column: x => x.hunt_id,
                         principalTable: "hunts",
                         principalColumn: "id",
@@ -224,7 +225,7 @@ namespace ValHelpApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "hunts_players");
+                name: "hunts_player");
 
             migrationBuilder.DropTable(
                 name: "players");
