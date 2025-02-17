@@ -89,7 +89,7 @@ public static class ImportEndpoints
         };
 
         var userLogs = trackLogs
-          .Where(x => x.PlayerId == player.PlayerId)
+          .Where(x => x.PlayerName == player.PlayerId || x.PlayerId == u.DiscordId)
           .OrderBy(x => x.CreatedAt)
           .ToList();
 

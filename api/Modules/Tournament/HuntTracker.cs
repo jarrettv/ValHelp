@@ -31,7 +31,7 @@ public class HuntTracker : BackgroundService
       {
         using var span = _tracer.StartActiveSpan("ProcessHunt");
         span.SetAttribute("hunt.at", hunt.CreatedAt.ToString("O"));
-        span.SetAttribute("hunt.id", hunt.PlayerId);
+        span.SetAttribute("hunt.id", hunt.PlayerId ?? hunt.PlayerName);
         span.SetAttribute("hunt.seed", hunt.SessionId);
         try
         {
@@ -68,7 +68,7 @@ public class HuntTracker : BackgroundService
 
     var player = await db.Players
       .Where(hp => hp.EventId == liveEventId)
-      .Where(hp => hp.User.DiscordId == hunt.PlayerId)
+      .Where(hp => hp.User.DiscordId == hunt.PlayerId || hp.User.SteamId == hunt.PlayerName)
       .FirstOrDefaultAsync(stoppingToken);
 
     if (player == null)

@@ -185,7 +185,7 @@ public class TrackHuntMap : ClassMap<TrackHunt>
         Map(m => m.Logouts).Name("logouts");
         Map(m => m.PlayerLocation).Name("player_location");
         Map(m => m.PlayerName).Name("player_name");
-        Map(m => m.PlayerId).Name("player_name");
+        Map(m => m.PlayerId).Name("player_id");
         Map(m => m.SessionId).Name("session_id");
         Map(m => m.Trophies).Name("trophies").TypeConverter<CsvConverter>();
         Map(m => m.Gamemode).Name("gamemode");
