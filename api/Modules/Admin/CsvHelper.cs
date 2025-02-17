@@ -4,14 +4,15 @@ using CsvHelper.TypeConversion;
 using System.Globalization;
 using System.Text.Json;
 using ValHelpApi.Modules.Tournament;
+using static ValHelpApi.Modules.Admin.DbEndpoints;
 
 namespace ValHelpApi.Modules.Admin;
 
 public static class CsvHelper
 {
-    public static async Task<List<T>> ReadFile<T>(string tableName, ClassMap<T> classMap) where T : class
+    public static async Task<List<T>> ReadFile<T>(string fileName, ClassMap<T> classMap) where T : class
     {
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\valhelp-data", $"{tableName}_rows.csv");
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\valhelp-data", $"{fileName}.csv");
         using (var reader = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
@@ -214,5 +215,15 @@ public class HuntsPlayerMap : ClassMap<HuntsPlayer>
         Map(m => m.Relogs).Name("relogs");
         Map(m => m.Trophies).Name("trophies").TypeConverter<StringArrayConverter>();
         Map(m => m.UpdatedAt).Name("updated_at").TypeConverter<UtcDateTimeConverter>();
+    }
+}
+public class UserAltsMap : ClassMap<UserAlts>
+{
+    public UserAltsMap()
+    {
+        Map(m => m.Username).Name("username");
+        Map(m => m.DiscordId).Name("discord_id");
+        Map(m => m.SteamId).Name("steam_id");
+        Map(m => m.AltName).Name("alt_name");
     }
 }

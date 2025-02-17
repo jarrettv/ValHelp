@@ -2,39 +2,18 @@
 ### Setup database
 GET {{base_url}}/api/db/migrate
 
+### Update alts for data import purposes
+GET {{base_url}}/api/db/update-alts
+
 ### Seed all data from CSV files
 GET {{base_url}}/api/db/seed-all
-
-### Seed users
-GET {{base_url}}/api/db/seed-users
-
-### Seed scorings
-GET {{base_url}}/api/db/seed-scorings
-
-### Seed events
-GET {{base_url}}/api/db/seed-events
-
-### Seed players
-GET {{base_url}}/api/db/seed-players
-
-### Seed track logs
-GET {{base_url}}/api/db/seed-tracklogs
-
-### Seed track hunts
-GET {{base_url}}/api/db/seed-trackhunts
-
-### Seed hunts
-GET {{base_url}}/api/db/seed-hunts
-
-### Seed hunts players
-GET {{base_url}}/api/db/seed-huntsplayers
 
 ### Import a hunt
 POST {{base_url}}/api/import
 Content-Type: application/json
 
 {
-  "huntId": 4
+  "huntIds": [2,4,5,6,7,12,13,14,16,17,18,20,21,22,24]
 }
 
 ### Seed a user

@@ -17,96 +17,78 @@ public static class DbEndpoints
         return Results.Ok("Database migrated");
       }).AllowAnonymous();
 
+      api.MapGet("update-alts", async (AppDbContext db, ILoggerFactory logger) =>
+      {
+        var log = logger.CreateLogger("UpdateAlts");
+        var alts = await CsvHelper.ReadFile("user_alts", new UserAltsMap());
+        foreach (var alt in alts)
+        {
+          var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
+          if (user == null)
+          {
+            log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
+            user = new User
+            {
+              Username = alt.Username,
+              Email = $"{alt.Username.ToLower()}@valheim.help",
+              DiscordId = alt.DiscordId,
+              AvatarUrl = "https://valheim.help/favicon.webp",
+              CreatedAt = DateTime.UtcNow,
+              UpdatedAt = DateTime.UtcNow,
+              LastLoginAt = DateTime.UtcNow,
+              IsActive = true,
+            };
+          }
+
+          if (user.Username != alt.Username)
+          {
+            log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
+          }
+
+          user.AltName = alt.AltName;
+          user.SteamId = alt.SteamId;
+          db.Users.Update(user);
+
+          log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
+        }
+
+        await db.SaveChangesAsync();
+        return Results.Ok("Alts updated");
+      }).AllowAnonymous();
+
       api.MapGet("seed-all", async (AppDbContext db) =>
       {
-        var users = await CsvHelper.ReadFile("users", new UserMap());
+        var users = await CsvHelper.ReadFile("public_users_export_2025-02-16_183536", new UserMap());
         db.Users.AddRange(users);
-        var scorings = await CsvHelper.ReadFile("scorings", new ScoringMap());
+        var scorings = await CsvHelper.ReadFile("scorings_rows", new ScoringMap());
         db.Scorings.AddRange(scorings);
         await db.SaveChangesAsync();
-        var events = await CsvHelper.ReadFile("events", new EventMap());
+
+        _ = await db.Database.ExecuteSqlRawAsync("SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));");
+
+        var events = await CsvHelper.ReadFile("events_rows", new EventMap());
         db.Events.AddRange(events);
         await db.SaveChangesAsync();
-        var players = await CsvHelper.ReadFile("players", new PlayerMap());
+
+        _ = await db.Database.ExecuteSqlRawAsync("SELECT setval('events_id_seq', (SELECT MAX(id) FROM events));");
+
+
+        var players = await CsvHelper.ReadFile("players_rows", new PlayerMap());
         db.Players.AddRange(players);
         await db.SaveChangesAsync();
-        var trackLogs = await CsvHelper.ReadFile("track_logs", new TrackLogMap());
+        var trackLogs = await CsvHelper.ReadFile("public_track_logs_export_2025-02-16_183559", new TrackLogMap());
         db.TrackLogs.AddRange(trackLogs);
         await db.SaveChangesAsync();
-        var trackHunts = await CsvHelper.ReadFile("track_hunts", new TrackHuntMap());
+        var trackHunts = await CsvHelper.ReadFile("public_track_hunts_export_2025-02-16_183236", new TrackHuntMap());
         db.TrackHunts.AddRange(trackHunts);
         await db.SaveChangesAsync();
-        var hunts = await CsvHelper.ReadFile("hunts", new HuntMap());
+        var hunts = await CsvHelper.ReadFile("hunts_rows", new HuntMap());
         db.Hunts.AddRange(hunts);
         await db.SaveChangesAsync();
-        var huntsPlayers = await CsvHelper.ReadFile("hunts_player", new HuntsPlayerMap());
+        var huntsPlayers = await CsvHelper.ReadFile("public_hunts_player_export_2025-02-16_185058", new HuntsPlayerMap());
         db.HuntsPlayers.AddRange(huntsPlayers);
         await db.SaveChangesAsync();
         return Results.Ok("Database seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-users", async (AppDbContext db) =>
-      {
-        var users = await CsvHelper.ReadFile("users", new UserMap());
-        db.Users.AddRange(users);
-        await db.SaveChangesAsync();
-        return Results.Ok("Users seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-scorings", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("scorings", new ScoringMap());
-        db.Scorings.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Scorings seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-events", async (AppDbContext db) =>
-      {
-        var events = await CsvHelper.ReadFile("events", new EventMap());
-        db.Events.AddRange(events);
-        await db.SaveChangesAsync();
-        return Results.Ok("Events seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-players", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("players", new PlayerMap());
-        db.Players.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Players seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-tracklogs", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("track_logs", new TrackLogMap());
-        db.TrackLogs.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Track logs seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-trackhunts", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("track_hunts", new TrackHuntMap());
-        db.TrackHunts.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Track hunts seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-hunts", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("hunts", new HuntMap());
-        db.Hunts.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Hunts seeded");
-      }).AllowAnonymous();
-
-      api.MapGet("seed-huntsplayers", async (AppDbContext db) =>
-      {
-        var rows = await CsvHelper.ReadFile("hunts_player", new HuntsPlayerMap());
-        db.HuntsPlayers.AddRange(rows);
-        await db.SaveChangesAsync();
-        return Results.Ok("Hunts players seeded");
       }).AllowAnonymous();
 
       api.MapPost("seed-user", async (SeedUserReq req, AppDbContext db) =>
@@ -139,4 +121,12 @@ public static class DbEndpoints
   }
 
   public record SeedUserReq(string Username, string Email, string DiscordId, string AvatarUrl, string? SteamId, string? AltName);
+
+  public class UserAlts
+  {
+    public string Username { get; set; } = "";
+    public string DiscordId { get; set; } = "";
+    public string SteamId { get; set; } = "";
+    public string AltName { get; set; } = "";
+  }
 }

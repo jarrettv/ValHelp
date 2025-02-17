@@ -78,6 +78,7 @@ public class AppDbContext : DbContext
                 c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
 
     modelBuilder.Entity<HuntsPlayer>()
+      .ToTable("hunts_player")
       .HasKey(hp => new { hp.HuntId, hp.PlayerId });
   }
 
