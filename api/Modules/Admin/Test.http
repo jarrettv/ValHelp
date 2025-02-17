@@ -8,14 +8,8 @@ GET {{base_url}}/api/db/seed-all
 ### Update alts for data import purposes
 GET {{base_url}}/api/db/update-alts
 
-
 ### Import a hunt
-POST {{base_url}}/api/import
-Content-Type: application/json
-
-{
-  "huntIds": [2,4,5,6,7,12,13,14,16,17,18,20,21,22,24]
-}
+GET {{base_url}}/api/import
 
 ### Seed a user
 POST {{base_url}}/api/db/seed-user

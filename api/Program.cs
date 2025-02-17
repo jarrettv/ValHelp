@@ -39,8 +39,8 @@ app.MapStaticAssets();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapDbEndpoints();
 }
+app.MapDbEndpoints();
 app.MapTournamentEndpoints();
 app.MapAuthEndpoints();
 app.MapDefaultEndpoints();

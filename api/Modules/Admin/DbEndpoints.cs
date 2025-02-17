@@ -9,6 +9,45 @@ public static class DbEndpoints
   {
     var api = app.MapGroup("api/db");
 
+    api.MapGet("update-alts", async (AppDbContext db, ILoggerFactory logger) =>
+    {
+      var log = logger.CreateLogger("UpdateAlts");
+      var alts = await CsvHelper.ReadFile("user_alts", new UserAltsMap());
+      foreach (var alt in alts)
+      {
+        var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
+        if (user == null)
+        {
+          log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
+          user = new User
+          {
+            Username = alt.Username,
+            Email = $"{alt.Username.ToLower()}@valheim.help",
+            DiscordId = alt.DiscordId,
+            AvatarUrl = "https://valheim.help/favicon.webp",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            LastLoginAt = DateTime.UtcNow,
+            IsActive = true,
+          };
+        }
+
+        if (user.Username != alt.Username)
+        {
+          log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
+        }
+
+        user.AltName = alt.AltName;
+        user.SteamId = alt.SteamId;
+        db.Users.Update(user);
+
+        log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
+      }
+
+      await db.SaveChangesAsync();
+      return Results.Ok("Alts updated");
+    }).RequireAuthorization("Admin");
+
     if (app.Environment.IsDevelopment())
     {
       api.MapGet("migrate", async (AppDbContext db) =>
@@ -16,7 +55,6 @@ public static class DbEndpoints
         await db.Database.MigrateAsync();
         return Results.Ok("Database migrated");
       }).AllowAnonymous();
-
 
       api.MapGet("seed-all", async (AppDbContext db) =>
       {
@@ -80,46 +118,6 @@ public static class DbEndpoints
       }).AllowAnonymous();
 
     }
-
-    
-      api.MapGet("update-alts", async (AppDbContext db, ILoggerFactory logger) =>
-      {
-        var log = logger.CreateLogger("UpdateAlts");
-        var alts = await CsvHelper.ReadFile("user_alts", new UserAltsMap());
-        foreach (var alt in alts)
-        {
-          var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
-          if (user == null)
-          {
-            log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
-            user = new User
-            {
-              Username = alt.Username,
-              Email = $"{alt.Username.ToLower()}@valheim.help",
-              DiscordId = alt.DiscordId,
-              AvatarUrl = "https://valheim.help/favicon.webp",
-              CreatedAt = DateTime.UtcNow,
-              UpdatedAt = DateTime.UtcNow,
-              LastLoginAt = DateTime.UtcNow,
-              IsActive = true,
-            };
-          }
-
-          if (user.Username != alt.Username)
-          {
-            log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
-          }
-
-          user.AltName = alt.AltName;
-          user.SteamId = alt.SteamId;
-          db.Users.Update(user);
-
-          log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
-        }
-
-        await db.SaveChangesAsync();
-        return Results.Ok("Alts updated");
-      }).RequireAuthorization("Admin");
   }
 
   public record SeedUserReq(string Username, string Email, string DiscordId, string AvatarUrl, string? SteamId, string? AltName);
