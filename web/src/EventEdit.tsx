@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import "./Profile.css";
 import { FormEvent, useEffect, useState } from "react";
 import Spinner from "./components/Spinner";
