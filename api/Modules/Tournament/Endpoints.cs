@@ -8,5 +8,6 @@ public static class Endpoints
     app.MapModEndpoints();
     app.MapScoringEndpoints();
     app.MapImportEndpoints();
+    app.MapPlayerEndpoints();
   }
 }

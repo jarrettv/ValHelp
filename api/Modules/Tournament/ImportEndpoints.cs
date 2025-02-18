@@ -18,12 +18,14 @@ public static class ImportEndpoints
   }
 
   public record ImportRequest(int[] HuntIds);
-  public record ImportResponse(DateTime At);
+  public record ImportResponse(DateTime At, string[] Logs);
 
   public static async Task<Results<BadRequest, Ok<ImportResponse>>> GetImport(ClaimsPrincipal user,
     AppDbContext db, ILoggerFactory logger)
   {
     var log = logger.CreateLogger("Import");
+
+    var logs = new List<string>();
     var huntIds = new[] {2,4,5,6,7,12,13,14,16,17,18,20,21,22,24};
     //var huntIds = new [] { 12 };
     var users = await db.Users
@@ -45,11 +47,12 @@ public static class ImportEndpoints
         .ToArrayAsync();
 
       log.LogInformation("Importing hunt {huntId} found logs {logs}", hunt.Id, trackLogs.Length);
+      logs.Add($"Importing hunt {hunt.Id} found logs {trackLogs.Length}");
 
       var now = DateTime.UtcNow;
       var ev = new Event
       {
-        Name = hunt.Name,
+        Name = hunt.Name.Replace(" Tournament", ""),
         StartAt = hunt.StartAt,
         EndAt = hunt.EndAt,
         Status = (EventStatus)hunt.Status,
@@ -74,6 +77,7 @@ public static class ImportEndpoints
 
         if (u == null)
         {
+          logs.Add($"User {player.Name} not found for hunt {hunt.Name}");
           log.LogWarning("User {name} not found for hunt {hunt}", player.Name, hunt.Name);
           continue;
         }
@@ -93,9 +97,24 @@ public static class ImportEndpoints
           .OrderBy(x => x.CreatedAt)
           .ToImmutableArray();
 
+        logs.Add($"Importing player {player.Name} found logs {userLogs.Length}");
+
         foreach (var ul in userLogs)
         {
+          //if CreateAt is outside of the event start/end, skip
+          if (ul.CreatedAt < ev.StartAt || ul.CreatedAt > ev.EndAt)
+          {
+            logs.Add($"Log {ul.Id} outside of event {ev.Id} start/end");
+            log.LogWarning("Log {logId} outside of event {eventId} start/end", ul.Id, ev.Id);
+            continue;
+          }
           p.Update(ul.CreatedAt, ul.CurrentScore, ul.Trophies.Split(','), ul.Deaths, ul.Logouts);
+        }
+
+        if (userLogs.Length > 0 && p.Score != player.Score)
+        {
+          logs.Add($"Player {player.Name} score mismatch {p.Score} != {player.Score}");
+          log.LogWarning("Player {name} score mismatch {score} != {playerScore}", player.Name, p.Score, player.Score);
         }
 
         p.Update(player.UpdatedAt, player.Score, player.Trophies, player.Deaths, player.Relogs);
@@ -103,7 +122,7 @@ public static class ImportEndpoints
       }
 
       db.Events.Add(ev);
-      log.LogInformation("Event {eventId} added", ev.Id);
+      log.LogInformation("Event added for hunt {hunt}", hunt.Id);
     }
 
     try
@@ -116,6 +135,6 @@ public static class ImportEndpoints
       return TypedResults.BadRequest();
     }
 
-    return TypedResults.Ok(new ImportResponse(DateTime.UtcNow));
+    return TypedResults.Ok(new ImportResponse(DateTime.UtcNow, logs.ToArray()));
   }
 }

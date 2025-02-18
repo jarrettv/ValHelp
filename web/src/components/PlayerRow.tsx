@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Youtube from './Youtube';
 import Twitch from './Twitch';
 import Watch from './Watch';
+import { Link } from 'react-router';
 
 interface PlayerRowProps {
   player: Player;
@@ -23,7 +24,7 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
     <div className={`player-row ${playerStatus}`}>
       <div className="player-info">
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
-        <div className="player-name">{player.name}</div>
+        <Link to={`/players/${player.userId}`} className="player-name">{player.name}</Link>
         {mode === "logs" && <div className="player-score">{player.score}</div>}
       </div>
       {mode === "info" && <div className="player-info">

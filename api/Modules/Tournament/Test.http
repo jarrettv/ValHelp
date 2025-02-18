@@ -7,6 +7,9 @@ GET {{base_url}}/api/events/latest
 ### Get upcoming hunts
 GET {{base_url}}/api/events/upcoming
 
+### Get player events
+GET {{base_url}}/api/players/18
+
 
 ### Create hunt
 # @name hunt

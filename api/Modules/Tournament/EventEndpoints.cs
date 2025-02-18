@@ -135,7 +135,7 @@ RULES:
 » No stream sniping other competitors
 » No clipping
 » No console commands
-» Using /printseeds is banned
+» Using /printseeds is banned (except in Saga mode)
 » Using /die is allowed (however -20 points)
 » No emote animation cancelling
 

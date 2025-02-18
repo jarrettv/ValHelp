@@ -14,6 +14,7 @@ import Event from './Event.tsx'
 import EventEdit from './EventEdit.tsx'
 import Events from './Events.tsx'
 import Users from './Users.tsx'
+import PlayerComponent from './Player.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/:id" element={<Event />} />
             <Route path="/events/:id/edit" element={<EventEdit />} />
+            <Route path="/players/:userId" element={<PlayerComponent />} />        
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

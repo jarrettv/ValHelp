@@ -1,3 +1,5 @@
+using ValHelpApi.Modules.Tournament;
+
 namespace ValHelpApi.Modules.Admin;
 
 public class User
@@ -17,4 +19,6 @@ public class User
 
   public string SteamId {get; set;} = "";
   public string AltName {get; set;} = "";
+
+  public List<Player> Players { get; set; } = [];
 }
