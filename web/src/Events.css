@@ -88,6 +88,12 @@ button.link:hover {
   text-align: center;
 }
 
+form .options fieldset {
+  border: none;
+  margin: 0;
+  padding: 0 0 0.3rem 0;
+}
+
 .register-button {
   background-color: #7289DA77;
   color:white;
