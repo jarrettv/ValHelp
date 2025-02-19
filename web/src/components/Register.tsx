@@ -78,15 +78,15 @@ export default function Register({ eventId, player }: RegisterProps) {
           <input required style={{width:'95%'}} type="text" id="stream" name="stream" defaultValue={player?.stream ?? "N/A"} />
         </fieldset>
           <fieldset>
-            <label htmlFor="in">Show Youtube Channel</label>
+            <label htmlFor="in">Show Youtube <small style={{opacity:0.6}}>(must be set on profile)</small></label>
             <input style={{ width: '3rem' }} type="checkbox" id="youtube" name="youtube" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelYoutube"))} />
           </fieldset>
           <fieldset>
-            <label htmlFor="in">Show Twitch Channel</label>
+            <label htmlFor="in">Show Twitch <small style={{opacity:0.6}}>(must be set on profile)</small></label>
             <input style={{ width: '3rem' }} type="checkbox" id="twitch" name="twitch" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelTwitch"))} />
           </fieldset>
           <fieldset>
-            <label htmlFor="in">Show Personal Best Score</label>
+            <label htmlFor="in">Show Personal Best <small style={{opacity:0.6}}>(must have scoring history)</small></label>
             <input style={{ width: '3rem' }} type="checkbox" id="best" name="best" defaultChecked={player?.logs.some(x => x.code.startsWith("PersonalBest"))} />
           </fieldset>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>

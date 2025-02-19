@@ -1,5 +1,3 @@
-import Food from "./components/Food";
-import Swords from "./components/Swords";
 import "./Home.css"
 import Badge from "./components/Badge";
 import Calendar from "./components/Calendar";
@@ -27,20 +25,20 @@ export default function Home() {
         { status?.isActive &&
         <Link to="/events/0/edit">
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Host Event <small>Open or Private</small>
+          Host Event <small>Open Only (for now)</small>
         </Link> }
         <Link to="/events/all">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           All Events <small>Current and Historic</small>
         </Link>
-        <a href="/gear">
+        {/* <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Gear <small>Weapons &amp; Armor Info</small>
         </a>
         <a href="/food">
           <Food style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Food <small>Recipes &amp; Stats</small>
-        </a>
+        </a> */}
       </nav>
     </>
   )
