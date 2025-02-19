@@ -26,15 +26,17 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
         <Link to={`/players/${player.userId}`} className="player-name">{player.name}</Link>
         {mode === "logs" && <div className="player-score">{player.score}</div>}
+        {mode === "info" && player.logs.some(log => log.code.startsWith("PersonalBest")) && <div className="player-score">PB {player.logs.find(log => log.code.startsWith("PersonalBest"))!.code.split('=')[1]}</div>}
       </div>
       {mode === "info" && <div className="player-info">
-        {player.logs.filter(log => log.code.startsWith("Stream")).map((log) => (
+        {player.logs.filter(log => log.code.startsWith("Channel")).map((log) => (
           <div key={log.code} style={{fontSize:'0.8rem'}}>
-            {log.code.startsWith("StreamYoutube") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Youtube width="30" height="30" style={{ verticalAlign: "middle", margin:'0 0.3rem' }} /><span>{log.code.split('=')[1].split(',')[0]}</span></a>}
-            {log.code.startsWith("StreamTwitch") && <a href={log.code.split('=')[1].split(',')[1]} target="_blank"><Twitch width="30" height="30" style={{ verticalAlign: "middle", margin:'0 0.3rem' }} /><span>{log.code.split('=')[1].split(',')[0]}</span></a>}
+            {log.code.startsWith("ChannelYoutube=") && <a href={log.code.split('=')[1]} target="_blank"><Youtube width="30" height="30" style={{ verticalAlign: "middle", margin:'0 0.3rem' }} /><span>{log.code.split('=')[1].replace("https://www.youtube.com/", "").replace("https://youtube.com/", "")}</span></a>}
+            {log.code.startsWith("ChannelTwitch=") && <a href={log.code.split('=')[1]} target="_blank"><Twitch width="30" height="30" style={{ verticalAlign: "middle", margin:'0 0.3rem' }} /><span>{log.code.split('=')[1].replace("https://www.twitch.tv/", "").replace("https://twitch.tv/", "")}</span></a>}
           </div>
         ))}
-        {player.logs.filter(log => log.code.startsWith("Stream")).length === 0 && player.stream.length > 5 && <a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a>}
+        {player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a>}
+        
       </div>}
       {mode === "logs" && <div className="player-logs">
         {player.logs

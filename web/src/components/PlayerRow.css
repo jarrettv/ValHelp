@@ -63,18 +63,18 @@
 }
 
 .player-row .player-info a{
-  margin:0;
+  margin:0 0.3rem;
   color: #fff9e4;
 }
 .player-row .player-info a:hover{
   color: gold;
 }
 
-@media (max-width: 560px) {
+/* @media (max-width: 560px) {
   .player-row .player-info a>span {
     display: none;
   }
-}
+} */
 
 
 .player-avatar {

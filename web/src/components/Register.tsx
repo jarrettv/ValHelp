@@ -66,7 +66,7 @@ export default function Register({ eventId, player }: RegisterProps) {
           <img src={userStatus!.avatarUrl} alt={userStatus!.username} style={{width:'2.5rem',height:'2.5rem',borderRadius:"12%", marginRight: '1rem'}} />
           <fieldset>
             <label htmlFor="name">Name <small style={{opacity:0.6}}>(max 15 characters)</small></label>
-            <input required maxLength={15} style={{ width: '13rem' }} type="text" id="name" name="name" defaultValue={player?.name ?? userStatus!.username.substring(0, 14)} />
+            <input required maxLength={15} style={{ width: '9rem' }} type="text" id="name" name="name" defaultValue={player?.name ?? userStatus!.username.substring(0, 14)} />
           </fieldset>
           <fieldset>
             <label htmlFor="in">Register</label>
@@ -77,6 +77,18 @@ export default function Register({ eventId, player }: RegisterProps) {
           <label htmlFor="stream">Live stream / VOD <small style={{opacity:0.6}}>(please use a direct link)</small></label>
           <input required style={{width:'95%'}} type="text" id="stream" name="stream" defaultValue={player?.stream ?? "N/A"} />
         </fieldset>
+          <fieldset>
+            <label htmlFor="in">Show Youtube Channel</label>
+            <input style={{ width: '3rem' }} type="checkbox" id="youtube" name="youtube" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelYoutube"))} />
+          </fieldset>
+          <fieldset>
+            <label htmlFor="in">Show Twitch Channel</label>
+            <input style={{ width: '3rem' }} type="checkbox" id="twitch" name="twitch" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelTwitch"))} />
+          </fieldset>
+          <fieldset>
+            <label htmlFor="in">Show Personal Best Score</label>
+            <input style={{ width: '3rem' }} type="checkbox" id="best" name="best" defaultChecked={player?.logs.some(x => x.code.startsWith("PersonalBest"))} />
+          </fieldset>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <button className="link" style={{width:"8rem", marginRight:"2rem"}} onClick={() => setShowForm(false)}>Cancel</button><button type="submit">Save</button>
         </div>

@@ -343,7 +343,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
   }
 
   public record PlayerLogRow(string Code, DateTime At);
-  public record PlayerReq(int UserId, string Name, string Stream, string In);
+  public record PlayerReq(int UserId, string Name, string Stream, string In, string Youtube, string Twitch, string Best);
   public record PlayerResp(int EventId, int UserId, string Name, string AvatarUrl, string Stream, int Score, PlayerLogRow[] logs, DateTime UpdatedAt);
   private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
   {
@@ -355,6 +355,11 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
       return TypedResults.Unauthorized();
     }
 
+    var userInfo = await db.Users
+      .Where(u => u.Id == req.UserId)
+      .Select(u => new { u.Username, u.AvatarUrl, u.Youtube, u.Twitch })
+      .SingleAsync();
+
     var player = await db.Players
       .Where(hp => hp.EventId == id)
       .Where(hp => hp.UserId == req.UserId)
@@ -362,10 +367,6 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
 
     if (player == null)
     {
-      var userInfo = await db.Users
-        .Where(u => u.Id == req.UserId)
-        .Select(u => new { u.Username, u.AvatarUrl, u.Youtube, u.Twitch })
-        .SingleAsync();
       player = new Player { EventId = id, UserId = req.UserId, AvatarUrl = userInfo.AvatarUrl };
       db.Players.Add(player);
     }
@@ -380,6 +381,56 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     else
     {
       player.Status = req.In == "on" ? PlayerStatus.PlayerIn : PlayerStatus.PlayerOut;
+    }
+    
+    var ytLog = player.Logs.FirstOrDefault(l => l.Code.StartsWith("ChannelYoutube"));
+    if (ytLog != null)
+    {
+      player.Logs.Remove(ytLog);
+    }
+
+    if (req.Youtube == "on" && !string.IsNullOrWhiteSpace(userInfo.Youtube))
+    {
+      player.Logs.Add(new PlayerLog($"ChannelYoutube={userInfo.Youtube}", DateTime.UtcNow));
+    }
+
+    var twLog = player.Logs.FirstOrDefault(l => l.Code.StartsWith("ChannelTwitch"));
+    if (twLog != null)
+    {
+      player.Logs.Remove(twLog);
+    }
+
+    if (req.Twitch == "on" && !string.IsNullOrWhiteSpace(userInfo.Twitch))
+    {
+      player.Logs.Add(new PlayerLog($"ChannelTwitch={userInfo.Twitch}", DateTime.UtcNow));
+    }
+
+    var bestLog = player.Logs.FirstOrDefault(l => l.Code.StartsWith("PersonalBest"));
+    if (bestLog != null)
+    {
+      player.Logs.Remove(bestLog);
+    }
+
+    if (req.Best == "on")
+    {
+      var eventType = await db.Events
+        .Where(h => h.Id == id)
+        .Select(h => new { h.Mode, h.ScoringCode, h.Hours })
+        .SingleAsync();
+
+      var best = await db.Players
+        .Where(hp => hp.UserId == req.UserId)
+        .Where(hp => hp.Event.Mode == eventType.Mode)
+        .Where(hp => hp.Event.ScoringCode == eventType.ScoringCode)
+        .Where(hp => hp.Event.Hours == eventType.Hours)
+        .Where(hp => hp.Status >= 0)
+        .Select(hp => hp.Score)
+        .MaxAsync();
+      
+      if (best > 0)
+      {
+        player.Logs.Add(new PlayerLog($"PersonalBest={best}", DateTime.UtcNow));
+      }
     }
 
     player.UpdatedAt = DateTime.UtcNow;
