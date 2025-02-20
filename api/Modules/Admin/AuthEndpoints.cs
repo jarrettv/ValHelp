@@ -14,13 +14,13 @@ public static class AuthEndpoints
 
     api.MapGet("status", async (ClaimsPrincipal user, AppDbContext db) =>
     {
-      var none = new { Id = 0, Username = "", AvatarUrl = "", IsActive = false };
+      var none = new { Id = 0, Username = "", AvatarUrl = "", IsActive = false, Youtube = "", Twitch = "" };
       if (user.Identity?.IsAuthenticated == true)
       {
         var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var currentUser = await db.Users
           .Where(u => u.Id == userId)
-          .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive })
+          .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive, x.Youtube, x.Twitch })
           .SingleOrDefaultAsync() ?? none;
         return TypedResults.Ok(currentUser);
       }
@@ -71,15 +71,22 @@ public static class AuthEndpoints
 
       if (!string.IsNullOrWhiteSpace(req.Youtube))
       {
-        if (!Uri.IsWellFormedUriString(req.Youtube, UriKind.Absolute))
+        var youtube = req.Youtube.Replace("http://", "https://")
+          .Replace("www.youtube.com", "youtube.com");
+        if (!Uri.IsWellFormedUriString(youtube, UriKind.Absolute))
         {
           return TypedResults.Problem("Invalid Youtube URL", statusCode: 400);
         }
-        if (!req.Youtube.Contains("youtube.com"))
+        if (!youtube.Contains("youtube.com"))
         {
           return TypedResults.Problem("Invalid Youtube URL", statusCode: 400);
         }
-        currentUser.Youtube = req.Youtube.Trim();
+        var channelName = youtube.Split("/").Last();
+        if (!channelName.StartsWith("@"))
+        {
+          return TypedResults.Problem("Please use your @ channel name", statusCode: 400);
+        }
+        currentUser.Youtube = youtube.Trim();
       }
       else
       {
@@ -88,15 +95,17 @@ public static class AuthEndpoints
 
       if (!string.IsNullOrWhiteSpace(req.Twitch))
       {
-        if (!Uri.IsWellFormedUriString(req.Twitch, UriKind.Absolute))
+        var twitch = req.Twitch.Replace("http://", "https://")
+          .Replace("www.twitch.tv", "twitch.tv");
+        if (!Uri.IsWellFormedUriString(twitch, UriKind.Absolute))
         {
           return TypedResults.Problem("Invalid Twitch URL", statusCode: 400);
         }
-        if (!req.Twitch.Contains("twitch.tv"))
+        if (!twitch.StartsWith("https://twitch.tv/"))
         {
           return TypedResults.Problem("Invalid Twitch URL", statusCode: 400);
         }
-        currentUser.Twitch = req.Twitch.Trim();
+        currentUser.Twitch = twitch.Trim();
       }
       else
       {

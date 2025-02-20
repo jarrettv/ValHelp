@@ -5,6 +5,8 @@ interface AuthStatus {
   username: string;
   avatarUrl: string;
   isActive: boolean;
+  youtube: string;
+  twitch: string;
 }
 
 interface AuthContextType {

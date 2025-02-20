@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../contexts/AuthContext";
 import { Player } from "../domain/event";
 import { FormEvent, useState } from "react";
+import ChannelLink from "./ChannelLink";
 interface RegisterProps {
   eventId: number;
   player?: Player;
@@ -78,14 +79,18 @@ export default function Register({ eventId, player }: RegisterProps) {
             <input required style={{ width: '95%' }} type="text" id="stream" name="stream" defaultValue={player?.stream ?? "N/A"} />
           </fieldset>
           <div className="options">
-            <fieldset>
-              <input style={{ width: '3rem' }} type="checkbox" id="youtube" name="youtube" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelYoutube"))} />
-              <label htmlFor="youtube">Show Youtube <small style={{ opacity: 0.6 }}>(must be set on profile)</small></label>
-            </fieldset>
-            <fieldset>
-              <input style={{ width: '3rem' }} type="checkbox" id="twitch" name="twitch" defaultChecked={player?.logs.some(x => x.code.startsWith("ChannelTwitch"))} />
-              <label htmlFor="twitch">Show Twitch <small style={{ opacity: 0.6 }}>(must be set on profile)</small></label>
-            </fieldset>
+            { userStatus && userStatus.youtube && (
+              <fieldset>
+                <input style={{ width: '3rem' }} type="checkbox" id="youtube" name="youtube" defaultChecked={true} />
+                <label htmlFor="youtube">Show <ChannelLink url={userStatus.youtube} /></label>
+              </fieldset>
+            )}
+            { userStatus && userStatus.twitch && (
+              <fieldset>
+                <input style={{ width: '3rem' }} type="checkbox" id="twitch" name="twitch" defaultChecked={true} />
+                <label htmlFor="twitch">Show <ChannelLink url={userStatus.twitch} /></label>
+              </fieldset>
+            )}
             <fieldset>
               <input style={{ width: '3rem' }} type="checkbox" id="best" name="best" defaultChecked={player?.logs.some(x => x.code.startsWith("PersonalBest"))} />
               <label htmlFor="best">Show Personal Best <small style={{ opacity: 0.6 }}>(must have scoring history)</small></label>
