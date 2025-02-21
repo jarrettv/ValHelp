@@ -13,9 +13,9 @@ public static class ScoringEndpoints
   public static void MapScoringEndpoints(this WebApplication app)
   {
     var api = app.MapGroup("api/scoring");//.RequireAuthorization();
-    api.MapPost("", PostScoring);
+    api.MapPost("", PostScoring).RequireAuthorization("Admin");
     api.MapGet("", GetScorings);
-    api.MapPost("{code:alpha}", GetScoring);
+    api.MapGet("{code:alpha}", GetScoring);
   }
 
   public static async Task<Ok<ScoringRecord>> PostScoring(AppDbContext db, ScoringRecord req)
