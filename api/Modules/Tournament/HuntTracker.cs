@@ -57,12 +57,13 @@ public class HuntTracker : BackgroundService
     int? liveEventId = await db.Events
       .Where(h => h.Status == EventStatus.Live)
       .Where(h => h.Seed == hunt.SessionId)
+      .Where(h => h.Mode == hunt.Gamemode)
       .Select(h => h.Id)
       .FirstOrDefaultAsync(stoppingToken);
 
     if (liveEventId == null)
     {
-      _logger.LogDebug("Process hunt no live event for seed={seed}", hunt.SessionId);
+      _logger.LogDebug("Process hunt no live event for seed={seed} and mode={mode}", hunt.SessionId, hunt.Gamemode);
       return;
     }
 

@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using OpenTelemetry.Trace;
@@ -54,26 +55,31 @@ public class LogTracker : BackgroundService
     db.TrackLogs.Add(log);
     await db.SaveChangesAsync(stoppingToken);
 
-    int? liveEventId = await db.Events
+    int[] liveEventIds = await db.Events
       .Where(h => h.Status == EventStatus.Live)
       .Where(h => h.Seed == log.Seed)
       .Select(h => h.Id)
-      .FirstOrDefaultAsync(stoppingToken);
+      .ToArrayAsync(stoppingToken);
 
-    if (liveEventId == null)
+    if (liveEventIds.Length == 0)
     {
       _logger.LogDebug("Process log no live event for seed={seed}", log.Seed);
       return;
     }
 
+    if (liveEventIds.Length > 1)
+    {
+      _logger.LogWarning("Process log multiple live events for seed={seed}", log.Seed);
+    }
+
     var player = await db.Players
-      .Where(hp => hp.EventId == liveEventId)
+      .Where(hp => liveEventIds.Contains(hp.EventId))
       .Where(hp => hp.User.DiscordId == log.Id)
       .FirstOrDefaultAsync(stoppingToken);
 
     if (player == null)
     {
-      _logger.LogDebug("Process log no player for {user}={id} and event={eventId}", log.User, log.Id, liveEventId);
+      _logger.LogDebug("Process log no player for {user}={id} and seed={seed}", log.User, log.Id, log.Seed);
       return;
     }
 
@@ -81,6 +87,6 @@ public class LogTracker : BackgroundService
     await db.SaveChangesAsync(stoppingToken);
     
     var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
-    await cache.RemoveAsync($"event-{liveEventId}");
+    await cache.RemoveAsync($"event-{player.EventId}");
   }
 }

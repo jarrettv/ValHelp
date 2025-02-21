@@ -71,7 +71,7 @@ export default function Register({ eventId, player }: RegisterProps) {
             </fieldset>
             <fieldset>
               <label htmlFor="in">Register</label>
-              <input style={{ width: '3rem' }} type="checkbox" id="in" name="in" defaultChecked={(player?.status ?? 0) >= 0} />
+              <input style={{ width: '3rem', transform: 'scale(1.8)' }} type="checkbox" id="in" name="in" defaultChecked={(player?.status ?? 0) >= 0} />
             </fieldset>
           </div>
           <fieldset>
