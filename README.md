@@ -39,7 +39,7 @@ npm run dev
 ```
 
 ## Contributing
-Contact JV on (Valheim Speedrunning Discord)[https://discord.gg/ZDJ5gnB5]
+Contact JV on [Valheim Speedrunning Discord](https://discord.gg/ZDJ5gnB5)
 
 ## Sponsor
-Useful? Consider (sponsoring me on GitHub)[https://github.com/sponsors/jarrettv]
+Useful? Consider [sponsoring me on GitHub](https://github.com/sponsors/jarrettv)
