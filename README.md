@@ -1,10 +1,10 @@
 # Valheim Help
 
-![Valheim Help Logo](web/public/valheim-logo.webp){ width=200px }
+<img src="web/public/valheim-logo.webp" width="200" alt="Valheim Help Logo" />
 
 Valheim Help is a community project to enable trophy tracking and leaderboards for trophy hunt speed run competitions.
 
-We provide a backend to the popular (Trophy Hunt Mod)[https://thunderstore.io/c/valheim/p/oathorse/TrophyHuntMod/] for Valheim by oathorse.
+We provide a backend to the popular [Trophy Hunt Mod](https://thunderstore.io/c/valheim/p/oathorse/TrophyHuntMod/) for Valheim by oathorse.
 
 ## Prerequisites
 Install dotnet for backend API
