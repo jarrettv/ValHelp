@@ -1,8 +1,6 @@
 # Valheim Help
 
-```html
-<img src="web/public/valheim-logo.webp" alt="Valheim Help Logo" style="max-width: 200px;">
-```
+![Valheim Help Logo](web/public/valheim-logo.webp){ width=200px }
 
 Valheim Help is a community project to enable trophy tracking and leaderboards for trophy hunt speed run competitions.
 
