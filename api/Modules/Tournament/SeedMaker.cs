@@ -98,8 +98,15 @@ public class SeedMaker : BackgroundService
       _logger.LogWarning("Event {eventId} must have changed", eventId);
       return;
     }
-
-    hunt.Seed = RandomString(8);
+    
+    var abbr = hunt.Mode switch
+    {
+      "TrophyHunt" => "hunt",
+      "TrophySaga" => "saga",
+      "TrophyRush" => "rush",
+      _ => "run"
+    };
+    hunt.Seed = $"{abbr}{RandomString(6)}";
     hunt.UpdatedAt = DateTime.UtcNow;
     await db.SaveChangesAsync(stoppingToken);
     await cache.RemoveAsync($"event-{eventId}");
@@ -108,7 +115,7 @@ public class SeedMaker : BackgroundService
   private static string RandomString(int length)
   {
     // TODO: prevent bad words
-    const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const string chars = "ABCDEFGHJKLMNPQRTUVWXYZ23456789";
     var random = new Random();
     return new string(Enumerable.Repeat(chars, length)
       .Select(s => s[random.Next(s.Length)]).ToArray());

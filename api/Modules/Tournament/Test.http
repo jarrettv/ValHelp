@@ -148,27 +148,15 @@ POST {{base_url}}/api/track/logs
 Content-Type: application/json
 
 {
-  "id": "618218180929650698",
-  "user": "oathorse",
-  "seed": "tkPNcLYEYg",
+  "id": "404370342405210114",
+  "user": "SpazzyGames",
+  "seed": "QXJEHUEJ",
   "mode": "TrophyHunt",
-  "score": 420,
+  "score": 10,
   "logs": [
     {
-      "code": "TrophyGrowth",
-      "at": "2025-02-02T22:46:32Z"
-    },
-    {
-      "code": "TrophyGjall",
-      "at": "2025-02-02T22:49:14Z"
-    },
-    {
-      "code": "TrophyGoblin",
-      "at": "2025-02-02T22:33:20Z"
-    },
-    {
-      "code": "TrophyGoblinKing",
-      "at": "2025-02-02T22:56:20Z"
+      "code": "TrophyDeer",
+      "at": "2025-02-09T00:06:40Z"
     }
   ]
 }

@@ -37,8 +37,6 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
             {log.code.startsWith("ChannelTwitch=") && <ChannelLink url={log.code.split('=')[1]} />}
           </div>
         ))}
-        {player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a>}
-        
       </div>}
       {mode === "logs" && <div className="player-logs">
         {player.logs
