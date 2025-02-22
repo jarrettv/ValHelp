@@ -25,7 +25,7 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
         <div className="player-name">
           <Link to={`/players/${player.userId}`}>{player.name}</Link>
-          {player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <div style={{fontSize:'smaller'}}><a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a></div>}
+          {mode === "logs" && player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <div style={{fontSize:'smaller'}}><a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a></div>}
         </div>
         {mode === "logs" && <div className="player-score">{player.score}</div>}
         {mode === "info" && player.logs.some(log => log.code.startsWith("PersonalBest")) && <div className="player-score">PB {player.logs.find(log => log.code.startsWith("PersonalBest"))!.code.split('=')[1]}</div>}
@@ -37,6 +37,7 @@ const PlayerRow: React.FC<PlayerRowProps> = ({ player, mode }) => {
             {log.code.startsWith("ChannelTwitch=") && <ChannelLink url={log.code.split('=')[1]} />}
           </div>
         ))}
+        {player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <div style={{fontSize:'smaller'}}><a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a></div>}
       </div>}
       {mode === "logs" && <div className="player-logs">
         {player.logs
