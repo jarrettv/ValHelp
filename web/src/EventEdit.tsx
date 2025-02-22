@@ -52,7 +52,6 @@ export default function EventEdit() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    console.log(formData.entries, startAt);
     // alter the form data so the startAt is in iso UTC format
     formData.set('startAt', new Date(startAt).toISOString());
     const formObject = Object.fromEntries(formData.entries());
