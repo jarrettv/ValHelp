@@ -25,6 +25,10 @@ const fetchEvent = async (id: number): Promise<Event> => {
   return data;
 };
 
+export const useEditEvent = (id: number) => {
+  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id) });
+};
+
 export const useEvent = (id: number) => {
   return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval(query) {
     if (query.state.data && query.state.data?.status <= EventStatus.Live) {

@@ -5,7 +5,7 @@ import Spinner from "./components/Spinner";
 import { Link, useParams, useNavigate } from "react-router";
 import TimeAgo from "./components/TimeAgo";
 import { useAuth } from "./contexts/AuthContext";
-import { useEvent } from "./hooks/useEvent";
+import { useEditEvent } from "./hooks/useEvent";
 
 export default function EventEdit() {
   const { id } = useParams();
@@ -16,7 +16,7 @@ export default function EventEdit() {
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
 
-  const { isPending, error, data } = useEvent(Number(id ?? '0'));
+  const { isPending, error, data } = useEditEvent(Number(id ?? '0'));
 
   useEffect(() => {
     if (data) {
@@ -52,6 +52,7 @@ export default function EventEdit() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    console.log(formData.entries, startAt);
     // alter the form data so the startAt is in iso UTC format
     formData.set('startAt', new Date(startAt).toISOString());
     const formObject = Object.fromEntries(formData.entries());
@@ -86,7 +87,7 @@ export default function EventEdit() {
           <div className="alert info">Odin thanks you for organizing a new event</div>
         )}
         {Number(id ?? 0) > 1 && (
-          <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{ margin: "0" }} to={`/events/${id}`}>Back</Link></div>
+          <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div><Link style={{ margin: "0" }} to={ id === "0" ? '/' : `/events/${id}`}>Back</Link></div>
         )}
         {mutation.isSuccess && (
           <div className="alert success" onClick={() => mutation.reset()}>✅ Event saved</div>
@@ -181,7 +182,7 @@ export default function EventEdit() {
         </fieldset>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {canDelete && <button type="button" style={{ backgroundColor: '#882222', width: '6rem', marginRight: '2rem' }} onClick={() => onDelete()}>Delete</button>}
-          <button className="link" style={{width:"8rem", marginRight:"2rem"}} onClick={() => navigate(`/events/${data.id}`)}>Cancel</button>
+          <button className="link" style={{width:"8rem", marginRight:"2rem"}} onClick={() => data.id === 0 ? navigate('/') : navigate(`/events/${data.id}`)}>Cancel</button>
           <button type="submit">Save</button>
         </div>
       </form>

@@ -148,11 +148,11 @@ Please turn on past broadcasting on twitch so we can review video if needed.
 Point system (All trophies only count once) example: 37 deer trophies = 10 points
 """;
 
-    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>());
+    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>());
     return TypedResults.Ok(resp);
   }
 
-  public record EventDetails(int Id, string Name, string Desc, string Mode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,
+  public record EventDetails(int Id, string Name, string Desc, string Mode, string ScoringCode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,
     string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, EventPlayersRow[] Players);
   public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx, 
     ClaimsPrincipal cp, HybridCache cache, CancellationToken token)
@@ -196,6 +196,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         h.Name,
         h.Desc,
         h.Mode,
+        h.ScoringCode,
         h.Scoring.Scores,
         h.StartAt,
         h.EndAt,
@@ -233,8 +234,15 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     {
       return TypedResults.ValidationProblem(new Dictionary<string, string[]>
       {
-        { "scoringCode", new[] { "Scoring must match the chosen mode" } }
-      }, title: "Scoring must match the chosen mode");
+        { "scoringCode", new[] { "Please choose a valid scoring mechanism" } }
+      }, title: "Please choose a valid scoring mechanism");
+    } 
+    else if (!scoring.Modes.Any(x => x == req.Mode))
+    {
+      return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+      {
+        { "mode", new[] { "Mode must match the chosen scoring" } }
+      }, title: "Mode must match the chosen scoring");
     }
 
     if (req.Name.Length < 5 || req.Name.Length > 26)
