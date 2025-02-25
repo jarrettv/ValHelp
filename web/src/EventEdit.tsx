@@ -153,7 +153,7 @@ export default function EventEdit() {
               <select id="scoringCode" required name="scoringCode" defaultValue={data.scoringCode}>
                 <option value="hunt-2024-11">Hunt Scoring 2024 Nov</option>
                 <option value="rush-2024-11">Rush Scoring 2024 Nov</option>
-                <option value="saga-2024-12">Saga Scoring 2024 Dec</option>
+                <option value="saga-2025-02">Saga Champs 2025 Feb</option>
               </select>
             </fieldset>
           </div>

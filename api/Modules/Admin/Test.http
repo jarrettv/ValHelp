@@ -148,8 +148,8 @@ POST {{base_url}}/api/scoring
 Content-Type: application/json
 
 {
-  "code": "saga-2024-12",
-  "name": "Trophy Saga 2024 Dec",
+  "code": "saga-2025-02",
+  "name": "Trophy Saga 2025 Feb",
   "modes": ["TrophySaga"],
   "isActive": true,
   "scores": {  
@@ -198,7 +198,7 @@ Content-Type: application/json
     "TrophySeeker": 40,
     "TrophySeekerBrute": 40,
     "TrophyTick": 40,
-    "TrophySeekerQueen": 1000,
+    "TrophySeekerQueen": 400,
     "TrophyAsksvin": 50,
     "TrophyBonemawSerpent": 50,
     "TrophyFallenValkyrie": 50,
@@ -207,7 +207,7 @@ Content-Type: application/json
     "TrophyVolture": 50,
     "TrophyWarlock": 50,
     "TrophyCharredMelee": 50,
-    "TrophyFader": 1000,
+    "TrophyFader": 400,
     "TrophySerpent": 45,
     "TrophyKvastur": 25
   }
