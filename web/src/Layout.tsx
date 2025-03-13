@@ -16,7 +16,7 @@ export default function Layout() {
   };
 
   return (
-    <main className="home-page">
+    <main className="layout">
       <title>{`Valheim Help - ${getPageTitle()}`}</title>
       <header>
         <div>

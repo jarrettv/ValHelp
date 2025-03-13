@@ -13,6 +13,7 @@ public static class PlayerEndpoints
   {
     var api = app.MapGroup("api/players");
 
+    api.MapGet("{userId}/score", GetPlayerScore);
     api.MapGet("{userId}", GetPlayer);
   }
 
@@ -36,5 +37,28 @@ public static class PlayerEndpoints
     }
 
     return TypedResults.Ok(resp);
+  }
+  
+  public static async Task<Results<RedirectHttpResult, NotFound>> GetPlayerScore(HttpContext ctx, int userId, AppDbContext db, CancellationToken cancel)
+  {
+    var eventId = await db.Events
+      .Where(e => e.Status >= EventStatus.New && e.Status <= EventStatus.Live)
+      .Where(e => e.Players.Any(p => p.UserId == userId))
+      .OrderByDescending(e => e.StartAt)
+      .Select(e => e.Id)
+      .FirstOrDefaultAsync(cancel);
+
+    if (eventId == 0)
+    {
+      return TypedResults.NotFound();
+    }
+
+    var query = ctx.Request.Query;
+    if (query.Count > 0)
+    {
+      var queryString = string.Join("&", query.Select(q => $"{q.Key}={q.Value}"));
+      return TypedResults.Redirect($"/events/{eventId}/score/{userId}?{queryString}");
+    }
+    return TypedResults.Redirect($"/events/{eventId}/score/{userId}");
   }
 }
