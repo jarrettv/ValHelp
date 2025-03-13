@@ -29,6 +29,9 @@ const TimeAgo: React.FC<TimeAgoProps> = ({ targetTime }) => {
     const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
 
+    if (milliseconds <= 60 * 1000) {
+      return "moments";
+    }
     if (milliseconds <= 5 * 60 * 1000) {
       return "minutes";
     }

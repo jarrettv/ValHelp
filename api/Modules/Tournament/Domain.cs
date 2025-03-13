@@ -2,14 +2,107 @@ using ValHelpApi.Modules.Admin;
 
 namespace ValHelpApi.Modules.Tournament;
 
+public class Series
+{
+  public string Code { get; set; } = null!; // hunt, saga champ, saga brute, private, versus
+  public string Name { get; set; } = null!;
+  public string Pitch { get; set; } = null!; // "The original trophy hunt, vanilla drop rates, bring skills and luck"
+  public EventOptions Options { get; set; } = null!;
+
+  public SeriesInfo Info { get; set; } = null!;
+
+  public List<Rounds> Rounds { get; set; } = [];
+
+  public int OwnerId { get; set; }
+  public User Owner { get; set; } = null!;
+
+  public bool IsActive { get; set; } = true;
+  
+  public DateTime CreatedAt { get; set; }
+  public string CreatedBy { get; set; } = null!;
+  public DateTime UpdatedAt { get; set; }
+  public string UpdatedBy { get; set; } = null!;
+}
+
+public class SeriesInfo
+{
+  public int TotalEvents { get; set; }
+  public int TotalPlayers { get; set; }
+  public int UniquePlayers { get; set; }
+
+  public List<PlayerRecord> Records { get; set; } = [];
+}
+
+public record PlayerRecord(string Achievement, string Name, string AvatarUrl, string Stream, 
+  int EventId, int UserId, int Score, DateTime UpdatedAt);
+
+public class EventOptions
+{
+  public string Mode { get; set; } = null!;
+  public string ScoringCode { get; set; } = null!;
+  public int Hours { get; set; }
+  public string NameTemplate { get; set; } = null!;
+  public string Seed { get; set; } = null!;
+  public string Desc { get; set; } = null!;
+  public Dictionary<string, string> Prizes { get; set; } = null!;
+}
+
+public class Rounds
+{
+  public int Num { get; set; }
+  public string SeriesCode { get; set; } = null!;
+  public Series Series { get; set; } = null!;
+  public string Tagline { get; set; } = null!; // "Best scores from 3 of 7 rounds win!"
+  public EventOptions Options { get; set; } = null!; // can override series options
+  public Schedule Schedule { get; set; } = null!;
+  public List<RoundsAdmin> Admin { get; set; } = null!;
+  public DateTime CreatedAt { get; set; }
+  public string CreatedBy { get; set; } = null!;
+  public DateTime UpdatedAt { get; set; }
+  public string UpdatedBy { get; set; } = null!;
+}
+
+public class RoundsAdmin
+{
+  public string Role = "Admin"; // "Creator and owner";
+  public string Name { get; set; } = null!;
+  public int UserId { get; set; }
+}
+
+public class Schedule
+{
+  public string Name { get; set; } = null!; // "Every other Saturday, alternating times"
+  public List<ScheduledEvent> Events { get; set; } = [];
+}
+
+
+
+public class ScheduledEvent
+{
+  public DateTime StartAt { get; set; }
+  public string Name { get; set; } = null!;
+  public float Hours { get; set; }
+}
+
 public class Scoring
 {
   public string Code { get; set; } = null!;
   public string Name { get; set; } = null!;
-  public Dictionary<string, int> Scores { get; set; } = null!;
+  public Dictionary<string, int> Scores { get; set; } = [];
   public string[] Modes { get; set; } = null!;
   public bool IsActive { get; set; } = true;
 }
+
+public class ScoreItem
+{
+  public string Code { get; set; } = null!;
+  public int Score { get; set; }
+  public string Name { get; set; } = null!;
+  public float? DropRate { get; set; }
+  public string? Rarity { get; set; }
+}
+
+
 
 public class Event
 {

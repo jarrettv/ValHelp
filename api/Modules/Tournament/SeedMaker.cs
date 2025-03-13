@@ -106,7 +106,18 @@ public class SeedMaker : BackgroundService
       "TrophyRush" => "rush",
       _ => "run"
     };
-    hunt.Seed = $"{abbr}{RandomString(6)}";
+
+    if (abbr == "saga")
+    {
+      var random = new Random();
+      var index = random.Next(1, 6); // Random index between 1 and 5
+      hunt.Seed = $"{RandomString(index)}{abbr}{RandomString(6 - index)}";
+    }
+    else
+    {
+      hunt.Seed = $"{abbr}{RandomString(6)}";
+    }
+    
     hunt.UpdatedAt = DateTime.UtcNow;
     await db.SaveChangesAsync(stoppingToken);
     await cache.RemoveAsync($"event-{eventId}");
