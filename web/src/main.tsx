@@ -37,7 +37,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/players/:userId" element={<PlayerComponent />} />        
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
           </Route>
-          <Route path="/events/:id/my-score" element={<EventScore />} />
+          <Route path="/events/:id/score/:playerId" element={<EventScore />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

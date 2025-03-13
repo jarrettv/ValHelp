@@ -1,13 +1,11 @@
 import { useParams } from 'react-router';
 import { useEvent } from './hooks/useEvent';
-import { useAuth } from './contexts/AuthContext';
 import "./EventScore.css";
 import Countdown from './components/Countdown';
 
 export default function EventScore() {
-  const { id } = useParams<{ id: string }>();
+  const { id, playerId } = useParams<{ id: string, playerId: string }>();
   const { data, isPending } = useEvent(parseInt(id!));
-  const { status } = useAuth();
 
   if (isPending) {
     return 'Loading...';
@@ -17,14 +15,14 @@ export default function EventScore() {
     return 'No data';
   }
 
-  const playerScore = data.players.find(player => player.userId === status?.id)?.score || 0;
+  const player = data.players.find(player => player.userId === parseInt(playerId ?? "0"));
 
   return (
     <div className="event-my-score">
         <div className="my-avatar">
-            <img src={status?.avatarUrl} alt="Player Avatar" />
+            <img src={player?.avatarUrl} alt="Player Avatar" />
         </div>
-      <div className="score large">{playerScore}</div>
+      <div className="score large">{player?.score}</div>
       <Countdown targetTime={new Date(data.endAt)} />
     </div>
   );
