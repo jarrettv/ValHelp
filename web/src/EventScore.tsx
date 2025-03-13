@@ -1,5 +1,4 @@
 import { useParams } from 'react-router';
-import Spinner from './components/Spinner';
 import { useEvent } from './hooks/useEvent';
 import { useAuth } from './contexts/AuthContext';
 import "./EventScore.css";
