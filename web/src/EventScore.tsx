@@ -19,12 +19,14 @@ export default function EventScore() {
   const player = data.players.find(player => player.userId === parseInt(playerId ?? "0"));
 
   return (
-    <div className="event-my-score" style={{ backgroundColor: searchParams.get('bg') ?? 'transparent' }}>
-        <div className="my-avatar">
+    <div className="my-score" style={{ backgroundColor: searchParams.get('bg') ?? 'transparent' }}>
+        <div className="my-score-avatar">
             <img src={player?.avatarUrl} alt="Player Avatar" />
         </div>
-      <div className="score large">{player?.score ?? 0}</div>
-      <Countdown targetTime={new Date(data.endAt)} />
+        <div className="my-score-text">
+            <div className="num score">{player?.score}</div>
+            <Countdown targetTime={new Date(data.endAt)} />
+        </div>
     </div>
   );
 }

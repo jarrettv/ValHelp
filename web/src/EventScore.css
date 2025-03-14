@@ -1,41 +1,58 @@
-.event-my-score {
+.my-score {
   display: flex;
   align-items: center;
   align-content: center;
   position:absolute;
   top:0;
   width:500px;
-  height: 100px;
-  border-radius: 1rem;
+  height: 70px;
+  border-radius: 35px;
 }
 
-.event-my-score .score {
-    padding-right:0.5rem;
-    font-weight: bold;
-    font-size:3.3rem;
-    margin-top:-0.8rem;
-  width: 9rem;
-  -webkit-text-stroke: 4px #111;
+.my-score .my-score-text {
+    display:flex;
+    margin-top:-0.3rem;
 }
-.event-my-score .countdown {
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 2.6rem;
-    -webkit-text-stroke: 2px #111;
-  flex: 1;
-  padding-right: 1rem;
-    color: #7289DA;
+
+.my-score .num {
+    text-align: center;
+    font-weight: 900;
+    font-size:3.5rem;
+    -webkit-text-stroke: 3px #111;
+    color: gold;
 }
-.event-my-score .countdown.active {
+.my-score .num>div {
+    width:2rem;
+}
+
+.my-score .score {
+  width: 9.3rem;
+  text-align: left;
+}
+
+.my-score .countdown {
+    display:flex;
+    align-items: baseline;
+}
+.my-score .countdown.active {
     color: #72da83;
 }
-.event-my-score .my-avatar {
-    padding: 0.3rem;
-    margin: 0 1rem;
+.my-score .countdown.over {
+    color: #9fd2ff;
 }
-.event-my-score .my-avatar>img {
-    width: 4rem;
-    height: 4rem;
-    border: 4px solid #111;
+.my-score .countdown .sub {
+    font-size:smaller;
+    width:1rem;
+}
+
+.my-score .my-score-avatar {
+    padding-left:2px;
+    padding-right:1.1rem;
+}
+.my-score .my-score-avatar>img {
+    margin-bottom:-0.4rem;
+    width: 56px;
+    height: 56px;
+    border: 6px solid #111;
     border-radius: 50%;
 }
