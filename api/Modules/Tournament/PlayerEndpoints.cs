@@ -74,7 +74,7 @@ public static class PlayerEndpoints
     if (query.Count > 0)
     {
       var queryString = string.Join("&", query.Select(q => $"{q.Key}={q.Value}"));
-      return TypedResults.Redirect($"/events/{eventId}/score/{userId}?{queryString}");
+      return TypedResults.Redirect($"/events/{eventId}/score/{userId}?{queryString.Replace("#", "%23")}");
     }
     return TypedResults.Redirect($"/events/{eventId}/score/{userId}");
   }

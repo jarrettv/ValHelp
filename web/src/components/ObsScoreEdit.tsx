@@ -69,7 +69,7 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
                 <input
                     type="text"
                     readOnly
-                    value={`https://valheim.help/api/players/${props.playerId}/score?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
+                    value={`${window.location.protocol}//${window.location.host}/api/players/${props.playerId}/score?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
                     style={{ width: '100%' }}
                 />
             </div>
