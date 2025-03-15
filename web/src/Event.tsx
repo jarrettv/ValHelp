@@ -10,7 +10,8 @@ import { Scoring } from "./components/Scoring";
 import EventStandings from "./components/EventStandings";
 import { useAuth } from "./contexts/AuthContext";
 import Register from "./components/Register";
-import { Event as Ev, EventStatus } from "./domain/event";
+import { Event as Ev, EventStatus, GetEventState } from "./domain/event";
+import EventPlayers from "./components/EventPlayers";
 
 export default function Event() {
   const { id } = useParams();
@@ -46,7 +47,8 @@ export default function Event() {
         
         {data.status === EventStatus.New && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
 
-        <EventStandings players={data.players} eventStatus={data.status} />
+        {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
+        {data.status >= EventStatus.Live && <EventStandings players={data.players} /> }
 
         {data.players.length === 0 && <div className="card">No players yet</div>}
         <p>
@@ -66,32 +68,13 @@ export default function Event() {
 }
 
 function EventStatusArea({ event }: { event: Ev}) {
-  const calcState = (ev: Ev) => {
-    if (ev.status === EventStatus.Draft) return "draft";
 
-    const random = ev.seed === "(random)";
-    const soon = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 60;
-    const lessThan5m = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 5;
-    const started = new Date().getTime() > new Date(ev.startAt).getTime();
 
-    if (ev.status === EventStatus.New && started && !random) return "start";
-    if (ev.status === EventStatus.New && lessThan5m && !random) return "seed";
-    if (ev.status === EventStatus.New && lessThan5m && random) return "roll";
-    if (ev.status === EventStatus.New && soon && random) return "rand";
-    if (ev.status === EventStatus.New && soon) return "soon";
-    if (ev.status === EventStatus.New) return "wait";
-
-    if (ev.status === EventStatus.Live) return "live";
-    if (ev.status === EventStatus.Over) return "over";
-
-    return "old";
-  }
-
-  const [state, setState] = React.useState(calcState(event));
+  const [state, setState] = React.useState(GetEventState(event));
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setState(calcState(event));
+      setState(GetEventState(event));
     }, 1000);
 
     return () => clearInterval(interval);

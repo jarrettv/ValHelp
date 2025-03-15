@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { useEvent } from './hooks/useEvent';
-import "./EventScore.css";
-import Countdown from './components/Countdown';
+import ObsScore from './components/ObsScore';
+import { EventStatus } from './domain/event';
 
 export default function EventScore() {
   const { id, playerId } = useParams<{ id: string, playerId: string }>();
@@ -17,16 +17,12 @@ export default function EventScore() {
   }
 
   const player = data.players.find(player => player.userId === parseInt(playerId ?? "0"));
+  const status = data.status <= EventStatus.New ? "pre" : data.status === EventStatus.Live ? "live" : "post";
+  if (!player) {
+    return 'No player';
+  }
 
   return (
-    <div className="my-score" style={{ backgroundColor: searchParams.get('bg') ?? 'transparent' }}>
-        <div className="my-score-avatar">
-            <img src={player?.avatarUrl} alt="Player Avatar" />
-        </div>
-        <div className="my-score-text">
-            <div className="num score">{player?.score}</div>
-            <Countdown targetTime={new Date(data.endAt)} />
-        </div>
-    </div>
+    <ObsScore avatarUrl={player.avatarUrl} name={player.name} status={status} startAt={data.startAt} endAt={data.endAt} hours={data.hours} value={player.score}  bg={searchParams.get('bg') ?? undefined} score={searchParams.get('score') ?? undefined} pre={searchParams.get('pre') ?? undefined} live={searchParams.get('live') ?? undefined} post={searchParams.get('post') ?? undefined} />
   );
 }

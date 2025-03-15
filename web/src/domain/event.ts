@@ -66,3 +66,25 @@ export interface EventRowPlayer {
   avatarUrl: string;
   score: number;
 }
+
+
+export function GetEventState(ev: Event) {
+  if (ev.status === EventStatus.Draft) return "draft";
+
+  const random = ev.seed === "(random)";
+  const soon = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 60;
+  const lessThan5m = (new Date(ev.startAt).getTime() - new Date().getTime()) < 1000 * 60 * 5;
+  const started = new Date().getTime() > new Date(ev.startAt).getTime();
+
+  if (ev.status === EventStatus.New && started && !random) return "start";
+  if (ev.status === EventStatus.New && lessThan5m && !random) return "seed";
+  if (ev.status === EventStatus.New && lessThan5m && random) return "roll";
+  if (ev.status === EventStatus.New && soon && random) return "rand";
+  if (ev.status === EventStatus.New && soon) return "soon";
+  if (ev.status === EventStatus.New) return "wait";
+
+  if (ev.status === EventStatus.Live) return "live";
+  if (ev.status === EventStatus.Over) return "over";
+
+  return "old";
+}

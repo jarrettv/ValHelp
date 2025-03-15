@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
   align-content: center;
-  position:absolute;
   top:0;
   width:500px;
   height: 70px;
@@ -19,7 +18,6 @@
     font-weight: 900;
     font-size:3.5rem;
     -webkit-text-stroke: 3px #111;
-    color: gold;
 }
 .my-score .num>div {
     width:2rem;
@@ -33,12 +31,6 @@
 .my-score .countdown {
     display:flex;
     align-items: baseline;
-}
-.my-score .countdown.active {
-    color: #72da83;
-}
-.my-score .countdown.over {
-    color: #9fd2ff;
 }
 .my-score .countdown .sub {
     font-size:smaller;

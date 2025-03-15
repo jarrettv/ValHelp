@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import "./Profile.css";
 import { FormEvent } from "react";
 import Spinner from "./components/Spinner";
+import ObsScoreEdit from "./components/ObsScoreEdit";
 
 export default function Profile() {
   const { isPending, error, data } = useQuery({
@@ -83,6 +84,10 @@ export default function Profile() {
         </fieldset>
         <button type="submit">Update Profile</button>
       </form>
+
+      <div className="card">
+        <ObsScoreEdit avatarUrl={data.avatarUrl} name={data.username} playerId={data.id} />
+      </div>
     </section>
   )
 }

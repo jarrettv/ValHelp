@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 interface CountdownProps {
   targetTime: Date;
+  color: string;
+  message: string;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ targetTime }) => {
+const Countdown: React.FC<CountdownProps> = ({ targetTime, color, message }) => {
   const [hours, setHours] = useState<number>(0);
   const [mins, setMins] = useState<number>(0);
   const [secs, setSecs] = useState<number>(0);
@@ -44,13 +46,15 @@ const Countdown: React.FC<CountdownProps> = ({ targetTime }) => {
   }, [targetTime]);
 
   return (
-    <div className={`num countdown ${over ? 'over' : 'active'}`}>
+    <div className="num countdown" style={{ color: color }}>
+      {over ? message : <>
       <div>{hours}</div>:
       <div>{String(mins).padStart(2, "0")[0]}</div>
       <div>{String(mins).padStart(2, "0")[1]}</div>:
       <div>{String(secs).padStart(2, "0")[0]}</div>
       <div>{String(secs).padStart(2, "0")[1]}</div>.
       <div className="sub">{sub}</div>
+      </>}
     </div>
   );
 };
