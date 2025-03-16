@@ -11,8 +11,8 @@ interface ObsScoreEditProps {
 
 export default function ObsScoreEdit(props: ObsScoreEditProps) {
     const [status, setStatus] = useState<'pre' | 'live' | 'post'>('pre');
-    const [startAt, setStartAt] = useState(new Date(new Date().getTime() + 1000 * 30));
-    const [endAt, setEndAt] = useState(new Date(new Date().getTime() + 1000 * 60));
+    const [startAt, setStartAt] = useState(new Date(new Date().getTime() + 1000 * 10));
+    const [endAt, setEndAt] = useState(new Date(new Date().getTime() + 1000 * 10));
     const [value, setValue] = useState(0);
     const [mode, setMode] = useState<'bg' | 'score' | 'pre' | 'live' | 'post'>('bg');
     const [bg, setBg] = useState('#00000055');
@@ -26,11 +26,11 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
         setMode(mode as 'bg' | 'score' | 'pre' | 'live' | 'post');
         setHex(mode === 'bg' ? bg + '55' : mode === 'score' ? score : mode === 'pre' ? pre : mode === 'live' ? live : post);
         if (mode === 'pre') {
-            setStartAt(new Date(new Date().getTime() + 1000 * 30));
+            setStartAt(new Date(new Date().getTime() + 1000 * 10));
             setValue(0);
             setStatus('pre');
         } else if (mode === 'live') {
-            setEndAt(new Date(new Date().getTime() + 1000 * 30));
+            setEndAt(new Date(new Date().getTime() + 1000 * 10));
             setValue(950);
             setStatus('live');
         } else if (mode === 'post') {

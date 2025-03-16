@@ -12,6 +12,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetTime, color, message }) => 
   const [secs, setSecs] = useState<number>(0);
   const [sub, setSub] = useState<number>(0);
   const [over, setOver] = useState<boolean>(false);
+  const [pulse, setPulse] = useState<boolean>(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,6 +31,10 @@ const Countdown: React.FC<CountdownProps> = ({ targetTime, color, message }) => 
       const subsecs = Math.floor((distance % 1000) / 100);
       setSub(subsecs);
 
+      if (distance < 6000) {
+        setPulse(true);
+      }
+
       if (distance <= 0) {
         setHours(0);
         setMins(0);
@@ -46,7 +51,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetTime, color, message }) => 
   }, [targetTime]);
 
   return (
-    <div className="num countdown" style={{ color: color }}>
+    <div className={`num countdown ${pulse? 'pulse':''}`} style={{ color: color }}>
       {over ? message : <>
       <div>{hours}</div>:
       <div>{String(mins).padStart(2, "0")[0]}</div>
