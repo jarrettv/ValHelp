@@ -18,6 +18,12 @@ export default function Event() {
   var { data, isPending } = useEvent(parseInt(id!));
   const { status } = useAuth();
 
+  function showRegistration(event: Ev) {
+    if (event.status === EventStatus.New) return true;
+    if (event.status >= EventStatus.Live && event.players.find(x => x.userId === status?.id)) return true;
+    return false;
+  }
+
   return (<>
     {isPending && <div><Spinner /></div>}
     {!isPending && data && (
@@ -45,7 +51,7 @@ export default function Event() {
         </div>
         <EventStatusArea event={data} />
         
-        {data.status === EventStatus.New && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
+        {showRegistration(data) && <Register eventId={data.id} lock={data.status > EventStatus.Live} player={data.players.find(x => x.userId === status?.id)} />}
 
         {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
         {data.status >= EventStatus.Live && <EventStandings players={data.players} /> }

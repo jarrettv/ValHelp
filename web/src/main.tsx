@@ -17,6 +17,7 @@ import Users from './Users.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
+import EventFinal from './EventFinal.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')!).render(
           </Route>
           <Route path="/events/:id/score/:playerId" element={<EventScore />} />
           <Route path="/events/:id/scoreboard/:playerId" element={<EventScoreboard />} />
+          <Route path="/events/:id/final/:playerId" element={<EventFinal />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

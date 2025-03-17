@@ -1,0 +1,173 @@
+.obs-score {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  top:0;
+  width:500px;
+  height: 70px;
+  border-radius: 35px;
+}
+
+.obs-text {
+    display:flex;
+    margin-top:-0.35rem;
+}
+
+.obs-text .num {
+    text-align: center;
+    font-weight: 900;
+    font-size:3.5rem;
+    -webkit-text-stroke: 3px #111;
+}
+.obs-title {
+  text-align: center;
+  font-weight: 900;
+  font-size:2.5rem;
+  -webkit-text-stroke: 3px #111;
+}
+.obs-text .num>div {
+    width:2rem;
+}
+
+.obs-text .score {
+  width: 9.3rem;
+  text-align: left;
+}
+
+.obs-text .countdown {
+    display:flex;
+    align-items: baseline;
+}
+.obs-text .countdown .sub {
+    font-size:smaller;
+    width:1rem;
+}
+
+.obs-avatar {
+    padding-left:2px;
+    padding-right:1.1rem;
+}
+.obs-avatar>img {
+  aspect-ratio: 1/1;
+    margin-bottom:-0.4rem;
+    width: 57px;
+    height: 57px;
+    min-width: 57px;
+    min-height: 57px;
+    border: 4px solid #111;
+    border-radius: 50%;
+}
+
+.obs-leaderboard {
+  padding:0.5rem;
+  border-radius: 1rem;
+}
+
+.obs-leaderboard .obs-text .num.score {
+    font-size: 2.9rem;
+    -webkit-text-stroke: 3px #111;
+}
+.obs-leaderboard .obs-avatar {
+  padding-left:0;
+}
+.obs-final .obs-name {
+  margin-top: 0.3rem;
+  line-height: 1.8rem;
+  font-size: 2rem;
+  font-weight: bold;
+  -webkit-text-stroke: 1px #111;
+}
+.obs-final .obs-text .num.score  {
+  line-height: 2.2rem;
+  font-size: 2rem;
+  -webkit-text-stroke: 2px #111;
+}
+
+.obs-player {
+  display:flex;
+  margin: 0.3rem 1.5rem;
+}
+.obs-player.active {
+  background-color: #fff6;
+  border-radius: 50vh;
+}
+
+.obs-final-players>:first-child {
+  margin: 0 25%;
+}
+
+.obs-final-players {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+  width:100vw;
+}
+
+.obs-final .obs-player.active {
+  border-radius: 18px;
+}
+
+.obs-final .obs-player {
+  flex-direction: column;
+  padding:0.25rem 0;
+  margin-bottom: 0.5rem;
+  max-width: 430px;
+}
+.obs-final .obs-player-info {
+  display:flex;
+}
+
+
+.obs-player .player-logs {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.3rem 0.3rem 0.5rem 0.3rem;
+}
+.obs-player .player-logs img {
+  outline: 2px solid #fff5;
+  outline-offset:-2px;
+  border-radius: 50%;
+  background-color: #3f4247;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin-right: -0.7rem;
+  margin-bottom: -0.7rem;
+}
+
+.obs-player .obs-place {
+  border-radius: 1rem;
+  font-size:2rem;
+  font-weight: bold;
+  line-height: 2rem;
+  text-align: center;
+  padding: 0.3rem 0.5rem;
+  margin: 0.6rem 0.8rem 0 0.6rem;
+  width: 3rem;
+  background-color: #fff;
+  color:#000;
+}
+.obs-player .obs-place>small {
+  font-size: 1.3rem;
+  font-weight: normal;
+  margin-top:0.3rem;
+  display: inline-block;
+  line-height: 1rem;
+  vertical-align: top;
+}
+
+.obs-text .score.pulse, .obs-text .countdown.pulse {
+    animation: pulse2 2s infinite;
+}
+
+@keyframes pulse2 {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }

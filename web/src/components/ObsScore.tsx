@@ -1,4 +1,4 @@
-import "./ObsScore.css";
+import "./Obs.css";
 import Countdown from './Countdown';
 import { useEffect, useState } from 'react';
 
@@ -24,17 +24,17 @@ export default function ObsScore(props: ObsScoreProps) {
     useEffect(() => {
         if (prevValue !== props.value) {
             setPulse(true);
-            setTimeout(() => setPulse(false), 500); // duration of the pulse animation
+            setTimeout(() => setPulse(false), 2000); // duration of the pulse animation
             setPrevValue(props.value);
         }
     }, [props.value, prevValue]);
 
   return (
-    <div className="my-score" style={{ backgroundColor: props.bg ?? 'transparent' }}>
-        <div className="my-score-avatar">
+    <div className="obs obs-score" style={{ backgroundColor: props.bg ?? 'transparent' }}>
+        <div className="obs-avatar">
             <img src={props.avatarUrl} alt={props.name} />
         </div>
-        <div className="my-score-text">
+        <div className="obs-text">
             <div className={`num score ${pulse ? 'pulse': ''}`} style={{color: props.score ?? '#fcc400'}}>{props.value}</div>
             { props.status === "pre" && <Countdown targetTime={new Date(props.startAt)} color={ props.pre ?? '#fff9' } message="START"/> }
             { props.status === "live" && <Countdown targetTime={new Date(props.endAt)} color={ props.live ?? '#72da83' } message="OVER" /> }
