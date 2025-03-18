@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import Auth from './Auth.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Profile from './Profile.tsx'
+import Obs from './Obs.tsx'
 import Event from './Event.tsx'
 import EventEdit from './EventEdit.tsx'
 import Events from './Events.tsx'
@@ -17,7 +18,7 @@ import Users from './Users.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
-import EventFinal from './EventFinal.tsx'
+import EventOverview from './EventOverview.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index path="/" element={<Home />} />
             <Route path="/auth/login" element={<Auth />} />
             <Route path="/auth/users" element={<Users />} />
+            <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/:id" element={<Event />} />
@@ -40,8 +42,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
           </Route>
           <Route path="/events/:id/score/:playerId" element={<EventScore />} />
-          <Route path="/events/:id/scoreboard/:playerId" element={<EventScoreboard />} />
-          <Route path="/events/:id/final/:playerId" element={<EventFinal />} />
+          <Route path="/events/:id/scores/:playerId" element={<EventScoreboard />} />
+          <Route path="/events/:id/overview/:playerId" element={<EventOverview />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

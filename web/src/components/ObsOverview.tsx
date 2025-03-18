@@ -14,7 +14,7 @@ interface ObsFinalProps {
     max?: number;
 }
 
-export default function ObsFinal(props: ObsFinalProps) {
+export default function ObsOverview(props: ObsFinalProps) {
     const player = props.event.players.find(player => player.userId === props.playerId);
     if (!player) {
         return 'No player';

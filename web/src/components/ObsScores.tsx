@@ -33,7 +33,7 @@ export default function ObsScores(props: ObsScoresProps) {
         { status === "post" && <div className="num countdown over" style={{color: props.post ?? '#9fd2ff'}}><small>{props.event.hours}h&#160;</small>FINAL</div>}
       </div> */}
       <div className="obs-title" style={{color: props.title ?? '#fff'}}>
-        {props.event.name.replace('Trophy ', '')}
+        {props.event.name.replace('Trophy ', '').substring(0, 13)}
       </div>
       { topPlayers.map((player) => (
         <div key={player.userId} className={`obs-player ${player.userId === props.playerId ? 'active' : ''}`}>

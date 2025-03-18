@@ -3,6 +3,7 @@ import "./Profile.css";
 import { FormEvent } from "react";
 import Spinner from "./components/Spinner";
 import ObsScoreEdit from "./components/ObsScoreEdit";
+import { Link } from "react-router";
 
 export default function Profile() {
   const { isPending, error, data } = useQuery({
@@ -85,8 +86,9 @@ export default function Profile() {
         <button type="submit">Update Profile</button>
       </form>
 
-      <div className="card">
-        <ObsScoreEdit avatarUrl={data.avatarUrl} name={data.username} playerId={data.id} />
+      <div className="card" style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <div>Oden says to get happy viewers use our</div>
+        <div style={{fontSize:'larger'}}><img style={{verticalAlign:'middle',marginRight:'0.4rem'}} width="32" height="32" src="https://obsproject.com/assets/images/new_icon_small-r.png" alt="obs" /><Link to="/auth/obs">OBS browser sources</Link></div>
       </div>
     </section>
   )

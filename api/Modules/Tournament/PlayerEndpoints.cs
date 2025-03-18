@@ -13,11 +13,14 @@ public static class PlayerEndpoints
   {
     var api = app.MapGroup("api/players");
 
-    api.MapGet("{userId}/score", GetPlayerScore);
+    api.MapGet("{userId}/score", RedirectToPlayerScore);
     api.MapGet("{userId}", GetPlayer);
+
+    app.MapGet("api/obs/{view}/{userId}", RedirectObsView);
   }
 
-  public record PlayerResponse(int UserId, string Username, string AvatarUrl, string Youtube, string Twitch, PlayerEventRow[] Events);
+
+    public record PlayerResponse(int UserId, string Username, string AvatarUrl, string Youtube, string Twitch, PlayerEventRow[] Events);
   public record PlayerEventRow(int EventId, string EventName, string PlayerName, string Stream, DateTime StartAt, DateTime EndAt, int PlayerStatus, int EventStatus, string Mode, string ScoringCode, float Hours, string Seed, int[] Scores, int Score, PlayerLogRow[] Logs);
 
   public static async Task<Results<NotFound, Ok<PlayerResponse>>> GetPlayer(int userId, AppDbContext db)
@@ -39,7 +42,12 @@ public static class PlayerEndpoints
     return TypedResults.Ok(resp);
   }
 
-  public static async Task<Results<RedirectHttpResult, NotFound>> GetPlayerScore(HttpContext ctx, int userId, AppDbContext db, CancellationToken cancel)
+  private static  async Task<Results<RedirectHttpResult, NotFound>> RedirectToPlayerScore(HttpContext ctx, int userId, AppDbContext db, CancellationToken cancel)
+  {
+    return await RedirectObsView(ctx, userId, "score", db, cancel);
+  }
+
+  public static async Task<Results<RedirectHttpResult, NotFound>> RedirectObsView(HttpContext ctx, int userId, string view, AppDbContext db, CancellationToken cancel)
   {
     var eventIds = await db.Events
       .Where(e => e.Status == EventStatus.New || e.Status == EventStatus.Live || e.Status == EventStatus.Over)
@@ -54,28 +62,34 @@ public static class PlayerEndpoints
 
     if (eventIds.Length == 1)
     {
-      return RedirectWithQuery(ctx, eventIds[0].Id, userId);
+      return RedirectWithQuery(ctx, eventIds[0].Id, view, userId);
     }
 
     if (eventIds.Count(x => x.Status == EventStatus.Live) == 1)
     {
       var onlyLiveEventId = eventIds.First(x => x.Status == EventStatus.Live).Id;
-      return RedirectWithQuery(ctx, onlyLiveEventId, userId);
+      return RedirectWithQuery(ctx, onlyLiveEventId, view, userId);
+    }
+
+    if (eventIds.Count(x => x.Status == EventStatus.New) == 1)
+    {
+      var onlNewEventId = eventIds.First(x => x.Status == EventStatus.New).Id;
+      return RedirectWithQuery(ctx, onlNewEventId, view, userId);
     }
 
     // otherwise redirect to the one with the closest start time
     var eventId = eventIds.OrderBy(x => Math.Abs((x.StartAt - DateTime.UtcNow).TotalSeconds)).First().Id;
-    return RedirectWithQuery(ctx, eventId, userId);
+    return RedirectWithQuery(ctx, eventId, view, userId);
   }
 
-  private static RedirectHttpResult RedirectWithQuery(HttpContext ctx, int eventId, int userId)
+  private static RedirectHttpResult RedirectWithQuery(HttpContext ctx, int eventId, string view, int userId)
   {
     var query = ctx.Request.Query;
     if (query.Count > 0)
     {
       var queryString = string.Join("&", query.Select(q => $"{q.Key}={q.Value}"));
-      return TypedResults.Redirect($"/events/{eventId}/score/{userId}?{queryString.Replace("#", "%23")}");
+      return TypedResults.Redirect($"/events/{eventId}/{view}/{userId}?{queryString.Replace("#", "%23")}");
     }
-    return TypedResults.Redirect($"/events/{eventId}/score/{userId}");
+    return TypedResults.Redirect($"/events/{eventId}/{view}/{userId}");
   }
 }

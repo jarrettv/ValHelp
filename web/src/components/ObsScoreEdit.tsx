@@ -64,15 +64,26 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
     }
 
     return (
-        <div>
-            <div>
-                <input
-                    type="text"
-                    readOnly
-                    value={`${window.location.protocol}//${window.location.host}/api/players/${props.playerId}/score?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
-                    style={{ width: '100%' }}
-                />
+        <div className="card">
+          <div style={{display:'flex', alignItems:'baseline'}}>
+            <div style={{fontSize:'1.6rem', fontWeight:'bold', flex:'1'}}>Score + Event Clock</div>
+
+            <div style={{fontSize:'smaller'}}>
+                browser source = <code style={{color:'gold'}}>500 width x 70 height</code>
             </div>
+          </div>
+          <p>Show your current score on screen along with a pre-clock and live clock.</p>
+          
+          <div style={{display:'flex'}}>
+            <input
+                type="text"
+                readOnly
+                value={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}`}
+                style={{ flex: '1', width: '100%', marginRight: '1rem' }}
+            />
+            <a href={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
+          </div>
+          <h4>Customize</h4>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
                 <div>
                     <div>
@@ -87,6 +98,14 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
                     {mode === 'bg' && <HexAlphaColorPicker color={hex} onChange={(color) => { onChangeColor(color); }} />}
                     {mode != 'bg' && <HexColorPicker color={hex} onChange={(color) => { onChangeColor(color); }} />}
                 </div>
+            </div>
+            <div>
+                <input
+                    type="text"
+                    readOnly
+                    value={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
+                    style={{ width: '100%' }}
+                />
             </div>
             <ObsScore
                 avatarUrl={props.avatarUrl}

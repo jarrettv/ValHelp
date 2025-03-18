@@ -53,7 +53,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetTime, color, message }) => 
   return (
     <div className={`num countdown ${pulse? 'pulse':''}`} style={{ color: color }}>
       {over ? message : <>
-      <div>{hours}</div>:
+      <div>{hours > 9 ? '+' : hours}</div>:
       <div>{String(mins).padStart(2, "0")[0]}</div>
       <div>{String(mins).padStart(2, "0")[1]}</div>:
       <div>{String(secs).padStart(2, "0")[0]}</div>
