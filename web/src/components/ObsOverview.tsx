@@ -20,7 +20,10 @@ export default function ObsOverview(props: ObsFinalProps) {
         return 'No player';
     }
 
-    let topPlayers = props.event.players.sort((a, b) => b.score - a.score).slice(0, props.max ?? 7);
+    let topPlayers = props.event.players
+        .filter(x => x.status >= 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, props.max ?? 7);
     if (!topPlayers.find(player => player.userId === props.playerId)) {
         topPlayers.pop();
         topPlayers.push(player);
