@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import "./Profile.css";
 import { FormEvent } from "react";
 import Spinner from "./components/Spinner";
-import ObsScoreEdit from "./components/ObsScoreEdit";
 import { Link } from "react-router";
 
 export default function Profile() {
