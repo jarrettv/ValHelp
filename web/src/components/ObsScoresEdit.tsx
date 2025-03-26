@@ -13,7 +13,7 @@ export default function ObsScoresEdit(props: ObsScoresEditProps) {
     const [mode, setMode] = useState<'bg' | 'title' | 'score' | 'active' | 'bubble'>('bg');
     const [bg, setBg] = useState('#00000055');
     const [title, setTitle] = useState('#ffffff');
-    const [showTitle, setShowTitle] = useState(true);
+    const [hideTitle, setHideTitle] = useState(false);
     const [score, setScore] = useState('#fcc400');
     const [active, setActive] = useState('#ffa400');
     const [bubble, setBubble] = useState('#ffffff66');
@@ -73,15 +73,15 @@ export default function ObsScoresEdit(props: ObsScoresEditProps) {
                 <input
                     type="text"
                     readOnly
-                    value={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&max=${max}&showTitle=${showTitle}`}
+                    value={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&max=${max}&hideTitle=${hideTitle}`}
                     style={{ width: '100%' }}
                 />
             </div>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
                 <div>
                     <fieldset>
-                        <input type="checkbox" id="showTitle" name="showTitle" defaultChecked={true} onChange={(e) => setShowTitle(e.target.checked)} />
-                        <label htmlFor="showTitle">Show Short Event Title <small style={{opacity:0.7}}>ex: Hunt #30</small></label>
+                        <input type="checkbox" id="hideTitle" name="hideTitle" defaultChecked={false} onChange={(e) => setHideTitle(e.target.checked)} />
+                        <label htmlFor="hideTitle">Hide Short Event Title <small style={{opacity:0.7}}>ex: Hunt #30</small></label>
                     </fieldset>
                     <fieldset>
                     <label htmlFor="max">Max scores<strong style={{ textAlign:'center', display:'inline-block', fontSize: '1.4rem', width: '2rem' }}>{max}</strong></label>
