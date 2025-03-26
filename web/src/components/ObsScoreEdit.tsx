@@ -14,7 +14,7 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
     const [startAt, setStartAt] = useState(new Date(new Date().getTime() + 1000 * 10));
     const [endAt, setEndAt] = useState(new Date(new Date().getTime() + 1000 * 10));
     const [value, setValue] = useState(0);
-    const [mode, setMode] = useState<'bg' | 'score' | 'pre' | 'live' | 'post'>('bg');
+    const [mode, setMode] = useState<'bg' | 'score' | 'pre' | 'live' | 'post'>('pre');
     const [bg, setBg] = useState('#00000055');
     const [score, setScore] = useState('#fcc400');
     const [pre, setPre] = useState('#fe9200');
@@ -24,18 +24,18 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
 
     const onChangeMode = (mode: string) => {
         setMode(mode as 'bg' | 'score' | 'pre' | 'live' | 'post');
-        setHex(mode === 'bg' ? bg + '55' : mode === 'score' ? score : mode === 'pre' ? pre : mode === 'live' ? live : post);
+        setHex(mode === 'bg' ? bg : mode === 'score' ? score : mode === 'pre' ? pre : mode === 'live' ? live : post);
         if (mode === 'pre') {
+            setStatus('pre');
             setStartAt(new Date(new Date().getTime() + 1000 * 10));
             setValue(0);
-            setStatus('pre');
         } else if (mode === 'live') {
+            setStatus('live');
             setEndAt(new Date(new Date().getTime() + 1000 * 10));
             setValue(950);
-            setStatus('live');
         } else if (mode === 'post') {
-            setValue(1050);
             setStatus('post');
+            setValue(1050);
         }
     }
 
@@ -78,10 +78,10 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
             <input
                 type="text"
                 readOnly
-                value={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}`}
+                value={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}`}
                 style={{ flex: '1', width: '100%', marginRight: '1rem' }}
             />
-            <a href={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
+            <a href={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
           </div>
           <h4>Customize</h4>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
@@ -103,7 +103,7 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
                 <input
                     type="text"
                     readOnly
-                    value={`${window.location.protocol}//${window.location.host}/api/obs/score/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
+                    value={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
                     style={{ width: '100%' }}
                 />
             </div>

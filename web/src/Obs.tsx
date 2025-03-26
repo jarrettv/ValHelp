@@ -23,9 +23,8 @@ export default function Obs() {
         <p>Each URL contains your player ID that we then redirect to the most relevant current event. This way you don't have to keep updating your browser source for each broadcast.</p>
         
         <p>For example:<br/>
-        <code style={{color:'gold'}}>https://valheim.help/api/obs/score/{status.id}</code>
-        <br/>may automatically map to event 100<br/>
-        <code style={{color:'gold'}}>https://valheim.help/events/100/score/{status.id}</code></p>
+          <code style={{color:'gold'}}>https://valheim.help/obs/score/{status.id}</code>
+        </p>
 
         <p>This screen allows you to customize the colors and settings which are added onto the URL as the querystring.</p>
       </div>

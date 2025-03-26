@@ -44,6 +44,9 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/events/:id/score/:playerId" element={<EventScore />} />
           <Route path="/events/:id/scores/:playerId" element={<EventScoreboard />} />
           <Route path="/events/:id/overview/:playerId" element={<EventOverview />} />
+          <Route path="/obs/score/:playerId" element={<EventScore />} />
+          <Route path="/obs/scores/:playerId" element={<EventScoreboard />} />
+          <Route path="/obs/overview/:playerId" element={<EventOverview />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

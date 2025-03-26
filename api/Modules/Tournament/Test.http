@@ -10,6 +10,12 @@ GET {{base_url}}/api/events/upcoming
 ### Get player events
 GET {{base_url}}/api/players/18
 
+### Get player events
+GET {{base_url}}/api/players/1/current-event
+
+### Test player score
+GET {{base_url}}/api/players/1/score
+
 
 ### Create hunt
 # @name hunt

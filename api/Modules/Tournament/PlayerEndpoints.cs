@@ -12,9 +12,9 @@ public static class PlayerEndpoints
   public static void MapPlayerEndpoints(this WebApplication app)
   {
     var api = app.MapGroup("api/players");
-
-    api.MapGet("{userId}/score", RedirectToPlayerScore);
-    api.MapGet("{userId}", GetPlayer);
+    api.MapGet("{userId:int}/current-event", GetCurrentEventId);
+    api.MapGet("{userId:int}/score", RedirectToPlayerScore);
+    api.MapGet("{userId:int}", GetPlayer);
 
     app.MapGet("api/obs/{view}/{userId}", RedirectObsView);
   }
@@ -42,12 +42,24 @@ public static class PlayerEndpoints
     return TypedResults.Ok(resp);
   }
 
+  public static async Task<Results<NotFound, Ok<int>>> GetCurrentEventId(int userId, AppDbContext db, CancellationToken cancel)
+  {
+    var eventId = await LookupCurrentEventId(userId, db, cancel);
+
+    if (eventId == 0)
+    {
+      return TypedResults.NotFound();
+    }
+
+    return TypedResults.Ok(eventId);
+  }
+
   private static  async Task<Results<RedirectHttpResult, NotFound>> RedirectToPlayerScore(HttpContext ctx, int userId, AppDbContext db, CancellationToken cancel)
   {
     return await RedirectObsView(ctx, userId, "score", db, cancel);
   }
 
-  public static async Task<Results<RedirectHttpResult, NotFound>> RedirectObsView(HttpContext ctx, int userId, string view, AppDbContext db, CancellationToken cancel)
+  private static async Task<int> LookupCurrentEventId(int userId, AppDbContext db, CancellationToken cancel)
   {
     var eventIds = await db.Events
       .Where(e => e.Status == EventStatus.New || e.Status == EventStatus.Live || e.Status == EventStatus.Over)
@@ -57,28 +69,40 @@ public static class PlayerEndpoints
 
     if (eventIds.Length == 0)
     {
-      return TypedResults.NotFound();
+      return 0;
     }
 
     if (eventIds.Length == 1)
     {
-      return RedirectWithQuery(ctx, eventIds[0].Id, view, userId);
+      return eventIds[0].Id;
     }
 
     if (eventIds.Count(x => x.Status == EventStatus.Live) == 1)
     {
       var onlyLiveEventId = eventIds.First(x => x.Status == EventStatus.Live).Id;
-      return RedirectWithQuery(ctx, onlyLiveEventId, view, userId);
+      return onlyLiveEventId;
     }
 
     if (eventIds.Count(x => x.Status == EventStatus.New) == 1)
     {
-      var onlNewEventId = eventIds.First(x => x.Status == EventStatus.New).Id;
-      return RedirectWithQuery(ctx, onlNewEventId, view, userId);
+      var onlyNewEventId = eventIds.First(x => x.Status == EventStatus.New).Id;
+      return onlyNewEventId;
     }
 
     // otherwise redirect to the one with the closest start time
     var eventId = eventIds.OrderBy(x => Math.Abs((x.StartAt - DateTime.UtcNow).TotalSeconds)).First().Id;
+    return eventId;
+  }
+
+  public static async Task<Results<RedirectHttpResult, NotFound>> RedirectObsView(HttpContext ctx, int userId, string view, AppDbContext db, CancellationToken cancel)
+  {
+    var eventId = await LookupCurrentEventId(userId, db, cancel);
+
+    if (eventId == 0)
+    {
+      return TypedResults.NotFound();
+    }
+
     return RedirectWithQuery(ctx, eventId, view, userId);
   }
 

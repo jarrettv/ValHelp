@@ -35,8 +35,32 @@ export const useEvent = (id: number) => {
       return 5000;
     }
     return false;
-  } });
+  }, enabled: id !== 0 });
 };
+
+export const fetchPlayerCurrentEventId = async (id: number): Promise<number> => {
+  const response = await fetch(`/api/players/${id}/current-event`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch current event');
+  }
+  const data = await response.json();
+  console.debug('fetchPlayerCurrentEventId', id, data);
+  return data;
+};
+
+// export const useCurrentEvent = (eventId: number, playerId: number) => {
+//   if (eventId === 0) {
+//     eventId = fetchPlayerCurrentEventId(playerId);
+//   }
+
+//   return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval(query) {
+//     if (query.state.data && query.state.data?.status <= EventStatus.Live) {
+//       return 5000;
+//     }
+//     return false;
+//   } });
+// };
+
 
 // const fetchPlayers = async (id: number): Promise<Player[]> => {
 //   const response = await fetch(`/api/events/${id}/players`);
