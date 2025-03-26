@@ -15,14 +15,13 @@ export default function EventFinal() {
         console.error('Failed to fetch current event', reason);
       });
 
-  // auto-refresh every 10 minutes if no eventId is provided
-  if (!id) {
-    getEventId();
-    useEffect(() => {
+  useEffect(() => {
+    if (!id) {
+      getEventId();
       const interval = setInterval(getEventId, 600000); // 10 minutes in milliseconds
       return () => clearInterval(interval);
-    }, [playerId]);
-  }
+    }
+  }, [id, playerId]);
 
   const { data, isPending  } = useEvent(eventId);
   
