@@ -34,6 +34,6 @@ export default function EventScoreboard() {
   }
 
   return (
-    <ObsScores playerId={parseInt(playerId!)} event={data} bg={searchParams.get('bg') ?? undefined} title={searchParams.get('title') ?? undefined} score={searchParams.get('score') ?? undefined} active={searchParams.get('active') ?? undefined} max={parseInt(searchParams.get('max') ?? "6")} hideTitle={searchParams.get('hideTitle') === 'true'} />
+    <ObsScores playerId={parseInt(playerId!)} event={data} bg={searchParams.get('bg') ?? undefined} title={searchParams.get('title') ?? undefined} score={searchParams.get('score') ?? undefined} active={searchParams.get('active') ?? undefined} bubble={searchParams.get('bubble') ?? undefined} max={parseInt(searchParams.get('max') ?? "6")} hideTitle={searchParams.get('hideTitle') === 'true'} />
   );
 }

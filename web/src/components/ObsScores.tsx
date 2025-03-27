@@ -8,6 +8,7 @@ interface ObsScoresProps {
   title?: string;
   score?: string;
   active?: string;
+  bubble?: string;
   max?: number;
   hideTitle: boolean;
 }
@@ -39,7 +40,7 @@ export default function ObsScores(props: ObsScoresProps) {
       </div>
       }
       {topPlayers.map((player) => (
-        <div key={player.userId} className={`obs-player ${player.userId === props.playerId ? 'active' : ''}`}>
+        <div key={player.userId} className="obs-player" style={{ backgroundColor: player.userId != props.playerId ? 'transparent' : props.bubble ?? '#fff6'}}>
           <div className="obs-avatar">
             <img src={player.avatarUrl} alt={`${player.userId}`} />
           </div>

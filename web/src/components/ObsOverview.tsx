@@ -11,6 +11,7 @@ interface ObsFinalProps {
     place?: string;
     score?: string;
     active?: string;
+    bubble?: string;
     max?: number;
 }
 
@@ -48,7 +49,7 @@ export default function ObsOverview(props: ObsFinalProps) {
             </div>
             <div className="obs-final-players">
                 {topPlayers.map((player, index) => (
-                    <div key={player.userId} className={`obs-player ${player.userId === props.playerId ? 'active' : ''}`}>
+                    <div key={player.userId} className="obs-player" style={{ backgroundColor: player.userId != props.playerId ? 'transparent' : props.bubble ?? '#fff6'}}>
                         <div className="obs-player-info">
                             <div>
                                 <div className="obs-place">

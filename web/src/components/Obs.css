@@ -88,9 +88,6 @@
 .obs-player {
   display:flex;
   margin: 0.3rem 1.5rem;
-}
-.obs-player.active {
-  background-color: #fff6;
   border-radius: 50vh;
 }
 
@@ -106,11 +103,8 @@
   width:100vw;
 }
 
-.obs-final .obs-player.active {
-  border-radius: 18px;
-}
-
 .obs-final .obs-player {
+  border-radius: 18px;
   flex-direction: column;
   padding:0.25rem 0;
   margin-bottom: 0.5rem;
