@@ -68,13 +68,14 @@ export default function ObsOverviewEdit(props: ObsOverviewEditProps) {
             <a href={`${window.location.protocol}//${window.location.host}/obs/overview/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
           </div>
           <h4>Customize</h4>
-            <div>
+            <div style={{display:'flex'}}>
                 <input
                     type="text"
                     readOnly
-                    value={`${window.location.protocol}//${window.location.host}/obs/overview/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&max=${max}`}
-                    style={{ width: '100%' }}
+                    value={`${window.location.protocol}//${window.location.host}/obs/overview/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&bubble=${encodeColor(bubble)}&max=${max}`}
+                    style={{ flex: '1', width: '100%', marginRight: '1rem' }}
                 />
+            <a href={`${window.location.protocol}//${window.location.host}/obs/overview/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&bubble=${encodeColor(bubble)}&max=${max}`} target="_blank" rel="noreferrer">Test in browser</a>
             </div>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
                 <div>
