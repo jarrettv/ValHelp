@@ -29,13 +29,21 @@ export default function ObsOverview(props: ObsFinalProps) {
         topPlayers.pop();
         topPlayers.push(player);
     }
+    
+    function getPlace(playerId: number):number {
+        const uniqueScores = Array.from(new Set(props.event.players.map(player => player.score))).sort((a, b) => b - a);
+        const playerScore = props.event.players.find(player => player.userId === playerId)!.score;
+        return uniqueScores.indexOf(playerScore) + 1;
+    }
+        
 
-    function getPlaceSuffix(arg0: number): string {
-        if (arg0 == 1) {
+    function getPlaceSuffix(playerId: number): string {
+        var place = getPlace(playerId);
+        if (place == 1) {
             return "st";
-        } else if (arg0 == 2) {
+        } else if (place == 2) {
             return "nd";
-        } else if (arg0 == 3) {
+        } else if (place == 3) {
             return "rd";
         } else {
             return "th";
@@ -48,12 +56,12 @@ export default function ObsOverview(props: ObsFinalProps) {
                 {props.event.name}
             </div>
             <div className="obs-final-players">
-                {topPlayers.map((player, index) => (
+                {topPlayers.map((player) => (
                     <div key={player.userId} className="obs-player" style={{ backgroundColor: player.userId != props.playerId ? 'transparent' : props.bubble ?? '#fff6'}}>
                         <div className="obs-player-info">
                             <div>
                                 <div className="obs-place">
-                                    {index + 1}<small>{getPlaceSuffix(index + 1)}</small>
+                                    {getPlace(player.userId)}<small>{getPlaceSuffix(player.userId)}</small>
                                 </div>
                             </div>
                             <div className="obs-avatar">

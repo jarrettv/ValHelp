@@ -151,6 +151,7 @@ public class Player
   public int Score { get; set; }
   public List<PlayerLog> Logs { get; set; } = [];
   public DateTime UpdatedAt { get; set; }
+  public uint Version { get; set; }
 
   public void Update(DateTime at, int score, string[]? trophies, int deaths, int logouts)
   {
@@ -190,10 +191,16 @@ public class Player
     {
       var existingLogs = Logs.Where(x => x.Code == playerLog.Code);
       bool found = false;
+      // sometimes we get a duplicate set of logs with
       foreach (var existingLog in existingLogs)
       {
         // if playerLog is within a few seconds of existingLog, skip
-        if (Math.Abs((existingLog.At - playerLog.At).TotalSeconds) < 4)
+        if (Math.Abs((existingLog.At - playerLog.At).TotalSeconds) < 10)
+        {
+          found = true;
+          continue;
+        }
+        else if (playerLog.Code.StartsWith("Trophy"))
         {
           found = true;
           continue;

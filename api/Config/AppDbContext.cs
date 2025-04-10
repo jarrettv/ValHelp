@@ -51,6 +51,10 @@ public class AppDbContext : DbContext
     modelBuilder.Entity<Player>()
       .OwnsMany(x => x.Logs, x => x.ToJson());
 
+    modelBuilder.Entity<Player>()
+      .Property(x => x.Version)
+      .IsRowVersion();
+
     modelBuilder.Entity<TrackLog>()
       .HasKey(h => new { h.At, h.Id });
 
@@ -60,7 +64,6 @@ public class AppDbContext : DbContext
     modelBuilder.Entity<User>()
       .HasIndex(u => u.DiscordId)
       .IsUnique();
-    
     
     modelBuilder.Entity<Hunt>()
       .Property(h => h.Prizes)
