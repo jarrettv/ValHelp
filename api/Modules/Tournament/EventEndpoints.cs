@@ -263,17 +263,9 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
       return TypedResults.NotFound();
     }
 
-    // Check if user can access private event
-    if (hunt.IsPrivate && hunt.OwnerId != userId && !hunt.Players.Any(p => p.UserId == userId))
+    if (!CanAccessEvent(hunt, userId, ctx))
     {
-      // Check if user provided the correct password
-      var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ?? 
-                            ctx.Request.Headers["X-Private-Password"].FirstOrDefault();
-      
-      if (string.IsNullOrEmpty(providedPassword) || providedPassword != hunt.PrivatePassword)
-      {
-        return TypedResults.NotFound();
-      }
+      return TypedResults.NotFound();
     }
 
     var etag = ctx.Request.Headers.IfNoneMatch.FirstOrDefault();
@@ -601,4 +593,31 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     return TypedResults.Ok(players);
   }
 
+  private static bool CanAccessEvent(EventDetails hunt, int userId, HttpContext ctx)
+  {
+    if (!hunt.IsPrivate)
+    {
+      return true;
+    }
+
+    if (hunt.OwnerId == userId)
+    {
+      return true;
+    }
+
+    if (hunt.Players.Any(p => p.UserId == userId))
+    {
+      return true;
+    }
+
+    var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ?? 
+                          ctx.Request.Headers["X-Private-Password"].FirstOrDefault();
+
+    if (providedPassword == hunt.PrivatePassword)
+    {
+      return true;
+    }
+
+    return false;  
+  }
 }
