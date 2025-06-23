@@ -119,6 +119,10 @@ public class Event
   public string Seed { get; set; } = null!;
   public Dictionary<string, string> Prizes { get; set; } = null!;
   public List<Player> Players { get; set; } = [];
+  public bool IsPrivate { get; set; } = false;
+  public int OwnerId { get; set; }
+  public User Owner { get; set; } = null!;
+  public string? PrivatePassword { get; set; }
   public DateTime CreatedAt { get; set; }
   public string CreatedBy { get; set; } = null!;
   public DateTime UpdatedAt { get; set; }

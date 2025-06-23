@@ -13,6 +13,8 @@ export interface EventRow {
   status: EventStatus;
   players: EventRowPlayer[];
   createdBy: string;
+  isPrivate: boolean;
+  ownerId: number;
 }
 
 export interface EventRowPlayer {
@@ -57,3 +59,13 @@ const fetchEvents = async (): Promise<EventsResponse> => {
 export const useEvents = () => {
   return useQuery({queryKey: ['events-all'], queryFn: fetchEvents});
 };
+
+export function usePrivateEvents() {
+  return useQuery({
+    queryKey: ['private-events'],
+    queryFn: () =>
+      fetch('/api/events/private').then((res) =>
+        res.json()
+      ),
+  });
+}

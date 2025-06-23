@@ -4,7 +4,6 @@ import "./Events.css"
 import { useEvents } from "./hooks/useEvents";
 import { EventStatus } from "./domain/event";
 
-
 export default function Events() {
   const { data, isError, isPending } = useEvents();
 

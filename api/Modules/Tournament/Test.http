@@ -200,5 +200,39 @@ Content-Type: application/json
 ### Tracker standings
 GET {{base_url}}/api/track/standings?seed=lR3GRFfdsz&mode=TrophySaga
 
+### Test Private Event Creation
+POST http://localhost:5000/api/events
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+  "id": 0,
+  "name": "My Private Hunt",
+  "desc": "A private trophy hunt for friends only",
+  "mode": "TrophyHunt",
+  "scoringCode": "hunt-2024-11",
+  "startAt": "2024-12-15T14:00:00.000Z",
+  "hours": 4,
+  "seed": "(random)",
+  "status": 10,
+  "isPrivate": true
+}
+
+### Test Get My Private Events
+GET http://localhost:5000/api/events/my-private
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Test Get All Events (should filter private events)
+GET http://localhost:5000/api/events
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Test Get Specific Private Event (should work for owner/participant)
+GET http://localhost:5000/api/events/1
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Test Get Specific Private Event (should fail for non-owner/non-participant)
+GET http://localhost:5000/api/events/1
+Authorization: Bearer OTHER_USER_TOKEN_HERE
+
 
 

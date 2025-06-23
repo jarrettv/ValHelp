@@ -15,6 +15,9 @@ export interface Event {
   updatedBy: string;
   updatedAt: Date;
   players: Player[];
+  isPrivate: boolean;
+  ownerId: number;
+  privatePassword?: string;
 }
 
 export enum EventStatus {
@@ -58,6 +61,8 @@ export interface EventRow {
   endAt: Date;
   status: EventStatus;
   players: EventRowPlayer[];
+  isPrivate: boolean;
+  ownerId: number;
 }
 
 export interface EventRowPlayer {

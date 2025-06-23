@@ -1,5 +1,5 @@
-import { Link, useParams } from "react-router";
-import { useEvent } from "./hooks/useEvent";
+import { Link, useParams, Navigate, useSearchParams } from "react-router";
+import { useEvent, useEventByPassword } from "./hooks/useEvent";
 import Spinner from "./components/Spinner";
 import Trophy from "./components/Trophy";
 import TimeUntil from "./components/TimeUntil";
@@ -12,11 +12,28 @@ import { useAuth } from "./contexts/AuthContext";
 import Register from "./components/Register";
 import { Event as Ev, EventStatus, GetEventState } from "./domain/event";
 import EventPlayers from "./components/EventPlayers";
+import Lock from "./components/Lock";
 
 export default function Event() {
-  const { id } = useParams();
-  var { data, isPending } = useEvent(parseInt(id!));
+  const { id, password } = useParams();
+  const [searchParams] = useSearchParams();
   const { status } = useAuth();
+  
+  // Determine if we're accessing by password or ID
+  const isPasswordAccess = password !== undefined;
+  const eventId = isPasswordAccess ? 0 : parseInt(id!);
+  const queryPassword = searchParams.get('password');
+  
+  const { data: eventById, isPending: isPendingById } = useEvent(eventId, queryPassword || undefined);
+  const { data: eventByPassword, isPending: isPendingByPassword } = useEventByPassword(password || "");
+  
+  const data = isPasswordAccess ? eventByPassword : eventById;
+  const isPending = isPasswordAccess ? isPendingByPassword : isPendingById;
+
+  // Redirect to ID-based URL if accessing via password and we have the data
+  if (isPasswordAccess && data && !isPending) {
+    return <Navigate to={`/events/${data.id}?password=${password}`} replace />;
+  }
 
   function showRegistration(event: Ev) {
     if (event.status === EventStatus.New) return true;
@@ -31,10 +48,10 @@ export default function Event() {
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>
         { data.players.find(x => x.userId == status?.id) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
         
-        <Link style={{margin:"0"}} to={`/events/${id}/edit`}>Edit</Link>
+        <Link style={{margin:"0"}} to={`/events/${data.id}/edit`}>Edit</Link>
         </div>}
         <div style={{ display: "flex" }}>
-          <Trophy style={{opacity:data.status === EventStatus.Draft ? 0.2 : 1}} />
+          <Trophy style={{opacity:data.status === EventStatus.Draft ? 0.2 : 1}} private={data.isPrivate} />
           <div className="competition-info">
             <h3 style={{fontSize:"1.5rem"}}>{data.name}</h3>
             <div className="timing wide">
@@ -49,14 +66,36 @@ export default function Event() {
             <div style={{marginTop:"-0.3rem"}}>{data.seed}</div>
           </div>
         </div>
+        
         <EventStatusArea event={data} />
         
-        {showRegistration(data) && <Register eventId={data.id} lock={data.status > EventStatus.Live} player={data.players.find(x => x.userId === status?.id)} />}
+        {showRegistration(data) && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
 
         {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
         {data.status >= EventStatus.Live && <EventStandings players={data.players} /> }
 
         {data.players.length === 0 && <div className="card">No players yet</div>}
+        
+        {data.isPrivate && data.privatePassword && (
+          <div className="card" style={{marginBottom: "1rem"}}>
+            <div style={{display: "flex", alignItems: "center", gap: "0.5rem"}}>
+              <Lock style={{width: "1.5rem", height: "1.5rem"}} />
+              <input 
+                type="text" 
+                value={`${window.location.origin}/events/private/${data.privatePassword}`}
+                readOnly
+                style={{flex: 1, padding: "0.5rem", fontFamily: "monospace"}}
+              />
+              <button 
+                onClick={() => navigator.clipboard.writeText(`${window.location.origin}/events/private/${data.privatePassword}`)}
+                style={{padding: "0.5rem 1rem"}}
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        )}
+
         <p>
           {data.desc.split('\n').map((item, idx) => (
             <React.Fragment key={idx}>

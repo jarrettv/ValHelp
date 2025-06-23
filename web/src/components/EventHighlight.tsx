@@ -21,7 +21,7 @@ export default function EventHighlight({ event }: EventHighlightProps) {
   return (
     <div className="competition row">
       <div style={{ display: "flex" }}>
-        <Trophy />
+        <Trophy private={event.isPrivate} />
         <div className="competition-info">
           <h3>{event.name} <small>{getEventHours()}</small></h3>
           <div className="timing">

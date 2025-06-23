@@ -133,6 +133,10 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("real")
                         .HasColumnName("hours");
 
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_private");
+
                     b.Property<string>("Mode")
                         .IsRequired()
                         .HasColumnType("text")
@@ -142,6 +146,14 @@ namespace ValHelpApi.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("owner_id");
+
+                    b.Property<string>("PrivatePassword")
+                        .HasColumnType("text")
+                        .HasColumnName("private_password");
 
                     b.Property<string>("Prizes")
                         .IsRequired()
@@ -177,6 +189,9 @@ namespace ValHelpApi.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_events");
+
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_events_owner_id");
 
                     b.HasIndex("ScoringCode")
                         .HasDatabaseName("ix_events_scoring_code");
@@ -342,6 +357,12 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("EventId", "UserId")
                         .HasName("pk_players");
 
@@ -480,12 +501,21 @@ namespace ValHelpApi.Migrations
 
             modelBuilder.Entity("ValHelpApi.Modules.Tournament.Event", b =>
                 {
+                    b.HasOne("ValHelpApi.Modules.Admin.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_events_users_owner_id");
+
                     b.HasOne("ValHelpApi.Modules.Tournament.Scoring", "Scoring")
                         .WithMany()
                         .HasForeignKey("ScoringCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_events_scorings_scoring_code");
+
+                    b.Navigation("Owner");
 
                     b.Navigation("Scoring");
                 });
@@ -512,7 +542,7 @@ namespace ValHelpApi.Migrations
                         .HasConstraintName("fk_players_events_event_id");
 
                     b.HasOne("ValHelpApi.Modules.Admin.User", "User")
-                        .WithMany()
+                        .WithMany("Players")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -588,6 +618,11 @@ namespace ValHelpApi.Migrations
                         });
 
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("ValHelpApi.Modules.Admin.User", b =>
+                {
+                    b.Navigation("Players");
                 });
 
             modelBuilder.Entity("ValHelpApi.Modules.Tournament.Event", b =>

@@ -6,12 +6,18 @@ import { Link, useParams, useNavigate } from "react-router";
 import TimeAgo from "./components/TimeAgo";
 import { useAuth } from "./contexts/AuthContext";
 import { useEditEvent } from "./hooks/useEvent";
+import Trophy from "./components/Trophy";
+import Lock from "./components/Lock";
 
 export default function EventEdit() {
   const { id } = useParams();
   const { status } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [mode, setMode] = useState("TrophyHunt");
+  const [scoringCode, setScoringCode] = useState("hunt-2024-11");
 
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
@@ -20,14 +26,30 @@ export default function EventEdit() {
 
   useEffect(() => {
     if (data) {
-      // convert startAt to local time
       const date = new Date(data.startAt);
       const timezoneOffset = date.getTimezoneOffset() * 60000;
       const localISOTime = new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
       setStartAt(localISOTime);
       setHours(data.hours);
+      setIsPrivate(data.isPrivate);
+      setMode(data.mode);
+      setScoringCode(data.scoringCode);
     }
   }, [data]);
+  
+  useEffect(() => {
+    switch (mode) {
+      case "TrophyHunt":
+        setScoringCode("hunt-2024-11");
+        break;
+      case "TrophySaga":
+        setScoringCode("saga-2025-02");
+        break;
+      case "TrophyRush":
+        setScoringCode("rush-2024-11");
+        break;
+    }
+  }, [mode]);
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -52,10 +74,15 @@ export default function EventEdit() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // alter the form data so the startAt is in iso UTC format
     formData.set('startAt', new Date(startAt).toISOString());
-    const formObject = Object.fromEntries(formData.entries());
-    mutation.mutate(formObject as any);
+    const formObject: any = Object.fromEntries(formData.entries());
+    
+    formObject.isPrivate = formObject.isPrivate === 'on';
+    formObject.id = Number(formObject.id);
+    formObject.status = Number(formObject.status);
+    formObject.hours = Number(formObject.hours);
+    
+    mutation.mutate(formObject);
   };
 
   const canDelete = status!.id === 1 || data?.players.some((p) => p.userId === status!.id && Math.abs(p.status) === 1);
@@ -97,12 +124,51 @@ export default function EventEdit() {
         {mutation.isPending && (
           <div className="alert">Saving event...</div>
         )}
+
+        <fieldset className="event-type-selector horizontal">
+          <div className={`event-type-option ${mode === 'TrophyHunt' ? 'selected' : ''}`} onClick={() => setMode('TrophyHunt')}>
+            <Trophy private={isPrivate} />
+            <b>Hunt</b>
+            <small>Vanilla drops</small>
+          </div>
+          <div className={`event-type-option ${mode === 'TrophySaga' ? 'selected' : ''}`} onClick={() => setMode('TrophySaga')}>
+            <Trophy mode="Saga" private={isPrivate} />
+            <b>Saga</b>
+            <small>Modded w/ 100%</small>
+          </div>
+          <div className={`event-type-option ${mode === 'TrophyRush' ? 'selected' : ''}`} onClick={() => setMode('TrophyRush')}>
+            <Trophy mode="Rush" private={isPrivate} />
+            <b>Rush</b>
+            <small>Very-hard w/ 100%</small>
+          </div>
+          <div className="event-type-option disabled">
+            <Trophy />
+            <b>Custom</b>
+            <small>Coming Soon</small>
+          </div>
+        </fieldset>
+
         <input type="hidden" name="id" value={id ?? "0"} />
+        <input type="hidden" name="isPrivate" value={isPrivate.toString()} />
+        <input type="hidden" name="mode" value={mode} />
+        <input type="hidden" name="scoringCode" value={scoringCode} />
+
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>            
+            <fieldset>
+              <label htmlFor="name">Name <small style={{ opacity: 0.6 }}>(max 26 characters)</small></label>
+              <input maxLength={26} style={{ width: '11rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
+            </fieldset>
           <fieldset>
-            <label htmlFor="name">Name <small style={{ opacity: 0.6 }}>(max 26 characters)</small></label>
-            <input maxLength={26} style={{ width: '11rem' }} type="text" required id="name" name="name" defaultValue={data.name} />
+            <label htmlFor="seed">Seed</label>
+            <div>
+              <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
+            </div>
+            <div style={{ maxWidth: '12rem', fontSize: '0.77rem', marginTop: '0.3rem', lineHeight: '0.8rem', color: '#999' }}>🎲 Use <code>(random)</code> to roll seed just before start</div>
           </fieldset>
+          </div>
+          <div>
+
           <fieldset>
             <div className="radio-group">
               {data.status < 20 && (
@@ -135,36 +201,16 @@ export default function EventEdit() {
 
             </div>
           </fieldset>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-
-            <fieldset>
-              <label htmlFor="mode" style={{ display: 'block', width: '6rem' }}>Mode</label>
-              <select id="mode" required name="mode" defaultValue={data.mode}>
-                <option value="TrophyHunt">Trophy Hunt (classic)</option>
-                <option value="TrophyRush">Trophy Rush</option>
-                <option value="TrophySaga">Trophy Saga</option>
-                <option value="TrophyRun">Trophy Run (coming soon)</option>
-              </select>
-            </fieldset>
-            <fieldset>
-              <label htmlFor="scoringCode" style={{ display: 'block', width: '6rem' }}>Scoring</label>
-              <select id="scoringCode" required name="scoringCode" defaultValue={data.scoringCode}>
-                <option value="hunt-2024-11">Hunt Scoring 2024 Nov</option>
-                <option value="rush-2024-11">Rush Scoring 2024 Nov</option>
-                <option value="saga-2025-02">Saga Champs 2025 Feb</option>
-              </select>
+          
+          <fieldset style={{border: 'none', padding: '0', marginTop: '2.5rem'}}>
+              <label>
+                <input type="checkbox" name="isPrivate" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} /> Private
+                <div style={{ maxWidth: '12rem', fontSize: '0.77rem', marginTop: '0.3rem', lineHeight: '0.8rem', color: '#999' }}><Lock width="1.1rem" height="1.1rem" /> Secret link generated automatically</div>
+              </label>
             </fieldset>
           </div>
-          <fieldset>
-            <label htmlFor="seed">Seed</label>
-            <div>
-              <input style={{ width: '7rem' }} type="text" required id="seed" name="seed" defaultValue={data.seed} />
-            </div>
-            <div style={{ maxWidth: '12rem', fontSize: '0.77rem', marginTop: '0.3rem', lineHeight: '0.8rem', color: '#999' }}>🎲 Use <code>(random)</code> to roll seed just before start</div>
-          </fieldset>
         </div>
+
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <fieldset>
             <label htmlFor="startAt">Start Time</label>
@@ -180,8 +226,8 @@ export default function EventEdit() {
           <textarea id="desc" required name="desc" defaultValue={data.desc} />
         </fieldset>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {canDelete && <button type="button" style={{ backgroundColor: '#882222', width: '6rem', marginRight: '2rem' }} onClick={() => onDelete()}>Delete</button>}
-          <button className="link" style={{width:"8rem", marginRight:"2rem"}} onClick={() => data.id === 0 ? navigate('/') : navigate(`/events/${data.id}`)}>Cancel</button>
+            {canDelete && <button type="button" style={{ backgroundColor: '#882222', width: '6rem', marginRight: '2rem' }} onClick={() => onDelete()}>Delete</button>}
+          <button type="button" className="secondary" style={{ width:'8rem',marginRight: '2rem' }} onClick={() => navigate(-1)}>Cancel</button>
           <button type="submit">Save</button>
         </div>
       </form>

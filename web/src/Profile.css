@@ -28,3 +28,81 @@
 .profile {
   flex: 1;
 }
+
+.event-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.event-type-selector.horizontal {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.event-type-selector .event-type-option.disabled {
+  cursor: not-allowed;
+  background-color: #2c3e50;
+  color: #777;
+}
+
+.event-type-selector .event-type-option.disabled:hover {
+  border-color: #444;
+}
+
+.event-type-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid #444;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+.event-type-option:hover {
+  background-color: #333;
+  border-color: #666;
+}
+
+.event-type-option.selected {
+  background-color: #3a539b;
+  border-color: #5c7fec;
+  color: white;
+  box-shadow: 0 0 10px rgba(92, 127, 236, 0.5);
+}
+
+.event-type-selector .event-type-option.disabled .trophy-icon {
+  opacity: 0.3;
+}
+
+.event-type-option .trophy-icon {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.event-type-option b {
+  font-size: 0.9rem;
+  margin-bottom: 0.1rem;
+  line-height: 1;
+}
+
+.event-type-option small {
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 70%;
+}
+
+#event-page form fieldset {
+  margin-top: -0.75rem;
+}
+
+#event-page form .event-type-selector {
+  margin-top: 1rem;
+}

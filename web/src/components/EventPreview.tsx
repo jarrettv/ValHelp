@@ -21,9 +21,12 @@ export default function EventPreview({ event }: EventPreviewProps) {
   return (
     <div className="competition row">
       <div style={{ display: "flex" }}>
-        <Trophy />
+        <Trophy private={event.isPrivate} />
         <div className="competition-info">
-          <h3>{event.name} <small>by {event.createdBy}</small></h3>
+          <h3>
+            {event.name} 
+            <small>by {event.createdBy}</small>
+          </h3>
           <div className="timing wide">
             {getFriendlyDateRange(new Date(event.startAt), new Date(event.endAt))}
           </div>

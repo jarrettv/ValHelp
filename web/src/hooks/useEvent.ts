@@ -1,14 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Event, EventStatus } from '../domain/event';
 
-const fetchEvent = async (id: number): Promise<Event> => {
-  const response = await fetch(`/api/events/${id}`,
-    {
-      headers: {
-        "If-None-Match": localStorage.getItem(`etag-${id}`) || ""
-      }
-    }
-  );
+const fetchEvent = async (id: number, password?: string): Promise<Event> => {
+  const headers: Record<string, string> = {
+    "If-None-Match": localStorage.getItem(`etag-${id}`) || ""
+  };
+  
+  if (password) {
+    headers["X-Private-Password"] = password;
+  }
+  
+  const response = await fetch(`/api/events/${id}`, { headers });
   if (response.status === 304) {
     var json = localStorage.getItem(`event-${id}`);
     return JSON.parse(json!) as Event;
@@ -25,17 +27,45 @@ const fetchEvent = async (id: number): Promise<Event> => {
   return data;
 };
 
+const fetchEventByPassword = async (password: string): Promise<Event> => {
+  const response = await fetch(`/api/events/private/${password}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch event details');
+  }
+  const data = await response.json();
+  return data;
+};
+
 export const useEditEvent = (id: number) => {
   return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id) });
 };
 
-export const useEvent = (id: number) => {
-  return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval(query) {
-    if (query.state.data && query.state.data?.status <= EventStatus.Live) {
-      return 5000;
-    }
-    return false;
-  }, enabled: id !== 0 });
+export const useEvent = (id: number, password?: string) => {
+  return useQuery({ 
+    queryKey: ['event', id, password], 
+    queryFn: () => fetchEvent(id, password), 
+    refetchInterval(query) {
+      if (query.state.data && query.state.data?.status <= EventStatus.Live) {
+        return 5000;
+      }
+      return false;
+    }, 
+    enabled: id !== 0 
+  });
+};
+
+export const useEventByPassword = (password: string) => {
+  return useQuery({ 
+    queryKey: ['event-by-password', password], 
+    queryFn: () => fetchEventByPassword(password), 
+    refetchInterval(query) {
+      if (query.state.data && query.state.data?.status <= EventStatus.Live) {
+        return 5000;
+      }
+      return false;
+    }, 
+    enabled: password !== "" 
+  });
 };
 
 export const fetchPlayerCurrentEventId = async (id: number): Promise<number> => {

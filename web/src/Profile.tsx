@@ -3,6 +3,9 @@ import "./Profile.css";
 import { FormEvent } from "react";
 import Spinner from "./components/Spinner";
 import { Link } from "react-router";
+import { usePrivateEvents, EventRow } from "./hooks/useEvents";
+import { EventStatus } from "./domain/event";
+import EventPreview from "./components/EventPreview";
 
 export default function Profile() {
   const { isPending, error, data } = useQuery({
@@ -12,6 +15,8 @@ export default function Profile() {
         res.json()
       ),
   })
+
+  const { data: privateEventsData, isPending: privateEventsPending } = usePrivateEvents();
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -88,6 +93,30 @@ export default function Profile() {
       <div className="card" style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
         <div>Oden says to get happy viewers use our</div>
         <div style={{fontSize:'larger'}}><img style={{verticalAlign:'middle',marginRight:'0.4rem'}} width="32" height="32" src="https://obsproject.com/assets/images/new_icon_small-r.png" alt="obs" /><Link to="/auth/obs">OBS browser sources</Link></div>
+      </div>
+
+      <div className="card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3>My Private Events</h3>
+          <Link to="/events/0" style={{ textDecoration: 'none' }}>
+            <button style={{ fontSize: '0.9rem', padding: '0.5rem 1rem' }}>Create Private Event</button>
+          </Link>
+        </div>
+        {privateEventsPending ? (
+          <div>Loading private events...</div>
+        ) : privateEventsData?.data && privateEventsData.data.length > 0 ? (
+          <div>
+            {privateEventsData.data
+              .sort((a: EventRow, b: EventRow) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime())
+              .map((event: EventRow) => (
+                <div key={event.id}>
+                  {event.status < EventStatus.Live && <EventPreview event={event} />}
+                </div>
+              ))}
+          </div>
+        ) : (
+          <div>No private events yet. <Link to="/events/0">Create one!</Link></div>
+        )}
       </div>
     </section>
   )

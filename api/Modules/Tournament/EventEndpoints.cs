@@ -19,6 +19,8 @@ public static class EventEndpoints
     api.MapGet("0", GetEventEdit);
     api.MapGet("latest", GetEventsLatest);
     api.MapGet("upcoming", GetEventsUpcoming);
+    api.MapGet("private", GetMyPrivateEvents).RequireAuthorization();
+    api.MapGet("private/{password}", GetPrivateEventByPassword);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
     api.MapDelete("{id:int}", DeleteEvent).RequireAuthorization();
     api.MapPost("{id:int}/players", PostPlayer).RequireAuthorization();
@@ -26,15 +28,16 @@ public static class EventEndpoints
     api.MapGet("", GetEvents);
   }
 
-  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string CreatedBy);
+  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string CreatedBy, bool IsPrivate, int OwnerId);
   public record EventRowPlayer(int Id, string Name, string AvatarUrl, int Score);
   public record EventsResponse(EventRow[] Data, int Total);
   public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db, ClaimsPrincipal cp)
   {
-    //var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var hunts = await db.Events
       .Where(h => h.Status > EventStatus.Draft && h.Status < EventStatus.Deleted)
+      .Where(h => !h.IsPrivate || h.OwnerId == userId || h.Players.Any(p => p.UserId == userId))
       .Select(h => new EventRow(
         h.Id,
         h.Name,
@@ -42,17 +45,22 @@ public static class EventEndpoints
         h.EndAt,
         h.Status,
         h.Players.Where(x => x.Status >= 0).Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()
-        , h.CreatedBy
+        , h.CreatedBy,
+        h.IsPrivate,
+        h.OwnerId
       ))
       .ToArrayAsync();
 
     return TypedResults.Ok(new EventsResponse(hunts, hunts.Length));
   }
 
-  public static async Task<Ok<EventsResponse>> GetEventsLatest(AppDbContext db)
+  public static async Task<Ok<EventsResponse>> GetEventsLatest(AppDbContext db, ClaimsPrincipal cp)
   {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
     var rows = await db.Events
       .Where(h => h.Status == EventStatus.Live || h.Status == EventStatus.Over)
+      .Where(h => !h.IsPrivate || h.OwnerId == userId || h.Players.Any(p => p.UserId == userId))
       .Select(h => new
       {
         h.Id,
@@ -62,7 +70,9 @@ public static class EventEndpoints
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
         ,
-        h.CreatedBy
+        h.CreatedBy,
+        h.IsPrivate,
+        h.OwnerId
       })
       .OrderBy(x => x.Status)
       .ThenByDescending(x => x.StartAt)
@@ -76,14 +86,19 @@ public static class EventEndpoints
       x.EndAt,
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
-      , x.CreatedBy
+      , x.CreatedBy,
+      x.IsPrivate,
+      x.OwnerId
     )).ToArray(), rows.Length));
   }
 
-  public static async Task<Ok<EventsResponse>> GetEventsUpcoming(AppDbContext db)
+  public static async Task<Ok<EventsResponse>> GetEventsUpcoming(AppDbContext db, ClaimsPrincipal cp)
   {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
     var rows = await db.Events
       .Where(h => h.Status == EventStatus.New)
+      .Where(h => !h.IsPrivate || h.OwnerId == userId || h.Players.Any(p => p.UserId == userId))
       .Select(h => new
       {
         h.Id,
@@ -93,7 +108,9 @@ public static class EventEndpoints
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
         ,
-        h.CreatedBy
+        h.CreatedBy,
+        h.IsPrivate,
+        h.OwnerId
       })
       .OrderByDescending(x => x.StartAt)
       .Take(4)
@@ -107,8 +124,88 @@ public static class EventEndpoints
       x.EndAt,
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
-      , x.CreatedBy
+      , x.CreatedBy,
+      x.IsPrivate,
+      x.OwnerId
     )).ToArray(), rows.Length));
+  }
+
+  public static async Task<Ok<EventsResponse>> GetMyPrivateEvents(AppDbContext db, ClaimsPrincipal cp)
+  {
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+    var rows = await db.Events
+      .Where(h => h.Status > EventStatus.Draft && h.Status < EventStatus.Deleted)
+      .Where(h => h.IsPrivate && (h.OwnerId == userId || h.Players.Any(p => p.UserId == userId)))
+      .Select(h => new
+      {
+        h.Id,
+        h.Name,
+        h.StartAt,
+        h.EndAt,
+        h.Status,
+        Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
+        ,
+        h.CreatedBy,
+        h.OwnerId
+      })
+      .OrderByDescending(x => x.StartAt)
+      .ToArrayAsync();
+
+    return TypedResults.Ok(new EventsResponse(rows.Select(x => new EventRow(
+      x.Id,
+      x.Name,
+      x.StartAt,
+      x.EndAt,
+      x.Status,
+      x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
+      , x.CreatedBy,
+      true,
+      x.OwnerId
+    )).ToArray(), rows.Length));
+  }
+
+  public static async Task<Results<NotFound, Ok<EventDetails>>> GetPrivateEventByPassword(string password, AppDbContext db, HybridCache cache, CancellationToken token)
+  {
+    var hunt = await db.Events
+      .AsNoTracking()
+      .Where(h => h.IsPrivate && h.PrivatePassword == password && h.Status < EventStatus.Deleted)
+      .Select(h => new EventDetails(
+        h.Id,
+        h.Name,
+        h.Desc,
+        h.Mode,
+        h.ScoringCode,
+        h.Scoring.Scores,
+        h.StartAt,
+        h.EndAt,
+        h.Hours,
+        h.Seed,
+        (int)h.Status,
+        h.CreatedBy,
+        h.UpdatedBy,
+        h.UpdatedAt,
+        h.Players.Select(hp => new EventPlayersRow(
+        hp.UserId,
+        hp.Name,
+        hp.AvatarUrl,
+        hp.Status,
+        hp.Score,
+        hp.Stream,
+        hp.UpdatedAt,
+        hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+      )).ToArray(),
+        h.IsPrivate,
+        h.OwnerId,
+        h.PrivatePassword
+    )).FirstOrDefaultAsync(token);
+
+    if (hunt == null)
+    {
+      return TypedResults.NotFound();
+    }
+
+    return TypedResults.Ok(hunt);
   }
 
   public static async Task<Results<UnauthorizedHttpResult, Ok<EventDetails>>> GetEventEdit(ClaimsPrincipal user, AppDbContext db)
@@ -148,22 +245,35 @@ Please turn on past broadcasting on twitch so we can review video if needed.
 Point system (All trophies only count once) example: 37 deer trophies = 10 points
 """;
 
-    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>());
+    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>(), false, 1, null);
     return TypedResults.Ok(resp);
   }
 
   public record EventDetails(int Id, string Name, string Desc, string Mode, string ScoringCode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,
-    string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, EventPlayersRow[] Players);
+    string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, EventPlayersRow[] Players, bool IsPrivate, int OwnerId, string? PrivatePassword);
   public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx, 
     ClaimsPrincipal cp, HybridCache cache, CancellationToken token)
   {
-    //var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+    var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var hunt = await cache.GetOrCreateAsync($"event-{id}", async cancel => await GetEventFromDatabase(id, db, cancel), cancellationToken: token);
 
     if (hunt == null)
     {
       return TypedResults.NotFound();
+    }
+
+    // Check if user can access private event
+    if (hunt.IsPrivate && hunt.OwnerId != userId && !hunt.Players.Any(p => p.UserId == userId))
+    {
+      // Check if user provided the correct password
+      var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ?? 
+                            ctx.Request.Headers["X-Private-Password"].FirstOrDefault();
+      
+      if (string.IsNullOrEmpty(providedPassword) || providedPassword != hunt.PrivatePassword)
+      {
+        return TypedResults.NotFound();
+      }
     }
 
     var etag = ctx.Request.Headers.IfNoneMatch.FirstOrDefault();
@@ -215,11 +325,14 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         hp.Stream,
         hp.UpdatedAt,
         hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
-      )).ToArray()
+      )).ToArray(),
+        h.IsPrivate,
+        h.OwnerId,
+        h.PrivatePassword
     )).FirstOrDefaultAsync(token);
   }
 
-  public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status);
+  public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status, bool IsPrivate);
   public record EventResponse(int Id);
 
   public static async Task<Results<NotFound, UnauthorizedHttpResult, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
@@ -296,6 +409,15 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     hunt.Hours = req.Hours;
     hunt.Desc = req.Desc;
     hunt.Seed = req.Seed;
+    hunt.IsPrivate = req.IsPrivate;
+    hunt.OwnerId = userId;
+    
+    // Generate password for private events
+    if (req.IsPrivate && string.IsNullOrEmpty(hunt.PrivatePassword))
+    {
+      hunt.PrivatePassword = GeneratePrivatePassword();
+    }
+    
     hunt.Prizes = new Dictionary<string, string>() { { "1st", "(unknown)" } };
     hunt.UpdatedAt = now;
     hunt.UpdatedBy = user!.Username;
@@ -311,6 +433,15 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     {
       return TypedResults.Ok(resp);
     }
+  }
+
+  private static string GeneratePrivatePassword()
+  {
+    // Same algorithm as SeedMaker but without the abbr
+    const string chars = "ABCDEFGHJKLMNPQRTUVWXYZ23456789";
+    var random = new Random();
+    return new string(Enumerable.Repeat(chars, 6)
+      .Select(s => s[random.Next(s.Length)]).ToArray());
   }
 
   public static async Task<Results<UnauthorizedHttpResult, ValidationProblem, Ok, NotFound>> DeleteEvent(int id, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)

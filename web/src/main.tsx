@@ -14,6 +14,7 @@ import Obs from './Obs.tsx'
 import Event from './Event.tsx'
 import EventEdit from './EventEdit.tsx'
 import Events from './Events.tsx'
+import PrivateEvents from './PrivateEvents.tsx'
 import Users from './Users.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
@@ -37,6 +38,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/all" element={<Events />} />
+            <Route path="/events/private" element={<PrivateEvents />} />
+            <Route path="/events/private/:password" element={<Event />} />
             <Route path="/events/:id" element={<Event />} />
             <Route path="/events/:id/edit" element={<EventEdit />} />
             <Route path="/events/:id/timeline" element={<EventTimelineView />} />

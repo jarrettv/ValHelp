@@ -3,6 +3,7 @@ import Badge from "./components/Badge";
 import Calendar from "./components/Calendar";
 import EventLatest from "./components/EventsLatest";
 import EventsUpcoming from "./components/EventsUpcoming";
+import Lock from "./components/Lock";
 import { Link } from "react-router";
 import { useAuth } from "./contexts/AuthContext";
 
@@ -25,12 +26,17 @@ export default function Home() {
         { status?.isActive &&
         <Link to="/events/0/edit">
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Host Event <small>Open Only (for now)</small>
+          Host Event <small>Public or Private</small>
         </Link> }
         <Link to="/events/all">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           All Events <small>Current and Historic</small>
         </Link>
+        { status?.isActive &&
+        <Link to="/events/private">
+          <Lock style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Private Events <small>For Me and Friends</small>
+        </Link> }
         {/* <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Gear <small>Weapons &amp; Armor Info</small>

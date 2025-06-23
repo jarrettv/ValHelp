@@ -45,6 +45,12 @@ public class AppDbContext : DbContext
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
                 c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
 
+    modelBuilder.Entity<Event>()
+      .HasOne(e => e.Owner)
+      .WithMany()
+      .HasForeignKey(e => e.OwnerId)
+      .OnDelete(DeleteBehavior.Cascade);
+
     modelBuilder.Entity<Player>()
       .HasKey(hp => new { hp.EventId, hp.UserId });
     
