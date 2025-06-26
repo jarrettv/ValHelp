@@ -135,7 +135,7 @@ public static class EventEndpoints
     var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var rows = await db.Events
-      .Where(h => h.Status > EventStatus.Draft && h.Status < EventStatus.Deleted)
+      .Where(h => h.Status < EventStatus.Deleted)
       .Where(h => h.IsPrivate && (h.OwnerId == userId || h.Players.Any(p => p.UserId == userId)))
       .Select(h => new
       {
