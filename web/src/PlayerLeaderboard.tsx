@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Trophy from "./components/Trophy";
 import { useEvents } from "./hooks/useEvents";
 import { EventStatus } from "./domain/event";
