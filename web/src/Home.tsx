@@ -6,6 +6,7 @@ import EventsUpcoming from "./components/EventsUpcoming";
 import Lock from "./components/Lock";
 import { Link } from "react-router";
 import { useAuth } from "./contexts/AuthContext";
+import Leaderboard from "./components/Leaderboard";
 
 
 export default function Home() {
@@ -37,6 +38,10 @@ export default function Home() {
           <Lock style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Private Events <small>For Me and Friends</small>
         </Link> }
+        <Link to="/leaderboard">
+          <Leaderboard style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Player Leaderboard <small>All Events</small>
+        </Link>
         {/* <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Gear <small>Weapons &amp; Armor Info</small>

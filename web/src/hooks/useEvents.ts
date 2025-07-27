@@ -12,6 +12,8 @@ export interface EventRow {
   endAt: Date;
   status: EventStatus;
   players: EventRowPlayer[];
+  mode: string;
+  hours: number;
   createdBy: string;
   isPrivate: boolean;
   ownerId: number;

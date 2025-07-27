@@ -28,7 +28,7 @@ public static class EventEndpoints
     api.MapGet("", GetEvents);
   }
 
-  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string CreatedBy, bool IsPrivate, int OwnerId);
+  public record EventRow(int Id, string Name, DateTime StartAt, DateTime EndAt, EventStatus Status, EventRowPlayer[] Players, string Mode, float Hours, string CreatedBy, bool IsPrivate, int OwnerId);
   public record EventRowPlayer(int Id, string Name, string AvatarUrl, int Score);
   public record EventsResponse(EventRow[] Data, int Total);
   public static async Task<Ok<EventsResponse>> GetEvents(AppDbContext db, ClaimsPrincipal cp)
@@ -44,8 +44,10 @@ public static class EventEndpoints
         h.StartAt,
         h.EndAt,
         h.Status,
-        h.Players.Where(x => x.Status >= 0).Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()
-        , h.CreatedBy,
+        h.Players.Where(x => x.Status >= 0).Select(hp => new EventRowPlayer(hp.UserId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray(),
+        h.Mode,
+        h.Hours,
+        h.CreatedBy,
         h.IsPrivate,
         h.OwnerId
       ))
@@ -70,6 +72,8 @@ public static class EventEndpoints
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
         ,
+        h.Mode,
+        h.Hours,
         h.CreatedBy,
         h.IsPrivate,
         h.OwnerId
@@ -86,7 +90,10 @@ public static class EventEndpoints
       x.EndAt,
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
-      , x.CreatedBy,
+      ,
+      x.Mode,
+      x.Hours,
+      x.CreatedBy,
       x.IsPrivate,
       x.OwnerId
     )).ToArray(), rows.Length));
@@ -108,6 +115,8 @@ public static class EventEndpoints
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
         ,
+        h.Mode,
+        h.Hours,
         h.CreatedBy,
         h.IsPrivate,
         h.OwnerId
@@ -123,8 +132,10 @@ public static class EventEndpoints
       x.StartAt,
       x.EndAt,
       x.Status,
-      x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
-      , x.CreatedBy,
+      x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray(),
+      x.Mode,
+      x.Hours,
+      x.CreatedBy,
       x.IsPrivate,
       x.OwnerId
     )).ToArray(), rows.Length));
@@ -146,6 +157,8 @@ public static class EventEndpoints
         h.Status,
         Players = h.Players.Where(x => x.Status >= 0).Select(hp => new { hp.UserId, hp.Name, hp.AvatarUrl, hp.Score })
         ,
+        h.Mode,
+        h.Hours,
         h.CreatedBy,
         h.OwnerId
       })
@@ -160,6 +173,8 @@ public static class EventEndpoints
       x.Status,
       x.Players.Select(p => new EventRowPlayer(p.UserId, p.Name, p.AvatarUrl, p.Score)).ToArray()
       , x.CreatedBy,
+      x.Hours,
+      x.Mode,
       true,
       x.OwnerId
     )).ToArray(), rows.Length));
