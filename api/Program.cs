@@ -42,6 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 app.MapDbEndpoints();
 app.MapTournamentEndpoints();
+app.MapAvatarEndpoints();
 app.MapAuthEndpoints();
 app.MapDefaultEndpoints();
 app.MapFallbackToFile("index.html");

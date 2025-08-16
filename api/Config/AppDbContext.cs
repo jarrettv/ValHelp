@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
   public DbSet<TrackLog> TrackLogs { get; set; }
 
   public DbSet<User> Users { get; set; }
+  public DbSet<Avatar> Avatars { get; set; }
   public DbSet<Scoring> Scorings { get; set; }
   public DbSet<Hunt> Hunts { get; set; }
   public DbSet<HuntsPlayer> HuntsPlayers { get; set; }
@@ -70,7 +71,10 @@ public class AppDbContext : DbContext
     modelBuilder.Entity<User>()
       .HasIndex(u => u.DiscordId)
       .IsUnique();
-    
+
+    modelBuilder.Entity<Avatar>()
+      .HasKey(a => a.Hash);
+
     modelBuilder.Entity<Hunt>()
       .Property(h => h.Prizes)
       .HasColumnType("jsonb")

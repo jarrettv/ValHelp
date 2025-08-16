@@ -17,8 +17,16 @@ public class User
   public string Twitch { get; set; } = "";
   public bool IsActive { get; set; }
 
-  public string SteamId {get; set;} = "";
-  public string AltName {get; set;} = "";
+  public string SteamId { get; set; } = "";
+  public string AltName { get; set; } = "";
 
   public List<Player> Players { get; set; } = [];
+}
+
+public class Avatar
+{
+  public string Hash { get; set; } = null!;
+  public byte[] Data { get; set; } = null!;
+  public string ContentType { get; set; } = null!;
+  public DateTime UploadedAt { get; set; }
 }

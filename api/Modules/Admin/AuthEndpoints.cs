@@ -35,7 +35,7 @@ public static class AuthEndpoints
       return TypedResults.Ok(users);
     }).RequireAuthorization("Admin");
 
-    api.MapPost("users", PostUsers).RequireAuthorization("Admin");
+    //api.MapPost("users", PostUsers).RequireAuthorization("Admin");
 
     api.MapGet("discord", async (HttpContext ctx) =>
     {
@@ -119,55 +119,55 @@ public static class AuthEndpoints
   }
 
 
-  public static async Task<Results<Ok, BadRequest>> PostUsers(HttpRequest request, AppDbContext db, ILoggerFactory logger)
-  {
-    var log = logger.CreateLogger("PostUsers");
+  // public static async Task<Results<Ok, BadRequest>> PostUsers(HttpRequest request, AppDbContext db, ILoggerFactory logger)
+  // {
+  //   var log = logger.CreateLogger("PostUsers");
 
-    try
-    {
-      using var reader = new StreamReader(request.Body);
-      var csvData = await reader.ReadToEndAsync();
-      var alts = CsvHelper.ParseCsv(csvData, new UserAltsMap());
-      foreach (var alt in alts)
-      {
-        var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
-        if (user == null)
-        {
-          log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
-          user = new User
-          {
-            Username = alt.Username,
-            Email = $"{alt.Username.ToLower()}@valheim.help",
-            DiscordId = alt.DiscordId,
-            AvatarUrl = "https://valheim.help/favicon.webp",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            LastLoginAt = DateTime.UtcNow,
-            IsActive = true,
-          };
-        }
+  //   try
+  //   {
+  //     using var reader = new StreamReader(request.Body);
+  //     var csvData = await reader.ReadToEndAsync();
+  //     var alts = CsvHelper.ParseCsv(csvData, new UserAltsMap());
+  //     foreach (var alt in alts)
+  //     {
+  //       var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
+  //       if (user == null)
+  //       {
+  //         log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
+  //         user = new User
+  //         {
+  //           Username = alt.Username,
+  //           Email = $"{alt.Username.ToLower()}@valheim.help",
+  //           DiscordId = alt.DiscordId,
+  //           AvatarUrl = "https://valheim.help/favicon.webp",
+  //           CreatedAt = DateTime.UtcNow,
+  //           UpdatedAt = DateTime.UtcNow,
+  //           LastLoginAt = DateTime.UtcNow,
+  //           IsActive = true,
+  //         };
+  //       }
 
-        if (user.Username != alt.Username)
-        {
-          log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
-        }
+  //       if (user.Username != alt.Username)
+  //       {
+  //         log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
+  //       }
 
-        user.AltName = alt.AltName;
-        user.SteamId = alt.SteamId;
-        db.Users.Update(user);
+  //       user.AltName = alt.AltName;
+  //       user.SteamId = alt.SteamId;
+  //       db.Users.Update(user);
 
-        log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
-      }
+  //       log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
+  //     }
 
-      await db.SaveChangesAsync();
-    }
-    catch (Exception ex)
-    {
-      log.LogError(ex, "Error updating alts");
-      return TypedResults.BadRequest();
-    }
-    return TypedResults.Ok();
-  }
+  //     await db.SaveChangesAsync();
+  //   }
+  //   catch (Exception ex)
+  //   {
+  //     log.LogError(ex, "Error updating alts");
+  //     return TypedResults.BadRequest();
+  //   }
+  //   return TypedResults.Ok();
+  // }
 
 
   public record ProfileReq(string Username, string? Youtube, string? Twitch);
