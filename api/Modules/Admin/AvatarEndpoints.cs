@@ -33,25 +33,32 @@ public static class AvatarEndpoints
     public static async Task<Ok<string[]>> LoadAllAvatars(ILoggerFactory log, AppDbContext db)
     {
         var logger = log.CreateLogger("AvatarLoader");
-        var oldToNewMap = new Dictionary<string, string>();
+        var idToAvatarMap = new Dictionary<int, string>();
 
         var allUsers = await db.Users
-            .Where(x => x.AvatarUrl.StartsWith("https://cdn.discordapp.com/avatars/"))
             .ToListAsync();
         foreach (var user in allUsers)
         {
-            if (oldToNewMap.ContainsKey(user.AvatarUrl))
+            if (user.AvatarUrl.StartsWith("https://valheim.help/api/avatar"))
             {
                 logger.LogInformation("User {UserId} already has mapped avatar URL {AvatarUrl}", user.Id, user.AvatarUrl);
-                user.AvatarUrl = oldToNewMap[user.AvatarUrl];
-                await db.SaveChangesAsync();
+                idToAvatarMap[user.Id] = user.AvatarUrl;
+                continue;
+            }
+            else if (user.AvatarUrl == "https://valheim.help/favicon.webp")
+            {
+                logger.LogInformation("User {UserId} doesn't have a good avatar", user.Id);
                 continue;
             }
 
             var newUrl = await Auth.DownloadAvatar(logger, db, user.AvatarUrl);
-            oldToNewMap[user.AvatarUrl] = newUrl;
             user.AvatarUrl = newUrl;
             await db.SaveChangesAsync();
+
+            if (newUrl != "https://valheim.help/favicon.webp")
+            {
+                idToAvatarMap[user.Id] = newUrl;
+            }
         }
 
         var allPlayers = await db.Players
@@ -59,20 +66,19 @@ public static class AvatarEndpoints
             .ToListAsync();
         foreach (var player in allPlayers)
         {
-            if (oldToNewMap.ContainsKey(player.AvatarUrl))
+            if (idToAvatarMap.ContainsKey(player.UserId))
             {
-                logger.LogInformation("Player {PlayerId} already has mapped avatar URL {AvatarUrl}", player.UserId, player.AvatarUrl);
-                player.AvatarUrl = oldToNewMap[player.AvatarUrl];
+                logger.LogInformation("Player {PlayerId} already has a good avatar URL {AvatarUrl}", player.UserId, player.AvatarUrl);
+                player.AvatarUrl = idToAvatarMap[player.UserId];
                 await db.SaveChangesAsync();
                 continue;
             }
 
             var newUrl = await Auth.DownloadAvatar(logger, db, player.AvatarUrl);
-            oldToNewMap[player.AvatarUrl] = newUrl;
             player.AvatarUrl = newUrl;
             await db.SaveChangesAsync();
         }
 
-        return TypedResults.Ok(oldToNewMap.Select(x => $"{x.Key}={x.Value}").ToArray());
+        return TypedResults.Ok(idToAvatarMap.Select(x => $"{x.Key}={x.Value}").ToArray());
     }
 }
