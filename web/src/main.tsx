@@ -22,6 +22,7 @@ import EventScoreboard from './EventScoreboard.tsx'
 import EventOverview from './EventOverview.tsx'
 import EventTimelineView from './EventTimelineView.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
+import EventRedirect from './EventRedirect.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -38,6 +39,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/users" element={<Users />} />
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
+            <Route path="/events/hunt" element={<EventRedirect mode="TrophyHunt" />} />
+            <Route path="/events/rush" element={<EventRedirect mode="TrophyRush" />} />
+            <Route path="/events/saga" element={<EventRedirect mode="TrophySaga" />} />
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/private" element={<PrivateEvents />} />
             <Route path="/events/private/:password" element={<Event />} />

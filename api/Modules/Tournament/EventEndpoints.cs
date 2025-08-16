@@ -19,6 +19,7 @@ public static class EventEndpoints
     api.MapGet("0", GetEventEdit);
     api.MapGet("latest", GetEventsLatest);
     api.MapGet("upcoming", GetEventsUpcoming);
+    api.MapGet("current", GetEventCurrent);
     api.MapGet("private", GetMyPrivateEvents).RequireAuthorization();
     api.MapGet("private/{password}", GetPrivateEventByPassword);
     api.MapGet("{id:int}", GetEvent).WithName("GetEvent");
@@ -139,6 +140,20 @@ public static class EventEndpoints
       x.IsPrivate,
       x.OwnerId
     )).ToArray(), rows.Length));
+  }
+
+  private record CurrentEvent(int Id);
+
+  private static async Task<Results<NotFound, Ok<CurrentEvent>>> GetEventCurrent(string mode, AppDbContext db, CancellationToken cancel)
+  {
+
+    var currentEventId = await LookupCurrentEventId(mode, db, cancel);
+    if (currentEventId == 0)
+    {
+      return TypedResults.NotFound();
+    }
+
+    return TypedResults.Ok(new CurrentEvent(currentEventId));
   }
 
   public static async Task<Ok<EventsResponse>> GetMyPrivateEvents(AppDbContext db, ClaimsPrincipal cp)
@@ -266,7 +281,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
 
   public record EventDetails(int Id, string Name, string Desc, string Mode, string ScoringCode, Dictionary<string, int> Scoring, DateTime StartAt, DateTime EndAt, float Hours,
     string Seed, int Status, string CreatedBy, string UpdatedBy, DateTime UpdatedAt, EventPlayersRow[] Players, bool IsPrivate, int OwnerId, string? PrivatePassword);
-  public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx, 
+  public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx,
     ClaimsPrincipal cp, HybridCache cache, CancellationToken token)
   {
     var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
@@ -356,7 +371,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
       {
         { "scoringCode", new[] { "Please choose a valid scoring mechanism" } }
       }, title: "Please choose a valid scoring mechanism");
-    } 
+    }
     else if (!scoring.Modes.Any(x => x == req.Mode))
     {
       return TypedResults.ValidationProblem(new Dictionary<string, string[]>
@@ -418,13 +433,13 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     hunt.Seed = req.Seed;
     hunt.IsPrivate = req.IsPrivate;
     hunt.OwnerId = userId;
-    
+
     // Generate password for private events
     if (req.IsPrivate && string.IsNullOrEmpty(hunt.PrivatePassword))
     {
       hunt.PrivatePassword = GeneratePrivatePassword();
     }
-    
+
     hunt.Prizes = new Dictionary<string, string>() { { "1st", "(unknown)" } };
     hunt.UpdatedAt = now;
     hunt.UpdatedBy = user!.Username;
@@ -528,7 +543,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     {
       player.Status = req.In == "on" ? PlayerStatus.PlayerIn : PlayerStatus.PlayerOut;
     }
-    
+
     var ytLog = player.Logs.FirstOrDefault(l => l.Code.StartsWith("ChannelYoutube"));
     if (ytLog != null)
     {
@@ -572,7 +587,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         .Where(hp => hp.Status >= 0)
         .Select(hp => hp.Score)
         .MaxAsync();
-      
+
       if (best > 0)
       {
         player.Logs.Add(new PlayerLog($"PersonalBest={best}", DateTime.UtcNow));
@@ -625,7 +640,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
       return true;
     }
 
-    var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ?? 
+    var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ??
                           ctx.Request.Headers["X-Private-Password"].FirstOrDefault();
 
     if (providedPassword == hunt.PrivatePassword)
@@ -633,6 +648,44 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
       return true;
     }
 
-    return false;  
+    return false;
+  }
+  
+  
+  private static async Task<int> LookupCurrentEventId(string eventMode, AppDbContext db, CancellationToken cancel)
+  {
+    var eventIds = await db.Events
+      .Where(e => e.Status == EventStatus.New || e.Status == EventStatus.Live || e.Status == EventStatus.Over)
+      .Where(e => e.Mode == eventMode)
+      .Select(e => new { e.Status, e.StartAt, e.Id })
+      .OrderByDescending(e => e.StartAt)
+      .Take(10)
+      .ToArrayAsync(cancel);
+
+    if (eventIds.Length == 0)
+    {
+      return 0;
+    }
+
+    if (eventIds.Length == 1)
+    {
+      return eventIds[0].Id;
+    }
+
+    if (eventIds.Count(x => x.Status == EventStatus.Live) == 1)
+    {
+      var onlyLiveEventId = eventIds.First(x => x.Status == EventStatus.Live).Id;
+      return onlyLiveEventId;
+    }
+
+    if (eventIds.Count(x => x.Status == EventStatus.New) == 1)
+    {
+      var onlyNewEventId = eventIds.First(x => x.Status == EventStatus.New).Id;
+      return onlyNewEventId;
+    }
+
+    // otherwise redirect to the one with the closest start time
+    var eventId = eventIds.OrderBy(x => Math.Abs((x.StartAt - DateTime.UtcNow).TotalSeconds)).First().Id;
+    return eventId;
   }
 }
