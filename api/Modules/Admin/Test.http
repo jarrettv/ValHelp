@@ -8,6 +8,11 @@ GET {{base_url}}/api/db/seed-all
 ### Import all the old hunts
 GET {{base_url}}/api/import
 
+
+### Load all avatars
+POST {{base_url}}/api/avatar/load-all
+
+
 ### Seed a user
 POST {{base_url}}/api/db/seed-user
 Content-Type: application/json

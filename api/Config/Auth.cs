@@ -94,7 +94,7 @@ public static class Auth
     });
   }
 
-  private static async Task<string> DownloadAvatar(ILogger logger, AppDbContext db, string avatarUrl)
+  public static async Task<string> DownloadAvatar(ILogger logger, AppDbContext db, string avatarUrl)
   {
     using var httpClient = new HttpClient();
     try
@@ -126,7 +126,7 @@ public static class Auth
     catch (Exception ex)
     {
       logger.LogWarning(ex, "Failed to download or store avatar url={AvatarUrl}", avatarUrl);
+      return "https://valheim.help/favicon.webp";
     }
-    return avatarUrl;
   }
 }
