@@ -50,6 +50,16 @@ const trophies = [
     code: "TrophyFrostTroll"
   },
   {
+    name: "Bear",
+    biome: "Black Forest",
+    code: "TrophyBjorn"
+  },
+  {
+    name: "Ghost",
+    biome: "Black Forest",
+    code: "TrophyGhost"
+  },
+  {
     name: "Brenna",
     biome: "Black Forest",
     code: "TrophySkeletonHildir"
@@ -173,6 +183,11 @@ const trophies = [
     name: "Lox",
     biome: "Plains",
     code: "TrophyLox"
+  },
+  {
+    name: "Vial",
+    biome: "Plains",
+    code: "TrophyBjornUndead"
   },
   {
     name: "Zil",

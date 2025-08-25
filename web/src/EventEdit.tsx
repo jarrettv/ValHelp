@@ -17,7 +17,7 @@ export default function EventEdit() {
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [mode, setMode] = useState("TrophyHunt");
-  const [scoringCode, setScoringCode] = useState("hunt-2024-11");
+  const [scoringCode, setScoringCode] = useState("hunt-2025-09");
 
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
@@ -40,7 +40,7 @@ export default function EventEdit() {
   useEffect(() => {
     switch (mode) {
       case "TrophyHunt":
-        setScoringCode("hunt-2024-11");
+        setScoringCode("hunt-2025-09");
         break;
       case "TrophySaga":
         setScoringCode("saga-2025-02");

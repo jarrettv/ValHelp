@@ -23,6 +23,7 @@ import EventOverview from './EventOverview.tsx'
 import EventTimelineView from './EventTimelineView.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
 import EventRedirect from './EventRedirect.tsx'
+import EventTrophies from './EventTrophies.tsx'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -55,8 +56,10 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/events/:id/score/:playerId" element={<EventScore />} />
           <Route path="/events/:id/scores/:playerId" element={<EventScoreboard />} />
           <Route path="/events/:id/overview/:playerId" element={<EventOverview />} />
+          <Route path="/events/:id/trophies/:playerId" element={<EventTrophies />} />
           <Route path="/obs/score/:playerId" element={<EventScore />} />
           <Route path="/obs/scores/:playerId" element={<EventScoreboard />} />
+          <Route path="/obs/trophies/:playerId" element={<EventTrophies />} />
           <Route path="/obs/overview/:playerId" element={<EventOverview />} />
         </Routes>
       </BrowserRouter>

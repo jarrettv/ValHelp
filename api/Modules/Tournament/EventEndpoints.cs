@@ -275,7 +275,7 @@ Please turn on past broadcasting on twitch so we can review video if needed.
 Point system (All trophies only count once) example: 37 deer trophies = 10 points
 """;
 
-    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", "hunt-2024-11", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>(), false, 1, null);
+    var resp = new EventDetails(0, "", defaultDesc, "TrophyHunt", "hunt-2025-09", new Dictionary<string, int>(), nextSaturday, nextSaturday.AddHours(4), 4, "(random)", 0, user.Identity?.Name ?? "Unknown", user.Identity?.Name ?? "Unknown", DateTime.UtcNow, Array.Empty<EventPlayersRow>(), false, 1, null);
     return TypedResults.Ok(resp);
   }
 
