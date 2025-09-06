@@ -100,3 +100,13 @@
   vertical-align: middle;
   box-shadow: 0 1px 4px #0003;
 }
+
+
+.leaderboard-table .mobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .leaderboard-table .wide { display: none;}
+  .leaderboard-table .mobile { display: block;}
+}

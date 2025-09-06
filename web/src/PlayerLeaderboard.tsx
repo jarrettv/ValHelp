@@ -6,11 +6,11 @@ import "./PlayerLeaderboard.css";
 
 // Table columns: Trophy+Event Name | Date | Hours | Placement | Player avatar+name | Score
 const columns = [
-  { key: "placement", label: "Place" },
+  { key: "placement", label: "Place", wide: true },
   { key: "player", label: "Player" },
   { key: "score", label: "Score" },
   { key: "event", label: "Event" },
-  { key: "date", label: "Date" },
+  { key: "date", label: "Date", wide: true },
 ];
 
 function getPlaceSuffix(place: number): string {
@@ -105,7 +105,7 @@ function PlayerLeaderboard() {
         <thead>
           <tr>
             {columns.map(col => (
-              <th key={col.key} onClick={() => {
+              <th key={col.key} className={col.wide ? "wide" : ""} onClick={() => {
                 if (sortBy === col.key) setSortDir(sortDir === "desc" ? "asc" : "desc");
                 else { setSortBy(col.key); setSortDir("desc"); }
               }} style={{ cursor: "pointer" }}>
@@ -117,7 +117,7 @@ function PlayerLeaderboard() {
         <tbody>
           {rows.map((row, i) => (
             <tr key={i}>
-              <td>
+              <td className="wide">
                 {row.placement}
                 <sup style={{ fontSize: '0.85em', marginLeft: 1 }}>{getPlaceSuffix(row.placement)}</sup>
               </td>
@@ -126,11 +126,12 @@ function PlayerLeaderboard() {
                 {row.player.name}
               </td>
               <td className="score-cell">{row.score}</td>
-              <td>
+              <td style={{ display: 'flex', alignItems: 'center' }}>
                 <Trophy style={{ width: 22, height: 22, verticalAlign: "middle", marginRight: 6, marginTop: -4 }} />
-                {row.event.name} <small>{row.hours}h</small>
+                <span className="naming wide">{row.event.name}<small>{row.hours}h</small></span>
+                <span className="naming mobile">{row.event.name.replace('Trophy ', '').replace('Event ', '').replace('# ', '#').substring(0, 13)}</span> 
               </td>
-              <td>{row.date.toLocaleDateString()}</td>
+              <td className="wide">{row.date.toLocaleDateString()}</td>
             </tr>
           ))}
         </tbody>
