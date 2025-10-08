@@ -59,12 +59,14 @@
 
 #score {
   position: fixed;
-  top: 0.8rem;
+  bottom: 1rem;
   right: 2rem;
   color: gold;
   font-size: 3rem;
   font-weight: bold;
-  margin: 0 1rem;
+  padding: 0.5rem 2rem;
+  border-radius: 1rem;
+  background-color: #0009;
 }
 
 .calc-trophies {
