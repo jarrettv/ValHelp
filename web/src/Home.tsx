@@ -29,20 +29,20 @@ export default function Home() {
         { status?.isActive &&
         <Link to="/events/0/edit">
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Host Event <small>Public or Private</small>
+          Host Event <small>Public or private</small>
         </Link> }
         <Link to="/events/all">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          All Events <small>Current and Historic</small>
+          All Events <small>Current and historic</small>
         </Link>
         { status?.isActive &&
         <Link to="/events/private">
           <Lock style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Private Events <small>For Me and Friends</small>
+          Private Events <small>For me and friends</small>
         </Link> }
         <Link to="/leaderboard">
           <Leaderboard style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Player Leaderboard <small>All Events</small>
+          Leaderboards <small>PBs for all events</small>
         </Link>
         <Link to="/trophy/calc">
           <Calc style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
@@ -50,7 +50,7 @@ export default function Home() {
         </Link>
         <Link to="/guides">
           <HelpGuide style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Help Guides <small>Tips and Strategies</small>
+          Help Guides <small>Tips and strategies</small>
         </Link>
         {/* <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />

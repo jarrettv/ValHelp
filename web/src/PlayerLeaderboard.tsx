@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import Trophy from "./components/Trophy";
-import { useEvents } from "./hooks/useEvents";
+import { useEvents, EventRow, EventRowPlayer } from "./hooks/useEvents";
 import { EventStatus } from "./domain/event";
 import "./PlayerLeaderboard.css";
 
@@ -42,9 +42,18 @@ function PlayerLeaderboard() {
     setSelectedType(type);
   };
 
-  const rows = useMemo(() => {
+  type LeaderboardRow = {
+    event: EventRow;
+    date: Date;
+    hours: number;
+    placement: number;
+    player: EventRowPlayer;
+    score: number;
+  };
+
+  const rows = useMemo<LeaderboardRow[]>(() => {
     if (!data?.data) return [];
-    let allRows: any[] = [];
+    const allRows: LeaderboardRow[] = [];
     data.data.forEach(event => {
       if (event.status < EventStatus.Over) return;
       // Map selectedType to mode/hours
@@ -66,9 +75,41 @@ function PlayerLeaderboard() {
         });
       });
     });
-    return allRows.sort((a, b) => {
+    const bestByPlayer = new Map<number, LeaderboardRow>();
+
+    allRows.forEach((row) => {
+      const existing = bestByPlayer.get(row.player.id);
+      if (!existing) {
+        bestByPlayer.set(row.player.id, row);
+        return;
+      }
+
+      if (row.score > existing.score) {
+        bestByPlayer.set(row.player.id, row);
+        return;
+      }
+
+      if (row.score === existing.score) {
+        const rowTime = row.date.getTime();
+        const existingTime = existing.date.getTime();
+
+        if (rowTime > existingTime) {
+          bestByPlayer.set(row.player.id, row);
+          return;
+        }
+
+        if (rowTime === existingTime && row.placement < existing.placement) {
+          bestByPlayer.set(row.player.id, row);
+        }
+      }
+    });
+
+    const dedupedRows = Array.from(bestByPlayer.values());
+    const filteredRows = dedupedRows.filter((row) => row.score > 200);
+
+    return filteredRows.sort((a, b) => {
       let cmp = 0;
-      if (sortBy === "date") cmp = b.date - a.date;
+      if (sortBy === "date") cmp = b.date.getTime() - a.date.getTime();
       else if (sortBy === "event") cmp = a.event.name.localeCompare(b.event.name);
       else if (sortBy === "hours") cmp = b.hours - a.hours;
       else if (sortBy === "placement") cmp = a.placement - b.placement;
@@ -83,7 +124,7 @@ function PlayerLeaderboard() {
 
   return (
     <div className="leaderboard-table-container">
-      <h2>Player Leaderboard</h2>
+      <h2>PB Leaderboard</h2>
       <div className="event-type-toggle-group" style={{ marginBottom: '1.2rem' }}>
         {EVENT_TYPE_OPTIONS.map((t) => (
           <button
@@ -115,21 +156,23 @@ function PlayerLeaderboard() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, i) => (
-            <tr key={i}>
+          {rows.map((row) => (
+            <tr key={row.player.id}>
               <td className="wide">
                 {row.placement}
                 <sup style={{ fontSize: '0.85em', marginLeft: 1 }}>{getPlaceSuffix(row.placement)}</sup>
               </td>
               <td>
                 <img src={row.player.avatarUrl} alt={row.player.name} style={{ width: 22, height: 22, borderRadius: "50%", marginRight: 6, verticalAlign: "middle" }} />
-                {row.player.name}
+                <a href={`/players/${row.player.id}`}>{row.player.name}</a>
               </td>
               <td className="score-cell">{row.score}</td>
-              <td style={{ display: 'flex', alignItems: 'center' }}>
-                <Trophy style={{ width: 22, height: 22, verticalAlign: "middle", marginRight: 6, marginTop: -4 }} />
-                <span className="naming wide">{row.event.name}<small>{row.hours}h</small></span>
-                <span className="naming mobile">{row.event.name.replace('Trophy ', '').replace('Event ', '').replace('# ', '#').substring(0, 13)}</span> 
+              <td>
+                <a style={{ display: 'flex', alignItems: 'center' }} href={`/events/${row.event.id}`}>
+                  <Trophy style={{ width: 22, height: 22, verticalAlign: "middle", marginRight: 6, marginTop: -4 }} />
+                  <span className="naming wide">{row.event.name} <small>{row.hours}h</small></span>
+                  <span className="naming mobile">{row.event.name.replace('Trophy ', '').replace('Event ', '').replace('# ', '#').substring(0, 13)}</span>
+                </a>
               </td>
               <td className="wide">{row.date.toLocaleDateString()}</td>
             </tr>

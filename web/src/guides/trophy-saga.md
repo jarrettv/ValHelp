@@ -11,7 +11,7 @@ order: 2
 
 ## Overview
 
-Saga mode is part of the Trophy Hunt Mod made by Oathorse. Trophies are 100% drop rate for the same point values as the vanilla version (point values listed at the bottom). It’s also an “accelerated” way to play the game. For example, metal scraps smelt into bars instantly upon entering your inventory, sailing speed is increased, open portals, biome specific mobs drop boss items (more on this later) and production build pieces like kilns, beehives and fermenters are almost instant, Crops grow in seconds, bosses after Eikthyr drop 10 Ymir Flesh.
+Saga mode is part of the Trophy Hunt Mod made by Oathorse. Trophies are 100% drop rate for the same point values as the vanilla version. See the [trophy calc](/trophy/calc) for the most up to date scoring. It’s also an “accelerated” way to play the game. For example, metal scraps smelt into bars instantly upon entering your inventory, sailing speed is increased, portal all items, biome specific mobs drop boss items (more on this later) and production build pieces like kilns, beehives and fermenters are almost instant, crops grow in seconds, bosses after Eikthyr drop 10 Ymir Flesh.
 
 Saga can be overwhelming to get started with, especially considering the 4 hour time limit for events. I made this guide on Saga for beginners to get started and help with the learning curve. I am going to strip back much of the fluff and focus on what I consider to be “core numbers and requirements” to be successful in reaching later biomes and thus, higher scores. I will be excluding basic materials like stone, wood, leather, deer hide, bones, etc. and focusing on the numbers for progression. 
 
