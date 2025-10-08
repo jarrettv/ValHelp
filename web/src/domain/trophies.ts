@@ -165,12 +165,12 @@ const trophies = [
     code: "TrophyGoblin"
   },
   {
-    name: "Fuling berserker",
+    name: "Fuling Berserker",
     biome: "Plains",
     code: "TrophyGoblinBrute"
   },
   {
-    name: "Fuling shaman",
+    name: "Fuling Shaman",
     biome: "Plains",
     code: "TrophyGoblinShaman"
   },
@@ -225,7 +225,7 @@ const trophies = [
     code: "TrophySeeker"
   },
   {
-    name: "Seeker soldier",
+    name: "Seeker Soldier",
     biome: "Mistlands",
     code: "TrophySeekerBrute"
   },

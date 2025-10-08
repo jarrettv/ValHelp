@@ -1,0 +1,150 @@
+.trophy-calc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.calc-status {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: #f7c873;
+}
+
+.calc-status.error {
+  color: #ff6464;
+}
+
+.calc-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.calc-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #23272f;
+  color: #f7c873;
+  border: 1.5px solid #23272f;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s, color 0.15s;
+  min-width: 110px;
+  font-weight: 600;
+}
+
+.calc-toggle small {
+  font-size: 0.7rem;
+  margin-top: 0.1rem;
+  opacity: 0.7;
+}
+
+.calc-toggle.selected {
+  background: #5575a5;
+  color: #23272f;
+  border: 1.5px solid #175dc5;
+  box-shadow: 0 1px 4px #f7c87333;
+}
+
+.calc-toggle:hover {
+  filter: brightness(1.05);
+  border: 1.5px solid #f7c87399;
+}
+
+#score {
+  position: fixed;
+  top: 0.8rem;
+  right: 2rem;
+  color: gold;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0 1rem;
+}
+
+.calc-trophies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.calc-trophy {
+  display: flex;
+  flex-direction: column;
+    align-items: center;
+  width: 96px;
+  height: 120px;
+  padding: 0.3rem 0.5rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border 0.3s, background-color 0.3s;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.calc-trophy:hover {
+  border: 2px solid rgb(22, 68, 127);
+  background-color: #2a313e;
+}
+
+.calc-trophy:focus-visible {
+  outline: 2px solid gold;
+  outline-offset: 2px;
+}
+
+.calc-trophy.selected {
+  border: 2px solid gold;
+  background-color: #303022;
+}
+
+.calc-trophy .calc-info {
+    display:flex;
+    justify-content: space-between;
+    width:100%;
+}
+
+.calc-trophy .calc-chance {
+  font-size: smaller;
+  color: white;
+  opacity: 0.6;
+}
+
+.calc-trophy .calc-score {
+  color: white;
+  font-weight: 600;
+}
+
+.calc-trophy.selected .calc-score {
+  color: gold;
+  font-weight: bold;
+}
+
+.calc-trophy img {
+  width: 64px;
+  height: 64px;
+  margin-top: -0.3rem;
+}
+
+.calc-trophy .calc-name {
+  margin: -0.6rem 0 0 0;
+  font-size: 1.1rem;
+}
+
+.calc-placeholder {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}

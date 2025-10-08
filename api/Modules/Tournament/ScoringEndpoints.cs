@@ -6,7 +6,7 @@ using ValHelpApi.Config;
 namespace ValHelpApi.Modules.Tournament;
 
 public record ScoringList(ScoringRecord[] Data, int Total);
-public record ScoringRecord(string Code, string Name, Dictionary<string, int> Scores, string[] Modes, bool IsActive);
+public record ScoringRecord(string Code, string Name, Dictionary<string, int> Scores, Dictionary<string, float>? Rates, string DropRateType, string[] Modes, bool IsActive);
 
 public static class ScoringEndpoints
 {
@@ -33,9 +33,11 @@ public static class ScoringEndpoints
     }
 
     scoring.Name = req.Name;
-    scoring.Scores = req.Scores;
-    scoring.Modes = req.Modes;
-    scoring.IsActive = req.IsActive;
+  scoring.Scores = req.Scores;
+  scoring.Rates = req.Rates;
+  scoring.DropRateType = req.DropRateType;
+  scoring.Modes = req.Modes;
+  scoring.IsActive = req.IsActive;
     await db.SaveChangesAsync();
 
     return TypedResults.Ok(req);
@@ -45,7 +47,7 @@ public static class ScoringEndpoints
   {
     var scorings = await db.Scorings
       .Where(s => s.IsActive)
-      .Select(s => new ScoringRecord(s.Code, s.Name, s.Scores, s.Modes.ToArray(), s.IsActive))
+      .Select(s => new ScoringRecord(s.Code, s.Name, s.Scores, s.Rates, s.DropRateType, s.Modes.ToArray(), s.IsActive))
       .ToArrayAsync();
 
     return TypedResults.Ok(new ScoringList(scorings, scorings.Length));
@@ -55,7 +57,7 @@ public static class ScoringEndpoints
   {
     var scoring = await db.Scorings
       .Where(s => s.Code == code)
-      .Select(s => new ScoringRecord(s.Code, s.Name, s.Scores, s.Modes.ToArray(), s.IsActive))
+  .Select(s => new ScoringRecord(s.Code, s.Name, s.Scores, s.Rates, s.DropRateType, s.Modes.ToArray(), s.IsActive))
       .SingleOrDefaultAsync();
 
     if (scoring == null)

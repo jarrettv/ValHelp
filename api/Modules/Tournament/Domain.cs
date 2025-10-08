@@ -89,6 +89,8 @@ public class Scoring
   public string Code { get; set; } = null!;
   public string Name { get; set; } = null!;
   public Dictionary<string, int> Scores { get; set; } = [];
+  public string DropRateType { get; set; } = "Vanilla"; // 100%
+  public Dictionary<string, float>? Rates { get; set; } = null;
   public string[] Modes { get; set; } = null!;
   public bool IsActive { get; set; } = true;
 }

@@ -7,6 +7,8 @@ import Lock from "./components/Lock";
 import { Link } from "react-router";
 import { useAuth } from "./contexts/AuthContext";
 import Leaderboard from "./components/Leaderboard";
+import { Calc } from "./components/Calc";
+import { HelpGuide } from "./components/HelpGuide";
 
 
 export default function Home() {
@@ -41,6 +43,14 @@ export default function Home() {
         <Link to="/leaderboard">
           <Leaderboard style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Player Leaderboard <small>All Events</small>
+        </Link>
+        <Link to="/trophy/calc">
+          <Calc style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Trophy Calculator <small>Scoring and drop rates</small>
+        </Link>
+        <Link to="/guides">
+          <HelpGuide style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Help Guides <small>Tips and Strategies</small>
         </Link>
         {/* <a href="/gear">
           <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
