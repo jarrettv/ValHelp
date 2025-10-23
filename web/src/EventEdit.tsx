@@ -43,10 +43,10 @@ export default function EventEdit() {
         setScoringCode("hunt-2025-09");
         break;
       case "TrophySaga":
-        setScoringCode("saga-2025-02");
+        setScoringCode("saga-2025-10");
         break;
       case "TrophyRush":
-        setScoringCode("rush-2024-11");
+        setScoringCode("rush-2025-10");
         break;
     }
   }, [mode]);
