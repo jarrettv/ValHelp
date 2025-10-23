@@ -9,7 +9,11 @@ accent:
 order: 1
 ---
 
-Get your Valheim client ready for events with step-by-step mod installation tips and advice for broadcasting overlays cleanly to your viewers.
-
-> [!CAUTION]
-> More info coming soon
+* Register for the event
+    * Setting your channel links
+    * Schedule and provide a direct VOD link
+* Installing R2ModMan and TrophyHuntMod
+* "Going Online" in the Mod
+* Setting up OBS official game clock
+* Setting side scores
+* Create a scoring scene
