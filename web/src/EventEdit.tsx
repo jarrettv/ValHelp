@@ -48,6 +48,9 @@ export default function EventEdit() {
       case "TrophyRush":
         setScoringCode("rush-2025-10");
         break;
+      case "TrophyBlitz":
+        setScoringCode("blitz-2025-10");
+        break;
     }
   }, [mode]);
 
@@ -141,10 +144,10 @@ export default function EventEdit() {
             <b>Rush</b>
             <small>Very-hard w/ 100%</small>
           </div>
-          <div className="event-type-option disabled">
+          <div className={`event-type-option ${mode === 'TrophyBlitz' ? 'selected' : ''}`} onClick={() => setMode('TrophyBlitz')}>
             <Trophy />
-            <b>Custom</b>
-            <small>Coming Soon</small>
+            <b>Blitz</b>
+            <small>V-Hard Mod w/ 100%</small>
           </div>
         </fieldset>
 

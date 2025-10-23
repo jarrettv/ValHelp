@@ -104,6 +104,7 @@ public class SeedMaker : BackgroundService
       "TrophyHunt" => "hunt",
       "TrophySaga" => "saga",
       "TrophyRush" => "rush",
+      "TrophyBlitz" => "bltz",
       _ => "run"
     };
 

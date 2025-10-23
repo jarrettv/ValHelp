@@ -46,6 +46,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/events/hunt" element={<EventRedirect mode="TrophyHunt" />} />
             <Route path="/events/rush" element={<EventRedirect mode="TrophyRush" />} />
             <Route path="/events/saga" element={<EventRedirect mode="TrophySaga" />} />
+            <Route path="/events/blitz" element={<EventRedirect mode="TrophyBlitz" />} />
             <Route path="/events/all" element={<Events />} />
             <Route path="/events/private" element={<PrivateEvents />} />
             <Route path="/events/private/:password" element={<Event />} />

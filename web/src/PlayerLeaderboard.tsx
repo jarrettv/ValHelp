@@ -32,10 +32,11 @@ function PlayerLeaderboard() {
   const [selectedType, setSelectedType] = useState<string>("Hunt 4h");
 
   const EVENT_TYPE_OPTIONS = [
-    { label: "Hunt 4h", value: "Hunt 4h", trophyProps: {} },
-    { label: "Rush", value: "Rush", trophyProps: { mode: "Rush" } },
-    { label: "Saga", value: "Saga", trophyProps: { mode: "Saga" } },
-    { label: "Hunt 5h", value: "Hunt 5h", trophyProps: {} },
+    { label: "Hunt 4h", value: "Hunt 4h", trophyProps: { mode: "TrophyHunt", hours: 4 } },
+    { label: "Rush", value: "Rush 4h", trophyProps: { mode: "TrophyRush", hours: 4 } },
+    { label: "Saga", value: "Saga 4h", trophyProps: { mode: "TrophySaga", hours: 4 } },
+    { label: "Hunt 5h", value: "Hunt 5h", trophyProps: { mode: "TrophyHunt", hours: 5 } },
+    { label: "Blitz", value: "Blitz 2h", trophyProps: { mode: "TrophyBlitz", hours: 2 } },
   ];
 
   const selectType = (type: string) => {
@@ -56,12 +57,12 @@ function PlayerLeaderboard() {
     const allRows: LeaderboardRow[] = [];
     data.data.forEach(event => {
       if (event.status < EventStatus.Over) return;
-      // Map selectedType to mode/hours
+
+      var selected = EVENT_TYPE_OPTIONS.find(t => t.value === selectedType);
       let match = false;
-      if (selectedType === "Rush" && event.mode === "TrophyRush") match = true;
-      else if (selectedType === "Saga" && event.mode === "TrophySaga") match = true;
-      else if (selectedType === "Hunt 4h" && event.mode === "TrophyHunt" && Math.round(event.hours) === 4) match = true;
-      else if (selectedType === "Hunt 5h" && event.mode === "TrophyHunt" && Math.round(event.hours) === 5) match = true;
+      if (selected && event.mode === selected.trophyProps.mode && Math.round(event.hours) === selected.trophyProps.hours) {
+        match = true;
+      }
       if (!match) return;
       const sortedPlayers = [...event.players].sort((a, b) => b.score - a.score);
       sortedPlayers.forEach((player, idx) => {
