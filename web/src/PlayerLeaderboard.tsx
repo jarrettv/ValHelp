@@ -36,7 +36,7 @@ function PlayerLeaderboard() {
     { label: "Rush", value: "Rush 4h", trophyProps: { mode: "TrophyRush", hours: 4 } },
     { label: "Saga", value: "Saga 4h", trophyProps: { mode: "TrophySaga", hours: 4 } },
     { label: "Hunt 5h", value: "Hunt 5h", trophyProps: { mode: "TrophyHunt", hours: 5 } },
-    { label: "Blitz", value: "Blitz 2h", trophyProps: { mode: "TrophyBlitz", hours: 2 } },
+    { label: "Blaze", value: "Blaze 3h", trophyProps: { mode: "TrophyBlaze", hours: 3 } },
   ];
 
   const selectType = (type: string) => {
