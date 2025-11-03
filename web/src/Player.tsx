@@ -45,12 +45,18 @@ const PlayerComponent: React.FC = () => {
                     </div>
                 </div>
                 <div>
-                    {Object.keys(personalBests).map(mode => (
-                        <div style={{display:'flex', justifyContent:'space-between', width:'6rem'}} key={mode}>
-                            <div key={mode}>{mode.replace("Trophy", "")} PB</div>
-                            <div style={{color:'gold'}}>{personalBests[mode]}</div>
-                        </div>
-                    ))}
+                    {Object.entries(personalBests).map(([groupKey, bestScore]) => {
+                        const [modePart, hoursPart = "0"] = groupKey.split("::");
+                        const hoursLabel = Number(hoursPart) || 0;
+                        const modeLabel = modePart.replace("Trophy", "").trim();
+                        const label = `${modeLabel}${hoursLabel ? ` ${hoursLabel}h` : ""}`.trim();
+                        return (
+                            <div style={{display:'flex', justifyContent:'space-between', width:'6.5rem'}} key={groupKey}>
+                                <div>{label} PB</div>
+                                <div style={{color:'gold'}}>{bestScore}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
             {data!.events
@@ -63,12 +69,17 @@ const PlayerComponent: React.FC = () => {
 };
 
 function groupByAndMax(arr: PlayerEvent[], key: keyof PlayerEvent, valueKey: keyof PlayerEvent): { [key: string]: number } {
-    const grouped = arr.reduce((acc: { [key: string]: PlayerEvent[] }, item) => {
-        const groupKey = String(item[key]);
-        acc[groupKey] = acc[groupKey] || [];
-        acc[groupKey].push(item);
-        return acc;
-    }, {});
+    const grouped = arr
+        .filter((item) => !item.isPrivate)
+        .reduce((acc: { [key: string]: PlayerEvent[] }, item) => {
+            const baseKey = String(item[key]);
+            const hours = Number(item.hours ?? 0);
+            const normalizedHours = Number.isFinite(hours) ? Math.round(hours) : 0;
+            const groupKey = `${baseKey}::${normalizedHours}`;
+            acc[groupKey] = acc[groupKey] || [];
+            acc[groupKey].push(item);
+            return acc;
+        }, {});
 
     const result: { [key: string]: number } = {};
     for (const groupKey in grouped) {

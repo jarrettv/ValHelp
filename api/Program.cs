@@ -1,7 +1,8 @@
 using System.Threading.Channels;
 using ValHelpApi.Config;
-using ValHelpApi.Modules.Admin;
-using ValHelpApi.Modules.Tournament;
+using ValHelpApi.ModuleAdmin;
+using ValHelpApi.ModuleEvents;
+using ValHelpApi.ModuleTrack;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,10 +14,10 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackHunt>());
-builder.Services.AddHostedService<StatusUpdater>();
-builder.Services.AddHostedService<LogTracker>();
-builder.Services.AddHostedService<HuntTracker>();
-builder.Services.AddHostedService<SeedMaker>();
+builder.Services.AddHostedService<EventsStatusUpdater>();
+builder.Services.AddHostedService<EventsSeedMaker>();
+builder.Services.AddHostedService<TrackLogTracker>();
+builder.Services.AddHostedService<TrackHuntTracker>();
 
 builder.Services.AddCors(options =>
 {
@@ -41,7 +42,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.MapDbEndpoints();
-app.MapTournamentEndpoints();
+app.MapEventsEndpoints();
 app.MapAvatarEndpoints();
 app.MapAuthEndpoints();
 app.MapDefaultEndpoints();

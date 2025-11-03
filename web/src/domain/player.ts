@@ -12,6 +12,7 @@ export interface PlayerEvent {
     mode: string;
     scoringCode: string;
     hours: number;
+    isPrivate: boolean;
     seed: string;
     scores: number[];
     score: number;
