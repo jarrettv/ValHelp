@@ -6,7 +6,7 @@ namespace ValHelpApi.ModuleAdmin;
 
 public static class AdminEndpointsAvatar
 {
-    public static void MapAvatarEndpoints(this WebApplication app)
+    internal static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/avatar");
 

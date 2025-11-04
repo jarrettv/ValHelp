@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
 using ValHelpApi.ModuleSeries;
+using ValHelpApi.ModuleStuff;
 using ValHelpApi.ModuleTrack;
 
 namespace ValHelpApi.Config;
@@ -37,6 +38,7 @@ public class AppDbContext : DbContext
         AdminActivate.OnModelCreating(modelBuilder);
         EventsActivate.OnModelCreating(modelBuilder);
         SeriesActivate.OnModelCreating(modelBuilder);
+        StuffActivate.OnModelCreating(modelBuilder);
         TrackActivate.OnModelCreating(modelBuilder);
     }
 

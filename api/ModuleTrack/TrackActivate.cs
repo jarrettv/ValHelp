@@ -6,6 +6,11 @@ namespace ValHelpApi.ModuleTrack;
 
 public static class TrackActivate
 {
+    public static void MapEndpointsTrack(this WebApplication app)
+    {
+        TrackEndpoints.Map(app);
+    }
+
     public static void OnModelCreating(this ModelBuilder modelBuilder)
     {
         

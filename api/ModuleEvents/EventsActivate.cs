@@ -6,6 +6,13 @@ namespace ValHelpApi.ModuleEvents;
 
 public static class EventsActivate
 {
+    public static void MapEndpointsEvents(this WebApplication app)
+    {
+        EventsEndpointsEvent.Map(app);
+        EventsEndpointsImport.Map(app);
+        EventsEndpointsPlayer.Map(app);
+    }
+
     public static void OnModelCreating(this ModelBuilder modelBuilder)
     {
 
@@ -32,13 +39,5 @@ public static class EventsActivate
         modelBuilder.Entity<Player>()
         .Property(x => x.Version)
         .IsRowVersion();
-    }
-
-
-    public static void MapEventsEndpoints(this WebApplication app)
-    {
-        app.MapEventsEndpointsEvent();
-        app.MapEventsEndpointsImport();
-        app.MapEventsEndpointsPlayer();
     }
 }

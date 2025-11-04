@@ -7,6 +7,14 @@ namespace ValHelpApi.ModuleAdmin;
 
 public static class AdminActivate
 {
+    public static void MapEndpointsAdmin(this WebApplication app)
+    {
+        AdminEndpointsAuth.Map(app);
+        AdminEndpointsAvatar.Map(app);
+        AdminEndpointsDb.Map(app);
+        AdminEndpointsScoring.Map(app);
+    }
+
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()

@@ -8,7 +8,7 @@ namespace ValHelpApi.ModuleAdmin;
 
 public static class AdminEndpointsAuth
 {
-    public static void MapAuthEndpoints(this WebApplication app)
+    internal static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/auth");
 

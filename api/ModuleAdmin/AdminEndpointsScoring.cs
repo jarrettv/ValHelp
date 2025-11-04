@@ -8,9 +8,9 @@ namespace ValHelpApi.ModuleAdmin;
 public record ScoringList(ScoringRecord[] Data, int Total);
 public record ScoringRecord(string Code, string Name, Dictionary<string, int> Scores, Dictionary<string, float>? Rates, string DropRateType, string[] Modes, bool IsActive);
 
-public static class ScoringEndpoints
+public static class AdminEndpointsScoring
 {
-    public static void MapScoringEndpoints(this WebApplication app)
+    public static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/scoring");//.RequireAuthorization();
         api.MapPost("", PostScoring).RequireAuthorization("Admin");

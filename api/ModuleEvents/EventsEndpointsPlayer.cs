@@ -9,7 +9,7 @@ namespace ValHelpApi.ModuleEvents;
 public static class EventsEndpointsPlayer
 {
 
-    public static void MapEventsEndpointsPlayer(this WebApplication app)
+    public static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/players");
         api.MapGet("{userId:int}/current-event", GetCurrentEventId);

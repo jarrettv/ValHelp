@@ -2,6 +2,7 @@ using System.Threading.Channels;
 using ValHelpApi.Config;
 using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
+using ValHelpApi.ModuleSeries;
 using ValHelpApi.ModuleTrack;
 
 
@@ -41,10 +42,11 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-app.MapDbEndpoints();
-app.MapEventsEndpoints();
-app.MapAvatarEndpoints();
-app.MapAuthEndpoints();
+app.MapEndpointsAdmin();
+app.MapEndpointsEvents();
+app.MapEndpointsSeries();
+app.MapEndpointsTrack();
+
 app.MapDefaultEndpoints();
 app.MapFallbackToFile("index.html");
 app.Run();

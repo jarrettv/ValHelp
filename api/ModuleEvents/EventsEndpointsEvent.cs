@@ -8,7 +8,7 @@ namespace ValHelpApi.ModuleEvents;
 
 public static class EventsEndpointsEvent
 {
-    public static void MapEventsEndpointsEvent(this WebApplication app)
+    internal static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/events");
 

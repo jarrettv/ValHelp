@@ -4,7 +4,7 @@ using ValHelpApi.Config;
 namespace ValHelpApi.ModuleAdmin;
 public static class AdminEndpointsDb
 {
-    public static void MapDbEndpoints(this WebApplication app)
+    public static void Map(WebApplication app)
     {
         var api = app.MapGroup("api/db");
 

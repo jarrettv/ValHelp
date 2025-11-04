@@ -10,7 +10,7 @@ namespace ValHelpApi.ModuleTrack;
 
 public static class TrackEndpoints
 {
-    public static void MapTrackEndpoints(this WebApplication app)
+    internal static void Map(WebApplication app)
     {
         app.MapPost("api/trackhunt", PostTrackHunt);
         app.MapPost("api/track/hunt", PostTrackHunt2);

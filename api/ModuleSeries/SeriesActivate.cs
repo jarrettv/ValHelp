@@ -4,6 +4,11 @@ namespace ValHelpApi.ModuleSeries;
 
 public static class SeriesActivate
 {
+    public static void MapEndpointsSeries(this WebApplication app)
+    {
+        //app.MapSeriesEndpoints();
+    }
+
     public static void OnModelCreating(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Season>(entity =>
