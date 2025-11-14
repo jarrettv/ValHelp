@@ -4,6 +4,7 @@ import Trophy from './Trophy';
 import { PlayerTrophy } from './PlayerTrophy';
 import { PlayerPenalty } from './PlayerPenalty';
 import Watch from './Watch';
+import { PlayerBonus } from './PlayerBonus';
 
 interface PlayerEventRowProps {
   player: PlayerEvent;
@@ -36,7 +37,8 @@ const PlayerEventRow: React.FC<PlayerEventRowProps> = ({ player, mode }) => {
             .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
             .map((log, index) =>
               log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
-                log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
+              log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> :
+              log.code.startsWith("Bonus") ? <PlayerBonus key={index} code={log.code} /> : null
             )}
           </div>
         </div>

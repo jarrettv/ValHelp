@@ -1,5 +1,10 @@
 const trophies = [
   {
+    name: "Biome Bonus",
+    biome: "Meadows",
+    code: "BonusMeadows"
+  },
+  {
     name: "Boar",
     biome: "Meadows",
     code: "TrophyBoar"
@@ -18,6 +23,11 @@ const trophies = [
     name: "Eikthyr",
     biome: "Meadows",
     code: "TrophyEikthyr"
+  },
+  {
+    name: "Biome Bonus",
+    biome: "Black Forest",
+    code: "BonusBlackForest"
   },
   {
     name: "Greydwarf",
@@ -70,6 +80,11 @@ const trophies = [
     code: "TrophyTheElder"
   },
   {
+    name: "Biome Bonus",
+    biome: "Swamp",
+    code: "BonusSwamp"
+  },
+  {
     name: "Abomination",
     biome: "Swamp",
     code: "TrophyAbomination"
@@ -115,6 +130,11 @@ const trophies = [
     code: "TrophyBonemass"
   },
   {
+    name: "Biome Bonus",
+    biome: "Mountain",
+    code: "BonusMountain"
+  },
+  {
     name: "Cultist",
     biome: "Mountain",
     code: "TrophyCultist"
@@ -153,6 +173,11 @@ const trophies = [
     name: "Moder",
     biome: "Mountain",
     code: "TrophyDragonQueen"
+  },
+  {
+    name: "Biome Bonus",
+    biome: "Plains",
+    code: "BonusPlains"
   },
   {
     name: "Deathsquito",
@@ -205,6 +230,11 @@ const trophies = [
     code: "TrophyGoblinKing"
   },
   {
+    name: "Biome Bonus",
+    biome: "Mistlands",
+    code: "BonusMistlands"
+  },
+  {
     name: "Dvergr",
     biome: "Mistlands",
     code: "TrophyDvergr"
@@ -238,6 +268,11 @@ const trophies = [
     name: "The Queen",
     biome: "Mistlands",
     code: "TrophySeekerQueen"
+  },
+  {
+    name: "Biome Bonus",
+    biome: "Ashlands",
+    code: "BonusAshlands"
   },
   {
     name: "Asksvin",
@@ -283,6 +318,11 @@ const trophies = [
     name: "Fader",
     biome: "Ashlands",
     code: "TrophyFader"
+  },
+  {
+    name: "Ocean Biome Bonus",
+    biome: "Ocean",
+    code: "BonusOcean"
   },
   {
     name: "Serpent",

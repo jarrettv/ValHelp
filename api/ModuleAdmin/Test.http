@@ -77,6 +77,11 @@ Content-Type: application/json
   "isActive": true
 }
 
+### Get scorings
+GET {{base_url}}/api/scoring
+
+### Get scoring
+GET {{base_url}}/api/scoring/rush-2024-11
 
 ### Seed scoring
 POST {{base_url}}/api/scoring

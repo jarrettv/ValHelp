@@ -6,6 +6,7 @@ import { PlayerPenalty } from './PlayerPenalty';
 import { useAuth } from '../contexts/AuthContext';
 import Watch from './Watch';
 import { Link } from 'react-router';
+import { PlayerBonus } from './PlayerBonus';
 
 interface PlayerLogsRowProps {
   player: Player;
@@ -32,7 +33,8 @@ const PlayerLogsRow: React.FC<PlayerLogsRowProps> = ({ player }) => {
         .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
         .map((log, index) =>
           log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
-            log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
+          log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> :
+          log.code.startsWith("Bonus") ? <PlayerBonus key={index} code={log.code} /> : null
         )}
       </div>
     </div>

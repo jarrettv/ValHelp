@@ -2,6 +2,7 @@ import "./Obs.css";
 import { Event } from '../domain/event';
 import { PlayerTrophy } from "./PlayerTrophy";
 import { PlayerPenalty } from "./PlayerPenalty";
+import { PlayerBonus } from "./PlayerBonus";
 
 interface ObsFinalProps {
     playerId: number;
@@ -83,7 +84,9 @@ export default function ObsOverview(props: ObsFinalProps) {
                                 .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
                                 .map((log, index) =>
                                     log.code.startsWith("Trophy") ? <PlayerTrophy key={index} code={log.code} /> :
-                                        log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> : null
+                                    log.code.startsWith("Penalty") ? <PlayerPenalty key={index} code={log.code} /> :
+                                    log.code.startsWith("Bonus") ? <PlayerBonus key={index} code={log.code} /> :
+                                    null
                                 )}
                         </div>
                     </div>

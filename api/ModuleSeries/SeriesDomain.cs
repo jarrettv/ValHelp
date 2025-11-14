@@ -1,4 +1,5 @@
 
+using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
 
 namespace ValHelpApi.ModuleSeries;
@@ -16,6 +17,7 @@ public class Season
     public float Hours { get; set; }
     public Schedule Schedule { get; set; } = null!;
     public int OwnerId { get; set; } // FK to user
+    public User Owner { get; set; } = null!;// navigation property
 
     public List<Event> Events { get; set; } = [];
 
