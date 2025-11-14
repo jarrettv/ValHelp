@@ -11,3 +11,27 @@ export function getShortDateRange(startAt: Date, endAt: Date): string {
   var end = new Date(endAt).toLocaleTimeString(undefined, {hour: 'numeric', minute: 'numeric'}).replace(':00 PM', 'p').replace(':00 AM', 'a');
   return `${date} ${start}-${end}`;
 }
+
+export function toDateTimeLocalValue(isoValue: string | undefined | null): string {
+  if (!isoValue) {
+    return "";
+  }
+  const timestamp = Date.parse(isoValue);
+  if (Number.isNaN(timestamp)) {
+    return "";
+  }
+  const date = new Date(timestamp);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
+export function fromDateTimeLocalValue(localValue: string): string {
+  if (!localValue) {
+    return "";
+  }
+  const date = new Date(localValue);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return date.toISOString();
+}
