@@ -43,7 +43,7 @@ const BonusScore = (props: { code: string, name: string, score: number }) => {
   const { code, name, score } = props;
   return (
     <div className="item">
-      <img src={`/img/bonuses/${code}.png`} alt={name} />
+      <img src={`/img/bonuses/${code}.round.png`} alt={name} />
       <div className="score-val">{score}</div>
     </div>
   );
