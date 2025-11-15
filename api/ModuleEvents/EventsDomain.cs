@@ -109,15 +109,23 @@ public class Player
                     found = true;
                     continue;
                 }
-                else if (playerLog.Code.StartsWith("Trophy"))
+                else if (playerLog.Code.StartsWith("Trophy") || playerLog.Code.StartsWith("Bonus"))
                 {
-                    found = true;
+                    found = true; // only 1 trophy and bonus per type allowed
                     continue;
                 }
             }
             if (!found)
             {
-                Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
+                // if biome bonus, make sure it comes after the corresponding trophy
+                if (playerLog.Code.StartsWith("Bonus"))
+                {
+                    Logs.Add(new PlayerLog(playerLog.Code, playerLog.At.AddSeconds(3)));
+                }
+                else
+                {
+                    Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
+                }
             }
         }
         UpdatedAt = log.At;
