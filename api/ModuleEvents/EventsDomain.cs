@@ -95,21 +95,14 @@ public class Player
 
     internal void Update(TrackLog log)
     {
-        Score = log.Score;
+        Score = log.Score; // we always assume the latest log has the correct score
         foreach (var playerLog in log.Logs)
         {
             var existingLogs = Logs.Where(x => x.Code == playerLog.Code);
             bool found = false;
-            // sometimes we get a duplicate set of logs with
             foreach (var existingLog in existingLogs)
             {
-                // if playerLog is within a few seconds of existingLog, skip
-                if (Math.Abs((existingLog.At - playerLog.At).TotalSeconds) < 10)
-                {
-                    found = true;
-                    continue;
-                }
-                else if (playerLog.Code.StartsWith("Trophy") || playerLog.Code.StartsWith("Bonus"))
+                if (playerLog.Code.StartsWith("Trophy") || playerLog.Code.StartsWith("Bonus"))
                 {
                     found = true; // only 1 trophy and bonus per type allowed
                     continue;
@@ -117,15 +110,7 @@ public class Player
             }
             if (!found)
             {
-                // if biome bonus, make sure it comes after the corresponding trophy
-                if (playerLog.Code.StartsWith("Bonus"))
-                {
-                    Logs.Add(new PlayerLog(playerLog.Code, playerLog.At.AddSeconds(3)));
-                }
-                else
-                {
-                    Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
-                }
+                Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
             }
         }
         UpdatedAt = log.At;
