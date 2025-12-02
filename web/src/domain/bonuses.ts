@@ -17,7 +17,7 @@ const bonuses = [
   {
     name: "Biome Bonus",
     biome: "Mountain",
-    code: "BonusMountain"
+    code: "BonusMountains"
   },
   {
     name: "Biome Bonus",
@@ -37,7 +37,7 @@ const bonuses = [
   {
     name: "All Trophies",
     biome: "All",
-    code: "BonusComplete"
+    code: "BonusAll"
   },
   {
     name: "Time Bonus",
