@@ -44,8 +44,7 @@ const modeOptions = [
   { value: "TrophyHunt", label: "Hunt" },
   { value: "TrophySaga", label: "Saga" },
   { value: "TrophyRush", label: "Rush" },
-  { value: "TrophyBlaze", label: "Blaze" },
-  { value: "Versus", label: "Versus" },
+  { value: "TrophyTrailblazer", label: "Trailblazer" },
 ];
 
 const toFormState = (season: SeasonDetails): SeasonFormState => ({

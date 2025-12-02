@@ -104,7 +104,7 @@ public class EventsSeedMaker : BackgroundService
             "TrophyHunt" => "hunt",
             "TrophySaga" => "saga",
             "TrophyRush" => "rush",
-            "TrophyBlaze" => "blze",
+            "TrophyTrailblazer" => "trbz",
             _ => "run"
         };
 
