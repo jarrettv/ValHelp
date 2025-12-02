@@ -259,8 +259,8 @@ RULES:
 » No stream sniping other competitors
 » No clipping
 » No console commands
-» Using /printseeds is banned (except in Saga mode)
-» Using /die is allowed (however -20 points)
+» Using /printseeds is banned (Vanilla Hunt only)
+» Using /die is allowed (with penalty)
 » No emote animation cancelling
 
 If PC crashes, you may relog in and continue just make sure to immediately restart stream
@@ -365,24 +365,17 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         if (scoring == null)
         {
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-      {
-        { "scoringCode", new[] { "Please choose a valid scoring mechanism" } }
-      }, title: "Please choose a valid scoring mechanism");
-        }
-        else if (!scoring.Modes.Any(x => x == req.Mode))
-        {
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-      {
-        { "mode", new[] { "Mode must match the chosen scoring" } }
-      }, title: "Mode must match the chosen scoring");
+            {
+                { "scoringCode", new[] { "Please choose a valid scoring mechanism" } }
+            }, title: "Please choose a valid scoring mechanism");
         }
 
         if (req.Name.Length < 5 || req.Name.Length > 26)
         {
             return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-      {
-        { "name", new[] { "Name must be between 5 and 26 characters" } }
-      }, title: "Name must be between 5 and 26 characters");
+            {
+                { "name", new[] { "Name must be between 5 and 26 characters" } }
+            }, title: "Name must be between 5 and 26 characters");
         }
 
 
@@ -411,11 +404,13 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         }
         else
         {
-            hunt = new Event();
-            hunt.CreatedAt = now;
-            hunt.CreatedBy = user!.Username;
-            hunt.Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl,
-        Status = PlayerStatus.OwnerIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }];
+            hunt = new Event
+            {
+                CreatedAt = now,
+                CreatedBy = user!.Username,
+                Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl,
+                Status = PlayerStatus.OwnerIn, Stream = user.Youtube ?? user.Twitch ?? "N/A", UpdatedAt = now }]
+            };
             db.Events.Add(hunt);
         }
 
