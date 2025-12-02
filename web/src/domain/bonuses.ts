@@ -7,7 +7,7 @@ const bonuses = [
   {
     name: "Biome Bonus",
     biome: "Black Forest",
-    code: "BonusBlackForest"
+    code: "BonusForest"
   },
   {
     name: "Biome Bonus",
