@@ -24,11 +24,13 @@
   align-items: center;
   justify-content: center;
   font-size: 0.75em;
+  overflow: hidden;
 }
 
-.material__icon svg {
+.material__icon img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .material__name {

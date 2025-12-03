@@ -1,11 +1,33 @@
 // Material data with display names and icon mappings
-// Icons would typically be served from /img/materials/ on the API server
-// For now, we use a placeholder SVG for materials without icons
+// Icons are served from /stuff/mats/ on the API server
 
 export type Material = {
   name: string;
   code: string;
-  icon?: string;
+  category?: string; // Category folder: material, metal, wood, etc.
+};
+
+// Map material code to category and file path
+type MaterialCategory = "material" | "metal" | "wood" | "food" | "trophy" | "fragments" | "gear";
+
+const materialCategories: Record<string, MaterialCategory> = {
+  // Metals
+  "Copper": "metal",
+  "Tin": "metal",
+  "Bronze": "metal",
+  "Iron": "metal",
+  "Silver": "metal",
+  "BlackMetal": "metal",
+  "FlameMetal": "metal",
+  
+  // Wood
+  "Wood": "wood",
+  "FineWood": "wood",
+  "CoreWood": "wood",
+  "ElderBark": "wood",
+  "YggdrasilWood": "wood",
+  
+  // Everything else defaults to "material"
 };
 
 // Map of material codes (lowercase) to their data
@@ -101,6 +123,14 @@ export function getMaterial(name: string): Material | undefined {
 export function getMaterialDisplayName(name: string): string {
   const material = getMaterial(name);
   return material?.name || name;
+}
+
+// Get the icon URL for a material based on its code
+export function getMaterialIconUrl(code: string): string {
+  const category = materialCategories[code] || "material";
+  // Convert code to lowercase snake_case for file path
+  const fileName = code.replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '');
+  return `/stuff/mats/${category}/${fileName}.png`;
 }
 
 export default materials;

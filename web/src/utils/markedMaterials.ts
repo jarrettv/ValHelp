@@ -1,5 +1,5 @@
 import { Marked, TokenizerExtension, RendererExtension, Tokens } from "marked";
-import { getMaterial, getMaterialDisplayName } from "../domain/materials";
+import { getMaterial, getMaterialDisplayName, getMaterialIconUrl } from "../domain/materials";
 
 // Material token extends the base Token type
 interface MaterialToken extends Tokens.Generic {
@@ -14,9 +14,6 @@ interface MaterialToken extends Tokens.Generic {
 // Standard links: [text](url) where url starts with http, /, # etc.
 // Materials: [name](number) where number is purely digits
 const materialPattern = /^\[([^\]]+)\]\((\d+)\)/;
-
-// Placeholder icon SVG for materials
-const MATERIAL_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
 
 // Escape HTML special characters to prevent XSS
 function escapeHtml(text: string): string {
@@ -52,11 +49,13 @@ const materialExtension: TokenizerExtension & RendererExtension = {
     const { name, amount } = token as MaterialToken;
     const material = getMaterial(name);
     const displayName = escapeHtml(getMaterialDisplayName(name));
-    const code = escapeHtml(material?.code || name);
+    const code = material?.code || name;
+    const safeCode = escapeHtml(code);
     const safeAmount = escapeHtml(amount);
+    const iconUrl = escapeHtml(getMaterialIconUrl(code));
     
-    return `<span class="material" data-material="${code}" title="${displayName}">` +
-      `<span class="material__icon">${MATERIAL_ICON_SVG}</span>` +
+    return `<span class="material" data-material="${safeCode}" title="${displayName}">` +
+      `<span class="material__icon"><img src="${iconUrl}" alt="${displayName}" /></span>` +
       `<span class="material__name">${displayName}</span>` +
       `<span class="material__amount">${safeAmount}</span>` +
       `</span>`;
