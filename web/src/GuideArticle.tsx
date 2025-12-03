@@ -1,9 +1,13 @@
 import { useMemo } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import DOMPurify from "dompurify";
-import { marked } from "marked";
 import "./GuideArticle.css";
+import "./components/Material.css";
 import { findGuideBySlug } from "./guides/loader";
+import { createMaterialsMarked } from "./utils/markedMaterials";
+
+// Create a marked instance with material extension
+const materialsMarked = createMaterialsMarked();
 
 const GuideArticle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -29,8 +33,11 @@ const GuideArticle = () => {
   }
 
   const renderedContent = useMemo(() => {
-    const raw = marked.parse(guide.content) as string;
-    return DOMPurify.sanitize(raw);
+    const raw = materialsMarked.parse(guide.content) as string;
+    // Allow data attributes and class for material spans
+    return DOMPurify.sanitize(raw, {
+      ADD_ATTR: ['data-material'],
+    });
   }, [guide.content]);
 
   return (

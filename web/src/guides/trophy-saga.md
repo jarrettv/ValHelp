@@ -19,9 +19,9 @@ Saga can be overwhelming to get started with, especially considering the 4 hour 
 
 - Kill Eikthyr for antler pickaxe (hang trophy at spawn, activate power - optional but recommended)
 - Find at least one queen bee for early stamina food. Beehives fill within seconds and production is doubled. Honey is also important for mead later.
-- 25 flint. It’s important to carry 25 flint with you to your initial base setup for the chopping block and tanning rack.
+- [Flint](25). It's important to carry [Flint](25) with you to your initial base setup for the chopping block and tanning rack.
 
-Greylings have upgraded drops, most notably are the Megingjord Belt and fine wood. Carry as much fine wood with you as you can from greylings, minimum is 20 (more on that later).
+Greylings have upgraded drops, most notably are the Megingjord Belt and fine wood. Carry as much fine wood with you as you can from greylings, minimum is [Fine Wood](20) (more on that later).
 
 Use whichever weapon you are most comfortable with. If using flint spear, I recommend getting level 2 ASAP and then stop upgrading it as better weapons will soon become unlocked.
 
@@ -29,9 +29,9 @@ Deer trophies drop 100% of the time even after picking up the first one. You nee
 
 ## Black forest
 
-- Copper: 81, Tin: 41
+- [Copper](81), [Tin](41)
 - Kill at least one Greydwarf Brute as they drop the Crypt Key the Elder normally drops.
-- At least 4 Surtling Cores for a portal set. (more is better for bonfire, oven, more portals, etc.)
+- At least [Surtling Cores](4) for a portal set. (more is better for bonfire, oven, more portals, etc.)
 
 Bring 20 fine wood with you from the Greylings. If you only found 20 fine wood, bring some leather scraps and 4 uncooked meat (This will be turned into coal). Next get the Surtling Cores from a Burial Chamber. Try to find Copper close-ish to Tin. 81 Copper and 41 Tin gets you a Forge, Mead Kettle, Cauldron, Fermenter, Adze, Anvils, Bronze Axe, Cultivator, Nails for Carve, extra copper for Cooling Bucket and Pots and Pans.
 
