@@ -1,0 +1,9 @@
+{
+    "code": "QueenDrop",
+    "name": "Majestic carapace",
+    "desc": "Her majesty's will was hard and unrelenting, but this piece of carapace is perhaps even more so.",
+    "type": "Material",
+    "image": "/data/Material/QueenDrop.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Majestic_carapace"
+}

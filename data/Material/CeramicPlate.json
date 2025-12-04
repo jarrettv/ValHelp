@@ -1,0 +1,9 @@
+{
+    "code": "CeramicPlate",
+    "name": "Ceramic plate",
+    "desc": "No matter how hot this gets, the other side of it remains strangely cool.",
+    "type": "Material",
+    "image": "/data/Material/CeramicPlate.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Ceramic_plate"
+}

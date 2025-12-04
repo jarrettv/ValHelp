@@ -1,0 +1,9 @@
+{
+    "code": "IronNails",
+    "name": "Iron nails",
+    "desc": "Needed for advanced construction projects.",
+    "type": "Material",
+    "image": "/data/Material/IronNails.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Iron_nails"
+}

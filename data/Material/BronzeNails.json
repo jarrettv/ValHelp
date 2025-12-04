@@ -1,0 +1,9 @@
+{
+    "code": "BronzeNails",
+    "name": "Bronze nails",
+    "desc": "Used in construction of ships and furniture.",
+    "type": "Material",
+    "image": "/data/Material/BronzeNails.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Bronze_nails"
+}

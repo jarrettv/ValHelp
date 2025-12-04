@@ -36,7 +36,7 @@ Bring [Finewood](20) with you from the Greylings. If you only found 20 finewood,
 
 Note: If you don’t have a Megingjord Belt from Greylings yet, Trolls have a 66% chance to drop it.
 
-While Mining Copper/Tin, make a campfire with 2 cooking racks and burn the 4 uncooked meat you brought into [Coal](4) on site. Build a quick shelter for a forge and make a Bronze axe, put a portal down, run back to your starter base with 2 cores and 10 eyes, chop finewood for second portal and put at your base. (Note: You can skip making an axe on site if you have 40 finewood from Greylings) Portal all of your Copper and Tin back and make everything you need. At this point you should have level 4 workbench, level 2 Forge, Cauldron, Mead Kettle, Bronze Axe, Cultivator, Karve.
+While Mining Copper/Tin, make a campfire with 2 cooking racks and burn the 4 uncooked meat you brought into [Coal](4) on site. Build a quick shelter for a forge and make a [Bronze axe](1), put a portal down, run back to your starter base with 2 cores and 10 eyes, chop finewood for second portal and put at your base. (Note: You can skip making an axe on site if you have 40 finewood from Greylings) Portal all of your Copper and Tin back and make everything you need. At this point you should have level 4 workbench, level 2 Forge, Cauldron, Mead Kettle, Bronze Axe, Cultivator, Karve.
 
 I try to start a Saga Run like this. Obviously I left out numbers for miscellaneous materials. You can use whatever weapons/armor you want, I recommend using Bear Fists and a level 2 Bronze Spear. If going the Bronze Spear route, change the numbers to [Copper](101) and [Tin](51).
 
@@ -49,7 +49,7 @@ This is where the routes can start to change. You can go Silver weapons, Black M
 - [Iron](210) or ~7 stacks of Iron using 10 to make [Iron Nails](100)
 - [Ooze](25) minimum
 - [Root](10)
-- Turnip seeds (for level 2 Cauldron and better food)
+- [Turnip seeds](3) for level 2 Cauldron spice rack
 - Approx. [Ancient Bark](100) see note below
 - Kill at least one Oozer as it drops a Wishbone for locating Silver
 - [Chain](5) optional but see note below
@@ -64,9 +64,9 @@ At this point you should have a Longship, Root Harness, Iron Pickaxe and whateve
 
 ## Mountain
 
-- Kill 2 drakes as they drop Moder Tears, 2 are needed for Artisan Bench.
+- Kill 2 drakes as you need [Moder Tear](2) for Artisan Table
 - [Silver](137) (100 for level 3 Silver Sword, 2 for Butcher Block, 5 for level 3 Fang Spear, 30 for Frostner)
-- Onion seeds for Wolf Skewers and Salads
+- [Onion seeds](3) for Wolf Skewers and Salads
 - [Wolf Fang](10) for level 3 Fang Spear
 
 At this point, you should have an Artisan Bench, Level 3 Silver Sword, level 3 Cauldron.
@@ -87,15 +87,15 @@ At this point in the run you should have sufficient gear and weapons for Mistlan
 
 - [Seaker Meat](4)
 - [Hare Meat](4)
-- [Yotun Puffs](9) for Salad
+- [Jotun Puffs](9) for Salad
 - [Black Marble](8) for Mortar and Pestle
 
 Requirements for Drakkar (optional, but suggested for getting to Ashlands):
-- Kill one Seeker Soldier for a Majestic Carapace.
-- Kill enough Dvergrs to get 25 Yddrasil Wood.
+- Kill one Seeker Soldier for a [Majestic Carapace](1)
+- Kill enough Dvergrs to get [Yddrasil Wood](25)
 - Approx one stack of Black Marble (for Mortar and Pestle, Artisan Press, 30 Ceramic Plates)
 
-Make a Food Preparation Table and Oven from materials at base to make Meat Platters. Make a Mortar and Pestle to make Salad. Break Fermenter for 5 Bronze and use with Majestic Carapace and Black Marble for Artisan Press. Craft 30 Ceramic Plates and break Artisan Press to re-make Fermenter if needed.
+Make a Food Preparation Table and Oven from materials at base to make Meat Platters. Make a Mortar and Pestle to make Salad. Break Fermenter for 5 Bronze and use with Majestic Carapace and Black Marble for Artisan Press. Craft [Ceramic Plate](30) and break Artisan Press to re-make Fermenter if needed.
 
 At this point in the game, you will have Pre-Ashlands BIS health food and stamina food. You can use Serpent Stew, Wolf Skewers, or whatever else you like for the third food slot. You also have arguably one of the most important tools for getting to the Ashlands, the Drakkar. The Drakkar is not required to get to the Ashlands in Saga, but it makes it much more consistent vs Longship to actually reach shore.
 
@@ -103,7 +103,7 @@ Once in the Ashlands, there won’t be much time left, so kill what you can for 
 
 ## Ashlands
 
-TBD
+If possible, snag a Bonemaw on the way in and then kill everything fast. Usually Warlock, Fallen Valkerie are saved for last as they are the most risky.
 
 ## Final Thoughts
 

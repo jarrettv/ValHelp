@@ -1,0 +1,9 @@
+{
+    "code": "CarrotSeeds",
+    "name": "Carrot seeds",
+    "desc": "Plant these if you like carrots...",
+    "type": "Seed",
+    "image": "/data/Seed/CarrotSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Carrot_seeds"
+}

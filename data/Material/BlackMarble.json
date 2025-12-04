@@ -1,0 +1,9 @@
+{
+    "code": "BlackMarble",
+    "name": "Black marble",
+    "desc": "A block of solid stone, seamed with shifting colors.",
+    "type": "Material",
+    "image": "/data/Material/BlackMarble.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_marble"
+}

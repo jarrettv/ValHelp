@@ -1,0 +1,9 @@
+{
+    "code": "DragonTear",
+    "name": "Dragon tear",
+    "desc": "The last frozen tear of a dragon, pulsating with mysterious energy.",
+    "type": "Material",
+    "image": "/data/Material/DragonTear.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Dragon_tear"
+}

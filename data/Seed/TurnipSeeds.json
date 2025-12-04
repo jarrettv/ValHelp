@@ -1,0 +1,9 @@
+{
+    "code": "TurnipSeeds",
+    "name": "Turnip seeds",
+    "desc": "Plant to grow a healthy turnip.",
+    "type": "Seed",
+    "image": "/data/Seed/TurnipSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Turnip_seeds"
+}

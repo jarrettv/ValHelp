@@ -1906,6 +1906,15 @@
     }
   },
   {
+    "code": "Cloudberry",
+    "type": "Food",
+    "name": "Cloudberries",
+    "desc": "The gold of the forest.",
+    "image": "/img/Food/Cloudberry.png",
+    "usage": "Building, Crafting, Eating, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Cloudberries"
+  },
+  {
     "code": "Fiddleheadfern",
     "type": "Food",
     "name": "Fiddlehead",
@@ -1916,6 +1925,15 @@
     "weight": 0.1,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "MushroomJotunPuffs",
+    "type": "Food",
+    "name": "Jotun puffs",
+    "desc": "Swollen with magic, these golden orbs bubble from the ground where the Jotun fell.",
+    "image": "/img/Food/MushroomJotunPuffs.png",
+    "usage": "Crafting, Eating, Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Jotun_puffs"
   },
   {
     "code": "MushroomSmokePuff",
@@ -2271,6 +2289,15 @@
     "source_url": "https://valheim.fandom.com/wiki/Bear_paw"
   },
   {
+    "code": "BlackMarble",
+    "type": "Material",
+    "name": "Black marble",
+    "desc": "A block of solid stone, seamed with shifting colors.",
+    "image": "/img/Material/BlackMarble.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_marble"
+  },
+  {
     "code": "BoneFragments",
     "type": "Material",
     "name": "Bone fragments",
@@ -2295,6 +2322,24 @@
     "mats": {}
   },
   {
+    "code": "BronzeNails",
+    "type": "Material",
+    "name": "Bronze nails",
+    "desc": "Used in construction of ships and furniture.",
+    "image": "/img/Material/BronzeNails.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Bronze_nails"
+  },
+  {
+    "code": "BugMeat",
+    "type": "Material",
+    "name": "Seeker meat",
+    "desc": "When you crack open their shells, the meat within is tender and succulent.",
+    "image": "/img/Material/BugMeat.png",
+    "usage": "Cauldron , Iron cooking station , Food preparation table",
+    "source_url": "https://valheim.fandom.com/wiki/Seeker_meat"
+  },
+  {
     "code": "Carapace",
     "type": "Material",
     "name": "Carapace",
@@ -2317,6 +2362,15 @@
     "weight": 0.5,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "CeramicPlate",
+    "type": "Material",
+    "name": "Ceramic plate",
+    "desc": "No matter how hot this gets, the other side of it remains strangely cool.",
+    "image": "/img/Material/CeramicPlate.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Ceramic_plate"
   },
   {
     "code": "Chain",
@@ -2391,6 +2445,15 @@
     "mats": {}
   },
   {
+    "code": "DragonTear",
+    "type": "Material",
+    "name": "Dragon tear",
+    "desc": "The last frozen tear of a dragon, pulsating with mysterious energy.",
+    "image": "/img/Material/DragonTear.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Dragon_tear"
+  },
+  {
     "code": "Eitr",
     "type": "Material",
     "name": "Refined eitr",
@@ -2416,6 +2479,15 @@
     "weight": 0.1,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "Flax",
+    "type": "Material",
+    "name": "Flax",
+    "desc": "Unspun fibers from a flax plant.",
+    "image": "/img/Material/Flax.png",
+    "usage": "Building, Crafting, Farming, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Flax"
   },
   {
     "code": "Flint",
@@ -2495,11 +2567,8 @@
     "name": "Greydwarf eye",
     "desc": "The milky eyeball of a Greydwarf.",
     "image": "/img/Material/GreydwarfEye.png",
-    "drop": "Greydwarf",
-    "usage": "Crafting, Building",
-    "weight": 0.2,
-    "stack": 50,
-    "mats": {}
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Greydwarf_eye"
   },
   {
     "code": "Guck",
@@ -2512,6 +2581,24 @@
     "weight": 0.5,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "HareMeat",
+    "type": "Material",
+    "name": "Hare meat",
+    "desc": "The meat of a hare is scant but toothsome.",
+    "image": "/img/Material/HareMeat.png",
+    "usage": "Cooking station , Food preparation table",
+    "source_url": "https://valheim.fandom.com/wiki/Hare_meat"
+  },
+  {
+    "code": "IronNails",
+    "type": "Material",
+    "name": "Iron nails",
+    "desc": "Needed for advanced construction projects.",
+    "image": "/img/Material/IronNails.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Iron_nails"
   },
   {
     "code": "LeatherScraps",
@@ -2622,6 +2709,15 @@
     "weight": 0.2,
     "stack": 20,
     "mats": {}
+  },
+  {
+    "code": "QueenDrop",
+    "type": "Material",
+    "name": "Majestic carapace",
+    "desc": "Her majesty's will was hard and unrelenting, but this piece of carapace is perhaps even more so.",
+    "image": "/img/Material/QueenDrop.png",
+    "usage": "Building",
+    "source_url": "https://valheim.fandom.com/wiki/Majestic_carapace"
   },
   {
     "code": "Resin",
@@ -3159,6 +3255,42 @@
       "Block force": "40>45>50>55",
       "Parry bonus": "2x"
     }
+  },
+  {
+    "code": "Barley",
+    "type": "Seed",
+    "name": "Barley",
+    "desc": "A bundle of barley.",
+    "image": "/img/Seed/Barley.png",
+    "usage": "Building, Crafting, Farming, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Barley"
+  },
+  {
+    "code": "CarrotSeeds",
+    "type": "Seed",
+    "name": "Carrot seeds",
+    "desc": "Plant these if you like carrots...",
+    "image": "/img/Seed/CarrotSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Carrot_seeds"
+  },
+  {
+    "code": "OnionSeeds",
+    "type": "Seed",
+    "name": "Onion seeds",
+    "desc": "Plant to grow a healthy onion.",
+    "image": "/img/Seed/OnionSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Onion_seeds"
+  },
+  {
+    "code": "TurnipSeeds",
+    "type": "Seed",
+    "name": "Turnip seeds",
+    "desc": "Plant to grow a healthy turnip.",
+    "image": "/img/Seed/TurnipSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Turnip_seeds"
   },
   {
     "code": "ShieldWoodTower",

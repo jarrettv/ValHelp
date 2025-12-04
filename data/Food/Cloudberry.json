@@ -1,0 +1,9 @@
+{
+    "code": "Cloudberry",
+    "name": "Cloudberries",
+    "desc": "The gold of the forest.",
+    "type": "Food",
+    "image": "/data/Food/Cloudberry.png",
+    "usage": "Building, Crafting, Eating, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Cloudberries"
+}

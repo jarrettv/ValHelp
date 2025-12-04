@@ -1,0 +1,9 @@
+{
+    "code": "MushroomJotunPuffs",
+    "name": "Jotun puffs",
+    "desc": "Swollen with magic, these golden orbs bubble from the ground where the Jotun fell.",
+    "type": "Food",
+    "image": "/data/Food/MushroomJotunPuffs.png",
+    "usage": "Crafting, Eating, Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Jotun_puffs"
+}

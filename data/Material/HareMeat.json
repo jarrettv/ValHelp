@@ -1,0 +1,9 @@
+{
+    "code": "HareMeat",
+    "name": "Hare meat",
+    "desc": "The meat of a hare is scant but toothsome.",
+    "type": "Material",
+    "image": "/data/Material/HareMeat.png",
+    "usage": "Cooking station , Food preparation table",
+    "source_url": "https://valheim.fandom.com/wiki/Hare_meat"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "OnionSeeds",
+    "name": "Onion seeds",
+    "desc": "Plant to grow a healthy onion.",
+    "type": "Seed",
+    "image": "/data/Seed/OnionSeeds.png",
+    "usage": "Farming",
+    "source_url": "https://valheim.fandom.com/wiki/Onion_seeds"
+}

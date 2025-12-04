@@ -1,0 +1,9 @@
+{
+    "code": "Flax",
+    "name": "Flax",
+    "desc": "Unspun fibers from a flax plant.",
+    "type": "Material",
+    "image": "/data/Material/Flax.png",
+    "usage": "Building, Crafting, Farming, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Flax"
+}

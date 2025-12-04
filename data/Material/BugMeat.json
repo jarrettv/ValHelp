@@ -1,0 +1,9 @@
+{
+    "code": "BugMeat",
+    "name": "Seeker meat",
+    "desc": "When you crack open their shells, the meat within is tender and succulent.",
+    "type": "Material",
+    "image": "/data/Material/BugMeat.png",
+    "usage": "Cauldron , Iron cooking station , Food preparation table",
+    "source_url": "https://valheim.fandom.com/wiki/Seeker_meat"
+}

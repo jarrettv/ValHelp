@@ -1,0 +1,9 @@
+{
+    "code": "Barley",
+    "name": "Barley",
+    "desc": "A bundle of barley.",
+    "type": "Seed",
+    "image": "/data/Seed/Barley.png",
+    "usage": "Building, Crafting, Farming, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Barley"
+}
