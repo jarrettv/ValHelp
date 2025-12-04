@@ -31,6 +31,7 @@ jobs:
       - name: Build with npm
         run: |
           cd web
+          mkdir -p ../api/wwwroot
           npm run build
           cp -r dist/* ../api/wwwroot/
 
