@@ -159,7 +159,7 @@ const TrophyCalc: React.FC = () => {
                                 <div className="calc-chance">{dropChanceLabel}</div>
                                 <div className="calc-score">{trophy.score ?? 0}</div>
                             </div>
-                            <img src={`/img/trophies/${trophy.code}.png`} alt={displayName} loading="lazy" />
+                            <img src={`/img/Trophy/${trophy.code}.png`} alt={displayName} loading="lazy" />
                             <div className="calc-name">{displayName}</div>
                         </button>
                     );

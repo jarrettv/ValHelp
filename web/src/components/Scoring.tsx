@@ -23,7 +23,7 @@ const PenaltyScore = (props: { code: string, name: string, score: number }) => {
   const { code, name, score } = props;
   return (
     <div className="item">
-      <img src={`/img/penalties/${code}.webp`} alt={name} />
+      <img src={`/img/Penalty/${code}.webp`} alt={name} />
       <div className="score-val penalty">{score}</div>
     </div>
   );
@@ -33,7 +33,7 @@ const TrophyScore = (props: { code: string, name: string, score: number }) => {
   const { code, name, score } = props;
   return (
     <div className="item">
-      <img src={`/img/trophies/${code}.png`} alt={name} />
+      <img src={`/img/Trophy/${code}.png`} alt={name} />
       <div className="score-val">{score}</div>
     </div>
   );
@@ -43,7 +43,7 @@ const BonusScore = (props: { code: string, name: string, score: number }) => {
   const { code, name, score } = props;
   return (
     <div className="item">
-      <img src={`/img/bonuses/${code}.round.png`} alt={name} />
+      <img src={`/img/Bonus/${code}.round.png`} alt={name} />
       <div className="score-val">{score}</div>
     </div>
   );
