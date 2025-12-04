@@ -1,0 +1,12 @@
+{
+    "code": "TrophyNeck",
+    "type": "Trophy",
+    "name": "Neck Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyNeck.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+}

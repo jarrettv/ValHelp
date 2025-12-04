@@ -1,0 +1,12 @@
+{
+    "image": "/data/Misc/CryptKey.png",
+    "name": "Swamp Key",
+    "desc": "Partly covered in caked mud, it smells foetid.",
+    "code": "CryptKey",
+    "type": "Misc",
+    "drop": "Elder",
+    "usage": "Unlock Sunken Crypts",
+    "weight": 0.1,
+    "stack": 1,
+    "mats": {}
+}

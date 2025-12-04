@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGoblinKing",
+    "type": "Trophy",
+    "name": "Yagluth Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinKing.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

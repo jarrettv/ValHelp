@@ -1,0 +1,12 @@
+{
+    "code": "TrophyDraugr",
+    "type": "Trophy",
+    "name": "Draugr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDraugr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

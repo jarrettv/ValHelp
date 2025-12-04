@@ -1,0 +1,12 @@
+{
+    "image": "/data/Wood/YggdrasilWood.png",
+    "name": "Yggdrasil wood",
+    "desc": "Godflesh, wood from the Great Tree.",
+    "code": "YggdrasilWood",
+    "type": "Wood",
+    "drop": "Yggdrasil shoot",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

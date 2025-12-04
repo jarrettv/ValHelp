@@ -1,0 +1,12 @@
+{
+    "code": "TrophyCharredArcher",
+    "type": "Trophy",
+    "name": "Marksman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredArcher.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

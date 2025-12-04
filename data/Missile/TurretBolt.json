@@ -1,0 +1,24 @@
+{
+    "code": "TurretBolt",
+    "name": "Black metal missile",
+    "desc": "These thick missiles can punch through the hide of even the toughest of foes.",
+    "type": "Missile",
+    "image": "/data/Missile/TurretBolt.png",
+    "usage": "Ballista ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Artisan table",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+        "Wood": "10",
+        "Black metal": "1"
+    },
+    "attack": {
+        "Pierce": "120",
+        "Knockback": "60",
+        "Stagger": "120"
+    }
+}

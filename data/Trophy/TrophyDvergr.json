@@ -1,0 +1,12 @@
+{
+    "code": "TrophyDvergr",
+    "type": "Trophy",
+    "name": "Dvergr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDvergr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

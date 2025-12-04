@@ -1,0 +1,12 @@
+{
+    "image": "/data/Wood/RoundLog.png",
+    "name": "Core wood",
+    "desc": "Perfect for building log cabins.",
+    "code": "RoundLog",
+    "type": "Wood",
+    "drop": "Pine",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

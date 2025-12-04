@@ -1,0 +1,12 @@
+{
+    "code": "TrophyFader",
+    "type": "Trophy",
+    "name": "Fader Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFader.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

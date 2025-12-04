@@ -1,0 +1,12 @@
+{
+    "code": "TrophyKvastur",
+    "type": "Trophy",
+    "name": "Kvastur Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyKvastur.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophyTheElder",
+    "type": "Trophy",
+    "name": "Elder Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyTheElder.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophyHatchling",
+    "type": "Trophy",
+    "name": "Drake Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyHatchling.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

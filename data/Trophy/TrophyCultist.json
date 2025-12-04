@@ -1,0 +1,12 @@
+{
+    "code": "TrophyCultist",
+    "type": "Trophy",
+    "name": "Cultist Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCultist.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "BjornMeat",
+    "name": "Bear meat",
+    "desc": "This fatty meat was once meant to sustain a body through hibernation.",
+    "type": "Material",
+    "image": "/data/Material/BjornMeat.png",
+    "usage": "Cooking station",
+    "source_url": "https://valheim.fandom.com/wiki/Cooked_bear_meat"
+}

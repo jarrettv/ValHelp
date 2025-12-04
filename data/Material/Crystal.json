@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Crystal.png",
+    "name": "Crystal",
+    "desc": "A shard of crystal from deep within the earth.",
+    "code": "Crystal",
+    "type": "Material",
+    "drop": "Stone Golem",
+    "usage": "Crafting, Building",
+    "weight": 1.0,
+    "stack": 50,
+    "mats": {}
+}

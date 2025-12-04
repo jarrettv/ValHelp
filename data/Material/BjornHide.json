@@ -1,0 +1,9 @@
+{
+    "code": "BjornHide",
+    "name": "Bear hide",
+    "desc": "A thick and furry hide, coarse yet incredibly soft.",
+    "type": "Material",
+    "image": "/data/Material/BjornHide.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bear_hide"
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophySkeletonPoison",
+    "type": "Trophy",
+    "name": "Rancid Remains Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySkeletonPoison.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

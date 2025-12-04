@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/SerpentScale.png",
+    "name": "Serpent scale",
+    "desc": "The shiny metal-like scale from a sea serpent.",
+    "code": "SerpentScale",
+    "type": "Material",
+    "drop": "Serpent",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

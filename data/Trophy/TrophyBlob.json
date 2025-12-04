@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBlob",
+    "type": "Trophy",
+    "name": "Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

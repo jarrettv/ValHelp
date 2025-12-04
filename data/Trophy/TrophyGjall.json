@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGjall",
+    "type": "Trophy",
+    "name": "Gjall Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGjall.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

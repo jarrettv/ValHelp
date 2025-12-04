@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBjornUndead",
+    "type": "Trophy",
+    "name": "Vial Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBjornUndead.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

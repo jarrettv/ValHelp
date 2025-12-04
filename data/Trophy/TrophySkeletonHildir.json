@@ -1,0 +1,12 @@
+{
+    "code": "TrophySkeletonHildir",
+    "type": "Trophy",
+    "name": "Brenna Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySkeletonHildir.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

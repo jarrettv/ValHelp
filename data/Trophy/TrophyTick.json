@@ -1,0 +1,12 @@
+{
+    "code": "TrophyTick",
+    "type": "Trophy",
+    "name": "Tick Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyTick.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

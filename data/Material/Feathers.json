@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Feathers.png",
+    "name": "Feathers",
+    "desc": "A small pile of feathers.",
+    "code": "Feathers",
+    "type": "Material",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+}

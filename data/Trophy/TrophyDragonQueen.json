@@ -1,0 +1,12 @@
+{
+    "code": "TrophyDragonQueen",
+    "type": "Trophy",
+    "name": "Moder Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDragonQueen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

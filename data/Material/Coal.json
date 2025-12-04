@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Coal.png",
+    "name": "Coal",
+    "desc": "A lump of coal.",
+    "code": "Coal",
+    "type": "Material",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

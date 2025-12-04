@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/ProustitePowder.png",
+    "name": "Proustite powder",
+    "desc": "This unstable powder packs great potential.",
+    "code": "ProustitePowder",
+    "type": "Material",
+    "drop": "Lava Blob",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+}

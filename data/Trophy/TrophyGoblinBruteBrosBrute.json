@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGoblinBruteBrosBrute",
+    "type": "Trophy",
+    "name": "Thungr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinBruteBrosBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

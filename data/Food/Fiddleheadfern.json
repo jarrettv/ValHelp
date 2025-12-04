@@ -1,0 +1,12 @@
+{
+    "image": "/data/Food/Fiddleheadfern.png",
+    "name": "Fiddlehead",
+    "desc": "Veggies with a twist!",
+    "code": "Fiddleheadfern",
+    "type": "Food",
+    "drop": "Ashlands",
+    "usage": "Cooking, Eating",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+}

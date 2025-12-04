@@ -1,0 +1,12 @@
+{
+    "code": "TrophyAsksvin",
+    "type": "Trophy",
+    "name": "Asksvin Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyAsksvin.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

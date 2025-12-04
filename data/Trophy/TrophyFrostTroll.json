@@ -1,0 +1,13 @@
+{
+    "code": "TrophyFrostTroll",
+    "type": "Trophy",
+    "name": "Troll Trophy",
+    "desc": "The leathery skin bears the faded tracery of ancient symbols.",
+    "image": "/img/Trophy/TrophyFrostTroll.png",
+    "drop": "Troll",
+    "usage": "Decoration",
+    "weight": 4.0,
+    "stack": 20,
+    "biome": "Black Forest",
+    "mats": {}
+}

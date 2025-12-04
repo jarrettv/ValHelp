@@ -1,0 +1,12 @@
+{
+    "code": "TrophyLeech",
+    "type": "Trophy",
+    "name": "Leech Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyLeech.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

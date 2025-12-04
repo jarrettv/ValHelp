@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBjorn",
+    "type": "Trophy",
+    "name": "Bear Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBjorn.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

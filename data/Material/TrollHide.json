@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/TrollHide.png",
+    "name": "Troll hide",
+    "desc": "A thick and sturdy hide. This is why trolls are so hard to kill.",
+    "code": "TrollHide",
+    "type": "Material",
+    "drop": "Troll",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 20,
+    "mats": {}
+}

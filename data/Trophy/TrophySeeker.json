@@ -1,0 +1,12 @@
+{
+    "code": "TrophySeeker",
+    "type": "Trophy",
+    "name": "Seeker Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeeker.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

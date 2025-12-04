@@ -1,0 +1,12 @@
+{
+    "code": "TrophyFallenValkyrie",
+    "type": "Trophy",
+    "name": "Fallen Valkyrie Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFallenValkyrie.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

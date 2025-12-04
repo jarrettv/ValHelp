@@ -1,0 +1,12 @@
+{
+    "code": "TrophySGolem",
+    "type": "Trophy",
+    "name": "Stone Golem Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySGolem.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

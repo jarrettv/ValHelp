@@ -1,0 +1,12 @@
+{
+    "code": "TrophyLox",
+    "type": "Trophy",
+    "name": "Lox Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyLox.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

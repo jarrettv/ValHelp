@@ -1,0 +1,12 @@
+{
+    "code": "TrophySeekerBrute",
+    "type": "Trophy",
+    "name": "Seeker Soldier Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeekerBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

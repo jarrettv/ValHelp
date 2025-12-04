@@ -1,0 +1,12 @@
+{
+    "code": "TrophyCharredMelee",
+    "type": "Trophy",
+    "name": "Warrior Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredMelee.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

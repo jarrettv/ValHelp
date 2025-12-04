@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/WolfFang.png",
+    "name": "Wolf fang",
+    "desc": "Still sharp.",
+    "code": "WolfFang",
+    "type": "Material",
+    "drop": "Wolf",
+    "usage": "Crafting",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+}

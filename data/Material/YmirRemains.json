@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/YmirRemains.png",
+    "name": "Ymir flesh",
+    "desc": "The earthy remains of the giant Ymir.",
+    "code": "YmirRemains",
+    "type": "Material",
+    "drop": "Haldor",
+    "usage": "Crafting",
+    "weight": 0.3,
+    "stack": 50,
+    "mats": {}
+}

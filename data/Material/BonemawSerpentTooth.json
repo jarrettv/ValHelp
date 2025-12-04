@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/BonemawSerpentTooth.png",
+    "name": "Bonemaw tooth",
+    "desc": "This has caused the death of many a brave sailor.",
+    "code": "BonemawSerpentTooth",
+    "type": "Material",
+    "drop": "Bonemaw Serpent",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophyDeathsquito",
+    "type": "Trophy",
+    "name": "Deathsquito Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDeathsquito.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

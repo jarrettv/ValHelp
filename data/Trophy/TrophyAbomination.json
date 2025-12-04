@@ -1,0 +1,12 @@
+{
+    "code": "TrophyAbomination",
+    "type": "Trophy",
+    "name": "Abomination Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyAbomination.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

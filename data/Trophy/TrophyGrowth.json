@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGrowth",
+    "type": "Trophy",
+    "name": "Growth Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGrowth.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

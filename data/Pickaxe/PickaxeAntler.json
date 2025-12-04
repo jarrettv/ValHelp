@@ -1,0 +1,37 @@
+{
+    "code": "PickaxeAntler",
+    "name": "Antler Pickaxe",
+    "desc": "This tool is hard enough to crack even the most stubborn rocks.",
+    "type": "Pickaxe",
+    "image": "/img/Pickaxe/PickaxeAntler.webp",
+    "usage": "Mining",
+    "wield": "Two-handed",
+    "weight": 2.0,
+    "power": 18,
+    "source": "Workbench",
+    "durab": "100",
+    "craft": "1",
+    "repair": "1",
+    "mats": {
+        "Wood": "10",
+        "Hard antler": "1"
+    },
+    "passive": {
+        "Movement speed": -5
+    },
+    "attack": {
+        "Pickaxe": "18",
+        "Pierce": "18",
+        "Knockback": "50",
+        "Attack speed": "1.4 s",
+        "Stamina": "6",
+        "Stagger": "18",
+        "Backstab": "3x"
+    },
+    "block": {
+        "Block armor": "2-3",
+        "Parry block armor": "4-6",
+        "Block force": "20",
+        "Parry bonus": "2x"
+    }
+}

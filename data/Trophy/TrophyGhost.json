@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGhost",
+    "type": "Trophy",
+    "name": "Ghost Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGhost.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

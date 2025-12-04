@@ -1,0 +1,12 @@
+{
+    "code": "TrophyCultist_Hildir",
+    "type": "Trophy",
+    "name": "Geirrhafa Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCultist_Hildir.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

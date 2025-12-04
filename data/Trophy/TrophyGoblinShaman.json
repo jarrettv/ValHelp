@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGoblinShaman",
+    "type": "Trophy",
+    "name": "Fuling Shaman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophyFenring",
+    "type": "Trophy",
+    "name": "Fenring Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFenring.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

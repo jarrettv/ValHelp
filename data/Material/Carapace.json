@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Carapace.png",
+    "name": "Carapace",
+    "desc": "A plate of chitinous armor.",
+    "code": "Carapace",
+    "type": "Material",
+    "drop": "Seeker",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

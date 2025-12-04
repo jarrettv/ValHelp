@@ -1,0 +1,12 @@
+{
+    "code": "TrophySeekerQueen",
+    "type": "Trophy",
+    "name": "Queen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeekerQueen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Chain.png",
+    "name": "Chain",
+    "desc": "A link of iron chain.",
+    "code": "Chain",
+    "type": "Material",
+    "drop": "Wraith",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+}

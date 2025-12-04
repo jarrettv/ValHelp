@@ -1,0 +1,12 @@
+{
+    "code": "TrophyCharredMage",
+    "type": "Trophy",
+    "name": "Warlock Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredMage.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

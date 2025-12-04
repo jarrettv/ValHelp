@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBonemawSerpent",
+    "type": "Trophy",
+    "name": "Bonemaw Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBonemawSerpent.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

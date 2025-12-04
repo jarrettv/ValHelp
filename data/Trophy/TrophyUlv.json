@@ -1,0 +1,12 @@
+{
+    "code": "TrophyUlv",
+    "type": "Trophy",
+    "name": "Ulv Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyUlv.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

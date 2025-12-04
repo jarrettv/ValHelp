@@ -1,0 +1,12 @@
+{
+    "code": "TrophySurtling",
+    "type": "Trophy",
+    "name": "Surtling Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySurtling.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

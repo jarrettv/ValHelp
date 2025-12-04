@@ -1,0 +1,12 @@
+{
+    "code": "TrophyVolture",
+    "type": "Trophy",
+    "name": "Volture Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyVolture.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

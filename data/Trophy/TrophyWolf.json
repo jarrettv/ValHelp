@@ -1,0 +1,12 @@
+{
+    "code": "TrophyWolf",
+    "type": "Trophy",
+    "name": "Wolf Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWolf.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

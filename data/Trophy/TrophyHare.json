@@ -1,0 +1,12 @@
+{
+    "code": "TrophyHare",
+    "type": "Trophy",
+    "name": "Hare Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyHare.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+}

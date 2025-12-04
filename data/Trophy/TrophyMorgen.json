@@ -1,0 +1,12 @@
+{
+    "code": "TrophyMorgen",
+    "type": "Trophy",
+    "name": "Morgen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyMorgen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

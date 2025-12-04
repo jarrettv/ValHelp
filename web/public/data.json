@@ -1,0 +1,5130 @@
+[
+  {
+    "code": "BeltStrength",
+    "type": "Accessory",
+    "name": "Megingjord",
+    "desc": "",
+    "image": "/img/Accessory/BeltStrength.png",
+    "source_url": "https://valheim.fandom.com/wiki/Megingjord"
+  },
+  {
+    "code": "ArrowBronze",
+    "type": "Arrow",
+    "name": "Bronzehead arrow",
+    "desc": "Sharper than flint. A sleek messenger of death.",
+    "image": "/img/Arrow/ArrowBronze.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Bronze": "1",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "32",
+      "Knockback": "10",
+      "Stagger": "32"
+    }
+  },
+  {
+    "code": "ArrowCarapace",
+    "type": "Arrow",
+    "name": "Carapace arrow",
+    "desc": "Heavy and pointy, this one's gonna hurt.",
+    "image": "/img/Arrow/ArrowCarapace.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Carapace": "4",
+      "Feathers": "2",
+      "Wood": "8"
+    },
+    "attack": {
+      "Pierce": "72",
+      "Knockback": "15",
+      "Stagger": "72"
+    }
+  },
+  {
+    "code": "ArrowCharred",
+    "type": "Arrow",
+    "name": "Charred arrow",
+    "desc": "This arrow has been whittled into shape from a charred femur, and it's as hard as any metal.",
+    "image": "/img/Arrow/ArrowCharred.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Charred bone": "4",
+      "Feathers": "2",
+      "Ashwood": "8"
+    },
+    "attack": {
+      "Pierce": "82",
+      "Knockback": "15",
+      "Stagger": "82"
+    }
+  },
+  {
+    "code": "ArrowFire",
+    "type": "Arrow",
+    "name": "Fire arrow",
+    "desc": "This arrow burns whatever it pierces.",
+    "image": "/img/Arrow/ArrowFire.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "2",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Resin": "8",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "11",
+      "Fire": "22",
+      "Knockback": "10",
+      "Stagger": "11"
+    }
+  },
+  {
+    "code": "ArrowFlint",
+    "type": "Arrow",
+    "name": "Flinthead arrow",
+    "desc": "A hide-breaker with a head of flint.",
+    "image": "/img/Arrow/ArrowFlint.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "2",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Flint": "2",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "27",
+      "Knockback": "10",
+      "Stagger": "27"
+    }
+  },
+  {
+    "code": "ArrowFrost",
+    "type": "Arrow",
+    "name": "Frost arrow",
+    "desc": "A shard of piercing ice.",
+    "image": "/img/Arrow/ArrowFrost.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "4",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Obsidian": "4",
+      "Feathers": "2",
+      "Freeze gland": "1"
+    },
+    "attack": {
+      "Pierce": "26",
+      "Frost": "52",
+      "Knockback": "10",
+      "Stagger": "26"
+    }
+  },
+  {
+    "code": "ArrowIron",
+    "type": "Arrow",
+    "name": "Ironhead arrow",
+    "desc": "Capped with iron and flighted with dark feathers.",
+    "image": "/img/Arrow/ArrowIron.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Forge",
+    "durab": "0",
+    "craft": "2",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Iron": "1",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "42",
+      "Knockback": "10",
+      "Stagger": "42"
+    }
+  },
+  {
+    "code": "ArrowNeedle",
+    "type": "Arrow",
+    "name": "Needle arrow",
+    "desc": "The final stitch.",
+    "image": "/img/Arrow/ArrowNeedle.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "4",
+    "repair": "0",
+    "mats": {
+      "Needle": "4",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "62",
+      "Knockback": "15",
+      "Stagger": "62"
+    }
+  },
+  {
+    "code": "ArrowObsidian",
+    "type": "Arrow",
+    "name": "Obsidian arrow",
+    "desc": "A sliver of darkness.",
+    "image": "/img/Arrow/ArrowObsidian.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "3",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Obsidian": "4",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "52",
+      "Knockback": "10",
+      "Stagger": "52"
+    }
+  },
+  {
+    "code": "ArrowPoison",
+    "type": "Arrow",
+    "name": "Poison arrow",
+    "desc": "A bitter sting from afar.",
+    "image": "/img/Arrow/ArrowPoison.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "3",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Obsidian": "4",
+      "Feathers": "2",
+      "Ooze": "2"
+    },
+    "attack": {
+      "Pierce": "26",
+      "Poison": "52",
+      "Knockback": "10",
+      "Stagger": "26"
+    }
+  },
+  {
+    "code": "ArrowSilver",
+    "type": "Arrow",
+    "name": "Silver arrow",
+    "desc": "A needle to calm restless spirits.",
+    "image": "/img/Arrow/ArrowSilver.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Forge",
+    "durab": "0",
+    "craft": "3",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Silver": "1",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "52",
+      "Spirit": "20",
+      "Knockback": "10",
+      "Stagger": "52"
+    }
+  },
+  {
+    "code": "ArrowWood",
+    "type": "Arrow",
+    "name": "Wood arrow",
+    "desc": "An arrow of sharpened wood.",
+    "image": "/img/Arrow/ArrowWood.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Wood": "8"
+    },
+    "attack": {
+      "Pierce": "22",
+      "Knockback": "10",
+      "Stagger": "22"
+    }
+  },
+  {
+    "code": "AxeStone",
+    "type": "Axe",
+    "name": "Stone axe",
+    "desc": "A crude axe for tree-felling.",
+    "image": "/img/Axe/AxeStone.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 9,
+    "source": "Player crafting menu",
+    "durab": "100>130>160>190",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "5>0>0>0",
+      "Stone": "4>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "15>20>25>30;22.5>30>37.5>45",
+      "Chop": "20>23>26>29;30>34.5>39>43.5",
+      "Knockback": "50;75",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "5;10",
+      "Stagger": "15>20>25>30;22.5>30>37.5>45",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "3-4.5>3-4.5>3-4.5>3-4.5",
+      "Parry block armor": "6-9>6-9>6-9>6-9",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeFlint",
+    "type": "Axe",
+    "name": "Flint axe",
+    "desc": "Sharper than stone.",
+    "image": "/img/Axe/AxeFlint.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 12,
+    "source": "Workbench",
+    "durab": "100>130>160>190",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "4>0>0>0",
+      "Flint": "6>3>6>9"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "20>25>30>35;30>37.5>45>52.5",
+      "Chop": "30>33>36>39;45>49.5>54>58.5",
+      "Knockback": "50;75",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "6;12",
+      "Stagger": "20>25>30>35;30>37.5>45>52.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "4-6>4-6>4-6>4-6",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeBronze",
+    "type": "Axe",
+    "name": "Bronze axe",
+    "desc": "A bright and burnished blade, curved like a smile.",
+    "image": "/img/Axe/AxeBronze.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 36,
+    "source": "Forge",
+    "durab": "125>175>225>275",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "4>0>0>0",
+      "Bronze": "8>4>8>12",
+      "Leather Scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "40>45>50>55;60>67.5>75>82.5",
+      "Chop": "40>43>46>49;60>64.5>69>73.5",
+      "Knockback": "50;75",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "8;16",
+      "Stagger": "40>45>50>55;60>67.5>75>82.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "12-18>12-18>12-18>12-18",
+      "Parry block armor": "24-36>24-36>24-36>24-36",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeIron",
+    "type": "Axe",
+    "name": "Iron axe",
+    "desc": "Sharp and strong, a woodcutter's friend.",
+    "image": "/img/Axe/AxeIron.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 63,
+    "source": "Forge",
+    "durab": "175>225>275>325",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Wood": "4>0>0>0",
+      "Iron": "20>10>20>30",
+      "Leather Scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "60>65>70>75;90>97.5>105>112.5",
+      "Chop": "50>53>56>59;75>79.5>84>88.5",
+      "Knockback": "50;75",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "10;20",
+      "Stagger": "60>65>70>75;90>97.5>105>112.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "21-31.5>21-31.5>21-31.5>21-31.5",
+      "Parry block armor": "42-63>42-63>42-63>42-63",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeBlackMetal",
+    "type": "Axe",
+    "name": "Blackmetal axe",
+    "desc": "A perfectly-balanced axe forged from dark metal with an emerald sheen.",
+    "image": "/img/Axe/AxeBlackMetal.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 117,
+    "source": "Forge",
+    "durab": "175>225>275>325",
+    "craft": "4>5>6>7",
+    "repair": "4>4>4>4",
+    "mats": {
+      "Fine wood": "6>0>0>0",
+      "Black metal": "20>10>20>30",
+      "Linen thread": "5>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "100>105>110>115;150>157.5>165>172.5",
+      "Chop": "60>63>66>69;90>94.5>99>103.5",
+      "Knockback": "60;90",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "14;28",
+      "Stagger": "100>105>110>115;150>157.5>165>172.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "39-58.5>39-58.5>39-58.5>39-58.5",
+      "Parry block armor": "78-117>78-117>78-117>78-117",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeJotunBane",
+    "type": "Axe",
+    "name": "Jotun Bane",
+    "desc": "Not even the giants of old could weather the poisonous bite of this weapon.",
+    "image": "/img/Axe/AxeJotunBane.png",
+    "usage": "Wood cutting",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 144,
+    "source": "Black forge",
+    "durab": "175>225>275>325",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "5>0>0>0",
+      "Iron": "15>10>20>30",
+      "Bilebag": "3>1>2>3",
+      "Refined eitr": "10>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "80>85>90>95;120>127.5>135>142.5",
+      "Poison": "40>40>40>40;60>60>60>60",
+      "Chop": "70>73>76>79;105>109.5>114>118.5",
+      "Knockback": "50;75",
+      "Attack speed": "2.58 s (1.11 + 0.65 + 0.82);2.0 s",
+      "Stamina": "16;32",
+      "Stagger": "80>85>90>95;120>127.5>135>142.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AxeBerzerkr",
+    "type": "Axe",
+    "name": "Berserkir axes",
+    "desc": "Let your rage take over and face the slaughter.",
+    "image": "/img/Axe/AxeBerzerkr.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 325.0,
+    "power": 57,
+    "source": "Black forge",
+    "durab": "0>0>0>0",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Charred bone": "15>0>0>0",
+      "Flametal": "24>15>30>45",
+      "Asksvin hide": "3>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "140>145>150>155",
+      "Chop": "80>83>86>89",
+      "Knockback": "20",
+      "Stamina": "16",
+      "Stagger": "140>145>150>155",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5"
+    }
+  },
+  {
+    "code": "Battleaxe",
+    "type": "Axe",
+    "name": "Battleaxe",
+    "desc": "Skull-splitter, a warrior's joy.",
+    "image": "/img/Axe/Battleaxe.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 84,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Ancient bark": "30>5>10>15",
+      "Iron": "35>15>30>45",
+      "Leather scraps": "4>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "attack": {
+      "Slash": "70>76>82>88;35>38>41>44",
+      "Chop": "40>42.5>45>47.5;20>21.25>22.5>23.75",
+      "Knockback": "70;140",
+      "Attack speed": "3.21 s (1.58 + 0.92 + 0.71);0.84 s",
+      "Stamina": "16;8",
+      "Stagger": "105>114>123>132;140>152>164>176",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "28-42>28-42>28-42>28-42",
+      "Parry block armor": "56-84>56-84>56-84>56-84",
+      "Block force": "70>75>80>85",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "BattleaxeCrystal",
+    "type": "Axe",
+    "name": "Crystal battleaxe",
+    "desc": "It's see-through and tears through.",
+    "image": "/img/Axe/BattleaxeCrystal.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 120,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ancient bark": "40>5>10>15",
+      "Silver": "30>15>30>45",
+      "Crystal": "10>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "attack": {
+      "Slash": "90>96>102>108;45>48>51>54",
+      "Spirit": "30>30>30>30;15>15>15>15",
+      "Chop": "50>52.5>55>57.5;25>26.25>27.5>28.75",
+      "Knockback": "70;140",
+      "Attack speed": "3.21 s (1.58 + 0.92 + 0.71);0.84 s",
+      "Stamina": "18;9",
+      "Stagger": "135>144>153>162;180>192>204>216",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "40-60>40-60>40-60>40-60",
+      "Parry block armor": "80-120>80-120>80-120>80-120",
+      "Block force": "70>75>80>85",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffRedTroll",
+    "type": "Blood magic",
+    "name": "Trollstav",
+    "desc": "Summons a raging beast to cause death and destruction.",
+    "image": "/img/Blood magic/StaffRedTroll.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Charred bone": "15>5>10>15",
+      "Troll trophy": "1>1>2>3",
+      "Flametal": "3>3>6>9",
+      "Bloodstone": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Fire": "300>300>300>300",
+      "Chop": "100>100>100>100",
+      "Pickaxe": "100>100>100>100",
+      "Pure": "50>50>50>50",
+      "Eitr": "120>120>120>120",
+      "Health": "60%>60%>60%>60%"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffShield",
+    "type": "Blood magic",
+    "name": "Staff of Protection",
+    "desc": "For a slight blood offering it will protect the caster in a magical shell.",
+    "image": "/img/Blood magic/StaffShield.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "attack": {
+      "Blood": "60s>120s>180s>240s magic barrier",
+      "Eitr": "30>30>30>30"
+    },
+    "mats": {
+      "Yggdrasil wood": "20>10>20>30",
+      "Blood clot": "4>2>4>6",
+      "Refined eitr": "16>8>16>24"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144",
+      "Block force": "20>25>30",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffSkeleton",
+    "type": "Blood magic",
+    "name": "Dead Raiser",
+    "desc": "Sacrifice a bit of blood to raise the dead. Upgrade the skull to spawn multiple skeletons, and increase your blood magic to make them stronger.",
+    "image": "/img/Blood magic/StaffSkeleton.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Bone fragments": "10>5>10>15",
+      "Refined eitr": "16>8>16>24",
+      "Skeleton trophy": "4>2>4>6"
+    },
+    "attack": {
+      "Eitr": "100>100>100>100",
+      "Blood": "1spawn>2spawn>3spawn>4spawn"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "48-72>48-72",
+      "Parry block armor": "96-144>96-144",
+      "Block force": "20>25",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "BoltBlackmetal",
+    "type": "Bolt",
+    "name": "Blackmetal bolt",
+    "desc": "A sleek bolt of dark metal.",
+    "image": "/img/Bolt/BoltBlackmetal.png",
+    "usage": "Weapon",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "2",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Black metal": "2",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "62",
+      "Stagger": "62"
+    }
+  },
+  {
+    "code": "BoltBone",
+    "type": "Bolt",
+    "name": "Bone bolt",
+    "desc": "A crude bolt of yellowed bone.",
+    "image": "/img/Bolt/BoltBone.png",
+    "usage": "Weapon",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Bone fragments": "8",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "32",
+      "Stagger": "32"
+    }
+  },
+  {
+    "code": "BoltCarapace",
+    "type": "Bolt",
+    "name": "Carapace bolt",
+    "desc": "A heavy and solid bolt.",
+    "image": "/img/Bolt/BoltCarapace.png",
+    "usage": "Weapon",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Carapace": "2",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "72",
+      "Stagger": "72"
+    }
+  },
+  {
+    "code": "BoltCharred",
+    "type": "Bolt",
+    "name": "Charred bolt",
+    "desc": "A sturdy bone from a forearm, shaped into a deadly bolt.",
+    "image": "/img/Bolt/BoltCharred.png",
+    "usage": "Weapon",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Charred bone": "2",
+      "Ashwood": "8",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "82",
+      "Stagger": "82"
+    }
+  },
+  {
+    "code": "BoltIron",
+    "type": "Bolt",
+    "name": "Iron bolt",
+    "desc": "A sturdy iron missile.",
+    "image": "/img/Bolt/BoltIron.png",
+    "usage": "Weapon",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Black forge",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Wood": "8",
+      "Feathers": "2",
+      "Iron": "1"
+    },
+    "attack": {
+      "Pierce": "42",
+      "Stagger": "42"
+    }
+  },
+  {
+    "code": "BombBile",
+    "type": "Bomb",
+    "name": "Bile bomb",
+    "desc": "Handle with care.",
+    "image": "/img/Bomb/BombBile.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0,
+    "power": 5,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "0",
+    "repair": "0",
+    "mats": {
+      "Sap": "1",
+      "Bilebag": "1",
+      "Resin": "3"
+    },
+    "attack": {
+      "Blunt": "5",
+      "Knockback": "40",
+      "Stamina": "8",
+      "Stagger": "5",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "3-4.5",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BombOoze",
+    "type": "Bomb",
+    "name": "Ooze bomb",
+    "desc": "The stench is unbearable...",
+    "image": "/img/Bomb/BombOoze.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0,
+    "power": 5,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "0",
+    "repair": "0",
+    "mats": {
+      "Leather scraps": "5",
+      "Ooze": "5",
+      "Resin": "3"
+    },
+    "attack": {
+      "Blunt": "5",
+      "Knockback": "40",
+      "Stamina": "8",
+      "Stagger": "5",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "3-4.5",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BombSmoke",
+    "type": "Bomb",
+    "name": "Smoke bomb",
+    "desc": "Everyone knows you can't breathe in the smoke.",
+    "image": "/img/Bomb/BombSmoke.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0,
+    "power": 5,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Smoke puff": "1",
+      "Asksvin bladder": "1"
+    },
+    "attack": {
+      "Blunt": "5",
+      "Knockback": "40",
+      "Stamina": "8",
+      "Stagger": "5",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "3-4.5",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BowSpineSnap",
+    "type": "Bow",
+    "name": "Spinesnap",
+    "desc": "Using this bow is backbreaking work but so worth it.",
+    "image": "/img/Bow/BowSpineSnap.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 3,
+    "source": "Black forge",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Fine wood": "10>5>10>15",
+      "Bone fragments": "40>20>40>60",
+      "Refined eitr": "10>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "72>76>80>84",
+      "Spirit": "5>10>15>20",
+      "Knockback": "25",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "14 / s",
+      "Stagger": "72>76>80>84",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "3-4.5>3-4.5>3-4.5>3-4.5",
+      "Parry block armor": "4.5-6.75>4.5-6.75>4.5-6.75>4.5-6.75",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "Bow",
+    "type": "Bow",
+    "name": "Crude bow",
+    "desc": "A crude but functional bow.",
+    "image": "/img/Bow/Bow.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 5,
+    "source": "Workbench",
+    "durab": "50>100>150>200",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "10>5>10>15",
+      "Leather scraps": "8>4>8>12"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "22>25>28>31",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "4 / s",
+      "Stagger": "22>25>28>31",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "5-7.5>5-7.5>5-7.5>5-7.5",
+      "Parry block armor": "7.5-11.25>7.5-11.25>7.5-11.25>7.5-11.25",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BowAshlands",
+    "type": "Bow",
+    "name": "Ash Fang",
+    "desc": "Risen again from the ashes, this bow holds unyielding strength.",
+    "image": "/img/Bow/BowAshlands.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 5,
+    "source": "Black forge",
+    "durab": "100>150>200>250",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ashwood": "10>5>10>15",
+      "Charred Bone": "16>10>20>30",
+      "Flametal": "5>5>10>15",
+      "Bonemaw Tooth": "5>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "82>86>90>94",
+      "Spirit": "0>5>10>15",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "14 / s",
+      "Stagger": "82>86>90>94",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "5-7.5>5-7.5>5-7.5>5-7.5",
+      "Parry block armor": "7.5-11.25>7.5-11.25>7.5-11.25>7.5-11.25",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BowDraugrFang",
+    "type": "Bow",
+    "name": "Draugr Fang",
+    "desc": "Dark wood strung with glistening sinew. A vicious thing.",
+    "image": "/img/Bow/BowDraugrFang.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 5,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Ancient bark": "10>5>10>15",
+      "Silver": "20>10>20>30",
+      "Deer hide": "2>2>4>6",
+      "Guck": "10>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "47>50>53>56",
+      "Poison": "5>10>15>20",
+      "Knockback": "20",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "10 / s",
+      "Stagger": "47>50>53>56",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "5-7.5>5-7.5>5-7.5>5-7.5",
+      "Parry block armor": "7.5-11.25>7.5-11.25>7.5-11.25>7.5-11.25",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BowFineWood",
+    "type": "Bow",
+    "name": "Finewood bow",
+    "desc": "A simple bow of strong and supple wood.",
+    "image": "/img/Bow/BowFineWood.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 5,
+    "source": "Workbench",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Fine wood": "10>5>10>15",
+      "Core wood": "10>5>10>15",
+      "Deer hide": "2>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "32>35>38>41",
+      "Knockback": "5",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "6 / s",
+      "Stagger": "32>35>38>41",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "5-7.5>5-7.5>5-7.5>5-7.5",
+      "Parry block armor": "7.5-11.25>7.5-11.25>7.5-11.25>7.5-11.25",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "BowHuntsman",
+    "type": "Bow",
+    "name": "Huntsman bow",
+    "desc": "Finely worked and strung. A huntsman's joy.",
+    "image": "/img/Bow/BowHuntsman.png",
+    "usage": "Ranged weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 5,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Fine wood": "10>5>10>15",
+      "Iron": "20>10>20>30",
+      "Feathers": "10>5>10>15",
+      "Deer hide": "2>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "42>45>48>51",
+      "Knockback": "10",
+      "Attack speed": "0.8 s + 2.5 s draw time",
+      "Stamina": "8 / s",
+      "Stagger": "42>45>48>51",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "5-7.5>5-7.5>5-7.5>5-7.5",
+      "Parry block armor": "7.5-11.25>7.5-11.25>7.5-11.25>7.5-11.25",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "Torch",
+    "type": "Club",
+    "name": "Torch",
+    "desc": "It brings light and warmth, drives back the darkness.",
+    "image": "/img/Club/Torch.png",
+    "usage": "Weapon",
+    "wield": "Off-hand",
+    "weight": 1.0,
+    "power": 0,
+    "source": "Player crafting menu",
+    "durab": "20",
+    "craft": "0",
+    "repair": "0",
+    "mats": {
+      "Wood": "1",
+      "Resin": "1"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "4",
+      "Fire": "15",
+      "Knockback": "30",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88)",
+      "Stagger": "4",
+      "Backstab": "3x"
+    }
+  },
+  {
+    "code": "Club",
+    "type": "Club",
+    "name": "Club",
+    "desc": "A crude but useful weapon.",
+    "image": "/img/Club/Club.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 9,
+    "source": "Player crafting menu",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "6>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "12>18>24>30",
+      "Knockback": "30",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88)",
+      "Stamina": "6",
+      "Stagger": "12>18>24>30",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "3-4.5>3-4.5>3-4.5>3-4.5",
+      "Parry block armor": "6-9>6-9>6-9>6-9",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "MaceBronze",
+    "type": "Club",
+    "name": "Bronze mace",
+    "desc": "A headache on a stick.",
+    "image": "/img/Club/MaceBronze.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 36,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "4>0>0>0",
+      "Bronze": "8>4>8>12",
+      "Leather Scraps": "3>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "35>41>47>53;87.5>102.5>117.5>132.5",
+      "Knockback": "80;160",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.72 s",
+      "Stamina": "8;16",
+      "Stagger": "35>41>47>53;175>205>235>265",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "12-18>12-18>12-18>12-18",
+      "Parry block armor": "24-36>24-36>24-36>24-36",
+      "Block force": "30>35>40>45",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "MaceIron",
+    "type": "Club",
+    "name": "Iron mace",
+    "desc": "A fist-sized lump of iron on a wooden shaft.",
+    "image": "/img/Club/MaceIron.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 63,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Wood": "4>0>0>0",
+      "Iron": "20>10>20>30",
+      "Leather scraps": "3>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "55>61>67>73;137.5>152.5>167.5>182.5",
+      "Knockback": "90;180",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.72 s",
+      "Stamina": "10;20",
+      "Stagger": "55>61>67>73;275>305>335>365",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "21-31.5>21-31.5>21-31.5>21-31.5",
+      "Parry block armor": "42-63>42-63>42-63>42-63",
+      "Block force": "30>35>40>45",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "MaceSilver",
+    "type": "Club",
+    "name": "Frostner",
+    "desc": "The dead fear silver. Remind them why.",
+    "image": "/img/Club/MaceSilver.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 90,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ancient bark": "10>0>0>0",
+      "Silver": "30>15>30>45",
+      "Ymir flesh": "5>0>0>0",
+      "Freeze gland": "5>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "35>35>35>35;87.5>87.5>87.5>87.5",
+      "Frost": "40>46>52>58;100>115>130>145",
+      "Spirit": "20>20>20>20;50>50>50>50",
+      "Knockback": "100;200",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.72 s",
+      "Stamina": "12;24",
+      "Stagger": "35>35>35>35;175>175>175>175",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "30-45>30-45>30-45>30-45",
+      "Parry block armor": "60-90>60-90>60-90>60-90",
+      "Block force": "30>35>40>45",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "MaceNeedle",
+    "type": "Club",
+    "name": "Porcupine",
+    "desc": "A deadly weapon, bristling with fiendish spikes.",
+    "image": "/img/Club/MaceNeedle.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 117,
+    "source": "Forge",
+    "durab": "150>200>250>300",
+    "craft": "4>5>6>7",
+    "repair": "4>4>4>4",
+    "mats": {
+      "Fine wood": "5>0>0>0",
+      "Iron": "20>2>4>6",
+      "Needle": "5>2>4>6",
+      "Linen thread": "10>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "50>50>50>50;125>125>125>125",
+      "Pierce": "45>51>57>63;112.5>127.5>142.5>157.5",
+      "Knockback": "100;200",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.72 s",
+      "Stamina": "14;28",
+      "Stagger": "95>101>107>113;475>505>535>565",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "39-58.5>39-58.5>39-58.5>39-58.5",
+      "Parry block armor": "78-117>78-117>78-117>78-117",
+      "Block force": "30>35>40>45",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "MaceEldner",
+    "type": "Club",
+    "name": "Flametal mace",
+    "desc": "Dense yet spiked flametal, perfect for bashing enemy faces in.",
+    "image": "/img/Club/MaceEldner.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 2.0,
+    "power": 171,
+    "source": "Black forge",
+    "durab": "150>200>250>300",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Charred bone": "10>5>10>15",
+      "Flametal": "15>8>16>24",
+      "Sulfur": "5>3>6>9",
+      "Asksvin hide": "3>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "135>141>147>153;337.5>352.5>367.5>382.5",
+      "Knockback": "100;200",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.72 s",
+      "Stamina": "16;28",
+      "Stagger": "135>141>147>153;675>705>735>765",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "30>35>40>45",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SledgeStagbreaker",
+    "type": "Club",
+    "name": "Stagbreaker",
+    "desc": "A weapon worthy of the Gods! If you get hit with this, you'll know it…",
+    "image": "/img/Club/SledgeStagbreaker.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 4.0,
+    "power": 12,
+    "source": "Workbench",
+    "durab": "100>150>200>250",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Core wood": "20>5>10>15",
+      "Deer trophy": "5>2>4>6",
+      "Leather scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "attack": {
+      "Blunt": "20>26>32>38",
+      "Pierce": "5>5>5>5",
+      "Knockback": "150",
+      "Attack speed": "2.12 s",
+      "Stamina": "12",
+      "Stagger": "25>31>37>43",
+      "Backstab": "2x"
+    },
+    "block": {
+      "Block armor": "4-6>4-6>4-6>4-6",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SledgeIron",
+    "type": "Club",
+    "name": "Iron sledge",
+    "desc": "A mighty hammer, worthy of a champion.",
+    "image": "/img/Club/SledgeIron.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 4.0,
+    "power": 84,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Ancient bark": "10>2>4>6",
+      "Iron": "30>15>30>45",
+      "Ymir flesh": "4>2>4>6",
+      "Draugr Elite trophy": "1>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "attack": {
+      "Blunt": "55>61>67>73",
+      "Knockback": "200",
+      "Attack speed": "2.12 s",
+      "Stamina": "20",
+      "Stagger": "110>122>134>146",
+      "Backstab": "2x"
+    },
+    "block": {
+      "Block armor": "28-42>28-42>28-42>28-42",
+      "Parry block armor": "56-84>56-84>56-84>56-84",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SledgeDemolisher",
+    "type": "Club",
+    "name": "Demolisher",
+    "desc": "This mighty sledge yearns to wreak havoc.",
+    "image": "/img/Club/SledgeDemolisher.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 4.0,
+    "power": 156,
+    "source": "Black forge",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "10>2>4>6",
+      "Iron": "20>15>30>45",
+      "Refined eitr": "10>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "attack": {
+      "Blunt": "145>151>157>163",
+      "Knockback": "210",
+      "Attack speed": "2.12 s",
+      "Stamina": "28",
+      "Stagger": "290>302>314>326",
+      "Backstab": "2x"
+    },
+    "block": {
+      "Block armor": "52-78>52-78>52-78>52-78",
+      "Parry block armor": "104-156>104-156>104-156>104-156",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "CrossbowArbalest",
+    "type": "Crossbow",
+    "name": "Arbalest",
+    "desc": "A slow but powerful weapon.",
+    "image": "/img/Crossbow/CrossbowArbalest.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 3,
+    "source": "Black forge",
+    "durab": "50>100>150>200",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "10>5>10>15",
+      "Iron": "8>4>8>12",
+      "Root": "4>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "200>203>206>209",
+      "Knockback": "210",
+      "Recoil force": "40>40>40>40",
+      "Stamina": "1/s x 3.5s (3)",
+      "Stagger": "200>203>206>209",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "3-4.5>3-4.5>3-4.5>3-4.5",
+      "Parry block armor": "4.5-6.75>4.5-6.75>4.5-6.75>4.5-6.75",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "CrossbowRipper",
+    "type": "Crossbow",
+    "name": "Ripper",
+    "desc": "Rips your foes apart, simple as that.",
+    "image": "/img/Crossbow/CrossbowRipper.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 3,
+    "source": "Black forge",
+    "durab": "50>100>150>200",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ashwood": "10>5>10>15",
+      "Flametal": "8>4>8>12",
+      "Morgen sinew": "2>1>2>3",
+      "Bonemaw tooth": "4>4>8>12"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "220>223>226>229",
+      "Knockback": "210",
+      "Recoil force": "40>40>40>40",
+      "Stamina": "1/s x 3.5s (3)",
+      "Stagger": "220>223>226>229",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "3-4.5>3-4.5>3-4.5>3-4.5",
+      "Parry block armor": "4.5-6.75>4.5-6.75>4.5-6.75>4.5-6.75",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "StaffClusterbomb",
+    "type": "Elemental magic",
+    "name": "Staff of Fracturing",
+    "desc": "Only those with patience and focus will be able to harness the true power of this staff.",
+    "image": "/img/Elemental magic/StaffClusterbomb.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Charred bone": "15>5>10>15",
+      "Ashwood": "5>3>6>9",
+      "Proustite powder": "8>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "12>12>12>12 per fireball",
+      "Fire": "12>18>24>30 per fireball",
+      "Knockback": "100",
+      "Eitr": "30>30>30>30",
+      "Stagger": "12>12>12>12"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffFireball",
+    "type": "Elemental magic",
+    "name": "Staff of Embers",
+    "desc": "The sweltering heat of Muspelheim seems almost pathetic when compared to what this staff can do...",
+    "image": "/img/Elemental magic/StaffFireball.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "20>10>20>30",
+      "Surtling core": "4>2>4>6",
+      "Refined eitr": "16>8>16>24"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "120>120>120>120",
+      "Fire": "120>126>132>138",
+      "Knockback": "100",
+      "Eitr": "35>35>35>35",
+      "Stagger": "120>120>120>120"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffGreenRoots",
+    "type": "Elemental magic",
+    "name": "Staff of the Wild",
+    "desc": "Ancient natural forces lie curled and dormant within this staff, ready to be unleashed.",
+    "image": "/img/Elemental magic/StaffGreenRoots.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Ashwood": "15>5>10>15",
+      "Fiddlehead": "10>2>4>6",
+      "Celestial feather": "3>3>6>9",
+      "Jade": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Blunt": "20>40>60>80",
+      "Poison": "20>40>60>80",
+      "Stagger": "20>40>60>80",
+      "Eitr": "55"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffIceShards",
+    "type": "Elemental magic",
+    "name": "Staff of Frost",
+    "desc": "A staff as cold as the three-year winter that will herald the end of times.",
+    "image": "/img/Elemental magic/StaffIceShards.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "20>10>20>30",
+      "Freeze gland": "4>2>4>6",
+      "Refined eitr": "16>8>16>24"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Frost": "30>32>34>36",
+      "Knockback": "10",
+      "Eitr": "5>5>5>5"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "StaffLightning",
+    "type": "Elemental magic",
+    "name": "Dundr",
+    "desc": "What happens next may shock you.",
+    "image": "/img/Elemental magic/StaffLightning.png",
+    "usage": "Magic weapon",
+    "wield": "Two-handed",
+    "weight": 1.5,
+    "power": 144,
+    "source": "Galdr table",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Ashwood": "10>5>10>15",
+      "Flametal": "4>2>4>6",
+      "Celestial feather": "3>3>6>9",
+      "Bloodstone": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Lightning": "20>23>26>29",
+      "Knockback": "210",
+      "Eitr": "25>25>25>25",
+      "Recoil force": "40>40>40>40",
+      "Stagger": "20>23>26>29",
+      "Backstab": "1x"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "PlayerUnarmed",
+    "type": "Fists",
+    "name": "Bare fists",
+    "desc": "",
+    "image": "/img/Fists/PlayerUnarmed.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0,
+    "power": 5,
+    "source": "",
+    "durab": "0",
+    "craft": "0",
+    "repair": "0",
+    "mats": {},
+    "attack": {
+      "Blunt": "5",
+      "Knockback": "40",
+      "Stamina": "4",
+      "Stagger": "5",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "3-4.5",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "FistBjornClaw",
+    "type": "Fists",
+    "name": "Paws of the Bear",
+    "desc": "Made for tearing and rending.",
+    "image": "/img/Fists/FistBjornClaw.webp",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.0,
+    "power": 56,
+    "source": "Workbench",
+    "durab": "300>350>400>450",
+    "craft": "2>3>4>5",
+    "repair": "2>3>3>3",
+    "mats": {
+      "Bear hide": "2>1>2>3",
+      "Bear paw": "2>1>2>3",
+      "Leather scraps": "4>1>2>3"
+    },
+    "attack": {
+      "Slash": "25>29>33>37",
+      "Knockback": "10",
+      "Stamina": "6",
+      "Stagger": "25>29>33>37",
+      "Backstab": "6x",
+      "Adrenaline": "1"
+    },
+    "block": {
+      "Block armor": "5-7.5>6-9>7-10.5>8-12",
+      "Parry block armor": "30-45>36-54>42-63>48-72",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "6x",
+      "Block adrenaline": "2",
+      "Parry adrenaline": "5"
+    }
+  },
+  {
+    "code": "FistFenrirClaw",
+    "type": "Fists",
+    "name": "Flesh Rippers",
+    "desc": "If claws work for wolves, why not for a viking?",
+    "image": "/img/Fists/FistFenrirClaw.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.0,
+    "power": 56,
+    "source": "Forge",
+    "durab": "300>350>400>450",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Fenris hair": "10>1>2>3",
+      "Fenris claw": "6>1>2>3",
+      "Silver": "10>1>2>3"
+    },
+    "attack": {
+      "Slash": "60>64>68>72",
+      "Knockback": "20",
+      "Stamina": "10",
+      "Stagger": "60>64>68>72",
+      "Backstab": "6x"
+    },
+    "block": {
+      "Block armor": "5-7.5>6-9>7-10.5>8-12",
+      "Parry block armor": "30-45>36-54>42-63>48-72",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "6x"
+    }
+  },
+  {
+    "code": "Fiddleheadfern",
+    "type": "Food",
+    "name": "Fiddlehead",
+    "desc": "Veggies with a twist!",
+    "image": "/img/Food/Fiddleheadfern.png",
+    "drop": "Ashlands",
+    "usage": "Cooking, Eating",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "MushroomSmokePuff",
+    "type": "Food",
+    "name": "Smoke puff",
+    "desc": "Hopefully it tastes better after cooking.",
+    "image": "/img/Food/MushroomSmokePuff.png",
+    "drop": "Ashlands",
+    "usage": "Crafting, Eating, Taming",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "DyrnwynBladeFragment",
+    "type": "Fragment",
+    "name": "Dyrnwyn blade fragment",
+    "desc": "Parts of an old blade. If all the pieces were reassembled it could likely be made whole.",
+    "image": "/img/Fragment/DyrnwynBladeFragment.webp",
+    "drop": "",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 1,
+    "mats": {}
+  },
+  {
+    "code": "DyrnwynHiltFragment",
+    "type": "Fragment",
+    "name": "Dyrnwyn hilt fragment",
+    "desc": "The hilt of a long forgotten sword. Perhaps it could reforged if one had all the pieces…",
+    "image": "/img/Fragment/DyrnwynHiltFragment.webp",
+    "drop": "",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 1,
+    "mats": {}
+  },
+  {
+    "code": "DyrnwynTipFragment",
+    "type": "Fragment",
+    "name": "Dyrnwyn tip fragment",
+    "desc": "This shard of metal looks like the tip of a sword. One might be able to reforge the blade if more pieces are found…",
+    "image": "/img/Fragment/DyrnwynTipFragment.webp",
+    "drop": "",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 1,
+    "mats": {}
+  },
+  {
+    "code": "KnifeBlackMetal",
+    "type": "Knife",
+    "name": "Blackmetal knife",
+    "desc": "A darkling blade. Strong and sharp.",
+    "image": "/img/Knife/KnifeBlackMetal.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "4>4>4>4",
+    "mats": {
+      "Fine wood": "4>0>0>0",
+      "Black metal": "10>4>8>12",
+      "Linen thread": "5>5>10>15"
+    },
+    "attack": {
+      "Pierce": "34>35>36>37;102>105>108>111",
+      "Slash": "34>35>36>37;102>105>108>111",
+      "Knockback": "10;40",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7);1.52 s",
+      "Stamina": "12;36",
+      "Stagger": "68>70>72>74;204>210>216>222",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "2-3>2-3>2-3>2-3",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeButcher",
+    "type": "Knife",
+    "name": "Butcher knife",
+    "desc": "A butcher's knife designed specifically for slaughtering tamed animals.",
+    "image": "/img/Knife/KnifeButcher.png",
+    "usage": "Killing tamed animals",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Forge",
+    "durab": "200",
+    "craft": "1",
+    "repair": "1",
+    "mats": {
+      "Wood": "2",
+      "Tin": "4"
+    },
+    "attack": {
+      "Pure": "1000",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7)",
+      "Stamina": "5",
+      "Backstab": "1x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "8-12",
+      "Block force": "10",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeChitin",
+    "type": "Knife",
+    "name": "Abyssal razor",
+    "desc": "A knife from the deep.",
+    "image": "/img/Knife/KnifeChitin.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Workbench",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Fine wood": "4>0>0>0",
+      "Chitin": "20>10>20>30",
+      "Leather scraps": "2>0>0>0"
+    },
+    "attack": {
+      "Pierce": "20>21>22>23;60>63>66>69",
+      "Slash": "20>21>22>23;60>63>66>69",
+      "Knockback": "10;40",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7);1.52 s",
+      "Stamina": "8;24",
+      "Stagger": "40>42>44>46;120>126>132>138",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "2-3>2-3>2-3>2-3",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeCopper",
+    "type": "Knife",
+    "name": "Copper knife",
+    "desc": "A glittering copper knife.",
+    "image": "/img/Knife/KnifeCopper.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "2>0>0>0",
+      "Copper": "8>4>8>12"
+    },
+    "attack": {
+      "Pierce": "12>13>14>15;36>39>42>45",
+      "Slash": "12>13>14>15;36>39>42>45",
+      "Knockback": "10;40",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7);1.52 s",
+      "Stamina": "6;18",
+      "Stagger": "24>26>28>30;72>78>84>90",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "2-3>2-3>2-3>2-3",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeFlint",
+    "type": "Knife",
+    "name": "Flint knife",
+    "desc": "Sharpened flint. A reliable tool.",
+    "image": "/img/Knife/KnifeFlint.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Workbench",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "2>0>0>0",
+      "Flint": "4>2>4>6",
+      "Leather scraps": "2>0>0>0"
+    },
+    "attack": {
+      "Pierce": "5>6>7>8;15>18>21>24",
+      "Slash": "5>6>7>8;15>18>21>24",
+      "Knockback": "10;40",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7);1.52 s",
+      "Stamina": "4;12",
+      "Stagger": "10>12>14>16;30>36>42>48",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "2-3>2-3>2-3>2-3",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeSilver",
+    "type": "Knife",
+    "name": "Silver knife",
+    "desc": "A savage piece of pain.",
+    "image": "/img/Knife/KnifeSilver.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.3,
+    "power": 10,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Wood": "2>1>2>3",
+      "Silver": "10>5>10>15",
+      "Leather scraps": "3>1>2>3",
+      "Iron": "2>1>2>3"
+    },
+    "attack": {
+      "Pierce": "25>26>27>28;75>78>81>84",
+      "Slash": "25>26>27>28;75>78>81>84",
+      "Spirit": "12>12>12>12;36>36>36>36",
+      "Knockback": "10;40",
+      "Attack speed": "1.74 s (0.6 + 0.44 + 0.7);1.52 s",
+      "Stamina": "10;30",
+      "Stagger": "50>52>54>56;150>156>162>168",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "2-3>2-3>2-3>2-3",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "KnifeSkollAndHati",
+    "type": "Knife",
+    "name": "Skoll and Hati",
+    "desc": "Stab once for those who've betrayed you, and twice for those you hate.",
+    "image": "/img/Knife/KnifeSkollAndHati.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 0.3,
+    "power": 120,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Fine wood": "4>0>0>0",
+      "Iron": "10>4>8>12",
+      "Black metal": "10>4>8>12"
+    },
+    "attack": {
+      "Pierce": "45>46>47>48;135>138>141>144",
+      "Slash": "45>46>47>48;135>138>141>144",
+      "Knockback": "10;40",
+      "Attack speed": "1.72 s (0.54 + 0.46 + 0.72);1.66 s",
+      "Stamina": "14;42",
+      "Stagger": "90>92>94>96;270>276>282>288",
+      "Backstab": "6x;6x"
+    },
+    "block": {
+      "Block armor": "24-36>24-36>24-36>24-36",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "10>15>20>25",
+      "Parry bonus": "4x"
+    }
+  },
+  {
+    "code": "AskBladder",
+    "type": "Material",
+    "name": "Asksvin bladder",
+    "desc": "An acidic smell still lingers. Prominently.",
+    "image": "/img/Material/AskBladder.png",
+    "drop": "Asksvin",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "AskHide",
+    "type": "Material",
+    "name": "Asksvin hide",
+    "desc": "This sturdy leather is thick, and still warm to the touch",
+    "image": "/img/Material/AskHide.png",
+    "drop": "Asksvin",
+    "usage": "Crafting",
+    "weight": 1.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Bilebag",
+    "type": "Material",
+    "name": "Bilebag",
+    "desc": "Caustic bile drawn from the corpse of a gjall.",
+    "image": "/img/Material/Bilebag.png",
+    "drop": "Gjall",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "BjornHide",
+    "type": "Material",
+    "name": "Bear hide",
+    "desc": "A thick and furry hide, coarse yet incredibly soft.",
+    "image": "/img/Material/BjornHide.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bear_hide"
+  },
+  {
+    "code": "BjornMeat",
+    "type": "Material",
+    "name": "Bear meat",
+    "desc": "This fatty meat was once meant to sustain a body through hibernation.",
+    "image": "/img/Material/BjornMeat.png",
+    "usage": "Cooking station",
+    "source_url": "https://valheim.fandom.com/wiki/Cooked_bear_meat"
+  },
+  {
+    "code": "BjornPaw",
+    "type": "Material",
+    "name": "Bear paw",
+    "desc": "Sharp claws suitable for picking berries – or for dismembering.",
+    "image": "/img/Material/BjornPaw.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bear_paw"
+  },
+  {
+    "code": "BoneFragments",
+    "type": "Material",
+    "name": "Bone fragments",
+    "desc": "A pile of shattered bones.",
+    "image": "/img/Material/BoneFragments.png",
+    "drop": "Skeleton",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "BonemawSerpentTooth",
+    "type": "Material",
+    "name": "Bonemaw tooth",
+    "desc": "This has caused the death of many a brave sailor.",
+    "image": "/img/Material/BonemawSerpentTooth.png",
+    "drop": "Bonemaw Serpent",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Carapace",
+    "type": "Material",
+    "name": "Carapace",
+    "desc": "A plate of chitinous armor.",
+    "image": "/img/Material/Carapace.png",
+    "drop": "Seeker",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "CelestialFeather",
+    "type": "Material",
+    "name": "Celestial feather",
+    "desc": "The only remnant of the fallen valkyrie's former self.",
+    "image": "/img/Material/CelestialFeather.png",
+    "drop": "Fallen Valkyrie",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Chain",
+    "type": "Material",
+    "name": "Chain",
+    "desc": "A link of iron chain.",
+    "image": "/img/Material/Chain.png",
+    "drop": "Wraith",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "CharredBone",
+    "type": "Material",
+    "name": "Charred bone",
+    "desc": "Followed by the distinct smell of burnt meat",
+    "image": "/img/Material/CharredBone.png",
+    "drop": "Charred Warrior",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Chitin",
+    "type": "Material",
+    "name": "Chitin",
+    "desc": "A shard of crustacean shell.",
+    "image": "/img/Material/Chitin.png",
+    "drop": "Abyssal barnacle",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Coal",
+    "type": "Material",
+    "name": "Coal",
+    "desc": "A lump of coal.",
+    "image": "/img/Material/Coal.png",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Crystal",
+    "type": "Material",
+    "name": "Crystal",
+    "desc": "A shard of crystal from deep within the earth.",
+    "image": "/img/Material/Crystal.png",
+    "drop": "Stone Golem",
+    "usage": "Crafting, Building",
+    "weight": 1.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "DeerHide",
+    "type": "Material",
+    "name": "Deer hide",
+    "desc": "A cleaned hide from a deer.",
+    "image": "/img/Material/DeerHide.png",
+    "drop": "Deer",
+    "usage": "Crafting, Building",
+    "weight": 1.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Eitr",
+    "type": "Material",
+    "name": "Refined eitr",
+    "desc": "This is the stuff of life, the poison that consumes itself. The Dvergr refine it to use in their esoteric designs.",
+    "image": "/img/Material/Eitr.png",
+    "drop": "Eitr refinery",
+    "usage": "Crafting",
+    "weight": 5.0,
+    "stack": 30,
+    "mats": {
+      "Sap": 1,
+      "Soft tissue": 1
+    }
+  },
+  {
+    "code": "Feathers",
+    "type": "Material",
+    "name": "Feathers",
+    "desc": "A small pile of feathers.",
+    "image": "/img/Material/Feathers.png",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Flint",
+    "type": "Material",
+    "name": "Flint",
+    "desc": "Can be shaped into sharp blades.",
+    "image": "/img/Material/Flint.png",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 30,
+    "mats": {}
+  },
+  {
+    "code": "FreezeGland",
+    "type": "Material",
+    "name": "Freeze gland",
+    "desc": "This mysterious organ keeps a perfect temperature.",
+    "image": "/img/Material/FreezeGland.png",
+    "drop": "Drake",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "GemstoneBlue",
+    "type": "Material",
+    "name": "Iolite",
+    "desc": "Light is reflected sharply off of this gem, or does it come from within the stone itself?",
+    "image": "/img/Material/GemstoneBlue.webp",
+    "drop": "Charred Fortress",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "GemstoneGreen",
+    "type": "Material",
+    "name": "Jade",
+    "desc": "This gem pulses with energy, almost as if it were a living thing.",
+    "image": "/img/Material/GemstoneGreen.png",
+    "drop": "Charred Fortress",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "GemstoneRed",
+    "type": "Material",
+    "name": "Bloodstone",
+    "desc": "You wonder how many deals have been made to appease this gem. How many palms have bled onto it in exchange for its power?",
+    "image": "/img/Material/GemstoneRed.png",
+    "drop": "Charred Fortress",
+    "usage": "Crafting, Upgrading",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "GiantBloodSack",
+    "type": "Material",
+    "name": "Blood clot",
+    "desc": "Be careful not to puncture this while you carry it...",
+    "image": "/img/Material/GiantBloodSack.png",
+    "drop": "Ticks",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "GreydwarfEye",
+    "type": "Material",
+    "name": "Greydwarf eye",
+    "desc": "The milky eyeball of a Greydwarf.",
+    "image": "/img/Material/GreydwarfEye.png",
+    "drop": "Greydwarf",
+    "usage": "Crafting, Building",
+    "weight": 0.2,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Guck",
+    "type": "Material",
+    "name": "Guck",
+    "desc": "It smells like fermented fish.",
+    "image": "/img/Material/Guck.png",
+    "drop": "Abomination",
+    "usage": "Crafting, Building",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "LeatherScraps",
+    "type": "Material",
+    "name": "Leather scraps",
+    "desc": "A small pile of leather scraps.",
+    "image": "/img/Material/LeatherScraps.png",
+    "drop": "Boar",
+    "usage": "Crafting, Building",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "LinenThread",
+    "type": "Material",
+    "name": "Linen thread",
+    "desc": "A fine linen thread made out of a strong flax filament.",
+    "image": "/img/Material/LinenThread.png",
+    "drop": "Spinning wheel",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {
+      "Flax": 1
+    }
+  },
+  {
+    "code": "Mandible",
+    "type": "Material",
+    "name": "Mandible",
+    "desc": "The hand of a man could hardly design a more perfect weapon.",
+    "image": "/img/Material/Mandible.png",
+    "drop": "Seeker Soldier",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "MorgenSinew",
+    "type": "Material",
+    "name": "Morgen sinew",
+    "desc": "Chewy.",
+    "image": "/img/Material/MorgenSinew.png",
+    "drop": "Morgen",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Needle",
+    "type": "Material",
+    "name": "Needle",
+    "desc": "The pointy end of a Deathsquito.",
+    "image": "/img/Material/Needle.png",
+    "drop": "Deathsquito",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Obsidian",
+    "type": "Material",
+    "name": "Obsidian",
+    "desc": "Dark volcanic glass.",
+    "image": "/img/Material/Obsidian.png",
+    "drop": "Obsidian deposit",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Ooze",
+    "type": "Material",
+    "name": "Ooze",
+    "desc": "Rotten and putrid-smelling. Why do you want this?",
+    "image": "/img/Material/Ooze.png",
+    "drop": "Blob",
+    "usage": "Crafting, Building",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "ProustitePowder",
+    "type": "Material",
+    "name": "Proustite powder",
+    "desc": "This unstable powder packs great potential.",
+    "image": "/img/Material/ProustitePowder.png",
+    "drop": "Lava Blob",
+    "usage": "Crafting",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "QueenBee",
+    "type": "Material",
+    "name": "Queen Bee",
+    "desc": "The queen of the bees!",
+    "image": "/img/Material/QueenBee.png",
+    "drop": "",
+    "usage": "Building",
+    "weight": 0.2,
+    "stack": 20,
+    "mats": {}
+  },
+  {
+    "code": "Resin",
+    "type": "Material",
+    "name": "Resin",
+    "desc": "Sticky tree resin that insulates well. If put to the flame it burns slow and steady.",
+    "image": "/img/Material/Resin.png",
+    "drop": "Birch Trees",
+    "usage": "Crafting, Building",
+    "weight": 0.3,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Root",
+    "type": "Material",
+    "name": "Root",
+    "desc": "An old root from an ancient tree stump. It feels both flexible and durable at the same time.",
+    "image": "/img/Material/Root.png",
+    "drop": "Abomination",
+    "usage": "Crafting",
+    "weight": 0.3,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Sap",
+    "type": "Material",
+    "name": "Sap",
+    "desc": "Sacred blood from the Great Tree.",
+    "image": "/img/Material/Sap.png",
+    "drop": "Mistlands",
+    "usage": "Crafting",
+    "weight": 0.2,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "ScaleHide",
+    "type": "Material",
+    "name": "Scale hide",
+    "desc": "A pelt of glittering scales.",
+    "image": "/img/Material/ScaleHide.png",
+    "drop": "Hare",
+    "usage": "Crafting, Building",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "SerpentScale",
+    "type": "Material",
+    "name": "Serpent scale",
+    "desc": "The shiny metal-like scale from a sea serpent.",
+    "image": "/img/Material/SerpentScale.png",
+    "drop": "Serpent",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Stone",
+    "type": "Material",
+    "name": "Stone",
+    "desc": "It's a rock.",
+    "image": "/img/Material/Stone.png",
+    "drop": "Greydwarf",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "SulfurStone",
+    "type": "Material",
+    "name": "Sulfur",
+    "desc": "Smells like rotten eggs.",
+    "image": "/img/Material/SulfurStone.png",
+    "drop": "Lava Blob",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "SurtlingCore",
+    "type": "Material",
+    "name": "Surtling core",
+    "desc": "It throbs with inner heat.",
+    "image": "/img/Material/SurtlingCore.png",
+    "drop": "Surtlings",
+    "usage": "Crafting, Building, Portals",
+    "weight": 5.0,
+    "stack": 10,
+    "mats": {}
+  },
+  {
+    "code": "TrollHide",
+    "type": "Material",
+    "name": "Troll hide",
+    "desc": "A thick and sturdy hide. This is why trolls are so hard to kill.",
+    "image": "/img/Material/TrollHide.png",
+    "drop": "Troll",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "stack": 20,
+    "mats": {}
+  },
+  {
+    "code": "Wisp",
+    "type": "Material",
+    "name": "Wisp",
+    "desc": "It keeps whispering jibberish...",
+    "image": "/img/Material/Wisp.png",
+    "drop": "Wisp fountain",
+    "usage": "Crafting, Building",
+    "weight": 0.5,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "WolfClaw",
+    "type": "Material",
+    "name": "Fenris claw",
+    "desc": "It is hard and sharp like iron.",
+    "image": "/img/Material/WolfClaw.png",
+    "drop": "Frost caves",
+    "usage": "Building, Crafting",
+    "weight": 0.5,
+    "stack": 20,
+    "mats": {}
+  },
+  {
+    "code": "WolfFang",
+    "type": "Material",
+    "name": "Wolf fang",
+    "desc": "Still sharp.",
+    "image": "/img/Material/WolfFang.png",
+    "drop": "Wolf",
+    "usage": "Crafting",
+    "weight": 0.1,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "WolfHairBundle",
+    "type": "Material",
+    "name": "Fenris hair",
+    "desc": "A bundle of thick, rough hair. It has a strong smell.",
+    "image": "/img/Material/WolfHairBundle.png",
+    "usage": "Crafting",
+    "weight": 1.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "YmirRemains",
+    "type": "Material",
+    "name": "Ymir flesh",
+    "desc": "The earthy remains of the giant Ymir.",
+    "image": "/img/Material/YmirRemains.png",
+    "drop": "Haldor",
+    "usage": "Crafting",
+    "weight": 0.3,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "BlackMetal",
+    "type": "Metal",
+    "name": "Black metal",
+    "desc": "A heavy bar of dark metal.",
+    "image": "/img/Metal/BlackMetal.png",
+    "drop": "Blast furnace",
+    "usage": "Crafting",
+    "weight": 12.0,
+    "stack": 30,
+    "mats": {
+      "Black metal scrap": 1
+    }
+  },
+  {
+    "code": "Bronze",
+    "type": "Metal",
+    "name": "Bronze",
+    "desc": "A strong alloy of copper and tin.",
+    "image": "/img/Metal/Bronze.png",
+    "drop": "Forge",
+    "usage": "Crafting, Building",
+    "weight": 12.0,
+    "stack": 30,
+    "mats": {
+      "Copper": 2,
+      "Tin": 1
+    }
+  },
+  {
+    "code": "Copper",
+    "type": "Metal",
+    "name": "Copper",
+    "desc": "A bar of pure copper ready to be worked.",
+    "image": "/img/Metal/Copper.png",
+    "drop": "Smelter",
+    "usage": "Crafting, Building",
+    "weight": 12.0,
+    "stack": 30,
+    "mats": {
+      "Copper ore": 1
+    }
+  },
+  {
+    "code": "FlametalNew",
+    "type": "Metal",
+    "name": "Flametal",
+    "desc": "According to legend, this metal was used by the gods themselves to craft powerful weapons.",
+    "image": "/img/Metal/FlametalNew.png",
+    "drop": "Blast furnace",
+    "usage": "Crafting, Building",
+    "weight": 12.0,
+    "stack": 30,
+    "mats": {
+      "Flametal ore": 1
+    }
+  },
+  {
+    "code": "Iron",
+    "type": "Metal",
+    "name": "Iron",
+    "desc": "A bar of pure iron ready to be worked.",
+    "image": "/img/Metal/Iron.png",
+    "drop": "Smelter",
+    "usage": "Crafting, Building",
+    "weight": 12.0,
+    "stack": 30,
+    "mats": {
+      "Scrap iron": 1
+    }
+  },
+  {
+    "code": "Silver",
+    "type": "Metal",
+    "name": "Silver",
+    "desc": "A bar of pure silver ready to be worked.",
+    "image": "/img/Metal/Silver.png",
+    "drop": "Smelting",
+    "usage": "Crafting",
+    "weight": 14.0,
+    "stack": 30,
+    "mats": {
+      "Silver ore": 1
+    }
+  },
+  {
+    "code": "Tin",
+    "type": "Metal",
+    "name": "Tin",
+    "desc": "A bar of pure tin ready to be worked.",
+    "image": "/img/Metal/Tin.png",
+    "drop": "Smelter",
+    "usage": "Crafting, Building",
+    "weight": 8.0,
+    "stack": 30,
+    "mats": {
+      "Tin ore": 1
+    }
+  },
+  {
+    "code": "CryptKey",
+    "type": "Misc",
+    "name": "Swamp Key",
+    "desc": "Partly covered in caked mud, it smells foetid.",
+    "image": "/img/Misc/CryptKey.png",
+    "drop": "Elder",
+    "usage": "Unlock Sunken Crypts",
+    "weight": 0.1,
+    "stack": 1,
+    "mats": {}
+  },
+  {
+    "code": "TurretBolt",
+    "type": "Missile",
+    "name": "Black metal missile",
+    "desc": "These thick missiles can punch through the hide of even the toughest of foes.",
+    "image": "/img/Missile/TurretBolt.png",
+    "usage": "Ballista ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Artisan table",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Wood": "10",
+      "Black metal": "1"
+    },
+    "attack": {
+      "Pierce": "120",
+      "Knockback": "60",
+      "Stagger": "120"
+    }
+  },
+  {
+    "code": "TurretBoltFlametal",
+    "type": "Missile",
+    "name": "Flametal missile",
+    "desc": "Forged from one of the hardest metals in all of Valheim, this missile is sure to hold off your enemies.",
+    "image": "/img/Missile/TurretBoltFlametal.png",
+    "usage": "Ballista ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Artisan table",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Ashwood": "10",
+      "Flametal": "1"
+    },
+    "attack": {
+      "Pierce": "140",
+      "Knockback": "60",
+      "Stagger": "140"
+    }
+  },
+  {
+    "code": "TurretBoltWood",
+    "type": "Missile",
+    "name": "Wooden missile",
+    "desc": "Sturdy wooden missiles that can provide a tough defense against foes.",
+    "image": "/img/Missile/TurretBoltWood.png",
+    "usage": "Ballista ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Artisan table",
+    "durab": "0",
+    "craft": "1",
+    "repair": "0",
+    "mats": {
+      "Core wood": "5",
+      "Feathers": "2"
+    },
+    "attack": {
+      "Pierce": "75",
+      "Knockback": "45",
+      "Stagger": "75"
+    }
+  },
+  {
+    "code": "PickaxeAntler",
+    "type": "Pickaxe",
+    "name": "Antler Pickaxe",
+    "desc": "This tool is hard enough to crack even the most stubborn rocks.",
+    "image": "/img/Pickaxe/PickaxeAntler.webp",
+    "usage": "Mining",
+    "wield": "Two-handed",
+    "weight": 2.0,
+    "power": 18,
+    "source": "Workbench",
+    "durab": "100",
+    "craft": "1",
+    "repair": "1",
+    "mats": {
+      "Wood": "10",
+      "Hard antler": "1"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pickaxe": "18",
+      "Pierce": "18",
+      "Knockback": "50",
+      "Attack speed": "1.4 s",
+      "Stamina": "6",
+      "Stagger": "18",
+      "Backstab": "3x"
+    },
+    "block": {
+      "Block armor": "2-3",
+      "Parry block armor": "4-6",
+      "Block force": "20",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AtgeirBronze",
+    "type": "Polearm",
+    "name": "Bronze atgeir",
+    "desc": "A true warrior's tool.",
+    "image": "/img/Polearm/AtgeirBronze.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 48,
+    "source": "Forge",
+    "durab": "125>175>225>275",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "10>0>0>0",
+      "Bronze": "8>4>8>12",
+      "Leather scraps": "2>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "45>51>57>63;45>51>57>63",
+      "Knockback": "30;300",
+      "Attack speed": "2.98 s (0.84 + 0.86 + 1.28);1.54 s",
+      "Stamina": "12;24",
+      "Stagger": "45>51>57>63;270>306>342>378",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "16-24>16-24>16-24>16-24",
+      "Parry block armor": "32-48>32-48>32-48>32-48",
+      "Block force": "40>45>50>55",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AtgeirIron",
+    "type": "Polearm",
+    "name": "Iron atgeir",
+    "desc": "Blood-drinker, skull-cracker, death-bringer.",
+    "image": "/img/Polearm/AtgeirIron.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 84,
+    "source": "Forge",
+    "durab": "175>225>275>325",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Wood": "10>0>0>0",
+      "Iron": "30>15>30>45",
+      "Leather scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "65>71>77>83;65>71>77>83",
+      "Knockback": "30;300",
+      "Attack speed": "2.98 s (0.84 + 0.86 + 1.28);1.54 s",
+      "Stamina": "14;28",
+      "Stagger": "65>71>77>83;390>426>462>498",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "28-42>28-42>28-42>28-42",
+      "Parry block armor": "56-84>56-84>56-84>56-84",
+      "Block force": "40>45>50>55",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AtgeirBlackmetal",
+    "type": "Polearm",
+    "name": "Blackmetal atgeir",
+    "desc": "A vicious hewing-axe of almost unbreakable black metal.",
+    "image": "/img/Polearm/AtgeirBlackmetal.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 156,
+    "source": "Forge",
+    "durab": "175>225>275>325",
+    "craft": "4>5>6>7",
+    "repair": "4>4>4>4",
+    "mats": {
+      "Fine wood": "10>0>0>0",
+      "Black metal": "30>15>30>45",
+      "Linen thread": "5>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "105>111>117>123;105>111>117>123",
+      "Knockback": "30;300",
+      "Attack speed": "2.98 s (0.84 + 0.86 + 1.28);1.54 s",
+      "Stamina": "18;36",
+      "Stagger": "105>111>117>123;630>666>702>738",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "52-78>52-78>52-78>52-78",
+      "Parry block armor": "104-156>104-156>104-156>104-156",
+      "Block force": "40>45>50>55",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "AtgeirHimminAfl",
+    "type": "Polearm",
+    "name": "Himminafl",
+    "desc": "It might not be a hammer, but Thor himself would still approve of this weapon.",
+    "image": "/img/Polearm/AtgeirHimminAfl.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 2.5,
+    "power": 192,
+    "source": "Black forge",
+    "durab": "175>225>275>325",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "10>0>0>0",
+      "Refined eitr": "15>15>30>45",
+      "Silver": "5>5>10>15",
+      "Mandible": "2>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "85>85>85>85;85>85>85>85",
+      "Lightning": "40>46>52>58;40>46>52>58",
+      "Knockback": "30;300",
+      "Attack speed": "2.98 s (0.84 + 0.86 + 1.28);1.54 s",
+      "Stamina": "20;40",
+      "Stagger": "125>131>137>143;750>786>822>858",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "64-96>64-96>64-96>64-96",
+      "Parry block armor": "128-192>128-192>128-192>128-192",
+      "Block force": "40>45>50>55",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "ShieldWoodTower",
+    "type": "Shield",
+    "name": "Wood tower shield",
+    "desc": "A rough but heavy wooden shield.",
+    "image": "/img/Shield/ShieldWoodTower.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 4.0,
+    "power": 22,
+    "source": "Workbench",
+    "durab": "200>250>300",
+    "craft": "1>2>3",
+    "repair": "1>1>1",
+    "mats": {
+      "Wood": "10>5>10",
+      "Leather scraps": "4>3>6"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "block": {
+      "Block armor": "10-15>16-24>22-33",
+      "Block force": "100>105>110"
+    }
+  },
+  {
+    "code": "ShieldBoneTower",
+    "type": "Shield",
+    "name": "Bone tower shield",
+    "desc": "The bones of dead warriors make for a good protection.",
+    "image": "/img/Shield/ShieldBoneTower.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 4.0,
+    "power": 44,
+    "source": "Workbench",
+    "durab": "200>250>300",
+    "craft": "3>4>5",
+    "repair": "1>1>1",
+    "mats": {
+      "Wood": "10>5>10",
+      "Bone fragments": "10>5>10",
+      "Skeleton trophy": "3>0>0"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "block": {
+      "Block armor": "32-48>38-57>44-66",
+      "Block force": "100>105>110"
+    }
+  },
+  {
+    "code": "ShieldWood",
+    "type": "Shield",
+    "name": "Wood shield",
+    "desc": "A simple wooden shield.",
+    "image": "/img/Shield/ShieldWood.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 4.0,
+    "power": 45,
+    "source": "Workbench",
+    "durab": "200>250>300",
+    "craft": "1>2>3",
+    "repair": "1>1>1",
+    "mats": {
+      "Wood": "10>5>10",
+      "Resin": "4>2>4",
+      "Leather scraps": "4>2>4"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "6-9>12-18>18-27",
+      "Parry block armor": "9-13.5>18-27>27-40.5",
+      "Block force": "20>25>30",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "ShieldIronTower",
+    "type": "Shield",
+    "name": "Iron tower shield",
+    "desc": "A tall shield of strong iron.",
+    "image": "/img/Shield/ShieldIronTower.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 4.0,
+    "power": 64,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "2>3>4",
+    "repair": "2>2>2",
+    "mats": {
+      "Fine wood": "15>10>20",
+      "Iron": "10>5>10"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "block": {
+      "Block armor": "52-78>58-87>64-96",
+      "Block force": "100>105>110"
+    }
+  },
+  {
+    "code": "ShieldSerpentscale",
+    "type": "Shield",
+    "name": "Serpent scale shield",
+    "desc": "A sturdy shield of overlapping scales.",
+    "image": "/img/Shield/ShieldSerpentscale.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 72,
+    "source": "Forge",
+    "durab": "250>300>350",
+    "craft": "3>4>5",
+    "repair": "3>3>3",
+    "mats": {
+      "Fine wood": "10>10>20",
+      "Iron": "4>2>4",
+      "Serpent scale": "8>4>8"
+    },
+    "passive": {
+      "Movement speed": -15
+    },
+    "block": {
+      "Block armor": "60-90>66-99>72-108",
+      "Block force": "100>105>110"
+    }
+  },
+  {
+    "code": "ShieldBronzeBuckler",
+    "type": "Shield",
+    "name": "Bronze buckler",
+    "desc": "A shield of burnished bronze, good to turn a blade or two.",
+    "image": "/img/Shield/ShieldBronzeBuckler.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 3.0,
+    "power": 98,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "1>2>3",
+    "repair": "1>1>1",
+    "mats": {
+      "Bronze": "10>5>10",
+      "Wood": "4>1>2"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "16-24>22-33>28-42",
+      "Parry block armor": "40-60>55-82.5>70-105",
+      "Block force": "30>30>30",
+      "Parry bonus": "2.5x"
+    }
+  },
+  {
+    "code": "ShieldBlackmetalTower",
+    "type": "Shield",
+    "name": "Black metal tower shield",
+    "desc": "A tower shield of gleaming dark metal.",
+    "image": "/img/Shield/ShieldBlackmetalTower.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 116,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "3>4>5",
+    "repair": "3>3>3",
+    "mats": {
+      "Fine wood": "15>15>20",
+      "Black metal": "10>6>8",
+      "Chain": "7>2>4"
+    },
+    "passive": {
+      "Movement speed": -20
+    },
+    "block": {
+      "Block armor": "104-156>110-165>116-174",
+      "Block force": "150>155>160"
+    }
+  },
+  {
+    "code": "ShieldBanded",
+    "type": "Shield",
+    "name": "Banded shield",
+    "desc": "Banded with hoops of iron, a true warrior's companion.",
+    "image": "/img/Shield/ShieldBanded.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 135,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "2>3>4",
+    "repair": "2>2>2",
+    "mats": {
+      "Fine wood": "10>10>20",
+      "Iron": "8>4>8"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "42-63>48-72>54-81",
+      "Parry block armor": "63-94.5>72-108>81-121.5",
+      "Block force": "40>45>50",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "ShieldIronBuckler",
+    "type": "Shield",
+    "name": "Iron buckler",
+    "desc": "Its lightness and curved center makes it excellent for deflecting attacks.",
+    "image": "/img/Shield/ShieldIronBuckler.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 4.0,
+    "power": 140,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "2>3>4",
+    "repair": "2>2>2",
+    "mats": {
+      "Iron": "10>5>10",
+      "Ancient bark": "4>1>2"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "28-42>34-51>40-60",
+      "Parry block armor": "70-105>85-127.5>100-150",
+      "Block force": "30>30>30",
+      "Parry bonus": "2.5x"
+    }
+  },
+  {
+    "code": "ShieldSilver",
+    "type": "Shield",
+    "name": "Silver shield",
+    "desc": "A shield of radiant silver.",
+    "image": "/img/Shield/ShieldSilver.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 180,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "3>4>5",
+    "repair": "3>3>3",
+    "mats": {
+      "Fine wood": "10>10>20",
+      "Silver": "8>4>8"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "60-90>66-99>72-108",
+      "Parry block armor": "90-135>99-148.5>108-162",
+      "Block force": "40>45>50",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "ShieldBlackmetal",
+    "type": "Shield",
+    "name": "Black metal shield",
+    "desc": "Fashioned from the strongest metal, able to turn even the deadliest blades.",
+    "image": "/img/Shield/ShieldBlackmetal.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 225,
+    "source": "Forge",
+    "durab": "200>250>300",
+    "craft": "3>4>5",
+    "repair": "3>3>3",
+    "mats": {
+      "Fine wood": "10>10>20",
+      "Black metal": "8>4>8",
+      "Chain": "5>2>4"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "78-117>84-126>90-135",
+      "Parry block armor": "117-175.5>126-189>135-202.5",
+      "Block force": "50>55>60",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "ShieldCarapace",
+    "type": "Shield",
+    "name": "Carapace shield",
+    "desc": "The almost unbreakable carapace of your enemies makes an excellent shield.",
+    "image": "/img/Shield/ShieldCarapace.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 270,
+    "source": "Black forge",
+    "durab": "200>250>300",
+    "craft": "1>2>3",
+    "repair": "1>1>1",
+    "mats": {
+      "Carapace": "20>10>20",
+      "Scale hide": "3>3>6",
+      "Refined eitr": "10>3>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "96-144>102-153>108-162",
+      "Parry block armor": "144-216>153-229.5>162-243",
+      "Block force": "60>65>70",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "ShieldCarapaceBuckler",
+    "type": "Shield",
+    "name": "Carapace buckler",
+    "desc": "The skull of a seeker is solid but not heavy, which makes it perfect for a small and agile shield.",
+    "image": "/img/Shield/ShieldCarapaceBuckler.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 315,
+    "source": "Black forge",
+    "durab": "200>250>300",
+    "craft": "1>2>3",
+    "repair": "1>1>1",
+    "mats": {
+      "Carapace": "16>8>16",
+      "Scale hide": "3>3>6",
+      "Refined eitr": "10>3>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "78-117>84-126>90-135",
+      "Parry block armor": "195-292.5>210-315>225-337.5",
+      "Block force": "50>55>60",
+      "Parry bonus": "2.5x"
+    }
+  },
+  {
+    "code": "ShieldFlametal",
+    "type": "Shield",
+    "name": "Flametal shield",
+    "desc": "The shield is and always will be a viking's most important weapon.",
+    "image": "/img/Shield/ShieldFlametal.png",
+    "usage": "Blocking",
+    "wield": "Off-hand",
+    "weight": 5.0,
+    "power": 315,
+    "source": "Black forge",
+    "durab": "200>250>300",
+    "craft": "3>4>5",
+    "repair": "3>3>3",
+    "mats": {
+      "Ashwood": "10>10>20",
+      "Flametal": "8>4>8",
+      "Asksvin hide": "2>2>4"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "block": {
+      "Block armor": "114-171>120-180>126-189",
+      "Parry block armor": "171-256.5>180-270>189-283.5",
+      "Block force": "50>55>60",
+      "Parry bonus": "1.5x"
+    }
+  },
+  {
+    "code": "SpearFlint",
+    "type": "Spear",
+    "name": "Flint spear",
+    "desc": "If your eye marks a thing for death, let your arm send the messenger.",
+    "image": "/img/Spear/SpearFlint.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 12,
+    "source": "Workbench",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "5>3>6>9",
+      "Flint": "10>5>10>15",
+      "Leather scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "20>26>32>38;30>39>48>57",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "6;8",
+      "Stagger": "20>26>32>38;30>39>48>57",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "4-6>4-6>4-6>4-6",
+      "Parry block armor": "8-12>8-12>8-12>8-12",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SpearBronze",
+    "type": "Spear",
+    "name": "Bronze spear",
+    "desc": "A sturdy spear with a head of burnished bronze.",
+    "image": "/img/Spear/SpearBronze.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 36,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "5>3>6>9",
+      "Bronze": "6>4>8>12",
+      "Deer hide": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "35>41>47>53;52.5>61.5>70.5>79.5",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "8;10",
+      "Stagger": "35>41>47>53;52.5>61.5>70.5>79.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "12-18>12-18>12-18>12-18",
+      "Parry block armor": "24-36>24-36>24-36>24-36",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SpearElderbark",
+    "type": "Spear",
+    "name": "Ancient bark spear",
+    "desc": "Despite its gnarled look, this spear is strong and perfectly balanced.",
+    "image": "/img/Spear/SpearElderbark.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 63,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Troll hide": "4>1>2>3",
+      "Iron": "10>5>10>15",
+      "Ancient bark": "10>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "55>61>67>73;82.5>91.5>100.5>109.5",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "10;12",
+      "Stagger": "55>61>67>73;82.5>91.5>100.5>109.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "21-31.5>21-31.5>21-31.5>21-31.5",
+      "Parry block armor": "42-63>42-63>42-63>42-63",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SpearWolfFang",
+    "type": "Spear",
+    "name": "Fang spear",
+    "desc": "Even in death, the wolf's tooth aches for flesh.",
+    "image": "/img/Spear/SpearWolfFang.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 90,
+    "source": "Forge",
+    "durab": "100>150>200>250",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ancient bark": "10>5>10>15",
+      "Wolf fang": "4>2>4>6",
+      "Leather scraps": "2>1>2>3",
+      "Silver": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "75>81>87>93;112.5>121.5>130.5>139.5",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "12;14",
+      "Stagger": "75>81>87>93;112.5>121.5>130.5>139.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "30-45>30-45>30-45>30-45",
+      "Parry block armor": "60-90>60-90>60-90>60-90",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SpearCarapace",
+    "type": "Spear",
+    "name": "Carapace spear",
+    "desc": "Sharpened to jagged perfection, this spear is sure to be deadly.",
+    "image": "/img/Spear/SpearCarapace.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 144,
+    "source": "Black forge",
+    "durab": "100>150>200>250",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Yggdrasil wood": "10>5>10>15",
+      "Carapace": "4>4>8>12",
+      "Mandible": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "115>121>127>133;172.5>181.5>190.5>199.5",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "16;18",
+      "Stagger": "115>121>127>133;172.5>181.5>190.5>199.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SpearSplitner",
+    "type": "Spear",
+    "name": "Splitnir",
+    "desc": "Split your enemies' hearts in two.",
+    "image": "/img/Spear/SpearSplitner.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.5,
+    "power": 171,
+    "source": "Black forge",
+    "durab": "100>150>200>250",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Ashwood": "10>5>10>15",
+      "Flametal": "6>6>12>18",
+      "Asksvin hide": "2>1>2>3",
+      "Bonemaw tooth": "3>3>6>9"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Pierce": "135>141>147>153;202.5>211.5>220.5>229.5",
+      "Knockback": "20;30",
+      "Attack speed": "0.68 s;1.57 s (includes picking up)",
+      "Stamina": "16;18",
+      "Stagger": "135>141>147>153;202.5>211.5>220.5>229.5",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordBronze",
+    "type": "Sword",
+    "name": "Bronze sword",
+    "desc": "Blood-drinker. A thirsty friend.",
+    "image": "/img/Sword/SwordBronze.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 36,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Wood": "2>1>2>3",
+      "Bronze": "8>4>8>12",
+      "Leather scraps": "2>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "35>41>47>53;105>123>141>159",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "8;16",
+      "Stagger": "35>41>47>53;105>123>141>159",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "12-18>12-18>12-18>12-18",
+      "Parry block armor": "24-36>24-36>24-36>24-36",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordIron",
+    "type": "Sword",
+    "name": "Iron sword",
+    "desc": "The straight line between life and death runs along the edge of this blade.",
+    "image": "/img/Sword/SwordIron.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 63,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "2>3>4>5",
+    "repair": "2>2>2>2",
+    "mats": {
+      "Wood": "2>1>2>3",
+      "Iron": "20>10>20>30",
+      "Leather scraps": "3>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "55>61>67>73;165>183>201>219",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "10;20",
+      "Stagger": "55>61>67>73;165>183>201>219",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "21-31.5>21-31.5>21-31.5>21-31.5",
+      "Parry block armor": "42-63>42-63>42-63>42-63",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordSilver",
+    "type": "Sword",
+    "name": "Silver sword",
+    "desc": "Purest of metals, nothing unclean can abide its touch.",
+    "image": "/img/Sword/SwordSilver.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 1.0,
+    "power": 90,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Wood": "2>1>2>3",
+      "Silver": "40>20>40>60",
+      "Leather scraps": "3>1>2>3",
+      "Iron": "5>3>6>9"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "75>81>87>93;225>243>261>279",
+      "Spirit": "30>35>40>45;90>105>120>135",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "12;24",
+      "Stagger": "75>81>87>93;225>243>261>279",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "30-45>30-45>30-45>30-45",
+      "Parry block armor": "60-90>60-90>60-90>60-90",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordBlackmetal",
+    "type": "Sword",
+    "name": "Blackmetal sword",
+    "desc": "A thing of death and beauty. It catches the light with a greenish glow.",
+    "image": "/img/Sword/SwordBlackmetal.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 117,
+    "source": "Forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "4>4>4>4",
+    "mats": {
+      "Fine wood": "2>0>0>0",
+      "Black metal": "20>10>20>30",
+      "Linen thread": "5>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "95>101>107>113;285>303>321>339",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "14;28",
+      "Stagger": "95>101>107>113;285>303>321>339",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "39-58.5>39-58.5>39-58.5>39-58.5",
+      "Parry block armor": "78-117>78-117>78-117>78-117",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordMistwalker",
+    "type": "Sword",
+    "name": "Mistwalker",
+    "desc": "The faint glow seems to slice through the mist.",
+    "image": "/img/Sword/SwordMistwalker.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 144,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Fine wood": "3>0>0>0",
+      "Iron": "15>10>20>30",
+      "Refined eitr": "10>5>10>15",
+      "Wisp": "3>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "75>75>75>75;225>225>225>225",
+      "Frost": "40>46>52>58;120>138>156>174",
+      "Spirit": "0>5>10>15;0>15>30>45",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;32",
+      "Stagger": "75>75>75>75;225>225>225>225",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "48-72>48-72>48-72>48-72",
+      "Parry block armor": "96-144>96-144>96-144>96-144",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordDyrnwyn",
+    "type": "Sword",
+    "name": "Dyrnwyn",
+    "desc": "The sword that was broken is whole once more. Its flames burn hot, fuelled by the memories of ancient warriors.",
+    "image": "/img/Sword/SwordDyrnwyn.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 171,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "0>0>0>0",
+    "mats": {
+      "Dyrnwyn hilt fragment": "1>0>0>0",
+      "Dyrnwyn blade fragment": "1>0>0>0",
+      "Dyrnwyn tip fragment": "1>0>0>0",
+      "Flametal": "20>2>4>6",
+      "Asksvin hide": "2>2>4>6",
+      "Bloodstone": "1>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "145>151>157>163;435>453>471>489",
+      "Fire": "10>10>10>10;30>30>30>30",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;28",
+      "Stagger": "145>151>157>163;435>453>471>489",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordNiedhogg",
+    "type": "Sword",
+    "name": "Nidhögg",
+    "desc": "Named after the evil dragon that dwells by the roots of the world tree, this sword heralds doom for those who cross its path.",
+    "image": "/img/Sword/SwordNiedhogg.png",
+    "usage": "Weapon",
+    "wield": "One-handed",
+    "weight": 0.8,
+    "power": 171,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Charred Bone": "3>0>0>0",
+      "Flametal": "12>10>20>30",
+      "Asksvin hide": "2>2>4>6"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "135>141>147>153;405>423>441>459",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;28",
+      "Stagger": "135>141>147>153;405>423>441>459",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordNiedhoggBlood",
+    "type": "Sword",
+    "name": "Nidhögg the Bleeding",
+    "desc": "If you bleed, your foes are sure to do so as well.",
+    "image": "/img/Sword/SwordNiedhoggBlood.webp",
+    "usage": "Weapon",
+    "wield": "One-handed Enchanted",
+    "weight": 0.8,
+    "power": 200,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6§>7§",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Nidhögg": "1>0>0>0",
+      "Flametal": "6>6>12>18",
+      "Bloodstone": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "135>141>147>153;405>423>441>459",
+      "Blood": "0.2% * missing HP;0.2% * missing HP",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;28",
+      "Stagger": "135>141>147>153;405>423>441>459",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordNiedhoggLightning",
+    "type": "Sword",
+    "name": "Nidhögg the Thundering",
+    "desc": "The power of lightning dances along the blade of this sword, a promise of the pain to come.",
+    "image": "/img/Sword/SwordNiedhoggLightning.webp",
+    "usage": "Weapon",
+    "wield": "One-handed Enchanted",
+    "weight": 0.8,
+    "power": 200,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6§>7§",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Nidhögg": "1>0>0>0",
+      "Flametal": "6>6>12>18",
+      "Iolite": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "135>141>147>153;405>423>441>459",
+      "Lightning": "10,10,10,10;30,30,30,30",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;28",
+      "Stagger": "145>151>157>163;435>453>471>489",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "SwordNiedhoggNature",
+    "type": "Sword",
+    "name": "Nidhögg the Primal",
+    "desc": "Tangle your foes in roots, like the namesake of this blade.",
+    "image": "/img/Sword/SwordNiedhoggNature.webp",
+    "usage": "Weapon",
+    "wield": "One-handed Enchanted",
+    "weight": 0.8,
+    "power": 200,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6§>7§",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Nidhögg": "1>0>0>0",
+      "Flametal": "6>6>12>18",
+      "Jade": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "135>141>147>153;405>423>441>459",
+      "Poison": "10,10,10,10;30,30,30,30",
+      "Knockback": "40;40",
+      "Attack speed": "2.46 s (1.14 + 0.44 + 0.88);1.84 s",
+      "Stamina": "16;28",
+      "Stagger": "145>151>157>163;435>453>471>489",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "57-85.5>57-85.5>57-85.5>57-85.5",
+      "Parry block armor": "114-171>114-171>114-171>114-171",
+      "Block force": "20>25>30>35",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "THSwordKrom",
+    "type": "Sword",
+    "name": "Krom",
+    "desc": "As deadly as it is shiny, and it's very shiny.",
+    "image": "/img/Sword/THSwordKrom.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 4.0,
+    "power": 156,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "1>2>3>4",
+    "repair": "1>1>1>1",
+    "mats": {
+      "Iron": "30>15>30>45",
+      "Bronze": "20>10>20>30",
+      "Scale hide": "5>5>10>15"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "150>156>162>168;450>468>486>504",
+      "Knockback": "55;55",
+      "Attack speed": "3.45 s (0.72 + 1.12 + 1.61);2.16 s",
+      "Stamina": "20;40",
+      "Stagger": "150>156>162>168;450>468>486>504",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "52-78>52-78>52-78>52-78",
+      "Parry block armor": "104-156>104-156>104-156>104-156",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "THSwordSlayer",
+    "type": "Sword",
+    "name": "Slayer",
+    "desc": "This mighty blade thirsts for the blood of foes.",
+    "image": "/img/Sword/THSwordSlayer.png",
+    "usage": "Weapon",
+    "wield": "Two-handed",
+    "weight": 4.0,
+    "power": 192,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "3>4>5>6",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Flametal": "30>15>30>45",
+      "Asksvin hide": "5>5>10>15",
+      "Morgen sinew": "3>3>6>9"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "170>176>182>188;510>528>546>564",
+      "Knockback": "55;55",
+      "Attack speed": "3.45 s (0.72 + 1.12 + 1.61);2.16 s",
+      "Stamina": "20;40",
+      "Stagger": "170>176>182>188;510>528>546>564",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "64-96>64-96>64-96>64-96",
+      "Parry block armor": "128-192>128-192>128-192>128-192",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "THSwordSlayerBlood",
+    "type": "Sword",
+    "name": "Brutal Slayer",
+    "desc": "If it bleeds, you can kill it.",
+    "image": "/img/Sword/THSwordSlayerBlood.webp",
+    "usage": "Weapon",
+    "wield": "Two-handed Enchanted",
+    "weight": 4.0,
+    "power": 192,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Slayer": "1>0>0>0",
+      "Flametal": "15>15>30>45",
+      "Bloodstone": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "170>176>182>188;510>528>546>564",
+      "Blood": "0.2% * missing HP;0.2% * missing HP",
+      "Knockback": "55;55",
+      "Attack speed": "3.45 s (0.72 + 1.12 + 1.61);2.16 s",
+      "Stamina": "20;40",
+      "Stagger": "170>176>182>188;510>528>546>564",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "64-96>64-96>64-96>64-96",
+      "Parry block armor": "128-192>128-192>128-192>128-192",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "THSwordSlayerLightning",
+    "type": "Sword",
+    "name": "Scourging Slayer",
+    "desc": "The lightning bound into this blade is erratic, ever searching for something to strike.",
+    "image": "/img/Sword/THSwordSlayerLightning.webp",
+    "usage": "Weapon",
+    "wield": "Two-handed Enchanted",
+    "weight": 4.0,
+    "power": 192,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Slayer": "1>0>0>0",
+      "Flametal": "15>15>30>45",
+      "Iolite": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "170>176>182>188;510>528>546>564",
+      "Lightning": "10,10,10,10;30,30,30,30",
+      "Knockback": "55;55",
+      "Attack speed": "3.45 s (0.72 + 1.12 + 1.61);2.16 s",
+      "Stamina": "20;40",
+      "Stagger": "170>176>182>188;510>528>546>564",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "64-96>64-96>64-96>64-96",
+      "Parry block armor": "128-192>128-192>128-192>128-192",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "THSwordSlayerNature",
+    "type": "Sword",
+    "name": "Primal Slayer",
+    "desc": "The blade works in tandem with the primal forces of the world, seeking death and slaughter.",
+    "image": "/img/Sword/THSwordSlayerNature.webp",
+    "usage": "Weapon",
+    "wield": "Two-handed Enchanted",
+    "weight": 4.0,
+    "power": 192,
+    "source": "Black forge",
+    "durab": "200>250>300>350",
+    "craft": "4>5>6>7",
+    "repair": "3>3>3>3",
+    "mats": {
+      "Slayer": "1>0>0>0",
+      "Flametal": "15>15>30>45",
+      "Jade": "1>1>2>3"
+    },
+    "passive": {
+      "Movement speed": -5
+    },
+    "attack": {
+      "Slash": "170>176>182>188;510>528>546>564",
+      "Poison": "10,10,10,10;30,30,30,30",
+      "Knockback": "55;55",
+      "Attack speed": "3.45 s (0.72 + 1.12 + 1.61);2.16 s",
+      "Stamina": "20;40",
+      "Stagger": "170>176>182>188;510>528>546>564",
+      "Backstab": "3x;3x"
+    },
+    "block": {
+      "Block armor": "64-96>64-96>64-96>64-96",
+      "Parry block armor": "128-192>128-192>128-192>128-192",
+      "Block force": "50>60>70>80",
+      "Parry bonus": "2x"
+    }
+  },
+  {
+    "code": "TrophyAbomination",
+    "type": "Trophy",
+    "name": "Abomination Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyAbomination.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyAsksvin",
+    "type": "Trophy",
+    "name": "Asksvin Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyAsksvin.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyBjorn",
+    "type": "Trophy",
+    "name": "Bear Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBjorn.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyBjornUndead",
+    "type": "Trophy",
+    "name": "Vial Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBjornUndead.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyBlob",
+    "type": "Trophy",
+    "name": "Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyBoar",
+    "type": "Trophy",
+    "name": "Boar Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBoar.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+  },
+  {
+    "code": "TrophyBonemass",
+    "type": "Trophy",
+    "name": "Bonemass Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBonemass.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyBonemawSerpent",
+    "type": "Trophy",
+    "name": "Bonemaw Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBonemawSerpent.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyCharredArcher",
+    "type": "Trophy",
+    "name": "Marksman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredArcher.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyCharredMage",
+    "type": "Trophy",
+    "name": "Warlock Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredMage.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyCharredMelee",
+    "type": "Trophy",
+    "name": "Warrior Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCharredMelee.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyCultist",
+    "type": "Trophy",
+    "name": "Cultist Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCultist.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyCultist_Hildir",
+    "type": "Trophy",
+    "name": "Geirrhafa Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyCultist_Hildir.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyDeathsquito",
+    "type": "Trophy",
+    "name": "Deathsquito Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDeathsquito.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyDeer",
+    "type": "Trophy",
+    "name": "Deer Trophy",
+    "desc": "A fine specimen but you'll need to kill more than deer to enter Valhalla.",
+    "image": "/img/Trophy/TrophyDeer.png",
+    "drop": "Deer",
+    "usage": "Decoration, summon Eikthyr",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+  },
+  {
+    "code": "TrophyDragonQueen",
+    "type": "Trophy",
+    "name": "Moder Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDragonQueen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyDraugr",
+    "type": "Trophy",
+    "name": "Draugr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDraugr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyDraugrElite",
+    "type": "Trophy",
+    "name": "Draugr Elite Trophy",
+    "desc": "The dead stare of the glowing red eyes sends a shiver through your bones.",
+    "image": "/img/Trophy/TrophyDraugrElite.png",
+    "drop": "Draugr elite",
+    "usage": "Crafting, Decoration",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Swamp",
+    "mats": {}
+  },
+  {
+    "code": "TrophyDvergr",
+    "type": "Trophy",
+    "name": "Dvergr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyDvergr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophyEikthyr",
+    "type": "Trophy",
+    "name": "Eikthyr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyEikthyr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+  },
+  {
+    "code": "TrophyFader",
+    "type": "Trophy",
+    "name": "Fader Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFader.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyFallenValkyrie",
+    "type": "Trophy",
+    "name": "Fallen Valkyrie Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFallenValkyrie.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyFenring",
+    "type": "Trophy",
+    "name": "Fenring Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyFenring.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyFrostTroll",
+    "type": "Trophy",
+    "name": "Troll Trophy",
+    "desc": "The leathery skin bears the faded tracery of ancient symbols.",
+    "image": "/img/Trophy/TrophyFrostTroll.png",
+    "drop": "Troll",
+    "usage": "Decoration",
+    "weight": 4.0,
+    "stack": 20,
+    "biome": "Black Forest",
+    "mats": {}
+  },
+  {
+    "code": "TrophyGhost",
+    "type": "Trophy",
+    "name": "Ghost Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGhost.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyGjall",
+    "type": "Trophy",
+    "name": "Gjall Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGjall.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophyGoblin",
+    "type": "Trophy",
+    "name": "Fuling Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblin.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGoblinBrute",
+    "type": "Trophy",
+    "name": "Fuling Berserker Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGoblinBruteBrosBrute",
+    "type": "Trophy",
+    "name": "Thungr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinBruteBrosBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGoblinBruteBrosShaman",
+    "type": "Trophy",
+    "name": "Zil Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinBruteBrosShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGoblinKing",
+    "type": "Trophy",
+    "name": "Yagluth Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinKing.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGoblinShaman",
+    "type": "Trophy",
+    "name": "Fuling Shaman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyGreydwarf",
+    "type": "Trophy",
+    "name": "Greydwarf Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGreydwarf.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyGreydwarfBrute",
+    "type": "Trophy",
+    "name": "Greydwarf Brute Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGreydwarfBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyGreydwarfShaman",
+    "type": "Trophy",
+    "name": "Greydwarf Shaman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGreydwarfShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyGrowth",
+    "type": "Trophy",
+    "name": "Growth Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGrowth.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyHare",
+    "type": "Trophy",
+    "name": "Hare Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyHare.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophyHatchling",
+    "type": "Trophy",
+    "name": "Drake Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyHatchling.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyKvastur",
+    "type": "Trophy",
+    "name": "Kvastur Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyKvastur.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyLeech",
+    "type": "Trophy",
+    "name": "Leech Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyLeech.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyLox",
+    "type": "Trophy",
+    "name": "Lox Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyLox.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+  },
+  {
+    "code": "TrophyMorgen",
+    "type": "Trophy",
+    "name": "Morgen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyMorgen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyNeck",
+    "type": "Trophy",
+    "name": "Neck Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyNeck.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+  },
+  {
+    "code": "TrophySGolem",
+    "type": "Trophy",
+    "name": "Stone Golem Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySGolem.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophySeeker",
+    "type": "Trophy",
+    "name": "Seeker Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeeker.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophySeekerBrute",
+    "type": "Trophy",
+    "name": "Seeker Soldier Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeekerBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophySeekerQueen",
+    "type": "Trophy",
+    "name": "Queen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeekerQueen.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophySerpent",
+    "type": "Trophy",
+    "name": "Serpent Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySerpent.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ocean"
+  },
+  {
+    "code": "TrophySkeleton",
+    "type": "Trophy",
+    "name": "Skeleton Trophy",
+    "desc": "The expressionless grin of this skull reminds you of the inevitability of death.",
+    "image": "/img/Trophy/TrophySkeleton.png",
+    "drop": "Skeleton",
+    "usage": "Decoration",
+    "weight": 0.5,
+    "stack": 20,
+    "biome": "Black Forest",
+    "mats": {}
+  },
+  {
+    "code": "TrophySkeletonHildir",
+    "type": "Trophy",
+    "name": "Brenna Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySkeletonHildir.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophySkeletonPoison",
+    "type": "Trophy",
+    "name": "Rancid Remains Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySkeletonPoison.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophySurtling",
+    "type": "Trophy",
+    "name": "Surtling Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySurtling.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyTheElder",
+    "type": "Trophy",
+    "name": "Elder Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyTheElder.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+  },
+  {
+    "code": "TrophyTick",
+    "type": "Trophy",
+    "name": "Tick Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyTick.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mistlands"
+  },
+  {
+    "code": "TrophyUlv",
+    "type": "Trophy",
+    "name": "Ulv Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyUlv.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyVolture",
+    "type": "Trophy",
+    "name": "Volture Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyVolture.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyWarlock",
+    "type": "Trophy",
+    "name": "Warlock Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWarlock.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyWolf",
+    "type": "Trophy",
+    "name": "Wolf Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWolf.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyWraith",
+    "type": "Trophy",
+    "name": "Wraith Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWraith.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "Blackwood",
+    "type": "Wood",
+    "name": "Ashwood",
+    "desc": "Wood hardened by fire and ash.",
+    "image": "/img/Wood/Blackwood.webp",
+    "drop": "Scorched Tree",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "ElderBark",
+    "type": "Wood",
+    "name": "Ancient bark",
+    "desc": "An ancient and sturdy material.",
+    "image": "/img/Wood/ElderBark.png",
+    "drop": "Ancient Tree",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "FineWood",
+    "type": "Wood",
+    "name": "Finewood",
+    "desc": "High quality wood for fine carpentry.",
+    "image": "/img/Wood/FineWood.png",
+    "drop": "Birch",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "RoundLog",
+    "type": "Wood",
+    "name": "Core wood",
+    "desc": "Perfect for building log cabins.",
+    "image": "/img/Wood/RoundLog.png",
+    "drop": "Pine",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "Wood",
+    "type": "Wood",
+    "name": "Wood",
+    "desc": "Good strong wood to build with.",
+    "image": "/img/Wood/Wood.png",
+    "drop": "Trees",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  },
+  {
+    "code": "YggdrasilWood",
+    "type": "Wood",
+    "name": "Yggdrasil wood",
+    "desc": "Godflesh, wood from the Great Tree.",
+    "image": "/img/Wood/YggdrasilWood.png",
+    "drop": "Yggdrasil shoot",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 50,
+    "mats": {}
+  }
+]

@@ -1,0 +1,27 @@
+{
+    "code": "ArrowPoison",
+    "name": "Poison arrow",
+    "desc": "A bitter sting from afar.",
+    "type": "Arrow",
+    "image": "/data/Arrow/ArrowPoison.png",
+    "usage": "Bow ammunition",
+    "wield": "Unknown",
+    "weight": 0,
+    "power": 0,
+    "source": "Workbench",
+    "durab": "0",
+    "craft": "3",
+    "repair": "0",
+    "mats": {
+        "Wood": "8",
+        "Obsidian": "4",
+        "Feathers": "2",
+        "Ooze": "2"
+    },
+    "attack": {
+        "Pierce": "26",
+        "Poison": "52",
+        "Knockback": "10",
+        "Stagger": "26"
+    }
+}

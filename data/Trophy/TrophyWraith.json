@@ -1,0 +1,12 @@
+{
+    "code": "TrophyWraith",
+    "type": "Trophy",
+    "name": "Wraith Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWraith.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

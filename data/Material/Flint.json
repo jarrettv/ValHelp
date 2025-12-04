@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/Flint.png",
+    "name": "Flint",
+    "desc": "Can be shaped into sharp blades.",
+    "code": "Flint",
+    "type": "Material",
+    "drop": "",
+    "usage": "Crafting, Building",
+    "weight": 2.0,
+    "stack": 30,
+    "mats": {}
+}

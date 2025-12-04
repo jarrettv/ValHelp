@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBoar",
+    "type": "Trophy",
+    "name": "Boar Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBoar.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+}

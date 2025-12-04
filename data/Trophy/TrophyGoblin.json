@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGoblin",
+    "type": "Trophy",
+    "name": "Fuling Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblin.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBonemass",
+    "type": "Trophy",
+    "name": "Bonemass Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBonemass.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

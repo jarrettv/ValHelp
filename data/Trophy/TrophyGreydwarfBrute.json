@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGreydwarfBrute",
+    "type": "Trophy",
+    "name": "Greydwarf Brute Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGreydwarfBrute.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

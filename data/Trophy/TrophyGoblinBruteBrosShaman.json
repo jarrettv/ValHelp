@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGoblinBruteBrosShaman",
+    "type": "Trophy",
+    "name": "Zil Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGoblinBruteBrosShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Plains"
+}

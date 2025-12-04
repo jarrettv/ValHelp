@@ -77,29 +77,3 @@ export const fetchPlayerCurrentEventId = async (id: number): Promise<number> => 
   console.debug('fetchPlayerCurrentEventId', id, data);
   return data;
 };
-
-// export const useCurrentEvent = (eventId: number, playerId: number) => {
-//   if (eventId === 0) {
-//     eventId = fetchPlayerCurrentEventId(playerId);
-//   }
-
-//   return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id), refetchInterval(query) {
-//     if (query.state.data && query.state.data?.status <= EventStatus.Live) {
-//       return 5000;
-//     }
-//     return false;
-//   } });
-// };
-
-
-// const fetchPlayers = async (id: number): Promise<Player[]> => {
-//   const response = await fetch(`/api/events/${id}/players`);
-//   if (!response.ok) {
-//     throw new Error('Failed to fetch event players');
-//   }
-//   return response.json();
-// };
-
-// export const usePlayers = (id: number) => {
-//   return useQuery({ queryKey: ['event-players', id], queryFn: () => fetchPlayers(id), refetchInterval: 5000 });
-// };

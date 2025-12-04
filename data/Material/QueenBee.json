@@ -1,0 +1,12 @@
+{
+    "image": "/data/Material/QueenBee.png",
+    "name": "Queen Bee",
+    "desc": "The queen of the bees!",
+    "code": "QueenBee",
+    "type": "Material",
+    "drop": "",
+    "usage": "Building",
+    "weight": 0.2,
+    "stack": 20,
+    "mats": {}
+}

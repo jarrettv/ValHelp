@@ -1,0 +1,12 @@
+{
+    "code": "TrophyGreydwarfShaman",
+    "type": "Trophy",
+    "name": "Greydwarf Shaman Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyGreydwarfShaman.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Black Forest"
+}

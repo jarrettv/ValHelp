@@ -33,10 +33,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 app.UseCors("AllowLocalhost5173");
+app.MapStaticAssets().ShortCircuit();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
-app.MapStaticAssets();
 
 if (app.Environment.IsDevelopment())
 {
@@ -46,7 +46,6 @@ app.MapEndpointsAdmin();
 app.MapEndpointsEvents();
 app.MapEndpointsSeries();
 app.MapEndpointsTrack();
-
 app.MapDefaultEndpoints();
 app.MapFallbackToFile("index.html");
 app.Run();

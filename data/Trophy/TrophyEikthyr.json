@@ -1,0 +1,12 @@
+{
+    "code": "TrophyEikthyr",
+    "type": "Trophy",
+    "name": "Eikthyr Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyEikthyr.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Meadows"
+}
