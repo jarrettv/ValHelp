@@ -1,0 +1,9 @@
+{
+    "code": "Wishbone",
+    "name": "Wishbone",
+    "desc": "",
+    "type": "Accessory",
+    "image": "/data/Accessory/Wishbone.png",
+    "usage": "Finding secrets",
+    "source_url": "https://valheim.fandom.com/wiki/Wishbone"
+}

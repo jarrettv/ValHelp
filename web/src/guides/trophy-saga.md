@@ -51,7 +51,7 @@ This is where the routes can start to change. You can go Silver weapons, Black M
 - [Root](10)
 - [Turnip seeds](3) for level 2 Cauldron spice rack
 - Approx. [Ancient Bark](100) see note below
-- Kill at least one Oozer as it drops a Wishbone for locating Silver
+- Kill at least one Oozer as it drops a [Wishbone](1) for locating Silver
 - [Chain](5) optional but see note below
 
 ### Ancient Bark
