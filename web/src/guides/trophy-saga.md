@@ -85,7 +85,7 @@ At this point in the run you should have sufficient gear and weapons for Mistlan
 
 ## Mistlands
 
-- [Seaker Meat](4)
+- [Seeker Meat](4)
 - [Hare Meat](4)
 - [Jotun Puffs](9) for Salad
 - [Black Marble](8) for Mortar and Pestle
