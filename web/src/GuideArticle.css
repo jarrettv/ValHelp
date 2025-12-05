@@ -44,6 +44,7 @@
 .guide-article__content h2,
 .guide-article__content h3,
 .guide-article__content h4 {
+  text-align: left;
   margin-top: 2.2rem;
   margin-bottom: 0.9rem;
   line-height: 1.25;

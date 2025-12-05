@@ -15,6 +15,9 @@ Saga mode is part of the Trophy Hunt Mod made by Oathorse. Trophies are 100% dro
 
 Saga can be overwhelming to get started with, especially considering the 4 hour time limit for events. I made this guide on Saga for beginners to get started and help with the learning curve. I am going to strip back much of the fluff and focus on what I consider to be “core numbers and requirements” to be successful in reaching later biomes and thus, higher scores. I will be excluding basic materials like stone, wood, leather, deer hide, bones, etc. and focusing on the numbers for progression. 
 
+
+<img src="/img/Bonus/BonusMeadows.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
+
 ## Meadows
 
 - Kill Eikthyr for [antler pickaxe](2) (hang trophy at spawn, activate power - optional but recommended)
@@ -26,6 +29,9 @@ Greylings have upgraded drops, most notably are the [Megingjord](1) Belt and fin
 Use whichever weapon you are most comfortable with. If using flint spear, I recommend getting level 2 ASAP and then stop upgrading it as better weapons will soon become unlocked.
 
 Deer trophies drop 100% of the time even after picking up the first one. Get [Deer Trophy](2) to summon the boss and optionally [Deer Trophy](5) for Stagbreaker.
+
+
+<img src="/img/Bonus/BonusForest.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
 
 ## Black forest
 
@@ -41,6 +47,9 @@ While Mining Copper/Tin, make a campfire with 2 cooking racks and burn the 4 unc
 I try to start a Saga Run like this. Obviously I left out numbers for miscellaneous materials. You can use whatever weapons/armor you want, I recommend using Bear Fists and a level 2 Bronze Spear. If going the Bronze Spear route, change the numbers to [Copper](101) and [Tin](51).
 
 As a rule of wrist (haha XD), a good benchmark for having all of this done and sailing south is 1:05:00. This allows you to catch the second south wind comfortably (this time is without sleeping).
+
+
+<img src="/img/Bonus/BonusSwamp.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
 
 ## Swamp
 
@@ -62,7 +71,10 @@ This is used for cooking Serpent Meat if you happen to find one, then making Bla
 
 At this point you should have a Longship, Root Harness, Iron Pickaxe and whatever weapons You would like to make. I personally make a level one iron mace and a level one huntsman bow.
 
-## Mountain
+
+<img src="/img/Bonus/BonusMountains.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
+
+## Mountains
 
 - Kill 2 drakes as you need [Moder Tear](2) for Artisan Table
 - [Silver](137) (100 for level 3 Silver Sword, 2 for Butcher Block, 5 for level 3 Fang Spear, 30 for Frostner)
@@ -70,6 +82,9 @@ At this point you should have a Longship, Root Harness, Iron Pickaxe and whateve
 - [Wolf Fang](10) for level 3 Fang Spear
 
 At this point, you should have an Artisan Bench, Level 3 Silver Sword, level 3 Cauldron.
+
+
+<img src="/img/Bonus/BonusPlains.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
 
 ## Plains
 
@@ -83,6 +98,9 @@ Notes about Plains: Once you find flax, you can mass produce it in the plains as
 
 At this point in the run you should have sufficient gear and weapons for Mistlands and nabbing a few trophies in the Ashlands.
 
+
+<img src="/img/Bonus/BonusMistlands.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
+
 ## Mistlands
 
 - [Seeker Meat](4)
@@ -92,18 +110,21 @@ At this point in the run you should have sufficient gear and weapons for Mistlan
 
 Requirements for Drakkar (optional, but suggested for getting to Ashlands):
 - Kill one Seeker Soldier for a [Majestic Carapace](1)
-- Kill enough Dvergrs to get [Yddrasil Wood](25)
+- Kill enough Dvergrs to get [Yggdrasil wood](25)
 - Approx one stack of Black Marble (for Mortar and Pestle, Artisan Press, 30 Ceramic Plates)
 
 Make a Food Preparation Table and Oven from materials at base to make Meat Platters. Make a Mortar and Pestle to make Salad. Break Fermenter for 5 Bronze and use with Majestic Carapace and Black Marble for Artisan Press. Craft [Ceramic Plate](30) and break Artisan Press to re-make Fermenter if needed.
 
 At this point in the game, you will have Pre-Ashlands BIS health food and stamina food. You can use Serpent Stew, Wolf Skewers, or whatever else you like for the third food slot. You also have arguably one of the most important tools for getting to the Ashlands, the Drakkar. The Drakkar is not required to get to the Ashlands in Saga, but it makes it much more consistent vs Longship to actually reach shore.
 
-Once in the Ashlands, there won’t be much time left, so kill what you can for trophies.
+Go fast! You want at least 10 minutes once you land in Ashlands.
+
+
+<img src="/img/Bonus/BonusAshlands.round.png" style="float:left;width:86px;margin:0 2rem 0 0"/>
 
 ## Ashlands
 
-If possible, snag a Bonemaw on the way in and then kill everything fast. Usually Warlock, Fallen Valkerie are saved for last as they are the most risky.
+If possible, snag a Bonemaw on the way in and then kill everything fast. Usually Warlock and Fallen Valkerie are saved for last as they are the most risky.
 
 ## Final Thoughts
 
