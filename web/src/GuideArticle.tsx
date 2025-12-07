@@ -1,4 +1,4 @@
-import { use, useMemo } from "react";
+import { useMemo } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import DOMPurify from "dompurify";
 import "./GuideArticle.css";
