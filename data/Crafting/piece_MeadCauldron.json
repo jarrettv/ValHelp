@@ -1,0 +1,9 @@
+{
+    "code": "piece_MeadCauldron",
+    "name": "Mead ketill",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_MeadCauldron.png",
+    "usage": "Preparing Mead bases",
+    "source_url": "https://valheim.fandom.com/wiki/Mead_ketill"
+}

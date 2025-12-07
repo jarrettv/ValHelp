@@ -1,0 +1,9 @@
+{
+    "code": "piece_cauldron",
+    "name": "Cauldron",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_cauldron.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Cauldron"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "BlackCore",
+    "name": "Black core",
+    "desc": "Filled to the brim with ancient power.",
+    "type": "Material",
+    "image": "/data/Material/BlackCore.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_core"
+}

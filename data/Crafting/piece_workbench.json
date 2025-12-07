@@ -1,0 +1,8 @@
+{
+    "code": "piece_workbench",
+    "name": "Workbench",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_workbench.png",
+    "source_url": "https://valheim.fandom.com/wiki/Workbench"
+}

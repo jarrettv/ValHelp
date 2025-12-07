@@ -1,0 +1,9 @@
+{
+    "code": "GoblinTotem",
+    "name": "Totem",
+    "desc": "Channels the ancient power of Yagluth.",
+    "type": "Misc",
+    "image": "/data/Misc/GoblinTotem.png",
+    "usage": "Summon Yagluth",
+    "source_url": "https://valheim.fandom.com/wiki/Fuling_totem"
+}

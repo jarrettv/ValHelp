@@ -1,0 +1,8 @@
+{
+    "code": "smelter",
+    "name": "Smelter",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/smelter.png",
+    "source_url": "https://valheim.fandom.com/wiki/Smelter"
+}

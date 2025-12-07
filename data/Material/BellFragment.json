@@ -1,0 +1,9 @@
+{
+    "code": "BellFragment",
+    "name": "Bell fragment",
+    "desc": "This ancient fragment appears to be a piece of a broken bell...",
+    "type": "Material",
+    "image": "/data/Material/BellFragment.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bell_fragment"
+}

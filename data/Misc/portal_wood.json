@@ -1,0 +1,9 @@
+{
+    "code": "portal_wood",
+    "name": "Portal",
+    "desc": "Connects to another portal with equal or no tag.",
+    "type": "Misc",
+    "image": "/data/Misc/portal_wood.png",
+    "usage": "Teleports players to a connected portal.",
+    "source_url": "https://valheim.fandom.com/wiki/Portal"
+}

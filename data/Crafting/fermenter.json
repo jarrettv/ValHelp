@@ -1,0 +1,9 @@
+{
+    "code": "fermenter",
+    "name": "Fermenter",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/fermenter.png",
+    "usage": "Fermenting meads & wine",
+    "source_url": "https://valheim.fandom.com/wiki/Fermenter"
+}

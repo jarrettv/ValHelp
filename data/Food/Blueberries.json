@@ -1,0 +1,9 @@
+{
+    "code": "Blueberries",
+    "name": "Blueberries",
+    "desc": "Tiny but tasty.",
+    "type": "Food",
+    "image": "/data/Food/Blueberries.png",
+    "usage": "Building, Crafting, Eating, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Blueberries"
+}

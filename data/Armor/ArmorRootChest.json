@@ -1,0 +1,23 @@
+{
+    "code": "ArmorRootChest",
+    "name": "Root harnesk",
+    "desc": "Finely wrought and strong enough to even turn the sharpest of blades.",
+    "type": "Armor",
+    "image": "/data/Axe/ArmorRootChest.webp",
+    "usage": "Chest",
+    "weight": 10.0,
+    "power": 57,
+    "source": "Workbench",
+    "durab": "800>900>1000>1100",
+    "craft": "2>4>5>6",
+    "repair": "2>2>2>2",
+    "armor": "8>10>12>14",
+    "mats": {
+        "Root": "10>2>4>6",
+        "Ancient bark": "10>5>10>15",
+        "Deer hide": "2>0>0>0"
+    },
+    "passive": {
+        "Movement speed": -2
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "code": "MeadFrostResist",
+    "name": "Frost resistance mead",
+    "desc": "Protects against the cold.",
+    "type": "Mead",
+    "image": "/data/Mead/MeadFrostResist.png",
+    "usage": "Drinking",
+    "source_url": "https://valheim.fandom.com/wiki/Frost_resistance_mead"
+}

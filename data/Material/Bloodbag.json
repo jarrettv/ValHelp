@@ -1,0 +1,9 @@
+{
+    "code": "Bloodbag",
+    "name": "Bloodbag",
+    "desc": "The contents of a leech. Ick!",
+    "type": "Material",
+    "image": "/data/Material/Bloodbag.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bloodbag"
+}

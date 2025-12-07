@@ -1,0 +1,9 @@
+{
+    "code": "piece_workbench_ext4",
+    "name": "Tool shelf",
+    "desc": "Workbench improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_workbench_ext4.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Tool_shelf"
+}

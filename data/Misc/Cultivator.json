@@ -1,0 +1,8 @@
+{
+    "code": "Cultivator",
+    "name": "Cultivator",
+    "desc": "A farming tool for tilling soil.",
+    "type": "Misc",
+    "image": "/data/Misc/Cultivator.png",
+    "source_url": "https://valheim.fandom.com/wiki/Cultivator"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "cauldron_ext1_spice",
+    "name": "Spice rack",
+    "desc": "Cauldron improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/cauldron_ext1_spice.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Spice_rack"
+}

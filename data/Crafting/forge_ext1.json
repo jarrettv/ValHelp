@@ -1,0 +1,9 @@
+{
+    "code": "forge_ext1",
+    "name": "Forge bellows",
+    "desc": "Forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/forge_ext1.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Forge_bellows"
+}

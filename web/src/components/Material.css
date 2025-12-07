@@ -35,8 +35,3 @@
   margin-left: 0.1rem;
 }
 
-.material__amount::before {
-  content: "×";
-  opacity: 0.7;
-  margin-right: 0.1rem;
-}

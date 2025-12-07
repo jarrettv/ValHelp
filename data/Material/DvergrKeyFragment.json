@@ -1,0 +1,9 @@
+{
+    "code": "DvergrKeyFragment",
+    "name": "Sealbreaker fragment",
+    "desc": "A fragment of a Dvergr sealbreaker.",
+    "type": "Material",
+    "image": "/data/Material/DvergrKeyFragment.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Sealbreaker_fragment"
+}

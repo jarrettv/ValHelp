@@ -8,6 +8,38 @@
     "source_url": "https://valheim.fandom.com/wiki/Megingjord"
   },
   {
+    "code": "Wishbone",
+    "type": "Accessory",
+    "name": "Wishbone",
+    "desc": "",
+    "image": "/img/Accessory/Wishbone.png",
+    "usage": "Finding secrets",
+    "source_url": "https://valheim.fandom.com/wiki/Wishbone"
+  },
+  {
+    "code": "ArmorRootChest",
+    "type": "Armor",
+    "name": "Root harnesk",
+    "desc": "Finely wrought and strong enough to even turn the sharpest of blades.",
+    "image": "/img/Armor/ArmorRootChest.webp",
+    "usage": "Chest",
+    "weight": 10.0,
+    "power": 57,
+    "source": "Workbench",
+    "durab": "800>900>1000>1100",
+    "craft": "2>4>5>6",
+    "repair": "2>2>2>2",
+    "armor": "8>10>12>14",
+    "mats": {
+      "Root": "10>2>4>6",
+      "Ancient bark": "10>5>10>15",
+      "Deer hide": "2>0>0>0"
+    },
+    "passive": {
+      "Movement speed": -2
+    }
+  },
+  {
     "code": "ArrowBronze",
     "type": "Arrow",
     "name": "Bronzehead arrow",
@@ -1556,6 +1588,146 @@
     }
   },
   {
+    "code": "cauldron_ext1_spice",
+    "type": "Crafting",
+    "name": "Spice rack",
+    "desc": "Cauldron improvement",
+    "image": "/img/Crafting/cauldron_ext1_spice.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Spice_rack"
+  },
+  {
+    "code": "charcoal_kiln",
+    "type": "Crafting",
+    "name": "Charcoal kiln",
+    "desc": "",
+    "image": "/img/Crafting/charcoal_kiln.png",
+    "source_url": "https://valheim.fandom.com/wiki/Charcoal_kiln"
+  },
+  {
+    "code": "fermenter",
+    "type": "Crafting",
+    "name": "Fermenter",
+    "desc": "",
+    "image": "/img/Crafting/fermenter.png",
+    "usage": "Fermenting meads & wine",
+    "source_url": "https://valheim.fandom.com/wiki/Fermenter"
+  },
+  {
+    "code": "forge",
+    "type": "Crafting",
+    "name": "Forge",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/forge.png",
+    "usage": "Build and Craft metal items",
+    "source_url": "https://valheim.fandom.com/wiki/Forge"
+  },
+  {
+    "code": "forge_ext1",
+    "type": "Crafting",
+    "name": "Forge bellows",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext1.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Forge_bellows"
+  },
+  {
+    "code": "forge_ext2",
+    "type": "Crafting",
+    "name": "Anvils",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext2.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Anvils"
+  },
+  {
+    "code": "forge_ext5",
+    "type": "Crafting",
+    "name": "Forge cooler",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext5.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Forge_cooler"
+  },
+  {
+    "code": "piece_MeadCauldron",
+    "type": "Crafting",
+    "name": "Mead ketill",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_MeadCauldron.png",
+    "usage": "Preparing Mead bases",
+    "source_url": "https://valheim.fandom.com/wiki/Mead_ketill"
+  },
+  {
+    "code": "piece_beehive",
+    "type": "Crafting",
+    "name": "Beehive",
+    "desc": "",
+    "image": "/img/Crafting/piece_beehive.png",
+    "source_url": "https://valheim.fandom.com/wiki/Beehive"
+  },
+  {
+    "code": "piece_cauldron",
+    "type": "Crafting",
+    "name": "Cauldron",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_cauldron.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Cauldron"
+  },
+  {
+    "code": "piece_workbench",
+    "type": "Crafting",
+    "name": "Workbench",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_workbench.png",
+    "source_url": "https://valheim.fandom.com/wiki/Workbench"
+  },
+  {
+    "code": "piece_workbench_ext1",
+    "type": "Crafting",
+    "name": "Chopping block",
+    "desc": "Workbench improvement",
+    "image": "/img/Crafting/piece_workbench_ext1.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Chopping_block"
+  },
+  {
+    "code": "piece_workbench_ext2",
+    "type": "Crafting",
+    "name": "Tanning rack",
+    "desc": "Workbench improvement",
+    "image": "/img/Crafting/piece_workbench_ext2.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Tanning_rack"
+  },
+  {
+    "code": "piece_workbench_ext3",
+    "type": "Crafting",
+    "name": "Adze",
+    "desc": "Workbench improvement",
+    "image": "/img/Crafting/piece_workbench_ext3.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Adze"
+  },
+  {
+    "code": "piece_workbench_ext4",
+    "type": "Crafting",
+    "name": "Tool shelf",
+    "desc": "Workbench improvement",
+    "image": "/img/Crafting/piece_workbench_ext4.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Tool_shelf"
+  },
+  {
+    "code": "smelter",
+    "type": "Crafting",
+    "name": "Smelter",
+    "desc": "",
+    "image": "/img/Crafting/smelter.png",
+    "source_url": "https://valheim.fandom.com/wiki/Smelter"
+  },
+  {
     "code": "CrossbowArbalest",
     "type": "Crossbow",
     "name": "Arbalest",
@@ -1906,6 +2078,15 @@
     }
   },
   {
+    "code": "Blueberries",
+    "type": "Food",
+    "name": "Blueberries",
+    "desc": "Tiny but tasty.",
+    "image": "/img/Food/Blueberries.png",
+    "usage": "Building, Crafting, Eating, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Blueberries"
+  },
+  {
     "code": "Cloudberry",
     "type": "Food",
     "name": "Cloudberries",
@@ -1946,6 +2127,15 @@
     "weight": 0.1,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "Raspberry",
+    "type": "Food",
+    "name": "Raspberries",
+    "desc": "Sweet and delicious.",
+    "image": "/img/Food/Raspberry.png",
+    "usage": "Building, Crafting, Eating, Taming",
+    "source_url": "https://valheim.fandom.com/wiki/Raspberries"
   },
   {
     "code": "DyrnwynBladeFragment",
@@ -2250,6 +2440,15 @@
     "mats": {}
   },
   {
+    "code": "BellFragment",
+    "type": "Material",
+    "name": "Bell fragment",
+    "desc": "This ancient fragment appears to be a piece of a broken bell...",
+    "image": "/img/Material/BellFragment.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bell_fragment"
+  },
+  {
     "code": "Bilebag",
     "type": "Material",
     "name": "Bilebag",
@@ -2289,6 +2488,15 @@
     "source_url": "https://valheim.fandom.com/wiki/Bear_paw"
   },
   {
+    "code": "BlackCore",
+    "type": "Material",
+    "name": "Black core",
+    "desc": "Filled to the brim with ancient power.",
+    "image": "/img/Material/BlackCore.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_core"
+  },
+  {
     "code": "BlackMarble",
     "type": "Material",
     "name": "Black marble",
@@ -2296,6 +2504,15 @@
     "image": "/img/Material/BlackMarble.png",
     "usage": "Building, Crafting",
     "source_url": "https://valheim.fandom.com/wiki/Black_marble"
+  },
+  {
+    "code": "Bloodbag",
+    "type": "Material",
+    "name": "Bloodbag",
+    "desc": "The contents of a leech. Ick!",
+    "image": "/img/Material/Bloodbag.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Bloodbag"
   },
   {
     "code": "BoneFragments",
@@ -2452,6 +2669,15 @@
     "image": "/img/Material/DragonTear.png",
     "usage": "Building",
     "source_url": "https://valheim.fandom.com/wiki/Dragon_tear"
+  },
+  {
+    "code": "DvergrKeyFragment",
+    "type": "Material",
+    "name": "Sealbreaker fragment",
+    "desc": "A fragment of a Dvergr sealbreaker.",
+    "image": "/img/Material/DvergrKeyFragment.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Sealbreaker_fragment"
   },
   {
     "code": "Eitr",
@@ -2668,11 +2894,8 @@
     "name": "Obsidian",
     "desc": "Dark volcanic glass.",
     "image": "/img/Material/Obsidian.png",
-    "drop": "Obsidian deposit",
-    "usage": "Crafting",
-    "weight": 2.0,
-    "stack": 50,
-    "mats": {}
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Obsidian"
   },
   {
     "code": "Ooze",
@@ -2887,6 +3110,15 @@
     "mats": {}
   },
   {
+    "code": "MeadFrostResist",
+    "type": "Mead",
+    "name": "Frost resistance mead",
+    "desc": "Protects against the cold.",
+    "image": "/img/Mead/MeadFrostResist.png",
+    "usage": "Drinking",
+    "source_url": "https://valheim.fandom.com/wiki/Frost_resistance_mead"
+  },
+  {
     "code": "BlackMetal",
     "type": "Metal",
     "name": "Black metal",
@@ -2996,6 +3228,59 @@
     "weight": 0.1,
     "stack": 1,
     "mats": {}
+  },
+  {
+    "code": "Cultivator",
+    "type": "Misc",
+    "name": "Cultivator",
+    "desc": "A farming tool for tilling soil.",
+    "image": "/img/Misc/Cultivator.png",
+    "source_url": "https://valheim.fandom.com/wiki/Cultivator"
+  },
+  {
+    "code": "GoblinTotem",
+    "type": "Misc",
+    "name": "Totem",
+    "desc": "Channels the ancient power of Yagluth.",
+    "image": "/img/Misc/GoblinTotem.png",
+    "usage": "Summon Yagluth",
+    "source_url": "https://valheim.fandom.com/wiki/Fuling_totem"
+  },
+  {
+    "code": "Karve",
+    "type": "Misc",
+    "name": "Karve",
+    "desc": "",
+    "image": "/img/Misc/Karve.png",
+    "usage": "Sailing",
+    "source_url": "https://valheim.fandom.com/wiki/Karve"
+  },
+  {
+    "code": "VikingShip",
+    "type": "Misc",
+    "name": "Longship",
+    "desc": "",
+    "image": "/img/Misc/VikingShip.png",
+    "usage": "Sailing",
+    "source_url": "https://valheim.fandom.com/wiki/Longship"
+  },
+  {
+    "code": "portal_stone",
+    "type": "Misc",
+    "name": "Stone Portal",
+    "desc": "The powerful energy source lets you pass through even with the most valuable of items.",
+    "image": "/img/Misc/portal_stone.png",
+    "usage": "Teleports players to a connected portal.",
+    "source_url": "https://valheim.fandom.com/wiki/Portal_stone"
+  },
+  {
+    "code": "portal_wood",
+    "type": "Misc",
+    "name": "Portal",
+    "desc": "Connects to another portal with equal or no tag.",
+    "image": "/img/Misc/portal_wood.png",
+    "usage": "Teleports players to a connected portal.",
+    "source_url": "https://valheim.fandom.com/wiki/Portal"
   },
   {
     "code": "TurretBolt",
@@ -5226,7 +5511,7 @@
   {
     "code": "RoundLog",
     "type": "Wood",
-    "name": "Core wood",
+    "name": "Corewood",
     "desc": "Perfect for building log cabins.",
     "image": "/img/Wood/RoundLog.png",
     "drop": "Pine",

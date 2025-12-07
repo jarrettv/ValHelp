@@ -1,11 +1,13 @@
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import DOMPurify from "dompurify";
 import "./GuideArticle.css";
 import "./components/Material.css";
 import { findGuideBySlug } from "./guides/loader";
-import { createMaterialsMarked } from "./utils/markedMaterials";
+import { createMaterialExtension } from "./utils/markedMaterials";
 import { MatsProvider, useMats } from "./contexts/MatsContext";
+import { Marked } from "marked";
+import { gfmHeadingId } from "marked-gfm-heading-id";
 
 type Guide = NonNullable<ReturnType<typeof findGuideBySlug>>;
 
@@ -13,10 +15,13 @@ function GuideArticleContent({ guide }: { guide: Guide }) {
   const { mats } = useMats();
 
   const renderedContent = useMemo(() => {
-    const parser = createMaterialsMarked(mats);
-    const raw = parser.parse(guide.content) as string;
+    const marked = new Marked();
+    marked.use(gfmHeadingId());
+    marked.use({ extensions: [createMaterialExtension(mats), ] });
+    const raw = marked.parse(guide.content, { gfm: true }) as string;
+    console.log(raw);
     return DOMPurify.sanitize(raw, {
-      ADD_ATTR: ["data-material"],
+      ADD_ATTR: ["id", "data-material", "data-level", "data-amount", "data-icon-only"],
     });
   }, [guide.content, mats]);
 

@@ -65,12 +65,11 @@
 .guide-article__content ul,
 .guide-article__content ol {
   padding-left: 1.6rem;
-  margin: 1.2rem 0;
   color: #f2f5ff;
 }
 
-.guide-article__content li {
-  margin: 0.5rem 0;
+.guide-article__content li>p {
+  margin: 0.1rem 0;
 }
 
 .guide-article__content a {

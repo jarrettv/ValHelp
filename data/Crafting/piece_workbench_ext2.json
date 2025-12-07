@@ -1,0 +1,9 @@
+{
+    "code": "piece_workbench_ext2",
+    "name": "Tanning rack",
+    "desc": "Workbench improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_workbench_ext2.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Tanning_rack"
+}

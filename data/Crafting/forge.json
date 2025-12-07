@@ -1,0 +1,9 @@
+{
+    "code": "forge",
+    "name": "Forge",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/forge.png",
+    "usage": "Build and Craft metal items",
+    "source_url": "https://valheim.fandom.com/wiki/Forge"
+}

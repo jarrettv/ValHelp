@@ -1,0 +1,9 @@
+{
+    "code": "piece_workbench_ext1",
+    "name": "Chopping block",
+    "desc": "Workbench improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_workbench_ext1.png",
+    "usage": "Upgrades Workbench",
+    "source_url": "https://valheim.fandom.com/wiki/Chopping_block"
+}

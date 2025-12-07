@@ -1,12 +1,9 @@
 {
-    "image": "/data/Material/Obsidian.png",
+    "code": "Obsidian",
     "name": "Obsidian",
     "desc": "Dark volcanic glass.",
-    "code": "Obsidian",
     "type": "Material",
-    "drop": "Obsidian deposit",
-    "usage": "Crafting",
-    "weight": 2.0,
-    "stack": 50,
-    "mats": {}
+    "image": "/data/Material/Obsidian.png",
+    "usage": "Building, Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Obsidian"
 }

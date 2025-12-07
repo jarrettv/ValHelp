@@ -1,0 +1,9 @@
+{
+    "code": "VikingShip",
+    "name": "Longship",
+    "desc": "",
+    "type": "Misc",
+    "image": "/data/Misc/VikingShip.png",
+    "usage": "Sailing",
+    "source_url": "https://valheim.fandom.com/wiki/Longship"
+}

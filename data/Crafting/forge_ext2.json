@@ -1,0 +1,9 @@
+{
+    "code": "forge_ext2",
+    "name": "Anvils",
+    "desc": "Forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/forge_ext2.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Anvils"
+}

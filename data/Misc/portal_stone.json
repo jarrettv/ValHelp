@@ -1,0 +1,9 @@
+{
+    "code": "portal_stone",
+    "name": "Stone Portal",
+    "desc": "The powerful energy source lets you pass through even with the most valuable of items.",
+    "type": "Misc",
+    "image": "/data/Misc/portal_stone.png",
+    "usage": "Teleports players to a connected portal.",
+    "source_url": "https://valheim.fandom.com/wiki/Portal_stone"
+}
