@@ -107,7 +107,8 @@ public class Player
                     found = true; // only 1 trophy and bonus per type allowed
                     continue;
                 }
-                if (existingLog.At == playerLog.At)
+                // treat as duplicate if timestamps are within 5 seconds
+                if ((existingLog.At - playerLog.At).Duration() <= TimeSpan.FromSeconds(4))
                 {
                     found = true; // already have this exact log at this time
                     break;
