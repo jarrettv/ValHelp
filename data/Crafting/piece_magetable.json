@@ -1,0 +1,9 @@
+{
+    "code": "piece_magetable",
+    "name": "Galdr table",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_magetable.png",
+    "usage": "Craft & build Mistlands items",
+    "source_url": "https://valheim.fandom.com/wiki/Galdr_table"
+}

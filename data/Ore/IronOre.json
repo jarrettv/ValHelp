@@ -1,0 +1,9 @@
+{
+    "code": "IronOre",
+    "name": "Iron ore",
+    "desc": "Unrefined iron. Needs to be refined in a smelter.",
+    "type": "Ore",
+    "image": "/data/Ore/IronOre.png",
+    "usage": "Smelting via Smelter",
+    "source_url": "https://valheim.fandom.com/wiki/Iron_ore"
+}

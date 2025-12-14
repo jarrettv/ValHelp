@@ -1,0 +1,9 @@
+{
+    "code": "blackforge_ext4_gemcutter",
+    "name": "Gem cutter",
+    "desc": "Black forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/blackforge_ext4_gemcutter.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Gem_cutter"
+}

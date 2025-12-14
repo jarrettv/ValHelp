@@ -1,0 +1,9 @@
+{
+    "code": "piece_magetable_ext3",
+    "name": "Feathery wreath",
+    "desc": "Galdr table improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_magetable_ext3.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Feathery_wreath"
+}

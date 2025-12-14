@@ -1,0 +1,9 @@
+{
+    "code": "TinOre",
+    "name": "Tin ore",
+    "desc": "Unrefined tin. Needs to be refined in a smelter.",
+    "type": "Ore",
+    "image": "/data/Ore/TinOre.png",
+    "usage": "Crafting Tin",
+    "source_url": "https://valheim.fandom.com/wiki/Tin_ore"
+}

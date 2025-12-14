@@ -1,0 +1,9 @@
+{
+    "code": "blackforge_ext1",
+    "name": "Black forge cooler",
+    "desc": "Black forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/blackforge_ext1.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge_cooler"
+}

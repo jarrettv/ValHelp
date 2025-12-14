@@ -1,0 +1,9 @@
+{
+    "code": "piece_sapcollector",
+    "name": "Sap extractor",
+    "desc": "Extract sap from mysterious branches.",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_sapcollector.png",
+    "usage": "Sap collection",
+    "source_url": "https://valheim.fandom.com/wiki/Sap_extractor"
+}

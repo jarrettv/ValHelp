@@ -107,6 +107,11 @@ public class Player
                     found = true; // only 1 trophy and bonus per type allowed
                     continue;
                 }
+                if (existingLog.At == playerLog.At)
+                {
+                    found = true; // already have this exact log at this time
+                    break;
+                }
             }
             if (!found)
             {

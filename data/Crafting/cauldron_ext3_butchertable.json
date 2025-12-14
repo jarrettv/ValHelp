@@ -1,0 +1,9 @@
+{
+    "code": "cauldron_ext3_butchertable",
+    "name": "Butcher's table",
+    "desc": "Cauldron improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/cauldron_ext3_butchertable.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Butcher%27s_table"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "forge_ext4",
+    "name": "Smith's anvil",
+    "desc": "Forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/forge_ext4.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Smith%27s_anvil"
+}

@@ -1,0 +1,9 @@
+{
+    "code": "piece_magetable_ext2",
+    "name": "Unfading candles",
+    "desc": "Galdr table improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_magetable_ext2.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Unfading_candles"
+}

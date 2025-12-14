@@ -1,0 +1,9 @@
+{
+    "code": "piece_spinningwheel",
+    "name": "Spinning wheel",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_spinningwheel.png",
+    "usage": "Craft Linen thread",
+    "source_url": "https://valheim.fandom.com/wiki/Spinning_wheel"
+}

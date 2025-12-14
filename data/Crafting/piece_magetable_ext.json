@@ -1,0 +1,9 @@
+{
+    "code": "piece_magetable_ext",
+    "name": "Rune table",
+    "desc": "Galdr table improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_magetable_ext.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Rune_table"
+}

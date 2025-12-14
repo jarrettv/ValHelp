@@ -1,0 +1,9 @@
+{
+    "code": "blackforge",
+    "name": "Black forge",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/blackforge.png",
+    "usage": "Build and Craft Mistlands items",
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge"
+}

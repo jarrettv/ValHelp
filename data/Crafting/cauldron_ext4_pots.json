@@ -1,0 +1,9 @@
+{
+    "code": "cauldron_ext4_pots",
+    "name": "Pots and pans",
+    "desc": "Cauldron improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/cauldron_ext4_pots.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Pots_and_pans"
+}

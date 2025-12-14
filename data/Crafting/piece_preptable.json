@@ -1,0 +1,9 @@
+{
+    "code": "piece_preptable",
+    "name": "Food preparation table",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_preptable.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Food_preparation_table"
+}

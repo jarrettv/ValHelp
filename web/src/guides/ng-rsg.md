@@ -47,6 +47,7 @@ better gear/food before killing later bosses.
   * Multiple burial chambers `/printseeds` allowed
   * Near Spawn if possible for boss powers
 * Kill [Bear Trophy]* and cave [Troll Trophy]* for armor (15m)
+* Do burial chambers for [Surtling core]* and [Elder]* Vegvisir (15m)
 * Use troll farming to gather resources as fast as possible (45m)
   * Try to multi-task, make coal while mining, etc.
   * Sleep often to speed up production
@@ -119,7 +120,7 @@ better gear/food before killing later bosses.
   * Craft [Finewood bow]* for next two biomes
 * Find swamp, kill at least two [Abomination Trophy]* for the root vest (1h)
   * Gather [Ancient Bark]* and [Ooze]* along the way
-  * Dip into a Crypt for [Iron]* needed for longship
+  * Enter Crypt for [Iron]* needed for longship and stonecutters
   * Watch for Bonemass runes
   * Kill [Leech]* and get [Bloodbag]* for meads
   * Find [Turnip seeds]* for the [Cauldron]* upgrade
@@ -141,7 +142,7 @@ better gear/food before killing later bosses.
 * [Ooze](30)
 * [Ancient Bark](40)
 * [Root](10)
-* [Iron](10)
+* [Iron](14)
 * [Bloodbag](14)
 * [Turnip seeds](6)
 * [Surtling core](8)

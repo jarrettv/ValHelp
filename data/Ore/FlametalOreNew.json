@@ -1,0 +1,9 @@
+{
+    "code": "FlametalOreNew",
+    "name": "Flametal ore",
+    "desc": "Warm to the touch with glowing veins of strange metal. Needs to be refined in a blast furnace.",
+    "type": "Ore",
+    "image": "/data/Ore/FlametalOreNew.png",
+    "usage": "Smelting via Blast furnace",
+    "source_url": "https://valheim.fandom.com/wiki/Flametal_ore"
+}

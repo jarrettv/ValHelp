@@ -1,0 +1,9 @@
+{
+    "code": "cauldron_ext5_mortarandpestle",
+    "name": "Mortar and pestle",
+    "desc": "Cauldron improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/cauldron_ext5_mortarandpestle.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Mortar_and_pestle"
+}

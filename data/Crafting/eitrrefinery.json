@@ -1,0 +1,9 @@
+{
+    "code": "eitrrefinery",
+    "name": "Eitr refinery",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/eitrrefinery.png",
+    "usage": "Processing Sap and Soft tissue into Refined eitr",
+    "source_url": "https://valheim.fandom.com/wiki/Eitr_refinery"
+}

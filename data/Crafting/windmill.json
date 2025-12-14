@@ -1,0 +1,9 @@
+{
+    "code": "windmill",
+    "name": "Windmill",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/windmill.png",
+    "usage": "Craft Barley flour",
+    "source_url": "https://valheim.fandom.com/wiki/Windmill"
+}

@@ -1,0 +1,8 @@
+{
+    "code": "piece_artisanstation",
+    "name": "Artisan table",
+    "desc": "Crafting station",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_artisanstation.png",
+    "source_url": "https://valheim.fandom.com/wiki/Artisan_table"
+}

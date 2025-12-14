@@ -1,0 +1,9 @@
+{
+    "code": "blackforge_ext3_metalcutter",
+    "name": "Metal cutter",
+    "desc": "Black Forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/blackforge_ext3_metalcutter.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Metal_cutter"
+}

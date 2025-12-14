@@ -1588,6 +1588,59 @@
     }
   },
   {
+    "code": "blackforge",
+    "type": "Crafting",
+    "name": "Black forge",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/blackforge.png",
+    "usage": "Build and Craft Mistlands items",
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge"
+  },
+  {
+    "code": "blackforge_ext1",
+    "type": "Crafting",
+    "name": "Black forge cooler",
+    "desc": "Black forge improvement",
+    "image": "/img/Crafting/blackforge_ext1.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge_cooler"
+  },
+  {
+    "code": "blackforge_ext2_vise",
+    "type": "Crafting",
+    "name": "Vice",
+    "desc": "Black forge improvement",
+    "image": "/img/Crafting/blackforge_ext2_vise.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Vice"
+  },
+  {
+    "code": "blackforge_ext3_metalcutter",
+    "type": "Crafting",
+    "name": "Metal cutter",
+    "desc": "Black Forge improvement",
+    "image": "/img/Crafting/blackforge_ext3_metalcutter.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Metal_cutter"
+  },
+  {
+    "code": "blackforge_ext4_gemcutter",
+    "type": "Crafting",
+    "name": "Gem cutter",
+    "desc": "Black forge improvement",
+    "image": "/img/Crafting/blackforge_ext4_gemcutter.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Gem_cutter"
+  },
+  {
+    "code": "blastfurnace",
+    "type": "Crafting",
+    "name": "Blast furnace",
+    "desc": "",
+    "image": "/img/Crafting/blastfurnace.png",
+    "source_url": "https://valheim.fandom.com/wiki/Blast_furnace"
+  },
+  {
     "code": "cauldron_ext1_spice",
     "type": "Crafting",
     "name": "Spice rack",
@@ -1597,12 +1650,57 @@
     "source_url": "https://valheim.fandom.com/wiki/Spice_rack"
   },
   {
+    "code": "cauldron_ext3_butchertable",
+    "type": "Crafting",
+    "name": "Butcher's table",
+    "desc": "Cauldron improvement",
+    "image": "/img/Crafting/cauldron_ext3_butchertable.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Butcher%27s_table"
+  },
+  {
+    "code": "cauldron_ext4_pots",
+    "type": "Crafting",
+    "name": "Pots and pans",
+    "desc": "Cauldron improvement",
+    "image": "/img/Crafting/cauldron_ext4_pots.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Pots_and_pans"
+  },
+  {
+    "code": "cauldron_ext5_mortarandpestle",
+    "type": "Crafting",
+    "name": "Mortar and pestle",
+    "desc": "Cauldron improvement",
+    "image": "/img/Crafting/cauldron_ext5_mortarandpestle.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Mortar_and_pestle"
+  },
+  {
+    "code": "cauldron_ext6_rollingpins",
+    "type": "Crafting",
+    "name": "Rolling pins and cutting boards",
+    "desc": "Cauldron improvement",
+    "image": "/img/Crafting/cauldron_ext6_rollingpins.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Rolling_pins_and_cutting_boards"
+  },
+  {
     "code": "charcoal_kiln",
     "type": "Crafting",
     "name": "Charcoal kiln",
     "desc": "",
     "image": "/img/Crafting/charcoal_kiln.png",
     "source_url": "https://valheim.fandom.com/wiki/Charcoal_kiln"
+  },
+  {
+    "code": "eitrrefinery",
+    "type": "Crafting",
+    "name": "Eitr refinery",
+    "desc": "",
+    "image": "/img/Crafting/eitrrefinery.png",
+    "usage": "Processing Sap and Soft tissue into Refined eitr",
+    "source_url": "https://valheim.fandom.com/wiki/Eitr_refinery"
   },
   {
     "code": "fermenter",
@@ -1641,6 +1739,24 @@
     "source_url": "https://valheim.fandom.com/wiki/Anvils"
   },
   {
+    "code": "forge_ext3",
+    "type": "Crafting",
+    "name": "Grinding wheel",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext3.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Grinding_wheel"
+  },
+  {
+    "code": "forge_ext4",
+    "type": "Crafting",
+    "name": "Smith's anvil",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext4.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Smith%27s_anvil"
+  },
+  {
     "code": "forge_ext5",
     "type": "Crafting",
     "name": "Forge cooler",
@@ -1650,6 +1766,15 @@
     "source_url": "https://valheim.fandom.com/wiki/Forge_cooler"
   },
   {
+    "code": "forge_ext6",
+    "type": "Crafting",
+    "name": "Forge toolrack",
+    "desc": "Forge improvement",
+    "image": "/img/Crafting/forge_ext6.png",
+    "usage": "Upgrades Forge",
+    "source_url": "https://valheim.fandom.com/wiki/Forge_toolrack"
+  },
+  {
     "code": "piece_MeadCauldron",
     "type": "Crafting",
     "name": "Mead ketill",
@@ -1657,6 +1782,14 @@
     "image": "/img/Crafting/piece_MeadCauldron.png",
     "usage": "Preparing Mead bases",
     "source_url": "https://valheim.fandom.com/wiki/Mead_ketill"
+  },
+  {
+    "code": "piece_artisanstation",
+    "type": "Crafting",
+    "name": "Artisan table",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_artisanstation.png",
+    "source_url": "https://valheim.fandom.com/wiki/Artisan_table"
   },
   {
     "code": "piece_beehive",
@@ -1674,6 +1807,78 @@
     "image": "/img/Crafting/piece_cauldron.png",
     "usage": "Cooking",
     "source_url": "https://valheim.fandom.com/wiki/Cauldron"
+  },
+  {
+    "code": "piece_magetable",
+    "type": "Crafting",
+    "name": "Galdr table",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_magetable.png",
+    "usage": "Craft & build Mistlands items",
+    "source_url": "https://valheim.fandom.com/wiki/Galdr_table"
+  },
+  {
+    "code": "piece_magetable_ext",
+    "type": "Crafting",
+    "name": "Rune table",
+    "desc": "Galdr table improvement",
+    "image": "/img/Crafting/piece_magetable_ext.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Rune_table"
+  },
+  {
+    "code": "piece_magetable_ext2",
+    "type": "Crafting",
+    "name": "Unfading candles",
+    "desc": "Galdr table improvement",
+    "image": "/img/Crafting/piece_magetable_ext2.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Unfading_candles"
+  },
+  {
+    "code": "piece_magetable_ext3",
+    "type": "Crafting",
+    "name": "Feathery wreath",
+    "desc": "Galdr table improvement",
+    "image": "/img/Crafting/piece_magetable_ext3.png",
+    "usage": "Upgrades Galdr table",
+    "source_url": "https://valheim.fandom.com/wiki/Feathery_wreath"
+  },
+  {
+    "code": "piece_oven",
+    "type": "Crafting",
+    "name": "Stone oven",
+    "desc": "",
+    "image": "/img/Crafting/piece_oven.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Stone_oven"
+  },
+  {
+    "code": "piece_preptable",
+    "type": "Crafting",
+    "name": "Food preparation table",
+    "desc": "Crafting station",
+    "image": "/img/Crafting/piece_preptable.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Food_preparation_table"
+  },
+  {
+    "code": "piece_sapcollector",
+    "type": "Crafting",
+    "name": "Sap extractor",
+    "desc": "Extract sap from mysterious branches.",
+    "image": "/img/Crafting/piece_sapcollector.png",
+    "usage": "Sap collection",
+    "source_url": "https://valheim.fandom.com/wiki/Sap_extractor"
+  },
+  {
+    "code": "piece_spinningwheel",
+    "type": "Crafting",
+    "name": "Spinning wheel",
+    "desc": "",
+    "image": "/img/Crafting/piece_spinningwheel.png",
+    "usage": "Craft Linen thread",
+    "source_url": "https://valheim.fandom.com/wiki/Spinning_wheel"
   },
   {
     "code": "piece_workbench",
@@ -1726,6 +1931,15 @@
     "desc": "",
     "image": "/img/Crafting/smelter.png",
     "source_url": "https://valheim.fandom.com/wiki/Smelter"
+  },
+  {
+    "code": "windmill",
+    "type": "Crafting",
+    "name": "Windmill",
+    "desc": "",
+    "image": "/img/Crafting/windmill.png",
+    "usage": "Craft Barley flour",
+    "source_url": "https://valheim.fandom.com/wiki/Windmill"
   },
   {
     "code": "CrossbowArbalest",
@@ -2680,6 +2894,15 @@
     "source_url": "https://valheim.fandom.com/wiki/Sealbreaker_fragment"
   },
   {
+    "code": "DvergrNeedle",
+    "type": "Material",
+    "name": "Dvergr extractor",
+    "desc": "Looks like a perfect piece for piercing something...",
+    "image": "/img/Material/DvergrNeedle.png",
+    "usage": "Placing Sap extractor",
+    "source_url": "https://valheim.fandom.com/wiki/Dvergr_extractor"
+  },
+  {
     "code": "Eitr",
     "type": "Material",
     "name": "Refined eitr",
@@ -3001,6 +3224,15 @@
     "weight": 2.0,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "Softtissue",
+    "type": "Material",
+    "name": "Soft tissue",
+    "desc": "It still fizzes softly with ancient memories.",
+    "image": "/img/Material/Softtissue.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Soft_tissue"
   },
   {
     "code": "Stone",
@@ -3353,6 +3585,60 @@
       "Knockback": "45",
       "Stagger": "75"
     }
+  },
+  {
+    "code": "BlackMetalScrap",
+    "type": "Ore",
+    "name": "Black metal scrap",
+    "desc": "A twisted hunk of dark metal.",
+    "image": "/img/Ore/BlackMetalScrap.png",
+    "usage": "Smelting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_metal_scrap"
+  },
+  {
+    "code": "CopperOre",
+    "type": "Ore",
+    "name": "Copper ore",
+    "desc": "Unrefined copper. Needs to be refined in a smelter.",
+    "image": "/img/Ore/CopperOre.png",
+    "usage": "Makes Copper",
+    "source_url": "https://valheim.fandom.com/wiki/Copper_ore"
+  },
+  {
+    "code": "FlametalOreNew",
+    "type": "Ore",
+    "name": "Flametal ore",
+    "desc": "Warm to the touch with glowing veins of strange metal. Needs to be refined in a blast furnace.",
+    "image": "/img/Ore/FlametalOreNew.png",
+    "usage": "Smelting via Blast furnace",
+    "source_url": "https://valheim.fandom.com/wiki/Flametal_ore"
+  },
+  {
+    "code": "IronOre",
+    "type": "Ore",
+    "name": "Iron ore",
+    "desc": "Unrefined iron. Needs to be refined in a smelter.",
+    "image": "/img/Ore/IronOre.png",
+    "usage": "Smelting via Smelter",
+    "source_url": "https://valheim.fandom.com/wiki/Iron_ore"
+  },
+  {
+    "code": "SilverOre",
+    "type": "Ore",
+    "name": "Silver ore",
+    "desc": "Unrefined silver. Needs to be refined in a smelter.",
+    "image": "/img/Ore/SilverOre.png",
+    "usage": "Smelting via Smelter",
+    "source_url": "https://valheim.fandom.com/wiki/Silver_ore"
+  },
+  {
+    "code": "TinOre",
+    "type": "Ore",
+    "name": "Tin ore",
+    "desc": "Unrefined tin. Needs to be refined in a smelter.",
+    "image": "/img/Ore/TinOre.png",
+    "usage": "Crafting Tin",
+    "source_url": "https://valheim.fandom.com/wiki/Tin_ore"
   },
   {
     "code": "PickaxeAntler",

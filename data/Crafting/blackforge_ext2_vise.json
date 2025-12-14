@@ -1,0 +1,9 @@
+{
+    "code": "blackforge_ext2_vise",
+    "name": "Vice",
+    "desc": "Black forge improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/blackforge_ext2_vise.png",
+    "usage": "Upgrades Black forge",
+    "source_url": "https://valheim.fandom.com/wiki/Vice"
+}

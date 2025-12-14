@@ -1,0 +1,9 @@
+{
+    "code": "SilverOre",
+    "name": "Silver ore",
+    "desc": "Unrefined silver. Needs to be refined in a smelter.",
+    "type": "Ore",
+    "image": "/data/Ore/SilverOre.png",
+    "usage": "Smelting via Smelter",
+    "source_url": "https://valheim.fandom.com/wiki/Silver_ore"
+}

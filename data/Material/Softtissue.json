@@ -1,0 +1,9 @@
+{
+    "code": "Softtissue",
+    "name": "Soft tissue",
+    "desc": "It still fizzes softly with ancient memories.",
+    "type": "Material",
+    "image": "/data/Material/Softtissue.png",
+    "usage": "Crafting",
+    "source_url": "https://valheim.fandom.com/wiki/Soft_tissue"
+}

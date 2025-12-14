@@ -1,0 +1,9 @@
+{
+    "code": "DvergrNeedle",
+    "name": "Dvergr extractor",
+    "desc": "Looks like a perfect piece for piercing something...",
+    "type": "Material",
+    "image": "/data/Material/DvergrNeedle.png",
+    "usage": "Placing Sap extractor",
+    "source_url": "https://valheim.fandom.com/wiki/Dvergr_extractor"
+}

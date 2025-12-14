@@ -1,0 +1,9 @@
+{
+    "code": "CopperOre",
+    "name": "Copper ore",
+    "desc": "Unrefined copper. Needs to be refined in a smelter.",
+    "type": "Ore",
+    "image": "/data/Ore/CopperOre.png",
+    "usage": "Makes Copper",
+    "source_url": "https://valheim.fandom.com/wiki/Copper_ore"
+}

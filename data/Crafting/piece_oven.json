@@ -1,0 +1,9 @@
+{
+    "code": "piece_oven",
+    "name": "Stone oven",
+    "desc": "",
+    "type": "Crafting",
+    "image": "/data/Crafting/piece_oven.png",
+    "usage": "Cooking",
+    "source_url": "https://valheim.fandom.com/wiki/Stone_oven"
+}

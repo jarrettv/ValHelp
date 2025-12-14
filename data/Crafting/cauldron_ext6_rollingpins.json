@@ -1,0 +1,9 @@
+{
+    "code": "cauldron_ext6_rollingpins",
+    "name": "Rolling pins and cutting boards",
+    "desc": "Cauldron improvement",
+    "type": "Crafting",
+    "image": "/data/Crafting/cauldron_ext6_rollingpins.png",
+    "usage": "Upgrades Cauldron",
+    "source_url": "https://valheim.fandom.com/wiki/Rolling_pins_and_cutting_boards"
+}

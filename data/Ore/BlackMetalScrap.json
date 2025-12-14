@@ -1,0 +1,9 @@
+{
+    "code": "BlackMetalScrap",
+    "name": "Black metal scrap",
+    "desc": "A twisted hunk of dark metal.",
+    "type": "Ore",
+    "image": "/data/Ore/BlackMetalScrap.png",
+    "usage": "Smelting",
+    "source_url": "https://valheim.fandom.com/wiki/Black_metal_scrap"
+}
