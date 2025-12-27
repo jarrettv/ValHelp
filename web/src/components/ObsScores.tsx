@@ -35,7 +35,7 @@ export default function ObsScores(props: ObsScoresProps) {
         { status === "live" && <Countdown targetTime={new Date(props.event.endAt)} color={ props.live ?? '#72da83' } message="OVER" /> }
         { status === "post" && <div className="num countdown over" style={{color: props.post ?? '#9fd2ff'}}><small>{props.event.hours}h&#160;</small>FINAL</div>}
       </div> */}
-      {!props.hideTitle && <div className="obs-title" style={{ color: props.title ?? '#fff', textAlign: 'left' }}>
+      {!props.hideTitle && <div className="obs-title" style={{ color: props.title ?? '#fff', textAlign: 'left', paddingLeft: '2rem' }}>
         {props.event.name.replace('Trophy ', '').replace('Event ', '').replace('Trailblazer', 'Blazer').replace('Charity', '💝').replace('# ', '#').substring(0, 13)}
       </div>
       }
