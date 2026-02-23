@@ -9,7 +9,6 @@ import { useAuth } from "./contexts/AuthContext";
 import Leaderboard from "./components/Leaderboard";
 import { Calc } from "./components/Calc";
 import { HelpGuide } from "./components/HelpGuide";
-import Watch from "./components/Watch";
 
 
 export default function Home() {
