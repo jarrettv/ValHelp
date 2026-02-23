@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_MeadCauldron.png",
     "usage": "Preparing Mead bases",
-    "source_url": "https://valheim.fandom.com/wiki/Mead_ketill"
+    "source_url": "https://valheim.fandom.com/wiki/Mead_ketill",
+    "mats": [
+        {
+            "code": "Tin",
+            "name": "Tin",
+            "count": "4"
+        },
+        {
+            "code": "Copper",
+            "name": "Copper",
+            "count": "6"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "2"
+        }
+    ]
 }

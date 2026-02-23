@@ -12,12 +12,28 @@
     "durab": "150>200>250>300",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Charred bone": "10>5>10>15",
-        "Flametal": "15>8>16>24",
-        "Sulfur": "5>3>6>9",
-        "Asksvin hide": "3>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "CharredBone",
+            "name": "Charred bone",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "15>8>16>24"
+        },
+        {
+            "code": "SulfurStone",
+            "name": "Sulfur",
+            "count": "5>3>6>9"
+        },
+        {
+            "code": "AskHide",
+            "name": "Asksvin hide",
+            "count": "3>2>4>6"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

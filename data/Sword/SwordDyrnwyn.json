@@ -12,14 +12,38 @@
     "durab": "200>250>300>350",
     "craft": "4>5>6>7",
     "repair": "0>0>0>0",
-    "mats": {
-        "Dyrnwyn hilt fragment": "1>0>0>0",
-        "Dyrnwyn blade fragment": "1>0>0>0",
-        "Dyrnwyn tip fragment": "1>0>0>0",
-        "Flametal": "20>2>4>6",
-        "Asksvin hide": "2>2>4>6",
-        "Bloodstone": "1>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "DyrnwynHiltFragment",
+            "name": "Dyrnwyn hilt fragment",
+            "count": "1>0>0>0"
+        },
+        {
+            "code": "DyrnwynBladeFragment",
+            "name": "Dyrnwyn blade fragment",
+            "count": "1>0>0>0"
+        },
+        {
+            "code": "DyrnwynTipFragment",
+            "name": "Dyrnwyn tip fragment",
+            "count": "1>0>0>0"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "20>2>4>6"
+        },
+        {
+            "code": "AskHide",
+            "name": "Asksvin hide",
+            "count": "2>2>4>6"
+        },
+        {
+            "code": "GemstoneRed",
+            "name": "Bloodstone",
+            "count": "1>2>4>6"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

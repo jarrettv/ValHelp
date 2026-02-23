@@ -1,0 +1,10 @@
+{
+    "code": "HardAntler",
+    "name": "Hard antler",
+    "desc": "A piece of very hard antlers.",
+    "type": "Material",
+    "image": "/data/Material/HardAntler.png",
+    "usage": "Crafting",
+    "weight": 2.0,
+    "source_url": "https://valheim.fandom.com/wiki/Hard_antler"
+}

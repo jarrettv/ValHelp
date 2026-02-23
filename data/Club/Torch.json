@@ -12,10 +12,18 @@
     "durab": "20",
     "craft": "0",
     "repair": "0",
-    "mats": {
-        "Wood": "1",
-        "Resin": "1"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "1"
+        },
+        {
+            "code": "Resin",
+            "name": "Resin",
+            "count": "1"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

@@ -12,12 +12,28 @@
     "durab": "175>225>275>325",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Yggdrasil wood": "5>0>0>0",
-        "Iron": "15>10>20>30",
-        "Bilebag": "3>1>2>3",
-        "Refined eitr": "10>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "5>0>0>0"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "15>10>20>30"
+        },
+        {
+            "code": "Bilebag",
+            "name": "Bilebag",
+            "count": "3>1>2>3"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

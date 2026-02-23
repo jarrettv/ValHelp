@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge_ext6.png",
     "usage": "Upgrades Forge",
-    "source_url": "https://valheim.fandom.com/wiki/Forge_toolrack"
+    "source_url": "https://valheim.fandom.com/wiki/Forge_toolrack",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "15"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        }
+    ]
 }

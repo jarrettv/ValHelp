@@ -5,5 +5,32 @@
     "type": "Crafting",
     "image": "/data/Crafting/eitrrefinery.png",
     "usage": "Processing Sap and Soft tissue into Refined eitr",
-    "source_url": "https://valheim.fandom.com/wiki/Eitr_refinery"
+    "source_url": "https://valheim.fandom.com/wiki/Eitr_refinery",
+    "mats": [
+        {
+            "code": "BlackMarble",
+            "name": "Black marble",
+            "count": "20"
+        },
+        {
+            "code": "BlackMetal",
+            "name": "Black metal",
+            "count": "5"
+        },
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "10"
+        },
+        {
+            "code": "BlackCore",
+            "name": "Black core",
+            "count": "5"
+        },
+        {
+            "code": "Sap",
+            "name": "Sap",
+            "count": "3"
+        }
+    ]
 }

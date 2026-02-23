@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/blackforge_ext2_vise.png",
     "usage": "Upgrades Black forge",
-    "source_url": "https://valheim.fandom.com/wiki/Vice"
+    "source_url": "https://valheim.fandom.com/wiki/Vice",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "5"
+        },
+        {
+            "code": "Copper",
+            "name": "Copper",
+            "count": "8"
+        },
+        {
+            "code": "",
+            "name": "Mechanical spring",
+            "count": "2"
+        }
+    ]
 }

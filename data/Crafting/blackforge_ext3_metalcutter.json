@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/blackforge_ext3_metalcutter.png",
     "usage": "Upgrades Black forge",
-    "source_url": "https://valheim.fandom.com/wiki/Metal_cutter"
+    "source_url": "https://valheim.fandom.com/wiki/Metal_cutter",
+    "mats": [
+        {
+            "code": "BlackMarble",
+            "name": "Black marble",
+            "count": "5"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "5"
+        },
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "5"
+        },
+        {
+            "code": "CharredBone",
+            "name": "Charred bone",
+            "count": "4"
+        }
+    ]
 }

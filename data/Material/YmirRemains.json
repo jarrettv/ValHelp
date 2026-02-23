@@ -8,5 +8,5 @@
     "usage": "Crafting",
     "weight": 0.3,
     "stack": 50,
-    "mats": {}
+    "mats": []
 }

@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Iron": "30>15>30>45",
-        "Bronze": "20>10>20>30",
-        "Scale hide": "5>5>10>15"
-    },
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "30>15>30>45"
+        },
+        {
+            "code": "Bronze",
+            "name": "Bronze",
+            "count": "20>10>20>30"
+        },
+        {
+            "code": "ScaleHide",
+            "name": "Scale hide",
+            "count": "5>5>10>15"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

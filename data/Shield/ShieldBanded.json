@@ -12,10 +12,18 @@
     "durab": "200>250>300",
     "craft": "2>3>4",
     "repair": "2>2>2",
-    "mats": {
-        "Fine wood": "10>10>20",
-        "Iron": "8>4>8"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "10>10>20"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "8>4>8"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

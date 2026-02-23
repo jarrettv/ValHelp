@@ -12,11 +12,23 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Carapace": "4",
-        "Feathers": "2",
-        "Wood": "8"
-    },
+    "mats": [
+        {
+            "code": "Carapace",
+            "name": "Carapace",
+            "count": "4"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "8"
+        }
+    ],
     "attack": {
         "Pierce": "72",
         "Knockback": "15",

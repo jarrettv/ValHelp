@@ -12,11 +12,23 @@
     "durab": "100>150>200>250",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Yggdrasil wood": "10>2>4>6",
-        "Iron": "20>15>30>45",
-        "Refined eitr": "10>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "10>2>4>6"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "20>15>30>45"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10>2>4>6"
+        }
+    ],
     "passive": {
         "Movement speed": -20
     },

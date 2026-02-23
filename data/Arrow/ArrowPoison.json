@@ -12,12 +12,28 @@
     "durab": "0",
     "craft": "3",
     "repair": "0",
-    "mats": {
-        "Wood": "8",
-        "Obsidian": "4",
-        "Feathers": "2",
-        "Ooze": "2"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "8"
+        },
+        {
+            "code": "Obsidian",
+            "name": "Obsidian",
+            "count": "4"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        },
+        {
+            "code": "Ooze",
+            "name": "Ooze",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "26",
         "Poison": "52",

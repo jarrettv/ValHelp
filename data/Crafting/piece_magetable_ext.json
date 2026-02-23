@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_magetable_ext.png",
     "usage": "Upgrades Galdr table",
-    "source_url": "https://valheim.fandom.com/wiki/Rune_table"
+    "source_url": "https://valheim.fandom.com/wiki/Rune_table",
+    "mats": [
+        {
+            "code": "BlackMarble",
+            "name": "Black marble",
+            "count": "10"
+        },
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "5"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10"
+        }
+    ]
 }

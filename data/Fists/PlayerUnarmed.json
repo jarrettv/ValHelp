@@ -12,7 +12,7 @@
     "durab": "0",
     "craft": "0",
     "repair": "0",
-    "mats": {},
+    "mats": [],
     "attack": {
         "Blunt": "5",
         "Knockback": "40",

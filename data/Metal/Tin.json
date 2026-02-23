@@ -8,7 +8,11 @@
     "usage": "Crafting, Building",
     "weight": 8.0,
     "stack": 30,
-    "mats": {
-        "Tin ore": 1
-    }
+    "mats": [
+        {
+            "code": "TinOre",
+            "name": "Tin ore",
+            "count": "1"
+        }
+    ]
 }

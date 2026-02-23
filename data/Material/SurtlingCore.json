@@ -8,5 +8,5 @@
     "usage": "Crafting, Building, Portals",
     "weight": 5.0,
     "stack": 10,
-    "mats": {}
+    "mats": []
 }

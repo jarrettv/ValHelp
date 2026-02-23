@@ -4,5 +4,12 @@
     "desc": "Crafting station",
     "type": "Crafting",
     "image": "/data/Crafting/piece_workbench.png",
-    "source_url": "https://valheim.fandom.com/wiki/Workbench"
+    "source_url": "https://valheim.fandom.com/wiki/Workbench",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        }
+    ]
 }

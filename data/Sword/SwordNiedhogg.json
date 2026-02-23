@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Charred Bone": "3>0>0>0",
-        "Flametal": "12>10>20>30",
-        "Asksvin hide": "2>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "CharredBone",
+            "name": "Charred bone",
+            "count": "3>0>0>0"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "12>10>20>30"
+        },
+        {
+            "code": "AskHide",
+            "name": "Asksvin hide",
+            "count": "2>2>4>6"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

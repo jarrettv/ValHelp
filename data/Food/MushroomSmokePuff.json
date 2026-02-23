@@ -8,5 +8,5 @@
     "usage": "Crafting, Eating, Taming",
     "weight": 0.1,
     "stack": 50,
-    "mats": {}
+    "mats": []
 }

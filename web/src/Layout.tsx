@@ -10,6 +10,8 @@ export default function Layout() {
         return 'User Profile';
       case '/auth/login':
         return 'Login';
+      case '/runs':
+        return 'Speedrun Timeline';
       default:
         return 'Welcome';
     }

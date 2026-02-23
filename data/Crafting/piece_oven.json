@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_oven.png",
     "usage": "Cooking",
-    "source_url": "https://valheim.fandom.com/wiki/Stone_oven"
+    "source_url": "https://valheim.fandom.com/wiki/Stone_oven",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "15"
+        },
+        {
+            "code": "Stone",
+            "name": "Stone",
+            "count": "20"
+        },
+        {
+            "code": "SurtlingCore",
+            "name": "Surtling core",
+            "count": "4"
+        }
+    ]
 }

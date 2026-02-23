@@ -12,11 +12,23 @@
     "durab": "100>150>200>250",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Yggdrasil wood": "10>5>10>15",
-        "Carapace": "4>4>8>12",
-        "Mandible": "2>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "Carapace",
+            "name": "Carapace",
+            "count": "4>4>8>12"
+        },
+        {
+            "code": "Mandible",
+            "name": "Mandible",
+            "count": "2>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

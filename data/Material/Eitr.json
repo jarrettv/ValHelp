@@ -8,8 +8,16 @@
     "usage": "Crafting",
     "weight": 5.0,
     "stack": 30,
-    "mats": {
-        "Sap": 1,
-        "Soft tissue": 1
-    }
+    "mats": [
+        {
+            "code": "Sap",
+            "name": "Sap",
+            "count": "1"
+        },
+        {
+            "code": "Softtissue",
+            "name": "Soft tissue",
+            "count": "1"
+        }
+    ]
 }

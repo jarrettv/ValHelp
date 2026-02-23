@@ -9,16 +9,60 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: valhelp
     volumes:
-      - pgdata:/var/lib/postgresql/data
-  
-  # valhelp-otel:
-  #   image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
-  #   restart: always
-  #   ports:
-  #     - "18888:18888"
-  #     - "4317:18889"
-  #   environment:
-  #     DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+      - ./pgdata:/var/lib/postgresql/data
 
-volumes:
-  pgdata:
+  # Helper container for syncing production (Supabase) -> local Postgres.
+  # Not started by default; run it on-demand:
+  #   docker compose --profile sync run --rm valhelp-db-sync snapshot
+  #   docker compose --profile sync run --rm valhelp-db-sync logical-setup
+  valhelp-db-sync:
+    image: postgres:16
+    profiles: ["sync"]
+    depends_on:
+      - valhelp-db
+    environment:
+      LOCAL_HOST: valhelp-db
+      LOCAL_PORT: 5432
+      LOCAL_DB: valhelp
+      LOCAL_USER: postgres
+      LOCAL_PASSWORD: postgres
+      # Supabase typically requires TLS
+      SUPABASE_SSLMODE: require
+      # Tweak restore speed (directory format supports parallel)
+      JOBS: 4
+    env_file:
+      - .env
+    volumes:
+      - ./scripts/db_sync:/sync:ro
+    entrypoint: ["/bin/bash", "/sync/sync.sh"]
+    command: ["snapshot"]
+  
+  valhelp-otel:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    restart: always
+    ports:
+      - "18888:18888"
+      - "4317:18889"
+    environment:
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+
+  # Runs `pgsync` on a fixed interval (default: every 4 hours).
+  # Setup:
+  #   - copy .env.pgsync.example -> .env.pgsync
+  #   - copy pgsync/config/.pgsync.yml.example -> pgsync/config/.pgsync.yml
+  # Run continuously:
+  #   docker compose --profile pgsync up -d valhelp-pgsync
+  # Run once:
+  #   docker compose --profile pgsync run --rm -e RUN_ONCE=1 valhelp-pgsync
+  valhelp-pgsync:
+    profiles: ["pgsync"]
+    build:
+      context: ./pgsync
+    restart: always
+    env_file:
+      - .env.pgsync
+    environment:
+      PGSYNC_CONFIG_DIR: /config
+      PGSYNC_INTERVAL_SECONDS: 14400
+    volumes:
+      - ./pgsync/config:/config:ro

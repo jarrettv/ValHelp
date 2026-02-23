@@ -16,11 +16,23 @@
         "Blood": "60s>120s>180s>240s magic barrier",
         "Eitr": "30>30>30>30"
     },
-    "mats": {
-        "Yggdrasil wood": "20>10>20>30",
-        "Blood clot": "4>2>4>6",
-        "Refined eitr": "16>8>16>24"
-    },
+    "mats": [
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "20>10>20>30"
+        },
+        {
+            "code": "GiantBloodSack",
+            "name": "Blood clot",
+            "count": "4>2>4>6"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "16>8>16>24"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

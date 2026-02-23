@@ -12,11 +12,23 @@
     "durab": "0",
     "craft": "0",
     "repair": "0",
-    "mats": {
-        "Leather scraps": "5",
-        "Ooze": "5",
-        "Resin": "3"
-    },
+    "mats": [
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "5"
+        },
+        {
+            "code": "Ooze",
+            "name": "Ooze",
+            "count": "5"
+        },
+        {
+            "code": "Resin",
+            "name": "Resin",
+            "count": "3"
+        }
+    ],
     "attack": {
         "Blunt": "5",
         "Knockback": "40",

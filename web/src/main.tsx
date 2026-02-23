@@ -21,6 +21,7 @@ import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
 import EventOverview from './EventOverview.tsx'
 import EventTimelineView from './EventTimelineView.tsx'
+import Runs from './Runs.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
 import EventRedirect from './EventRedirect.tsx'
 import EventTrophies from './EventTrophies.tsx'
@@ -57,6 +58,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
             <Route path="/trophy/calc" element={<TrophyCalc />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
+            <Route path="/runs" element={<Runs />} />
             <Route path="/guides" element={<HelpGuides />} />
             <Route path="/guides/:slug" element={<GuideArticle />} />
           </Route>

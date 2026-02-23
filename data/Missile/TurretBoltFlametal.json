@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Ashwood": "10",
-        "Flametal": "1"
-    },
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "10"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "1"
+        }
+    ],
     "attack": {
         "Pierce": "140",
         "Knockback": "60",

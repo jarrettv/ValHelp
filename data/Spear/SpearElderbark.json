@@ -12,11 +12,23 @@
     "durab": "100>150>200>250",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Troll hide": "4>1>2>3",
-        "Iron": "10>5>10>15",
-        "Ancient bark": "10>5>10>15"
-    },
+    "mats": [
+        {
+            "code": "TrollHide",
+            "name": "Troll hide",
+            "count": "4>1>2>3"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "ElderBark",
+            "name": "Ancient bark",
+            "count": "10>5>10>15"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

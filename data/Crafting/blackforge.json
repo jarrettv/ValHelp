@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/blackforge.png",
     "usage": "Build and Craft Mistlands items",
-    "source_url": "https://valheim.fandom.com/wiki/Black_forge"
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge",
+    "mats": [
+        {
+            "code": "BlackMarble",
+            "name": "Black marble",
+            "count": "10"
+        },
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "10"
+        },
+        {
+            "code": "BlackCore",
+            "name": "Black core",
+            "count": "5"
+        }
+    ]
 }

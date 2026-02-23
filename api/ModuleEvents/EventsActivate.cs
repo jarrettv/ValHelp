@@ -9,7 +9,6 @@ public static class EventsActivate
     public static void MapEndpointsEvents(this WebApplication app)
     {
         EventsEndpointsEvent.Map(app);
-        EventsEndpointsImport.Map(app);
         EventsEndpointsPlayer.Map(app);
     }
 

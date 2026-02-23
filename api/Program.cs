@@ -2,6 +2,7 @@ using System.Threading.Channels;
 using ValHelpApi.Config;
 using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
+using ValHelpApi.ModuleRuns;
 using ValHelpApi.ModuleSeries;
 using ValHelpApi.ModuleTrack;
 
@@ -44,6 +45,7 @@ if (app.Environment.IsDevelopment())
 }
 app.MapEndpointsAdmin();
 app.MapEndpointsEvents();
+app.MapEndpointsRuns();
 app.MapEndpointsSeries();
 app.MapEndpointsTrack();
 app.MapDefaultEndpoints();

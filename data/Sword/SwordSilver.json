@@ -12,12 +12,28 @@
     "durab": "200>250>300>350",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Wood": "2>1>2>3",
-        "Silver": "40>20>40>60",
-        "Leather scraps": "3>1>2>3",
-        "Iron": "5>3>6>9"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "2>1>2>3"
+        },
+        {
+            "code": "Silver",
+            "name": "Silver",
+            "count": "40>20>40>60"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "3>1>2>3"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "5>3>6>9"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

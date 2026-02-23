@@ -12,10 +12,18 @@
     "durab": "100",
     "craft": "1",
     "repair": "1",
-    "mats": {
-        "Wood": "10",
-        "Hard antler": "1"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "HardAntler",
+            "name": "Hard antler",
+            "count": "1"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

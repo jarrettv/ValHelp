@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge_ext3.png",
     "usage": "Upgrades Forge",
-    "source_url": "https://valheim.fandom.com/wiki/Grinding_wheel"
+    "source_url": "https://valheim.fandom.com/wiki/Grinding_wheel",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "25"
+        },
+        {
+            "code": "",
+            "name": "Sharpening stone",
+            "count": "1"
+        }
+    ]
 }

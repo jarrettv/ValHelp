@@ -12,11 +12,23 @@
     "durab": "100>150>200>250",
     "craft": "2>3>4>5",
     "repair": "2>2>2>2",
-    "mats": {
-        "Core wood": "20>5>10>15",
-        "Deer trophy": "5>2>4>6",
-        "Leather scraps": "2>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "RoundLog",
+            "name": "Corewood",
+            "count": "20>5>10>15"
+        },
+        {
+            "code": "TrophyDeer",
+            "name": "Deer Trophy",
+            "count": "5>2>4>6"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "2>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -20
     },

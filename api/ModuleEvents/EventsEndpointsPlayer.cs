@@ -24,25 +24,84 @@ public static class EventsEndpointsPlayer
 
     public static async Task<Results<NotFound, Ok<PlayerResponse>>> GetPlayer(int userId, AppDbContext db, ClaimsPrincipal cp)
     {
-        var resp = await db.Users
-        .AsNoTracking()
-        .Where(u => u.Id == userId)
-        .Select(x => new PlayerResponse(x.Id, x.Username, x.AvatarUrl, x.Youtube, x.Twitch,
-            x.Players.Select(p => new PlayerEventRow(p.EventId, p.Event.Name, p.Name, p.Stream, p.Event.StartAt, p.Event.EndAt, (int)p.Event.Status, (int)p.Status, p.Event.Mode, p.Event.ScoringCode, p.Event.Hours, p.Event.IsPrivate, p.Event.Seed,
-            p.Event.Players.Select(x => x.Score).ToArray(), p.Score,
-            p.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray())).ToArray()))
-        .SingleOrDefaultAsync();
+        var currentUserId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var includePrivate = currentUserId == userId;
 
-        if (resp == null)
+        var userRow = await db.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => new { u.Id, u.Username, u.AvatarUrl, u.Youtube, u.Twitch })
+            .SingleOrDefaultAsync();
+
+        if (userRow == null)
         {
             return TypedResults.NotFound();
         }
 
-        var currentUserId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        if (currentUserId != resp.UserId)
-        {
-            resp = resp with { Events = [.. resp.Events.Where(e => !e.IsPrivate)] };
-        }
+        // Load the player's event participation rows (includes logs), without also joining in all event players.
+        var playerEvents = await db.Players
+            .AsNoTracking()
+            .Where(p => p.UserId == userId)
+            .Where(p => includePrivate || !p.Event.IsPrivate)
+            .Select(p => new
+            {
+                p.EventId,
+                EventName = p.Event.Name,
+                PlayerName = p.Name,
+                p.Stream,
+                p.Event.StartAt,
+                p.Event.EndAt,
+                PlayerStatus = (int)p.Status,
+                EventStatus = (int)p.Event.Status,
+                p.Event.Mode,
+                p.Event.ScoringCode,
+                p.Event.Hours,
+                p.Event.IsPrivate,
+                p.Event.Seed,
+                p.Score,
+                Logs = p.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+            })
+            .ToArrayAsync();
+
+        var eventIds = playerEvents.Select(e => e.EventId).Distinct().ToArray();
+
+        // Fetch scores per event as a separate query to avoid multiplying rows when also reading logs.
+        var scoresByEvent = await db.Players
+            .AsNoTracking()
+            .Where(p => eventIds.Contains(p.EventId))
+            .GroupBy(p => p.EventId)
+            .Select(g => new
+            {
+                EventId = g.Key,
+                Scores = g.OrderBy(x => x.UserId).Select(x => x.Score).ToArray()
+            })
+            .ToDictionaryAsync(x => x.EventId, x => x.Scores);
+
+        var resp = new PlayerResponse(
+            userRow.Id,
+            userRow.Username,
+            userRow.AvatarUrl,
+            userRow.Youtube,
+            userRow.Twitch,
+            playerEvents.Select(e => new PlayerEventRow(
+                e.EventId,
+                e.EventName,
+                e.PlayerName,
+                e.Stream,
+                e.StartAt,
+                e.EndAt,
+                e.PlayerStatus,
+                e.EventStatus,
+                e.Mode,
+                e.ScoringCode,
+                e.Hours,
+                e.IsPrivate,
+                e.Seed,
+                scoresByEvent.TryGetValue(e.EventId, out var scores) ? scores : [],
+                e.Score,
+                e.Logs
+            )).ToArray()
+        );
 
         return TypedResults.Ok(resp);
     }

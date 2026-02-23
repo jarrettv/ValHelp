@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Smoke puff": "1",
-        "Asksvin bladder": "1"
-    },
+    "mats": [
+        {
+            "code": "MushroomSmokePuff",
+            "name": "Smoke puff",
+            "count": "1"
+        },
+        {
+            "code": "AskBladder",
+            "name": "Asksvin bladder",
+            "count": "1"
+        }
+    ],
     "attack": {
         "Blunt": "5",
         "Knockback": "40",

@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Yggdrasil wood": "20>10>20>30",
-        "Freeze gland": "4>2>4>6",
-        "Refined eitr": "16>8>16>24"
-    },
+    "mats": [
+        {
+            "code": "YggdrasilWood",
+            "name": "Yggdrasil wood",
+            "count": "20>10>20>30"
+        },
+        {
+            "code": "FreezeGland",
+            "name": "Freeze gland",
+            "count": "4>2>4>6"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "16>8>16>24"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

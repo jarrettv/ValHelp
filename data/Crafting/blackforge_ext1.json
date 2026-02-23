@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/blackforge_ext1.png",
     "usage": "Upgrades Black forge",
-    "source_url": "https://valheim.fandom.com/wiki/Black_forge_cooler"
+    "source_url": "https://valheim.fandom.com/wiki/Black_forge_cooler",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "5"
+        },
+        {
+            "code": "Copper",
+            "name": "Copper",
+            "count": "5"
+        },
+        {
+            "code": "BlackMarble",
+            "name": "Black marble",
+            "count": "4"
+        }
+    ]
 }

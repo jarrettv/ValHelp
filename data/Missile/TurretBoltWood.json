@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Core wood": "5",
-        "Feathers": "2"
-    },
+    "mats": [
+        {
+            "code": "RoundLog",
+            "name": "Corewood",
+            "count": "5"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "75",
         "Knockback": "45",

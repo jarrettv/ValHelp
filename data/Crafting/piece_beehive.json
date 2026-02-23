@@ -4,5 +4,17 @@
     "desc": "",
     "type": "Crafting",
     "image": "/data/Crafting/piece_beehive.png",
-    "source_url": "https://valheim.fandom.com/wiki/Beehive"
+    "source_url": "https://valheim.fandom.com/wiki/Beehive",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "QueenBee",
+            "name": "Queen Bee",
+            "count": "1"
+        }
+    ]
 }

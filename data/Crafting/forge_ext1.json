@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge_ext1.png",
     "usage": "Upgrades Forge",
-    "source_url": "https://valheim.fandom.com/wiki/Forge_bellows"
+    "source_url": "https://valheim.fandom.com/wiki/Forge_bellows",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "5"
+        },
+        {
+            "code": "DeerHide",
+            "name": "Deer hide",
+            "count": "5"
+        },
+        {
+            "code": "Chain",
+            "name": "Chain",
+            "count": "4"
+        }
+    ]
 }

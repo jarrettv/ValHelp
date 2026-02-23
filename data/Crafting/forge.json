@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge.png",
     "usage": "Build and Craft metal items",
-    "source_url": "https://valheim.fandom.com/wiki/Forge"
+    "source_url": "https://valheim.fandom.com/wiki/Forge",
+    "mats": [
+        {
+            "code": "Stone",
+            "name": "Stone",
+            "count": "4"
+        },
+        {
+            "code": "Coal",
+            "name": "Coal",
+            "count": "4"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "Copper",
+            "name": "Copper",
+            "count": "6"
+        }
+    ]
 }

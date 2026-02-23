@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/cauldron_ext3_butchertable.png",
     "usage": "Upgrades Cauldron",
-    "source_url": "https://valheim.fandom.com/wiki/Butcher%27s_table"
+    "source_url": "https://valheim.fandom.com/wiki/Butcher%27s_table",
+    "mats": [
+        {
+            "code": "ElderBark",
+            "name": "Ancient bark",
+            "count": "2"
+        },
+        {
+            "code": "RoundLog",
+            "name": "Corewood",
+            "count": "4"
+        },
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "4"
+        },
+        {
+            "code": "Silver",
+            "name": "Silver",
+            "count": "2"
+        }
+    ]
 }

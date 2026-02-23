@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Fine wood": "4>0>0>0",
-        "Iron": "10>4>8>12",
-        "Black metal": "10>4>8>12"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "4>0>0>0"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "10>4>8>12"
+        },
+        {
+            "code": "BlackMetal",
+            "name": "Black metal",
+            "count": "10>4>8>12"
+        }
+    ],
     "attack": {
         "Pierce": "45>46>47>48;135>138>141>144",
         "Slash": "45>46>47>48;135>138>141>144",

@@ -12,11 +12,23 @@
     "durab": "125>175>225>275",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Wood": "10>0>0>0",
-        "Bronze": "8>4>8>12",
-        "Leather scraps": "2>0>0>0"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10>0>0>0"
+        },
+        {
+            "code": "Bronze",
+            "name": "Bronze",
+            "count": "8>4>8>12"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "2>0>0>0"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

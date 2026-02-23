@@ -12,11 +12,23 @@
     "durab": "250>300>350",
     "craft": "3>4>5",
     "repair": "3>3>3",
-    "mats": {
-        "Fine wood": "10>10>20",
-        "Iron": "4>2>4",
-        "Serpent scale": "8>4>8"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "10>10>20"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "4>2>4"
+        },
+        {
+            "code": "SerpentScale",
+            "name": "Serpent scale",
+            "count": "8>4>8"
+        }
+    ],
     "passive": {
         "Movement speed": -15
     },

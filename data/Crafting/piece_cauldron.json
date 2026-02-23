@@ -5,5 +5,12 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_cauldron.png",
     "usage": "Cooking",
-    "source_url": "https://valheim.fandom.com/wiki/Cauldron"
+    "source_url": "https://valheim.fandom.com/wiki/Cauldron",
+    "mats": [
+        {
+            "code": "Tin",
+            "name": "Tin",
+            "count": "10"
+        }
+    ]
 }

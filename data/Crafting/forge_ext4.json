@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge_ext4.png",
     "usage": "Upgrades Forge",
-    "source_url": "https://valheim.fandom.com/wiki/Smith%27s_anvil"
+    "source_url": "https://valheim.fandom.com/wiki/Smith%27s_anvil",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "20"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "5"
+        }
+    ]
 }

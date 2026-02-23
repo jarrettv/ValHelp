@@ -12,11 +12,23 @@
     "durab": "300>350>400>450",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Fenris hair": "10>1>2>3",
-        "Fenris claw": "6>1>2>3",
-        "Silver": "10>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "WolfHairBundle",
+            "name": "Fenris hair",
+            "count": "10>1>2>3"
+        },
+        {
+            "code": "WolfClaw",
+            "name": "Fenris claw",
+            "count": "6>1>2>3"
+        },
+        {
+            "code": "Silver",
+            "name": "Silver",
+            "count": "10>1>2>3"
+        }
+    ],
     "attack": {
         "Slash": "60>64>68>72",
         "Knockback": "20",

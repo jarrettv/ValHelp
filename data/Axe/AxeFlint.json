@@ -12,10 +12,18 @@
     "durab": "100>130>160>190",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Wood": "4>0>0>0",
-        "Flint": "6>3>6>9"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "4>0>0>0"
+        },
+        {
+            "code": "Flint",
+            "name": "Flint",
+            "count": "6>3>6>9"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

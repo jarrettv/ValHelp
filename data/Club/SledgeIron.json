@@ -12,12 +12,28 @@
     "durab": "100>150>200>250",
     "craft": "2>3>4>5",
     "repair": "2>2>2>2",
-    "mats": {
-        "Ancient bark": "10>2>4>6",
-        "Iron": "30>15>30>45",
-        "Ymir flesh": "4>2>4>6",
-        "Draugr Elite trophy": "1>0>0>0"
-    },
+    "mats": [
+        {
+            "code": "ElderBark",
+            "name": "Ancient bark",
+            "count": "10>2>4>6"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "30>15>30>45"
+        },
+        {
+            "code": "YmirRemains",
+            "name": "Ymir flesh",
+            "count": "4>2>4>6"
+        },
+        {
+            "code": "TrophyDraugrElite",
+            "name": "Draugr Elite Trophy",
+            "count": "1>0>0>0"
+        }
+    ],
     "passive": {
         "Movement speed": -20
     },

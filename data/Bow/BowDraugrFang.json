@@ -12,12 +12,28 @@
     "durab": "100>150>200>250",
     "craft": "2>3>4>5",
     "repair": "2>2>2>2",
-    "mats": {
-        "Ancient bark": "10>5>10>15",
-        "Silver": "20>10>20>30",
-        "Deer hide": "2>2>4>6",
-        "Guck": "10>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "ElderBark",
+            "name": "Ancient bark",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "Silver",
+            "name": "Silver",
+            "count": "20>10>20>30"
+        },
+        {
+            "code": "DeerHide",
+            "name": "Deer hide",
+            "count": "2>2>4>6"
+        },
+        {
+            "code": "Guck",
+            "name": "Guck",
+            "count": "10>2>4>6"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

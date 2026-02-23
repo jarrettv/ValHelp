@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_spinningwheel.png",
     "usage": "Craft Linen thread",
-    "source_url": "https://valheim.fandom.com/wiki/Spinning_wheel"
+    "source_url": "https://valheim.fandom.com/wiki/Spinning_wheel",
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "20"
+        },
+        {
+            "code": "IronNails",
+            "name": "Iron nails",
+            "count": "10"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "5"
+        }
+    ]
 }

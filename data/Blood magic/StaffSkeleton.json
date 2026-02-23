@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Bone fragments": "10>5>10>15",
-        "Refined eitr": "16>8>16>24",
-        "Skeleton trophy": "4>2>4>6"
-    },
+    "mats": [
+        {
+            "code": "BoneFragments",
+            "name": "Bone fragments",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "16>8>16>24"
+        },
+        {
+            "code": "TrophySkeleton",
+            "name": "Skeleton Trophy",
+            "count": "4>2>4>6"
+        }
+    ],
     "attack": {
         "Eitr": "100>100>100>100",
         "Blood": "1spawn>2spawn>3spawn>4spawn"

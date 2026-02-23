@@ -4,5 +4,17 @@
     "desc": "",
     "type": "Crafting",
     "image": "/data/Crafting/charcoal_kiln.png",
-    "source_url": "https://valheim.fandom.com/wiki/Charcoal_kiln"
+    "source_url": "https://valheim.fandom.com/wiki/Charcoal_kiln",
+    "mats": [
+        {
+            "code": "Stone",
+            "name": "Stone",
+            "count": "20"
+        },
+        {
+            "code": "SurtlingCore",
+            "name": "Surtling core",
+            "count": "5"
+        }
+    ]
 }

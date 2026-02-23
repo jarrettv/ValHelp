@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Bone fragments": "8",
-        "Feathers": "2"
-    },
+    "mats": [
+        {
+            "code": "BoneFragments",
+            "name": "Bone fragments",
+            "count": "8"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "32",
         "Stagger": "32"

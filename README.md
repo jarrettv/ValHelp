@@ -38,6 +38,14 @@ dotnet run
 npm run dev
 ```
 
+## Sync production DB -> local Postgres
+
+Setup a `.pgsync.yml` files and run
+
+```
+pgsync {table}
+```
+
 ## Contributing
 Contact JV on [Valheim Speedrunning Discord](https://discord.gg/ZDJ5gnB5)
 

@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_workbench_ext1.png",
     "usage": "Upgrades Workbench",
-    "source_url": "https://valheim.fandom.com/wiki/Chopping_block"
+    "source_url": "https://valheim.fandom.com/wiki/Chopping_block",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "Flint",
+            "name": "Flint",
+            "count": "10"
+        }
+    ]
 }

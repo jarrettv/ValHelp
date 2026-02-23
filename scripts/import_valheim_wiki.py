@@ -18,6 +18,7 @@ The script requires ``requests`` and ``beautifulsoup4``.
 import argparse
 import json
 import re
+import time
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Tuple
@@ -31,9 +32,17 @@ USER_AGENT = "ValHelpDataBot/1.0 (+https://github.com/jarrettv/ValHelp)"
 
 
 def fetch_html(url: str) -> BeautifulSoup:
-    response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
-    response.raise_for_status()
-    return BeautifulSoup(response.text, "html.parser")
+    last_exc: Exception | None = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
+            response.raise_for_status()
+            return BeautifulSoup(response.text, "html.parser")
+        except requests.RequestException as exc:
+            last_exc = exc
+            # brief backoff for transient failures (connection reset / 503)
+            time.sleep(0.6 * (attempt + 1))
+    raise last_exc or RuntimeError(f"Failed to fetch {url}")
 
 
 def extract_infobox(soup: BeautifulSoup) -> Tuple[str | None, Dict[str, Any]]:
@@ -47,6 +56,12 @@ def extract_infobox(soup: BeautifulSoup) -> Tuple[str | None, Dict[str, Any]]:
     data: Dict[str, Any] = {}
     for item in infobox.find_all(class_="pi-item"):
         key = item.get("data-source")
+        if not key:
+            label_node = item.find(class_="pi-data-label")
+            if label_node:
+                label = label_node.get_text(" ", strip=True)
+                if label:
+                    key = label
         if not key:
             continue
         value_node = item.find(class_="pi-data-value") or item
@@ -110,7 +125,7 @@ FIELD_ALIASES: Mapping[str, Tuple[str, ...]] = {
     "power": ("power", "piercing"),
     "drop": ("drop", "dropped by"),
     "aliases": ("also known as", "aliases"),
-    "mats": ("materials", "recipe"),
+    "mats": ("materials", "recipe", "crafting materials"),
 }
 
 CODE_ALIASES: Tuple[str, ...] = ("internal id", "internal-id", "code")
@@ -153,15 +168,84 @@ def parse_materials(value: Any) -> Dict[str, str] | None:
         return None
 
     materials: Dict[str, str] = {}
-    pattern = re.compile(r"^(?P<name>.+?)(?:\s*[x×]\s*(?P<count>[0-9]+))?$")
+    single_pattern = re.compile(r"^(?P<name>.+?)(?:\s*[x×]\s*(?P<count>[0-9]+))?$")
+    pair_pattern = re.compile(r"(?P<name>.+?)\s*[x×]\s*(?P<count>[0-9]+)")
+
     for item in items:
-        match = pattern.match(item)
+        item = item.strip()
+        if not item:
+            continue
+
+        # Some pages (notably crafting stations) present recipes as a single
+        # space-separated string: "Stone x4 Coal x4 Wood x10".
+        pair_matches = list(pair_pattern.finditer(item))
+        if len(pair_matches) > 1:
+            for match in pair_matches:
+                mat_name = match.group("name").strip()
+                count = match.group("count") or "1"
+                if mat_name:
+                    materials[mat_name] = count
+            continue
+
+        match = single_pattern.match(item)
         if not match:
             continue
         mat_name = match.group("name").strip()
         count = match.group("count") or "1"
-        materials[mat_name] = count
+        if mat_name:
+            materials[mat_name] = count
     return materials or None
+
+
+def _normalize_material_key(value: str) -> str:
+    value = value.strip().lower().replace("×", "x")
+    return re.sub(r"[^a-z0-9]", "", value)
+
+
+def _build_material_name_index(data_root: Path) -> Dict[str, Tuple[str, str]]:
+    """Build a lookup from normalized material names/aliases -> (code, name)."""
+
+    index: Dict[str, Tuple[str, str]] = {}
+    for json_path in sorted(data_root.rglob("*.json")):
+        try:
+            payload = json.loads(json_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+
+        code = payload.get("code")
+        name = payload.get("name")
+        if isinstance(code, str) and code.strip() and isinstance(name, str) and name.strip():
+            index.setdefault(_normalize_material_key(name), (code.strip(), name.strip()))
+
+        aliases = payload.get("aliases")
+        if isinstance(code, str) and code.strip() and isinstance(aliases, list):
+            for alias in aliases:
+                if isinstance(alias, str) and alias.strip() and isinstance(name, str) and name.strip():
+                    index.setdefault(_normalize_material_key(alias), (code.strip(), name.strip()))
+
+    return index
+
+
+def _mats_dict_to_code_list(
+    mats: Dict[str, str],
+    *,
+    material_index: Dict[str, Tuple[str, str]],
+) -> List[Dict[str, Any]]:
+    result: List[Dict[str, Any]] = []
+    for mat_name, count in mats.items():
+        if not isinstance(mat_name, str) or not mat_name.strip():
+            continue
+        key = _normalize_material_key(mat_name)
+        resolved = material_index.get(key)
+        if resolved:
+            code, canonical_name = resolved
+            result.append({"code": code, "name": canonical_name, "count": str(count)})
+        else:
+            # Best-effort fallback; sync_missing_materials.py can backfill + rewrite later.
+            result.append({"code": "", "name": mat_name.strip(), "count": str(count)})
+    return result
 
 
 def normalise_aliases(value: Any) -> List[str] | None:
@@ -214,10 +298,84 @@ def build_entry(
 def download_image(url: str, dest: Path) -> None:
     if not url:
         return
-    response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
-    response.raise_for_status()
-    ensure_directory(dest.parent)
-    dest.write_bytes(response.content)
+    last_exc: Exception | None = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
+            response.raise_for_status()
+            ensure_directory(dest.parent)
+            dest.write_bytes(response.content)
+            return
+        except requests.RequestException as exc:
+            last_exc = exc
+            time.sleep(0.6 * (attempt + 1))
+    raise last_exc or RuntimeError(f"Failed to download image {url}")
+
+
+def import_url(
+    url: str,
+    *,
+    output_root: Path = DEFAULT_OUTPUT_ROOT,
+    image_ext: str = ".png",
+    dry_run: bool = False,
+    verbose: bool = False,
+) -> tuple[OrderedDict[str, Any], Path, Path | None]:
+    repo_root = Path(__file__).resolve().parents[1]
+    output_root_arg = Path(output_root)
+    resolved_output_root = output_root_arg if output_root_arg.is_absolute() else (repo_root / output_root_arg)
+
+    soup = fetch_html(url)
+    raw_name, raw_data = extract_infobox(soup)
+
+    if verbose:
+        print(f"extracted fields: {sorted(raw_data.keys())}")
+
+    image_url = raw_data.get("_image_url")
+    raw_code = raw_data.get("_internal_id") or pick_field(raw_data, CODE_ALIASES)
+    if not isinstance(raw_code, str) or not raw_code.strip():
+        raise ValueError("Unable to determine internal ID from wiki infobox (expected 'Internal ID').")
+    code = sanitize_code(raw_code.strip())
+    if not code:
+        raise ValueError("Internal ID resolved to an empty code after sanitization.")
+
+    type_value = pick_field(raw_data, FIELD_ALIASES["type"]) or "Misc"
+    output_dir = resolved_output_root / str(type_value)
+    ensure_directory(output_dir)
+
+    resolved_image_ext = Path(urlparse(image_url).path).suffix if image_url else ""
+    if not resolved_image_ext:
+        resolved_image_ext = image_ext
+    resolved_image_ext = resolved_image_ext or ".png"
+
+    image_path: Path | None = None
+    image_rel_path: str | None = None
+    if image_url:
+        image_path = output_dir / f"{code}{resolved_image_ext}"
+        image_rel_path = f"/data/{type_value}/{image_path.name}"
+
+    entry = build_entry(url, raw_name, raw_data, code, type_value, image_rel_path)
+
+    # Normalize materials into code-based references (keep display name too).
+    mats_value = entry.get("mats")
+    if isinstance(mats_value, dict) and mats_value:
+        material_index = _build_material_name_index(resolved_output_root)
+        entry["mats"] = _mats_dict_to_code_list(mats_value, material_index=material_index)
+    json_path = output_dir / f"{code}.json"
+
+    if dry_run:
+        return entry, json_path, image_path
+
+    ensure_directory(output_dir)
+    json_path.write_text(json.dumps(entry, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
+    if verbose:
+        print(f"wrote {json_path}")
+
+    if image_url and image_path is not None:
+        download_image(image_url, image_path)
+        if verbose:
+            print(f"downloaded image to {image_path}")
+
+    return entry, json_path, image_path
 
 
 def main() -> None:
@@ -234,59 +392,30 @@ def main() -> None:
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
     args = parser.parse_args()
 
-    repo_root = Path(__file__).resolve().parents[1]
-    output_root_arg = Path(args.output_root)
-    output_root = output_root_arg if output_root_arg.is_absolute() else (repo_root / output_root_arg)
-
-    soup = fetch_html(args.url)
-    raw_name, raw_data = extract_infobox(soup)
-
-    if args.verbose:
-        print(f"extracted fields: {sorted(raw_data.keys())}")
-
-    image_url = raw_data.get("_image_url")
-    raw_code = raw_data.get("_internal_id") or pick_field(raw_data, CODE_ALIASES)
-    if not isinstance(raw_code, str) or not raw_code.strip():
-        raise ValueError("Unable to determine internal ID from wiki infobox (expected 'Internal ID').")
-    code = sanitize_code(raw_code.strip())
-    if not code:
-        raise ValueError("Internal ID resolved to an empty code after sanitization.")
-    type_value = pick_field(raw_data, FIELD_ALIASES["type"]) or "Misc"
-    output_dir = output_root / type_value
-    ensure_directory(output_dir)
-
-    image_ext = Path(urlparse(image_url).path).suffix if image_url else ""
-    if not image_ext:
-        image_ext = args.image_ext
-    image_ext = image_ext or ".png"
-
-    image_path: Path | None = None
-    image_rel_path: str | None = None
-    if image_url:
-        image_path = output_dir / f"{code}{image_ext}"
-        image_rel_path = f"/data/{type_value}/{image_path.name}"
-
-    entry = build_entry(args.url, raw_name, raw_data, code, type_value, image_rel_path)
-
-    json_path = output_dir / f"{code}.json"
-
     if args.dry_run:
+        entry, json_path, image_path = import_url(
+            args.url,
+            output_root=args.output_root,
+            image_ext=args.image_ext,
+            dry_run=True,
+            verbose=args.verbose,
+        )
         print("--- dry run ---")
         print(json.dumps(entry, indent=2, ensure_ascii=False))
         print(f"would write JSON: {json_path}")
-        if image_url:
-            print(f"would download image -> {image_path} from {image_url}")
+        if image_path is not None:
+            image_url = entry.get("_image_url") if isinstance(entry, dict) else None
+            # Note: entry does not include the raw image url; this is only a hint.
+            print(f"would download image -> {image_path}")
         return
 
-    ensure_directory(output_dir)
-    json_path.write_text(json.dumps(entry, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
-    if args.verbose:
-        print(f"wrote {json_path}")
-
-    if image_url and image_path is not None:
-        download_image(image_url, image_path)
-        if args.verbose:
-            print(f"downloaded image to {image_path}")
+    import_url(
+        args.url,
+        output_root=args.output_root,
+        image_ext=args.image_ext,
+        dry_run=False,
+        verbose=args.verbose,
+    )
 
 
 if __name__ == "__main__":

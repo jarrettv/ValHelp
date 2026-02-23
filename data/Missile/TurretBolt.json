@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Wood": "10",
-        "Black metal": "1"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "BlackMetal",
+            "name": "Black metal",
+            "count": "1"
+        }
+    ],
     "attack": {
         "Pierce": "120",
         "Knockback": "60",

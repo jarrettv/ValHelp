@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_workbench_ext4.png",
     "usage": "Upgrades Workbench",
-    "source_url": "https://valheim.fandom.com/wiki/Tool_shelf"
+    "source_url": "https://valheim.fandom.com/wiki/Tool_shelf",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "4"
+        },
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "10"
+        },
+        {
+            "code": "Obsidian",
+            "name": "Obsidian",
+            "count": "4"
+        }
+    ]
 }

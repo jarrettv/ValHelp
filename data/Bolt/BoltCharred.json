@@ -12,11 +12,23 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Charred bone": "2",
-        "Ashwood": "8",
-        "Feathers": "2"
-    },
+    "mats": [
+        {
+            "code": "CharredBone",
+            "name": "Charred bone",
+            "count": "2"
+        },
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "8"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "82",
         "Stagger": "82"

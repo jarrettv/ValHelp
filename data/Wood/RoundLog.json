@@ -1,12 +1,10 @@
 {
-    "image": "/data/Wood/RoundLog.png",
+    "code": "RoundLog",
     "name": "Corewood",
     "desc": "Perfect for building log cabins.",
-    "code": "RoundLog",
     "type": "Wood",
-    "drop": "Pine",
-    "usage": "Crafting, Building",
+    "image": "/data/Wood/RoundLog.png",
+    "usage": "Building, Crafting",
     "weight": 2.0,
-    "stack": 50,
-    "mats": {}
+    "source_url": "https://valheim.fandom.com/wiki/Corewood"
 }

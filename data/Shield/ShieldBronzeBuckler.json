@@ -12,10 +12,18 @@
     "durab": "200>250>300",
     "craft": "1>2>3",
     "repair": "1>1>1",
-    "mats": {
-        "Bronze": "10>5>10",
-        "Wood": "4>1>2"
-    },
+    "mats": [
+        {
+            "code": "Bronze",
+            "name": "Bronze",
+            "count": "10>5>10"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "4>1>2"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

@@ -8,5 +8,5 @@
     "usage": "Building",
     "weight": 0.2,
     "stack": 20,
-    "mats": {}
+    "mats": []
 }

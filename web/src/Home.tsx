@@ -9,6 +9,7 @@ import { useAuth } from "./contexts/AuthContext";
 import Leaderboard from "./components/Leaderboard";
 import { Calc } from "./components/Calc";
 import { HelpGuide } from "./components/HelpGuide";
+import Watch from "./components/Watch";
 
 
 export default function Home() {
@@ -31,6 +32,11 @@ export default function Home() {
           <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           Host Event <small>Public or private</small>
         </Link> }
+        {/* { status?.isActive &&
+        <Link to="/runs">
+          <Watch style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
+          Speedrun Timeline <small>Plan your route</small>
+        </Link> } */}
         <Link to="/events/all">
           <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
           All Events <small>Current and historic</small>

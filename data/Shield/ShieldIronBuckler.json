@@ -12,10 +12,18 @@
     "durab": "200>250>300",
     "craft": "2>3>4",
     "repair": "2>2>2",
-    "mats": {
-        "Iron": "10>5>10",
-        "Ancient bark": "4>1>2"
-    },
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "10>5>10"
+        },
+        {
+            "code": "ElderBark",
+            "name": "Ancient bark",
+            "count": "4>1>2"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

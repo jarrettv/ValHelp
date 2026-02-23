@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_magetable_ext3.png",
     "usage": "Upgrades Galdr table",
-    "source_url": "https://valheim.fandom.com/wiki/Feathery_wreath"
+    "source_url": "https://valheim.fandom.com/wiki/Feathery_wreath",
+    "mats": [
+        {
+            "code": "CelestialFeather",
+            "name": "Celestial feather",
+            "count": "8"
+        },
+        {
+            "code": "TrophyAsksvin",
+            "name": "Asksvin Trophy",
+            "count": "1"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10"
+        },
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "3"
+        }
+    ]
 }

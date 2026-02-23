@@ -1,0 +1,18 @@
+# pgsync config (example)
+#
+# IMPORTANT: keep secrets out of this file.
+# pgsync lets you use a command for from/to, so you can pull URLs from env vars.
+
+from: echo "$PGSYNC_FROM_URL"
+
+to: echo "$PGSYNC_TO_URL"
+
+schemas:
+  - public
+
+# exclude tables (example)
+exclude:
+  - track_hunts
+
+# safer mode for destination
+to_safe: true

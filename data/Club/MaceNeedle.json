@@ -12,12 +12,28 @@
     "durab": "150>200>250>300",
     "craft": "4>5>6>7",
     "repair": "4>4>4>4",
-    "mats": {
-        "Fine wood": "5>0>0>0",
-        "Iron": "20>2>4>6",
-        "Needle": "5>2>4>6",
-        "Linen thread": "10>0>0>0"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "5>0>0>0"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "20>2>4>6"
+        },
+        {
+            "code": "Needle",
+            "name": "Needle",
+            "count": "5>2>4>6"
+        },
+        {
+            "code": "LinenThread",
+            "name": "Linen thread",
+            "count": "10>0>0>0"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

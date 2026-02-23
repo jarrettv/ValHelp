@@ -12,10 +12,18 @@
     "durab": "200",
     "craft": "1",
     "repair": "1",
-    "mats": {
-        "Wood": "2",
-        "Tin": "4"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "2"
+        },
+        {
+            "code": "Tin",
+            "name": "Tin",
+            "count": "4"
+        }
+    ],
     "attack": {
         "Pure": "1000",
         "Attack speed": "1.74 s (0.6 + 0.44 + 0.7)",

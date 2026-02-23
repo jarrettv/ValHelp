@@ -118,6 +118,13 @@ Session.vim
 
 # Private test configuration and binaries.
 config.ps1
+
+### Local environment files ###
+.env
+.env.pgsync
+
+### Local pgsync config ###
+pgsync/config/.pgsync.yml
 **/IISApplications
 
 

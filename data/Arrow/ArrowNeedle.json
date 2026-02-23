@@ -12,10 +12,18 @@
     "durab": "0",
     "craft": "4",
     "repair": "0",
-    "mats": {
-        "Needle": "4",
-        "Feathers": "2"
-    },
+    "mats": [
+        {
+            "code": "Needle",
+            "name": "Needle",
+            "count": "4"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "62",
         "Knockback": "15",

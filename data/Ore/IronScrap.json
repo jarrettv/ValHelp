@@ -1,0 +1,10 @@
+{
+    "code": "IronScrap",
+    "name": "Scrap iron",
+    "desc": "It's old and rusty but can be smelted and used again.",
+    "type": "Ore",
+    "image": "/data/Ore/IronScrap.png",
+    "usage": "Smelting",
+    "weight": 10.0,
+    "source_url": "https://valheim.fandom.com/wiki/Scrap_iron"
+}

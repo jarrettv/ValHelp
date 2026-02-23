@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/forge_ext5.png",
     "usage": "Upgrades Forge",
-    "source_url": "https://valheim.fandom.com/wiki/Forge_cooler"
+    "source_url": "https://valheim.fandom.com/wiki/Forge_cooler",
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "25"
+        },
+        {
+            "code": "Copper",
+            "name": "Copper",
+            "count": "10"
+        }
+    ]
 }

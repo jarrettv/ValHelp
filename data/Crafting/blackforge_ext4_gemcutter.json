@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/blackforge_ext4_gemcutter.png",
     "usage": "Upgrades Black forge",
-    "source_url": "https://valheim.fandom.com/wiki/Gem_cutter"
+    "source_url": "https://valheim.fandom.com/wiki/Gem_cutter",
+    "mats": [
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "5"
+        },
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "8"
+        },
+        {
+            "code": "MorgenSinew",
+            "name": "Morgen sinew",
+            "count": "2"
+        },
+        {
+            "code": "GemstoneRed",
+            "name": "Bloodstone",
+            "count": "1"
+        }
+    ]
 }

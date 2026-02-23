@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/cauldron_ext6_rollingpins.png",
     "usage": "Upgrades Cauldron",
-    "source_url": "https://valheim.fandom.com/wiki/Rolling_pins_and_cutting_boards"
+    "source_url": "https://valheim.fandom.com/wiki/Rolling_pins_and_cutting_boards",
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "8"
+        },
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "6"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "4"
+        }
+    ]
 }

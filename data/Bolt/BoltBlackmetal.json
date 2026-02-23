@@ -12,11 +12,23 @@
     "durab": "0",
     "craft": "2",
     "repair": "0",
-    "mats": {
-        "Wood": "8",
-        "Black metal": "2",
-        "Feathers": "2"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "8"
+        },
+        {
+            "code": "BlackMetal",
+            "name": "Black metal",
+            "count": "2"
+        },
+        {
+            "code": "Feathers",
+            "name": "Feathers",
+            "count": "2"
+        }
+    ],
     "attack": {
         "Pierce": "62",
         "Stagger": "62"

@@ -12,11 +12,23 @@
     "durab": "175>225>275>325",
     "craft": "4>5>6>7",
     "repair": "4>4>4>4",
-    "mats": {
-        "Fine wood": "6>0>0>0",
-        "Black metal": "20>10>20>30",
-        "Linen thread": "5>5>10>15"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "6>0>0>0"
+        },
+        {
+            "code": "BlackMetal",
+            "name": "Black metal",
+            "count": "20>10>20>30"
+        },
+        {
+            "code": "LinenThread",
+            "name": "Linen thread",
+            "count": "5>5>10>15"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

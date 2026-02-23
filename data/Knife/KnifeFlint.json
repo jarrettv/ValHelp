@@ -12,11 +12,23 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Wood": "2>0>0>0",
-        "Flint": "4>2>4>6",
-        "Leather scraps": "2>0>0>0"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "2>0>0>0"
+        },
+        {
+            "code": "Flint",
+            "name": "Flint",
+            "count": "4>2>4>6"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "2>0>0>0"
+        }
+    ],
     "attack": {
         "Pierce": "5>6>7>8;15>18>21>24",
         "Slash": "5>6>7>8;15>18>21>24",

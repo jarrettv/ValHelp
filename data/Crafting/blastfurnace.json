@@ -4,5 +4,27 @@
     "desc": "",
     "type": "Crafting",
     "image": "/data/Crafting/blastfurnace.png",
-    "source_url": "https://valheim.fandom.com/wiki/Blast_furnace"
+    "source_url": "https://valheim.fandom.com/wiki/Blast_furnace",
+    "mats": [
+        {
+            "code": "Stone",
+            "name": "Stone",
+            "count": "20"
+        },
+        {
+            "code": "SurtlingCore",
+            "name": "Surtling core",
+            "count": "5"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "10"
+        },
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "20"
+        }
+    ]
 }

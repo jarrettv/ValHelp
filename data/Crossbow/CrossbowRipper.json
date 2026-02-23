@@ -12,12 +12,28 @@
     "durab": "50>100>150>200",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Ashwood": "10>5>10>15",
-        "Flametal": "8>4>8>12",
-        "Morgen sinew": "2>1>2>3",
-        "Bonemaw tooth": "4>4>8>12"
-    },
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "8>4>8>12"
+        },
+        {
+            "code": "MorgenSinew",
+            "name": "Morgen sinew",
+            "count": "2>1>2>3"
+        },
+        {
+            "code": "BonemawSerpentTooth",
+            "name": "Bonemaw tooth",
+            "count": "4>4>8>12"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

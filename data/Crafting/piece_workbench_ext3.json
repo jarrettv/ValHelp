@@ -5,5 +5,17 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_workbench_ext3.png",
     "usage": "Upgrades Workbench",
-    "source_url": "https://valheim.fandom.com/wiki/Adze"
+    "source_url": "https://valheim.fandom.com/wiki/Adze",
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "10"
+        },
+        {
+            "code": "Bronze",
+            "name": "Bronze",
+            "count": "3"
+        }
+    ]
 }

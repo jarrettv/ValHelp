@@ -12,11 +12,23 @@
     "durab": "0",
     "craft": "0",
     "repair": "0",
-    "mats": {
-        "Sap": "1",
-        "Bilebag": "1",
-        "Resin": "3"
-    },
+    "mats": [
+        {
+            "code": "Sap",
+            "name": "Sap",
+            "count": "1"
+        },
+        {
+            "code": "Bilebag",
+            "name": "Bilebag",
+            "count": "1"
+        },
+        {
+            "code": "Resin",
+            "name": "Resin",
+            "count": "3"
+        }
+    ],
     "attack": {
         "Blunt": "5",
         "Knockback": "40",

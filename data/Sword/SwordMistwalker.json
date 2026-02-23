@@ -12,12 +12,28 @@
     "durab": "200>250>300>350",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Fine wood": "3>0>0>0",
-        "Iron": "15>10>20>30",
-        "Refined eitr": "10>5>10>15",
-        "Wisp": "3>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "3>0>0>0"
+        },
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "15>10>20>30"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "Wisp",
+            "name": "Wisp",
+            "count": "3>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

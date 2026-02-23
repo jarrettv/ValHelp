@@ -4,5 +4,17 @@
     "desc": "Crafting station",
     "type": "Crafting",
     "image": "/data/Crafting/piece_artisanstation.png",
-    "source_url": "https://valheim.fandom.com/wiki/Artisan_table"
+    "source_url": "https://valheim.fandom.com/wiki/Artisan_table",
+    "mats": [
+        {
+            "code": "DragonTear",
+            "name": "Dragon tear",
+            "count": "2"
+        },
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        }
+    ]
 }

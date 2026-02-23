@@ -12,11 +12,23 @@
     "durab": "200>250>300",
     "craft": "1>2>3",
     "repair": "1>1>1",
-    "mats": {
-        "Carapace": "16>8>16",
-        "Scale hide": "3>3>6",
-        "Refined eitr": "10>3>6"
-    },
+    "mats": [
+        {
+            "code": "Carapace",
+            "name": "Carapace",
+            "count": "16>8>16"
+        },
+        {
+            "code": "ScaleHide",
+            "name": "Scale hide",
+            "count": "3>3>6"
+        },
+        {
+            "code": "Eitr",
+            "name": "Refined eitr",
+            "count": "10>3>6"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

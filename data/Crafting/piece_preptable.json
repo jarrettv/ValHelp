@@ -5,5 +5,22 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_preptable.png",
     "usage": "Cooking",
-    "source_url": "https://valheim.fandom.com/wiki/Food_preparation_table"
+    "source_url": "https://valheim.fandom.com/wiki/Food_preparation_table",
+    "mats": [
+        {
+            "code": "Iron",
+            "name": "Iron",
+            "count": "5"
+        },
+        {
+            "code": "FineWood",
+            "name": "Finewood",
+            "count": "20"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "15"
+        }
+    ]
 }

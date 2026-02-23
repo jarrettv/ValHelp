@@ -12,12 +12,28 @@
     "durab": "200>250>300>350",
     "craft": "2>3>4>5",
     "repair": "2>2>2>2",
-    "mats": {
-        "Ashwood": "15>5>10>15",
-        "Fiddlehead": "10>2>4>6",
-        "Celestial feather": "3>3>6>9",
-        "Jade": "1>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "15>5>10>15"
+        },
+        {
+            "code": "Fiddleheadfern",
+            "name": "Fiddlehead",
+            "count": "10>2>4>6"
+        },
+        {
+            "code": "CelestialFeather",
+            "name": "Celestial feather",
+            "count": "3>3>6>9"
+        },
+        {
+            "code": "GemstoneGreen",
+            "name": "Jade",
+            "count": "1>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

@@ -12,11 +12,23 @@
     "durab": "100>150>200>250",
     "craft": "1>2>3>4",
     "repair": "1>1>1>1",
-    "mats": {
-        "Wood": "5>3>6>9",
-        "Bronze": "6>4>8>12",
-        "Deer hide": "2>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "5>3>6>9"
+        },
+        {
+            "code": "Bronze",
+            "name": "Bronze",
+            "count": "6>4>8>12"
+        },
+        {
+            "code": "DeerHide",
+            "name": "Deer hide",
+            "count": "2>1>2>3"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

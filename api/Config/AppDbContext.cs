@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
+using ValHelpApi.ModuleRuns;
 using ValHelpApi.ModuleSeries;
 using ValHelpApi.ModuleStuff;
 using ValHelpApi.ModuleTrack;
@@ -25,11 +26,10 @@ public class AppDbContext : DbContext
 
     public DbSet<Season> Seasons { get; set; }
 
+    public DbSet<Run> Runs { get; set; }
+
     public DbSet<TrackHunt> TrackHunts { get; set; }
     public DbSet<TrackLog> TrackLogs { get; set; }
-
-    public DbSet<Hunt> Hunts { get; set; }
-    public DbSet<HuntsPlayer> HuntsPlayers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,6 +37,7 @@ public class AppDbContext : DbContext
 
         AdminActivate.OnModelCreating(modelBuilder);
         EventsActivate.OnModelCreating(modelBuilder);
+        RunsActivate.OnModelCreating(modelBuilder);
         SeriesActivate.OnModelCreating(modelBuilder);
         StuffActivate.OnModelCreating(modelBuilder);
         TrackActivate.OnModelCreating(modelBuilder);

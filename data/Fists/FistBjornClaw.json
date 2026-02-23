@@ -12,11 +12,23 @@
     "durab": "300>350>400>450",
     "craft": "2>3>4>5",
     "repair": "2>3>3>3",
-    "mats": {
-        "Bear hide": "2>1>2>3",
-        "Bear paw": "2>1>2>3",
-        "Leather scraps": "4>1>2>3"
-    },
+    "mats": [
+        {
+            "code": "BjornHide",
+            "name": "Bear hide",
+            "count": "2>1>2>3"
+        },
+        {
+            "code": "BjornPaw",
+            "name": "Bear paw",
+            "count": "2>1>2>3"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "4>1>2>3"
+        }
+    ],
     "attack": {
         "Slash": "25>29>33>37",
         "Knockback": "10",

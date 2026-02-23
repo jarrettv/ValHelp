@@ -12,11 +12,23 @@
     "durab": "200>250>300",
     "craft": "3>4>5",
     "repair": "1>1>1",
-    "mats": {
-        "Wood": "10>5>10",
-        "Bone fragments": "10>5>10",
-        "Skeleton trophy": "3>0>0"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10>5>10"
+        },
+        {
+            "code": "BoneFragments",
+            "name": "Bone fragments",
+            "count": "10>5>10"
+        },
+        {
+            "code": "TrophySkeleton",
+            "name": "Skeleton Trophy",
+            "count": "3>0>0"
+        }
+    ],
     "passive": {
         "Movement speed": -20
     },

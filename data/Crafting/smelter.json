@@ -4,5 +4,17 @@
     "desc": "",
     "type": "Crafting",
     "image": "/data/Crafting/smelter.png",
-    "source_url": "https://valheim.fandom.com/wiki/Smelter"
+    "source_url": "https://valheim.fandom.com/wiki/Smelter",
+    "mats": [
+        {
+            "code": "Stone",
+            "name": "Stone",
+            "count": "20"
+        },
+        {
+            "code": "SurtlingCore",
+            "name": "Surtling core",
+            "count": "5"
+        }
+    ]
 }

@@ -12,11 +12,23 @@
     "durab": "200>250>300",
     "craft": "3>4>5",
     "repair": "3>3>3",
-    "mats": {
-        "Ashwood": "10>10>20",
-        "Flametal": "8>4>8",
-        "Asksvin hide": "2>2>4"
-    },
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "10>10>20"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "8>4>8"
+        },
+        {
+            "code": "AskHide",
+            "name": "Asksvin hide",
+            "count": "2>2>4"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

@@ -12,12 +12,28 @@
     "durab": "100>150>200>250",
     "craft": "3>4>5>6",
     "repair": "3>3>3>3",
-    "mats": {
-        "Ashwood": "10>5>10>15",
-        "Charred Bone": "16>10>20>30",
-        "Flametal": "5>5>10>15",
-        "Bonemaw Tooth": "5>5>10>15"
-    },
+    "mats": [
+        {
+            "code": "Blackwood",
+            "name": "Ashwood",
+            "count": "10>5>10>15"
+        },
+        {
+            "code": "CharredBone",
+            "name": "Charred bone",
+            "count": "16>10>20>30"
+        },
+        {
+            "code": "FlametalNew",
+            "name": "Flametal",
+            "count": "5>5>10>15"
+        },
+        {
+            "code": "BonemawSerpentTooth",
+            "name": "Bonemaw tooth",
+            "count": "5>5>10>15"
+        }
+    ],
     "passive": {
         "Movement speed": -5
     },

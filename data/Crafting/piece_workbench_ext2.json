@@ -5,5 +5,27 @@
     "type": "Crafting",
     "image": "/data/Crafting/piece_workbench_ext2.png",
     "usage": "Upgrades Workbench",
-    "source_url": "https://valheim.fandom.com/wiki/Tanning_rack"
+    "source_url": "https://valheim.fandom.com/wiki/Tanning_rack",
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "10"
+        },
+        {
+            "code": "Flint",
+            "name": "Flint",
+            "count": "15"
+        },
+        {
+            "code": "LeatherScraps",
+            "name": "Leather scraps",
+            "count": "20"
+        },
+        {
+            "code": "DeerHide",
+            "name": "Deer hide",
+            "count": "5"
+        }
+    ]
 }

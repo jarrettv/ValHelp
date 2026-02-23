@@ -8,5 +8,5 @@
     "usage": "Unlock Sunken Crypts",
     "weight": 0.1,
     "stack": 1,
-    "mats": {}
+    "mats": []
 }

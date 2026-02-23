@@ -1,7 +1,7 @@
 ---
-title: "7-boss Glitchless NG RSG Normal Speedrun"
+title: "7-boss NGRSG Hard Guide"
 author: "JV"
-description: "Route planning, resource management, and helpful hints to conquer all 7 bosses fast"
+description: "Route planning, resource management, and helpful hints to conquer all 7 bosses fast on hard preset"
 href: "/guides/ng-rsg"
 accent:
   - "#fbe3c2ff"

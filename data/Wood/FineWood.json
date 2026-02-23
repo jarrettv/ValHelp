@@ -1,12 +1,10 @@
 {
-    "image": "/data/Wood/FineWood.png",
+    "code": "FineWood",
     "name": "Finewood",
     "desc": "High quality wood for fine carpentry.",
-    "code": "FineWood",
     "type": "Wood",
-    "drop": "Birch",
-    "usage": "Crafting, Building",
+    "image": "/data/Wood/FineWood.png",
+    "usage": "Building, Crafting",
     "weight": 2.0,
-    "stack": 50,
-    "mats": {}
+    "source_url": "https://valheim.fandom.com/wiki/Finewood"
 }

@@ -5,5 +5,32 @@
     "type": "Crafting",
     "image": "/data/Crafting/cauldron_ext1_spice.png",
     "usage": "Upgrades Cauldron",
-    "source_url": "https://valheim.fandom.com/wiki/Spice_rack"
+    "source_url": "https://valheim.fandom.com/wiki/Spice_rack",
+    "mats": [
+        {
+            "code": "",
+            "name": "Dandelion",
+            "count": "3"
+        },
+        {
+            "code": "",
+            "name": "Carrot",
+            "count": "2"
+        },
+        {
+            "code": "",
+            "name": "Mushroom",
+            "count": "5"
+        },
+        {
+            "code": "",
+            "name": "Thistle",
+            "count": "3"
+        },
+        {
+            "code": "",
+            "name": "Turnip",
+            "count": "3"
+        }
+    ]
 }

@@ -12,9 +12,13 @@
     "durab": "0",
     "craft": "1",
     "repair": "0",
-    "mats": {
-        "Wood": "8"
-    },
+    "mats": [
+        {
+            "code": "Wood",
+            "name": "Wood",
+            "count": "8"
+        }
+    ],
     "attack": {
         "Pierce": "22",
         "Knockback": "10",
