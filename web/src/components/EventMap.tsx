@@ -50,9 +50,18 @@ const PLAYER_COLORS = [
 
 // ── Coordinate helpers ───────────────────────────────────────────
 
+// Match ValHelpTools MarkerDataBuilder.WorldToPixel exactly
+// Valheim minimap: 2048 texels, 12 world units per texel, half-pixel offset
+const TEX_SIZE = 2048;
+const PIXEL_SIZE = 12;
+const HALF_PIXEL = PIXEL_SIZE / 2;
+
 function worldToPixel(worldX: number, worldZ: number, gs: number): [number, number] {
-  const scale = gs / (10500 * 2);
-  return [worldX * scale + gs / 2, gs / 2 - worldZ * scale];
+  const texX = (worldX - HALF_PIXEL) / PIXEL_SIZE + TEX_SIZE / 2;
+  const texY = (worldZ - HALF_PIXEL) / PIXEL_SIZE + TEX_SIZE / 2;
+  const px = texX / TEX_SIZE * gs;
+  const py = (1 - texY / TEX_SIZE) * gs;
+  return [px, py];
 }
 
 function formatTime(seconds: number): string {
