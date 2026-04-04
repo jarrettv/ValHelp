@@ -33,6 +33,7 @@ interface PenaltyMarker {
 }
 
 interface PlayerMapData {
+  index: number;
   id: string;
   name: string;
   avatarUrl: string;
@@ -44,75 +45,29 @@ interface PlayerMapData {
   scoreAtTime: number;
 }
 
-// Fallback colors if avatar color extraction hasn't completed yet
-const FALLBACK_COLORS = [
-  '#ff6b6b', '#4ecdc4', '#ffe66d', '#a29bfe', '#fd79a8',
-  '#00b894', '#e17055', '#74b9ff', '#ffeaa7', '#55efc4',
+// Maximally distinct colors for player paths — high saturation, good visibility on dark maps
+const PLAYER_COLORS = [
+  '#ff4444', // red
+  '#44ddff', // cyan
+  '#ffdd00', // yellow
+  '#cc44ff', // purple
+  '#44ff88', // green
+  '#ff8844', // orange
+  '#ff44aa', // pink
+  '#44aaff', // blue
+  '#88ff44', // lime
+  '#ffaa44', // amber
+  '#44ffdd', // teal
+  '#ff4488', // rose
+  '#aabbff', // lavender
+  '#ddff44', // chartreuse
+  '#ff6644', // coral
+  '#44ffff', // aqua
+  '#dd44ff', // magenta
+  '#ffff44', // bright yellow
+  '#44ff44', // bright green
+  '#ff44ff', // fuchsia
 ];
-
-// Extract dominant saturated color from an avatar image
-const avatarColorCache = new Map<string, string>();
-
-function extractAvatarColor(url: string, fallback: string): string {
-  const cached = avatarColorCache.get(url);
-  if (cached) return cached;
-
-  // Start async extraction
-  const img = getCachedImage(url);
-  if (!img || !img.complete || img.naturalWidth === 0) return fallback;
-
-  try {
-    const size = 32;
-    const canvas = new OffscreenCanvas(size, size);
-    const ctx = canvas.getContext('2d')!;
-    ctx.drawImage(img, 0, 0, size, size);
-    const data = ctx.getImageData(0, 0, size, size).data;
-
-    // Find the most saturated, bright pixel (skip dark/grey pixels)
-    let bestR = 0, bestG = 0, bestB = 0, bestScore = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i+1], b = data[i+2];
-      const max = Math.max(r, g, b), min = Math.min(r, g, b);
-      const sat = max === 0 ? 0 : (max - min) / max;
-      const brightness = max / 255;
-      const score = sat * 2 + brightness; // prefer saturated + bright
-      if (score > bestScore && brightness > 0.2) {
-        bestScore = score;
-        bestR = r; bestG = g; bestB = b;
-      }
-    }
-
-    // If nothing saturated found, use average color brightened
-    if (bestScore < 0.3) {
-      let sumR = 0, sumG = 0, sumB = 0, count = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        if (data[i] + data[i+1] + data[i+2] > 60) { // skip very dark
-          sumR += data[i]; sumG += data[i+1]; sumB += data[i+2]; count++;
-        }
-      }
-      if (count > 0) {
-        bestR = Math.min(255, Math.round(sumR / count * 1.3));
-        bestG = Math.min(255, Math.round(sumG / count * 1.3));
-        bestB = Math.min(255, Math.round(sumB / count * 1.3));
-      }
-    }
-
-    // Ensure minimum brightness for visibility on dark map
-    const lum = (bestR * 0.299 + bestG * 0.587 + bestB * 0.114);
-    if (lum < 100) {
-      const boost = 100 / Math.max(lum, 1);
-      bestR = Math.min(255, Math.round(bestR * boost));
-      bestG = Math.min(255, Math.round(bestG * boost));
-      bestB = Math.min(255, Math.round(bestB * boost));
-    }
-
-    const color = `rgb(${bestR},${bestG},${bestB})`;
-    avatarColorCache.set(url, color);
-    return color;
-  } catch {
-    return fallback;
-  }
-}
 
 // ── Coordinate helpers ───────────────────────────────────────────
 
@@ -150,8 +105,7 @@ function buildPlayerMapData(
   scoring: Record<string, number>,
 ): PlayerMapData[] {
   return players.map((player, i) => {
-    const fallback = FALLBACK_COLORS[i % FALLBACK_COLORS.length];
-    const color = extractAvatarColor(player.avatarUrl, fallback);
+    const color = PLAYER_COLORS[i % PLAYER_COLORS.length];
     const discordId = player.discordId || String(player.userId);
 
     // Path from SSE/GET data, filtered by time
@@ -220,7 +174,7 @@ function buildPlayerMapData(
       if (points !== undefined) scoreAtTime += points;
     }
 
-    return { id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, scoreAtTime };
+    return { index: i, id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, scoreAtTime };
   });
 }
 
@@ -285,6 +239,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const [scrubTime, setScrubTime] = useState<number | null>(null);
   const [pinnedToLive, setPinnedToLive] = useState(true);
   const [elapsedNow, setElapsedNow] = useState(0);
+  const [hiddenPlayers, setHiddenPlayers] = useState<Set<number>>(new Set());
+  const hiddenRef = useRef(hiddenPlayers);
+  hiddenRef.current = hiddenPlayers;
 
   const isLive = event.status === EventStatus.Live;
   const eventStartMs = new Date(event.startAt).getTime();
@@ -352,6 +309,8 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     const TELEPORT_PX = 40 * scale; // ~40 grid pixels at current zoom
 
     for (const player of playerMapData) {
+      if (hiddenRef.current.has(player.index)) continue;
+
       // ── Draw path with dashed lines for teleport jumps ──
       if (player.path.length > 1) {
         ctx.strokeStyle = player.color;
@@ -683,6 +642,31 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         <canvas ref={markerCanvasRef} className="event-map-markers" />
         <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" />
       </div>
+      {!loading && !error && event.players.length > 0 && (
+        <div className="event-map-players">
+          {event.players.map((player, i) => {
+            const hidden = hiddenPlayers.has(i);
+            return (
+              <button
+                key={player.userId}
+                className={`event-map-player-toggle ${hidden ? 'hidden' : ''}`}
+                style={{ borderColor: PLAYER_COLORS[i % PLAYER_COLORS.length] }}
+                onClick={() => {
+                  setHiddenPlayers(prev => {
+                    const next = new Set(prev);
+                    if (next.has(i)) next.delete(i); else next.add(i);
+                    return next;
+                  });
+                  scheduleUpdate();
+                }}
+                title={player.name}
+              >
+                <img src={player.avatarUrl} alt={player.name} />
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
