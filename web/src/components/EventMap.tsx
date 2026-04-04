@@ -160,6 +160,22 @@ function buildPlayerMapData(
     const path = filteredPath.map(p => worldToPixel(p.x, p.z, gs) as [number, number]);
     const currentPos = path.length > 0 ? path[path.length - 1] : null;
 
+    // Find the path time `t` closest to a world position — aligns log events to path timeline.
+    // If no path point is within ~200 world units, the trophy/penalty likely arrived before
+    // the next path batch — use the latest path `t` as a best estimate.
+    const latestT = rawPath.length > 0 ? rawPath[rawPath.length - 1].t : 0;
+    const findPathTime = (wx: number, wz: number): number => {
+      let bestT = latestT, bestDist = Infinity;
+      for (const p of rawPath) {
+        const dx = p.x - wx, dz = p.z - wz;
+        const d = dx * dx + dz * dz;
+        if (d < bestDist) { bestDist = d; bestT = p.t; }
+      }
+      // If nearest point is too far (>200 units), event arrived before its path batch
+      if (bestDist > 200 * 200) return latestT;
+      return bestT;
+    };
+
     // Collect bonuses by position for this player
     const bonusMap = new Map<string, string>();
     for (const log of player.logs) {
@@ -168,32 +184,38 @@ function buildPlayerMapData(
       }
     }
 
-    // Trophies from player logs, filtered by time
+    // Trophies from player logs, timed by nearest path point
     const trophies: TrophyMarker[] = [];
     for (const log of player.logs) {
       if (!log.code.startsWith('Trophy')) continue;
       if (log.x === 0 && log.z === 0) continue;
-      const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
-      if (maxTime !== null && logTimeSec > maxTime) continue;
+      const t = findPathTime(log.x, log.z);
+      if (maxTime !== null && t > maxTime) continue;
       const bonus = bonusMap.get(`${log.x},${log.z}`) || null;
-      trophies.push({ code: log.code, x: log.x, z: log.z, bonus, at: logTimeSec });
+      trophies.push({ code: log.code, x: log.x, z: log.z, bonus, at: t });
     }
 
-    // Penalties from player logs, filtered by time
+    // Penalties from player logs, timed by nearest path point
     const penalties: PenaltyMarker[] = [];
     for (const log of player.logs) {
       if (!log.code.startsWith('Penalty')) continue;
       if (log.x === 0 && log.z === 0) continue;
-      const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
-      if (maxTime !== null && logTimeSec > maxTime) continue;
-      penalties.push({ code: log.code, x: log.x, z: log.z, at: logTimeSec });
+      const t = findPathTime(log.x, log.z);
+      if (maxTime !== null && t > maxTime) continue;
+      penalties.push({ code: log.code, x: log.x, z: log.z, at: t });
     }
 
-    // Compute score at current scrub time
+    // Compute score at current scrub time (also aligned to path timeline)
     let scoreAtTime = 0;
     for (const log of player.logs) {
-      const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
-      if (maxTime !== null && logTimeSec > maxTime) continue;
+      if (log.x === 0 && log.z === 0) {
+        // Old format without position — use server timestamp fallback
+        const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
+        if (maxTime !== null && logTimeSec > maxTime) continue;
+      } else {
+        const t = findPathTime(log.x, log.z);
+        if (maxTime !== null && t > maxTime) continue;
+      }
       const points = scoring[log.code];
       if (points !== undefined) scoreAtTime += points;
     }

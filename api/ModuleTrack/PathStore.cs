@@ -137,10 +137,7 @@ public class PathStore
 
         lock (player.PointsLock)
         {
-            if (player.Points.Count == 0)
-            {
-                player.Points.AddRange(points);
-            }
+            player.Points.AddRange(points);
         }
     }
 
