@@ -477,6 +477,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     scheduleUpdate();
   }, [event.players, scheduleUpdate, eventStartMs, scrubTime, event.scoring]);
 
+  // Stable ref so SSE handlers always call the latest rebuildMapData without causing reconnects
+  const rebuildRef = useRef(rebuildMapData);
+  rebuildRef.current = rebuildMapData;
+
   // ── Load map ──
   useEffect(() => {
     let cancelled = false;
@@ -517,6 +521,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
   // ── Load paths: SSE for live events, GET for completed events ──
   // ── Load paths: SSE for live, GET for completed — waits for mapReady ──
+  // Uses rebuildRef (stable) so this effect doesn't re-run on every player/scrub change
   useEffect(() => {
     if (!mapReady) return;
 
@@ -528,14 +533,14 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       es.addEventListener('init', (e: MessageEvent) => {
         const paths: Record<string, PathPoint[]> = JSON.parse(e.data);
         stateRef.current.pathData = paths;
-        rebuildMapData();
+        rebuildRef.current();
       });
 
       es.addEventListener('update', (e: MessageEvent) => {
         const { playerId, data } = JSON.parse(e.data);
         const existing = stateRef.current.pathData[playerId] || [];
         stateRef.current.pathData[playerId] = [...existing, ...(data as PathPoint[])];
-        rebuildMapData();
+        rebuildRef.current();
       });
 
       es.onerror = () => { /* SSE auto-reconnects */ };
@@ -547,11 +552,11 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         .then(paths => {
           if (cancelled || !paths) return;
           stateRef.current.pathData = paths;
-          rebuildMapData();
+          rebuildRef.current();
         });
       return () => { cancelled = true; };
     }
-  }, [event.seed, isLive, mapReady, rebuildMapData]);
+  }, [event.seed, isLive, mapReady]); // stable deps — no rebuildMapData
 
   // ── Update trophy markers when event players change ──
   useEffect(() => {
