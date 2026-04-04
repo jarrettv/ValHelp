@@ -154,7 +154,7 @@ public class Player
     }
 }
 
-public record PlayerLog(string Code, DateTime At, int X = 0, int Y = 0, int Z = 0);
+public record PlayerLog(string Code, DateTime At, int? X = null, int? Y = null, int? Z = null);
 
 public enum PlayerStatus // positive for in, negative for out
 {

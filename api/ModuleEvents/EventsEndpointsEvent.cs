@@ -221,7 +221,7 @@ public static class EventsEndpointsEvent
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X ?? 0, l.Y ?? 0, l.Z ?? 0)).ToArray()
           )).ToArray(),
             h.IsPrivate,
             h.OwnerId,
@@ -345,7 +345,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X ?? 0, l.Y ?? 0, l.Z ?? 0)).ToArray()
           )).ToArray(),
             h.IsPrivate,
             h.OwnerId,
@@ -593,7 +593,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         await cache.RemoveAsync($"event-{id}");
 
         var resp = new PlayerResp(id, req.UserId, player.Name, player.AvatarUrl, player.Stream, player.Score,
-          player.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray(), player.UpdatedAt);
+          player.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X ?? 0, l.Y ?? 0, l.Z ?? 0)).ToArray(), player.UpdatedAt);
         return TypedResults.Ok(resp);
     }
 
@@ -611,7 +611,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X ?? 0, l.Y ?? 0, l.Z ?? 0)).ToArray()
           ))
           .ToArrayAsync();
 

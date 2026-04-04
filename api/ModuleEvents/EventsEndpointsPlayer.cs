@@ -59,7 +59,7 @@ public static class EventsEndpointsPlayer
                 p.Event.IsPrivate,
                 p.Event.Seed,
                 p.Score,
-                Logs = p.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
+                Logs = p.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X ?? 0, l.Y ?? 0, l.Z ?? 0)).ToArray()
             })
             .ToArrayAsync();
 
