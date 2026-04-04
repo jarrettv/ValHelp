@@ -38,14 +38,11 @@ app.UseCors("AllowLocalhost5173");
 app.MapStaticAssets().ShortCircuit();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.MapOpenApi();
-}
-else
-{
-    app.UseExceptionHandler();
 }
 app.MapEndpointsAdmin();
 app.MapEndpointsEvents();
