@@ -41,6 +41,7 @@ interface PlayerMapData {
   currentPos: [number, number] | null;
   trophies: TrophyMarker[];
   penalties: PenaltyMarker[];
+  scoreAtTime: number;
 }
 
 // Fallback colors if avatar color extraction hasn't completed yet
@@ -146,6 +147,7 @@ function buildPlayerMapData(
   gs: number,
   eventStartMs: number,
   maxTime: number | null,
+  scoring: Record<string, number>,
 ): PlayerMapData[] {
   return players.map((player, i) => {
     const fallback = FALLBACK_COLORS[i % FALLBACK_COLORS.length];
@@ -187,7 +189,16 @@ function buildPlayerMapData(
       penalties.push({ code: log.code, x: log.x, z: log.z, at: logTimeSec });
     }
 
-    return { id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties };
+    // Compute score at current scrub time
+    let scoreAtTime = 0;
+    for (const log of player.logs) {
+      const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
+      if (maxTime !== null && logTimeSec > maxTime) continue;
+      const points = scoring[log.code];
+      if (points !== undefined) scoreAtTime += points;
+    }
+
+    return { id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, scoreAtTime };
   });
 }
 
@@ -416,14 +427,15 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
             ctx.restore();
           }
 
-          // Player name label
+          // Score label above avatar
+          const label = String(player.scoreAtTime);
           ctx.font = 'bold 11px system-ui, sans-serif';
           ctx.textAlign = 'center';
           ctx.strokeStyle = 'rgba(0,0,0,0.8)';
           ctx.lineWidth = 3;
-          ctx.strokeText(player.name, sx, sy - r - 5);
+          ctx.strokeText(label, sx, sy - r - 5);
           ctx.fillStyle = player.color;
-          ctx.fillText(player.name, sx, sy - r - 5);
+          ctx.fillText(label, sx, sy - r - 5);
         }
       }
     }
@@ -460,10 +472,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     if (!stateRef.current.ready) return;
     const gs = window.VectorMap.getGridSize();
     stateRef.current.playerMapData = buildPlayerMapData(
-      event.players, stateRef.current.pathData, gs, eventStartMs, scrubTime
+      event.players, stateRef.current.pathData, gs, eventStartMs, scrubTime, event.scoring
     );
     scheduleUpdate();
-  }, [event.players, scheduleUpdate, eventStartMs, scrubTime]);
+  }, [event.players, scheduleUpdate, eventStartMs, scrubTime, event.scoring]);
 
   // ── Load map ──
   useEffect(() => {
