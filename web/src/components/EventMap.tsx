@@ -43,10 +43,75 @@ interface PlayerMapData {
   penalties: PenaltyMarker[];
 }
 
-const PLAYER_COLORS = [
+// Fallback colors if avatar color extraction hasn't completed yet
+const FALLBACK_COLORS = [
   '#ff6b6b', '#4ecdc4', '#ffe66d', '#a29bfe', '#fd79a8',
   '#00b894', '#e17055', '#74b9ff', '#ffeaa7', '#55efc4',
 ];
+
+// Extract dominant saturated color from an avatar image
+const avatarColorCache = new Map<string, string>();
+
+function extractAvatarColor(url: string, fallback: string): string {
+  const cached = avatarColorCache.get(url);
+  if (cached) return cached;
+
+  // Start async extraction
+  const img = getCachedImage(url);
+  if (!img || !img.complete || img.naturalWidth === 0) return fallback;
+
+  try {
+    const size = 32;
+    const canvas = new OffscreenCanvas(size, size);
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+
+    // Find the most saturated, bright pixel (skip dark/grey pixels)
+    let bestR = 0, bestG = 0, bestB = 0, bestScore = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2];
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const sat = max === 0 ? 0 : (max - min) / max;
+      const brightness = max / 255;
+      const score = sat * 2 + brightness; // prefer saturated + bright
+      if (score > bestScore && brightness > 0.2) {
+        bestScore = score;
+        bestR = r; bestG = g; bestB = b;
+      }
+    }
+
+    // If nothing saturated found, use average color brightened
+    if (bestScore < 0.3) {
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] + data[i+1] + data[i+2] > 60) { // skip very dark
+          sumR += data[i]; sumG += data[i+1]; sumB += data[i+2]; count++;
+        }
+      }
+      if (count > 0) {
+        bestR = Math.min(255, Math.round(sumR / count * 1.3));
+        bestG = Math.min(255, Math.round(sumG / count * 1.3));
+        bestB = Math.min(255, Math.round(sumB / count * 1.3));
+      }
+    }
+
+    // Ensure minimum brightness for visibility on dark map
+    const lum = (bestR * 0.299 + bestG * 0.587 + bestB * 0.114);
+    if (lum < 100) {
+      const boost = 100 / Math.max(lum, 1);
+      bestR = Math.min(255, Math.round(bestR * boost));
+      bestG = Math.min(255, Math.round(bestG * boost));
+      bestB = Math.min(255, Math.round(bestB * boost));
+    }
+
+    const color = `rgb(${bestR},${bestG},${bestB})`;
+    avatarColorCache.set(url, color);
+    return color;
+  } catch {
+    return fallback;
+  }
+}
 
 // ── Coordinate helpers ───────────────────────────────────────────
 
@@ -83,7 +148,8 @@ function buildPlayerMapData(
   maxTime: number | null,
 ): PlayerMapData[] {
   return players.map((player, i) => {
-    const color = PLAYER_COLORS[i % PLAYER_COLORS.length];
+    const fallback = FALLBACK_COLORS[i % FALLBACK_COLORS.length];
+    const color = extractAvatarColor(player.avatarUrl, fallback);
     const discordId = player.discordId || String(player.userId);
 
     // Path from SSE/GET data, filtered by time
@@ -230,22 +296,45 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       py * mScale * scale + panY,
     ];
 
+    // Teleport detection: if map-pixel distance between consecutive points
+    // exceeds this threshold, it's a death respawn / teleport
+    const TELEPORT_PX = 40 * scale; // ~40 grid pixels at current zoom
+
     for (const player of playerMapData) {
-      // ── Draw path as thick line ──
+      // ── Draw path with dashed lines for teleport jumps ──
       if (player.path.length > 1) {
-        ctx.beginPath();
-        const [sx0, sy0] = toScreen(player.path[0][0], player.path[0][1]);
-        ctx.moveTo(sx0, sy0);
-        for (let i = 1; i < player.path.length; i++) {
-          const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
-          ctx.lineTo(sx, sy);
-        }
         ctx.strokeStyle = player.color;
         ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.globalAlpha = 0.7;
+
+        let inTeleport = false;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        const [sx0, sy0] = toScreen(player.path[0][0], player.path[0][1]);
+        ctx.moveTo(sx0, sy0);
+
+        for (let i = 1; i < player.path.length; i++) {
+          const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
+          const [prevSx, prevSy] = toScreen(player.path[i-1][0], player.path[i-1][1]);
+          const dx = sx - prevSx, dy = sy - prevSy;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const isTeleport = dist > TELEPORT_PX;
+
+          if (isTeleport !== inTeleport) {
+            // Style changed — stroke current path and start a new one
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(prevSx, prevSy);
+            inTeleport = isTeleport;
+            ctx.setLineDash(isTeleport ? [6, 4] : []);
+          }
+
+          ctx.lineTo(sx, sy);
+        }
         ctx.stroke();
+        ctx.setLineDash([]);
         ctx.globalAlpha = 1.0;
       }
 
