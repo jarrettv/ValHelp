@@ -47,8 +47,9 @@
   font-size: 15px;
   font-weight: 600;
   font-family: system-ui, sans-serif;
-  min-width: 70px;
+  min-width: 90px;
   white-space: nowrap;
+  text-align: right;
 }
 .event-map-close {
   width: 36px;

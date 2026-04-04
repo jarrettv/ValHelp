@@ -248,13 +248,31 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const markerCanvasRef = useRef<HTMLCanvasElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [scrubTime, setScrubTime] = useState<number | null>(null);
-  const [scrubLabel, setScrubLabel] = useState('');
+  const [pinnedToLive, setPinnedToLive] = useState(true);
+  const [elapsedNow, setElapsedNow] = useState(0);
 
   const isLive = event.status === EventStatus.Live;
   const eventStartMs = new Date(event.startAt).getTime();
   const eventEndMs = new Date(event.endAt).getTime();
   const eventDurationSec = Math.max(1, Math.round((eventEndMs - eventStartMs) / 1000));
+
+  // For live events, track elapsed time and auto-advance slider
+  useEffect(() => {
+    if (!isLive) {
+      setElapsedNow(eventDurationSec);
+      return;
+    }
+    const tick = () => {
+      const now = Math.round((Date.now() - eventStartMs) / 1000);
+      setElapsedNow(now);
+      if (pinnedToLive) setScrubTime(null); // null = show everything up to now
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [isLive, eventStartMs, eventDurationSec, pinnedToLive]);
 
   const stateRef = useRef({
     scale: 1, panX: 0, panY: 0,
@@ -470,6 +488,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         scheduleRedraw = scheduleUpdate;
 
         setLoading(false);
+        setMapReady(true);
         rebuildMapData();
         fitMap();
       } catch (e) {
@@ -481,17 +500,17 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     }
 
     load();
-    return () => { cancelled = true; window.VectorMap.destroy(); stateRef.current.ready = false; };
+    return () => { cancelled = true; window.VectorMap.destroy(); stateRef.current.ready = false; setMapReady(false); };
   }, [event.seed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Load paths: SSE for live events, GET for completed events ──
+  // ── Load paths: SSE for live, GET for completed — waits for mapReady ──
   useEffect(() => {
-    if (!stateRef.current.ready) return;
+    if (!mapReady) return;
 
     const seed = encodeURIComponent(event.seed);
 
     if (isLive) {
-      // Live: stream via SSE
       const es = new EventSource(`/api/track/map/${seed}/paths`);
 
       es.addEventListener('init', (e: MessageEvent) => {
@@ -510,7 +529,6 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       es.onerror = () => { /* SSE auto-reconnects */ };
       return () => es.close();
     } else {
-      // Completed: load all paths at once
       let cancelled = false;
       fetch(`/api/track/map/${seed}/paths/all`)
         .then(r => r.ok ? r.json() : null)
@@ -521,7 +539,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         });
       return () => { cancelled = true; };
     }
-  }, [event.seed, event.status, rebuildMapData]);
+  }, [event.seed, isLive, mapReady, rebuildMapData]);
 
   // ── Update trophy markers when event players change ──
   useEffect(() => {
@@ -594,29 +612,31 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
   return (
     <div className="event-map-container">
-      {!isLive && !loading && !error && (
-        <div className="event-map-header">
-          <input
-            type="range"
-            min={0}
-            max={eventDurationSec}
-            value={scrubTime ?? eventDurationSec}
-            onChange={(e) => {
-              const t = parseInt(e.target.value, 10);
-              setScrubTime(t);
-              setScrubLabel(formatTime(t));
-            }}
-          />
-          <span className="event-map-scrub-label">{scrubLabel || formatTime(eventDurationSec)}</span>
-          <button className="event-map-close" onClick={onClose} title="Close map">&times;</button>
-        </div>
-      )}
-      {(isLive || loading || error) && (
-        <div className="event-map-header">
-          <div style={{flex:1}} />
-          <button className="event-map-close" onClick={onClose} title="Close map">&times;</button>
-        </div>
-      )}
+      <div className="event-map-header">
+        {!loading && !error && (
+          <>
+            <input
+              type="range"
+              min={0}
+              max={isLive ? elapsedNow : eventDurationSec}
+              value={scrubTime ?? (isLive ? elapsedNow : eventDurationSec)}
+              onChange={(e) => {
+                const t = parseInt(e.target.value, 10);
+                const maxT = isLive ? elapsedNow : eventDurationSec;
+                setScrubTime(t);
+                // If dragged to the end during live, re-pin to live
+                setPinnedToLive(isLive && t >= maxT - 2);
+              }}
+            />
+            <span className="event-map-scrub-label">
+              {formatTime(scrubTime ?? (isLive ? elapsedNow : eventDurationSec))}
+              {isLive && pinnedToLive && ' LIVE'}
+            </span>
+          </>
+        )}
+        {(loading || error) && <div style={{flex:1}} />}
+        <button className="event-map-close" onClick={onClose} title="Close map">&times;</button>
+      </div>
       <div className="event-map" ref={mapAreaRef}>
         {loading && <div className="event-map-status">Loading map...</div>}
         {error && <div className="event-map-status error">{error}</div>}
