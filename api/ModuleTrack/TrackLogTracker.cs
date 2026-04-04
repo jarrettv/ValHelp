@@ -7,7 +7,7 @@ using ValHelpApi.ModuleEvents;
 
 namespace ValHelpApi.ModuleTrack;
 public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
-  Channel<TrackLog> channel, IServiceScopeFactory factory) : BackgroundService
+  Channel<TrackLog> channel, IServiceScopeFactory factory, PathStore pathStore) : BackgroundService
 {
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -58,6 +58,17 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
         {
             logger.LogWarning("Process log multiple live events for seed={seed}", log.Seed);
         }
+        
+        // Feed path data to PathStore for live SSE streaming
+        foreach (var entry in log.Logs)
+        {
+            if (entry.Code.StartsWith("Path="))
+            {
+                var points = ParsePathCode(entry.Code);
+                if (points.Length > 0)
+                    pathStore.AddPathPoints(log.Seed, log.Id, points);
+            }
+        }
 
         var player = await db.Players
           .Where(hp => liveEventIds.Contains(hp.EventId))
@@ -75,5 +86,23 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
 
         var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();
         await cache.RemoveAsync($"event-{player.EventId}", stoppingToken);
+    }
+
+    /// <summary>Parse "Path=0:142,32,-87;8:155,32,-91;..." into PathPoints.</summary>
+    private static PathStore.PathPoint[] ParsePathCode(string code)
+    {
+        var data = code.AsSpan(5); // skip "Path="
+        var points = new List<PathStore.PathPoint>();
+        foreach (var seg in data.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var colonIdx = seg.IndexOf(':');
+            if (colonIdx < 0) continue;
+            if (!int.TryParse(seg.AsSpan(0, colonIdx), out var t)) continue;
+            var coords = seg[(colonIdx + 1)..].Split(',');
+            if (coords.Length != 3) continue;
+            if (int.TryParse(coords[0], out var x) && int.TryParse(coords[2], out var z))
+                points.Add(new PathStore.PathPoint(t, x, z));
+        }
+        return points.ToArray();
     }
 }

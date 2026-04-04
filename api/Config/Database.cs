@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ValHelpApi.Config;
 public static class Database
@@ -9,10 +10,9 @@ public static class Database
         {
             var cs = builder.Configuration.GetConnectionString("valhelp");
             options.UseSnakeCaseNamingConvention();
-            options.UseNpgsql(cs, o =>
-        {
-            //o.ConfigureDataSource(b => b.EnableDynamicJson());
-        });
+            options.UseNpgsql(cs);
+            options.ConfigureWarnings(w =>
+                w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
         });
     }
 }

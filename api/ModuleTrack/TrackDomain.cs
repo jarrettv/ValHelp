@@ -12,6 +12,18 @@ public class TrackLog
 }
 public record TrackerLog(string Code, DateTime At);
 
+public class TrackMap
+{
+    public string Seed { get; set; } = null!;
+    public byte[] MapTex { get; set; } = [];
+    public byte[] HeightTex { get; set; } = [];
+    public byte[] MaskTex { get; set; } = [];
+    public byte[]? Bvec { get; set; }
+    public DateTime? BvecAt { get; set; }
+    public string? Paths { get; set; }
+    public DateTime UploadedAt { get; set; }
+    public string UploadedBy { get; set; } = "";
+}
 
 public class TrackHunt
 {

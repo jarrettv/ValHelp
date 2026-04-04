@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,6 +18,10 @@ public static class TrackEndpoints
         app.MapPost("api/track/log", PostTrackLog);
         app.MapPost("api/track/logs", PostTrackLogs);
         app.MapGet("api/track/standings", GetTrackStandings);
+        app.MapPost("api/track/map", PostTrackMap);
+        app.MapGet("api/track/map/{seed}/{asset}", GetTrackMapAsset);
+        app.MapGet("api/track/map/{seed}/paths", GetTrackMapPaths);
+        app.MapGet("api/track/map/{seed}/paths/all", GetTrackMapPathsAll);
     }
 
     public record TrackHuntRequest(string Player_Id, string Player_Name, string Player_Location, string Session_Id, int Current_Score, int Deaths, int Logouts, string Trophies, string Gamemode, JsonNode Extra);
@@ -95,26 +100,282 @@ public static class TrackEndpoints
 
 
     public record TrackStandingsPlayer(string Id, string Name, string AvatarUrl, int Score);
-    public record TrackStandingsResp(string Name, string Mode, DateTime StartAt, DateTime EndAt, EventStatus Status, TrackStandingsPlayer[] Players);
+    public record TrackStandingsResp(string Name, string Mode, DateTime StartAt, DateTime EndAt, EventStatus Status, TrackStandingsPlayer[] Players, bool MapLoaded);
 
     public static async Task<Results<Ok<TrackStandingsResp>, NotFound>> GetTrackStandings([FromQuery] string seed, [FromQuery] string mode, AppDbContext db)
     {
         var later = DateTime.UtcNow.AddHours(-2);
 
-        var resp = await db.Events
+        var ev = await db.Events
           .Where(h => h.Status == EventStatus.Live || (h.Status == EventStatus.Over && later < h.EndAt))
           .Where(h => h.Seed == seed)
           .Where(h => h.Mode == mode)
-          .Select(h => new TrackStandingsResp(h.Name, h.Mode, h.StartAt, h.EndAt, h.Status,
-            h.Players.Where(x => x.Status >= 0).Select(hp => new TrackStandingsPlayer(hp.User.DiscordId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray()))
+          .Select(h => new { h.Name, h.Mode, h.StartAt, h.EndAt, h.Status, h.Seed,
+            Players = h.Players.Where(x => x.Status >= 0).Select(hp => new TrackStandingsPlayer(hp.User.DiscordId, hp.Name, hp.AvatarUrl, hp.Score)).ToArray() })
           .FirstOrDefaultAsync();
 
-        if (resp == null)
+        if (ev == null)
         {
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(resp);
+        var mapLoaded = await db.TrackMaps.AnyAsync(m => m.Seed == ev.Seed);
+        return TypedResults.Ok(new TrackStandingsResp(ev.Name, ev.Mode, ev.StartAt, ev.EndAt, ev.Status, ev.Players, mapLoaded));
+    }
+
+
+    public static async Task<IResult> PostTrackMap(HttpRequest request, AppDbContext db)
+    {
+        var form = await request.ReadFormAsync();
+        var seed = form["seed"].ToString();
+        var id = form["id"].ToString();
+
+        if (string.IsNullOrEmpty(seed))
+            return Results.BadRequest("seed is required");
+
+        // Dedup: if we already have map data for this seed, accept but ignore
+        if (await db.TrackMaps.AnyAsync(m => m.Seed == seed))
+            return Results.Ok(new { accepted = true, stored = false });
+
+        var mapFile = form.Files.GetFile("mapTex");
+        var heightFile = form.Files.GetFile("heightTex");
+        var maskFile = form.Files.GetFile("forestTex");
+
+        if (mapFile == null || heightFile == null || maskFile == null)
+            return Results.BadRequest("mapTex, heightTex, and forestTex files are required");
+
+        using var mapMs = new MemoryStream();
+        using var heightMs = new MemoryStream();
+        using var maskMs = new MemoryStream();
+        await mapFile.CopyToAsync(mapMs);
+        await heightFile.CopyToAsync(heightMs);
+        await maskFile.CopyToAsync(maskMs);
+
+        var mapBytes = mapMs.ToArray();
+        var heightBytes = heightMs.ToArray();
+        var maskBytes = maskMs.ToArray();
+
+        // Generate BVEC server-side using the proven C# BiomeExtractor
+        var bvec = await Task.Run(() =>
+            Rendering.BiomeExtractor.ExtractBinaryFromMemory(mapBytes, heightBytes, maskBytes));
+
+        var trackMap = new TrackMap
+        {
+            Seed = seed,
+            MapTex = mapBytes,
+            HeightTex = heightBytes,
+            MaskTex = maskBytes,
+            Bvec = bvec,
+            BvecAt = DateTime.UtcNow,
+            UploadedAt = DateTime.UtcNow,
+            UploadedBy = id
+        };
+
+        db.TrackMaps.Add(trackMap);
+        await db.SaveChangesAsync();
+
+        return Results.Ok(new { accepted = true, stored = true });
+    }
+
+
+    public static async Task<IResult> GetTrackMapAsset(string seed, string asset, AppDbContext db, HttpContext ctx)
+    {
+        if (asset == "biomes")
+            return await GetTrackMapBvec(seed, db, ctx);
+
+        if (asset == "forest")
+        {
+            // Static forest tile texture — same for all seeds
+            var forestPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "forest.png");
+            if (!File.Exists(forestPath))
+                return Results.NotFound();
+            ctx.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+            return Results.File(forestPath, "image/png");
+        }
+
+        var map = await db.TrackMaps
+            .Where(m => m.Seed == seed)
+            .Select(m => asset == "map" ? m.MapTex :
+                         asset == "height" ? m.HeightTex :
+                         asset == "mask" ? m.MaskTex : null)
+            .FirstOrDefaultAsync();
+
+        if (map == null || map.Length == 0)
+            return Results.NotFound();
+
+        ctx.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+        return Results.File(map, "image/png");
+    }
+
+    private static async Task<IResult> GetTrackMapBvec(string seed, AppDbContext db, HttpContext ctx)
+    {
+        var trackMap = await db.TrackMaps
+            .Where(m => m.Seed == seed)
+            .Select(m => new { m.Bvec, m.BvecAt, m.MapTex, m.HeightTex, m.MaskTex })
+            .FirstOrDefaultAsync();
+
+        if (trackMap == null)
+            return Results.NotFound();
+
+        byte[] bvec;
+        DateTime bvecAt;
+
+        if (trackMap.Bvec != null && trackMap.Bvec.Length > 0 && trackMap.BvecAt.HasValue)
+        {
+            bvec = trackMap.Bvec;
+            bvecAt = trackMap.BvecAt.Value;
+        }
+        else
+        {
+            // Generate on demand if not cached (e.g. after vectorization code update)
+            bvec = await Task.Run(() =>
+                Rendering.BiomeExtractor.ExtractBinaryFromMemory(trackMap.MapTex, trackMap.HeightTex, trackMap.MaskTex));
+            bvecAt = DateTime.UtcNow;
+
+            // Cache it
+            await db.TrackMaps
+                .Where(m => m.Seed == seed)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(m => m.Bvec, bvec)
+                    .SetProperty(m => m.BvecAt, bvecAt));
+        }
+
+        var etag = $"\"{bvecAt:yyyyMMddHHmmss}\"";
+        if (ctx.Request.Headers.IfNoneMatch == etag)
+            return Results.StatusCode(304);
+
+        ctx.Response.Headers.ETag = etag;
+        ctx.Response.Headers.CacheControl = "public, max-age=86400";
+        return Results.File(bvec, "application/octet-stream");
+    }
+
+
+    /// <summary>SSE endpoint streaming player path updates for live map.</summary>
+    public static async Task GetTrackMapPaths(string seed, HttpContext ctx, PathStore pathStore, AppDbContext db)
+    {
+        ctx.Response.ContentType = "text/event-stream";
+        ctx.Response.Headers.CacheControl = "no-cache";
+        ctx.Response.Headers.Connection = "keep-alive";
+
+        var ct = ctx.RequestAborted;
+
+        // Backfill from DB if PathStore has no data for this seed
+        if (!pathStore.HasData(seed))
+        {
+            var logs = await db.TrackLogs
+                .Where(l => l.Seed == seed)
+                .OrderBy(l => l.At)
+                .ToListAsync(ct);
+
+            foreach (var log in logs)
+            {
+                foreach (var entry in log.Logs)
+                {
+                    if (!entry.Code.StartsWith("Path=")) continue;
+                    var points = ParsePathPoints(entry.Code);
+                    if (points.Length > 0)
+                        pathStore.BackfillPaths(seed, log.Id, points);
+                }
+            }
+        }
+
+        // Subscribe and get current snapshot
+        var (paths, reader) = pathStore.Subscribe(seed);
+
+        try
+        {
+            // Send initial state
+            var initData = JsonSerializer.Serialize(paths, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            await ctx.Response.WriteAsync($"event: init\ndata: {initData}\n\n", ct);
+            await ctx.Response.Body.FlushAsync(ct);
+
+            // Stream updates
+            await foreach (var evt in reader.ReadAllAsync(ct))
+            {
+                if (evt == null) continue;
+                var json = JsonSerializer.Serialize(new { evt.Type, evt.PlayerId, evt.Data },
+                    new JsonSerializerOptions(JsonSerializerDefaults.Web));
+                await ctx.Response.WriteAsync($"event: update\ndata: {json}\n\n", ct);
+                await ctx.Response.Body.FlushAsync(ct);
+            }
+        }
+        catch (OperationCanceledException) { /* client disconnected */ }
+    }
+
+    /// <summary>GET endpoint returning all cached paths for replay/scrubbing.</summary>
+    public static async Task<IResult> GetTrackMapPathsAll(string seed, AppDbContext db)
+    {
+        // Check for cached paths first
+        var cached = await db.TrackMaps
+            .Where(m => m.Seed == seed)
+            .Select(m => m.Paths)
+            .FirstOrDefaultAsync();
+
+        if (cached != null)
+            return Results.Content(cached, "application/json");
+
+        // Build from track_logs and cache
+        var pathsJson = await BuildAndCachePaths(seed, db);
+        if (pathsJson == null)
+            return Results.NotFound();
+
+        return Results.Content(pathsJson, "application/json");
+    }
+
+    private static async Task<string?> BuildAndCachePaths(string seed, AppDbContext db)
+    {
+        var logs = await db.TrackLogs
+            .Where(l => l.Seed == seed)
+            .OrderBy(l => l.At)
+            .ToListAsync();
+
+        if (logs.Count == 0) return null;
+
+        var paths = new Dictionary<string, List<PathStore.PathPoint>>();
+        foreach (var log in logs)
+        {
+            foreach (var entry in log.Logs)
+            {
+                if (!entry.Code.StartsWith("Path=")) continue;
+                var points = ParsePathPoints(entry.Code);
+                if (points.Length == 0) continue;
+
+                if (!paths.TryGetValue(log.Id, out var list))
+                {
+                    list = new List<PathStore.PathPoint>();
+                    paths[log.Id] = list;
+                }
+                list.AddRange(points);
+            }
+        }
+
+        if (paths.Count == 0) return null;
+
+        var json = JsonSerializer.Serialize(paths, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+        // Cache in track_maps
+        await db.TrackMaps
+            .Where(m => m.Seed == seed)
+            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Paths, json));
+
+        return json;
+    }
+
+    private static PathStore.PathPoint[] ParsePathPoints(string code)
+    {
+        var points = new List<PathStore.PathPoint>();
+        var data = code.AsSpan(5); // skip "Path="
+        foreach (var seg in data.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var ci = seg.IndexOf(':');
+            if (ci < 0) continue;
+            if (!int.TryParse(seg.AsSpan(0, ci), out var t)) continue;
+            var coords = seg[(ci + 1)..].Split(',');
+            if (coords.Length != 3) continue;
+            if (int.TryParse(coords[0], out var x) && int.TryParse(coords[2], out var z))
+                points.Add(new PathStore.PathPoint(t, x, z));
+        }
+        return points.ToArray();
     }
 
 }

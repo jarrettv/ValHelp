@@ -109,3 +109,23 @@ form .options fieldset {
 .register-button:hover {
   background-color: #5b6eae;
 }
+
+.event-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+.event-tabs button {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid #555;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.event-tabs button.active {
+  border-color: #fff1a2;
+  background: #fff1a218;
+}

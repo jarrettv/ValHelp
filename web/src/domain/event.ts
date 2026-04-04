@@ -32,11 +32,15 @@ export enum EventStatus {
 export interface PlayerLog {
   code: string;
   at: Date;
+  x: number;
+  y: number;
+  z: number;
 }
 
 export interface Player {
   eventId: number;
   userId: number;
+  discordId: string;
   name: string;
   avatarUrl: string;
   stream: string;

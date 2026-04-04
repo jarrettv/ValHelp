@@ -20,5 +20,8 @@ public static class TrackActivate
         modelBuilder.Entity<TrackLog>()
         .OwnsMany(x => x.Logs, x => x.ToJson());
 
+        modelBuilder.Entity<TrackMap>()
+        .HasKey(m => m.Seed);
+
     }
 }

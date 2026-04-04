@@ -8,6 +8,7 @@ import { getFriendlyDateRange, getShortDateRange } from "./utils/date";
 import React from "react";
 import { Scoring } from "./components/Scoring";
 import EventStandings from "./components/EventStandings";
+import EventMap from "./components/EventMap";
 import { useAuth } from "./contexts/AuthContext";
 import Register from "./components/Register";
 import { Event as Ev, EventStatus, GetEventState } from "./domain/event";
@@ -41,13 +42,15 @@ export default function Event() {
     return false;
   }
 
+  const [tab, setTab] = React.useState<'standings' | 'map'>('standings');
+
   return (<>
     {isPending && <div><Spinner /></div>}
     {!isPending && data && (
 
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>
         { data.players.find(x => x.userId == status?.id) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
-        
+
         <Link style={{margin:"0"}} to={`/events/${data.id}/edit`}>Edit</Link>
         </div>}
         <div style={{ display: "flex" }}>
@@ -66,15 +69,23 @@ export default function Event() {
             <div style={{marginTop:"-0.3rem"}}>{data.seed}</div>
           </div>
         </div>
-        
+
         <EventStatusArea event={data} />
-        
+
         {showRegistration(data) && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
 
-        {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
-        {data.status >= EventStatus.Live && <EventStandings players={data.players} /> }
+        {data.status >= EventStatus.Live && (
+          <div className="event-tabs">
+            <button className={tab === 'standings' ? 'active' : ''} onClick={() => setTab('standings')}>Standings</button>
+            <button className={tab === 'map' ? 'active' : ''} onClick={() => setTab('map')}>Map</button>
+          </div>
+        )}
 
-        {data.players.length === 0 && <div className="card">No players yet</div>}
+        {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
+        {data.status >= EventStatus.Live && tab === 'standings' && <EventStandings players={data.players} /> }
+        {data.status >= EventStatus.Live && tab === 'map' && <EventMap event={data} onClose={() => setTab('standings')} /> }
+
+        {data.players.length === 0 && tab === 'standings' && <div className="card">No players yet</div>}
         
         {data.isPrivate && data.privatePassword && (
           <div className="card" style={{marginBottom: "1rem"}}>

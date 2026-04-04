@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ValHelpApi.Config;
@@ -11,9 +12,11 @@ using ValHelpApi.Config;
 namespace ValHelpApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404153410_TrackMapsBvec")]
+    partial class TrackMapsBvec
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -564,10 +567,6 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("mask_tex");
 
-                    b.Property<string>("Paths")
-                        .HasColumnType("text")
-                        .HasColumnName("paths");
-
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("uploaded_at");
@@ -645,15 +644,6 @@ namespace ValHelpApi.Migrations
                             b1.Property<string>("Code")
                                 .IsRequired()
                                 .HasColumnType("text");
-
-                            b1.Property<int>("X")
-                                .HasColumnType("integer");
-
-                            b1.Property<int>("Y")
-                                .HasColumnType("integer");
-
-                            b1.Property<int>("Z")
-                                .HasColumnType("integer");
 
                             b1.HasKey("PlayerEventId", "PlayerUserId", "__synthesizedOrdinal");
 

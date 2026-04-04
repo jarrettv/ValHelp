@@ -30,6 +30,7 @@ public class AppDbContext : DbContext
 
     public DbSet<TrackHunt> TrackHunts { get; set; }
     public DbSet<TrackLog> TrackLogs { get; set; }
+    public DbSet<TrackMap> TrackMaps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

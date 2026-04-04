@@ -214,13 +214,14 @@ public static class EventsEndpointsEvent
             h.UpdatedAt,
             h.Players.Select(hp => new EventPlayersRow(
             hp.UserId,
+            hp.User.DiscordId,
             hp.Name,
             hp.AvatarUrl,
             hp.Status,
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
           )).ToArray(),
             h.IsPrivate,
             h.OwnerId,
@@ -337,13 +338,14 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
             h.UpdatedAt,
             h.Players.Select(hp => new EventPlayersRow(
             hp.UserId,
+            hp.User.DiscordId,
             hp.Name,
             hp.AvatarUrl,
             hp.Status,
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
           )).ToArray(),
             h.IsPrivate,
             h.OwnerId,
@@ -495,7 +497,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         return TypedResults.Ok();
     }
 
-    public record PlayerLogRow(string Code, DateTime At);
+    public record PlayerLogRow(string Code, DateTime At, int X = 0, int Y = 0, int Z = 0);
     public record PlayerReq(int UserId, string Name, string Stream, string In, string Youtube, string Twitch, string Best);
     public record PlayerResp(int EventId, int UserId, string Name, string AvatarUrl, string Stream, int Score, PlayerLogRow[] logs, DateTime UpdatedAt);
     private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
@@ -591,24 +593,25 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         await cache.RemoveAsync($"event-{id}");
 
         var resp = new PlayerResp(id, req.UserId, player.Name, player.AvatarUrl, player.Stream, player.Score,
-          player.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray(), player.UpdatedAt);
+          player.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray(), player.UpdatedAt);
         return TypedResults.Ok(resp);
     }
 
-    public record EventPlayersRow(int UserId, string Name, string AvatarUrl, PlayerStatus Status, int Score, string Stream, DateTime UpdatedAt, PlayerLogRow[] logs);
+    public record EventPlayersRow(int UserId, string DiscordId, string Name, string AvatarUrl, PlayerStatus Status, int Score, string Stream, DateTime UpdatedAt, PlayerLogRow[] logs);
     private static async Task<Results<NotFound, Ok<EventPlayersRow[]>>> GetPlayers(int id, AppDbContext db)
     {
         var players = await db.Players
           .Where(hp => hp.EventId == id)
           .Select(hp => new EventPlayersRow(
             hp.UserId,
+            hp.User.DiscordId,
             hp.Name,
             hp.AvatarUrl,
             hp.Status,
             hp.Score,
             hp.Stream,
             hp.UpdatedAt,
-            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At)).ToArray()
+            hp.Logs.Select(l => new PlayerLogRow(l.Code, l.At, l.X, l.Y, l.Z)).ToArray()
           ))
           .ToArrayAsync();
 

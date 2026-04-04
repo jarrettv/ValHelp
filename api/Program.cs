@@ -16,6 +16,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackHunt>());
+builder.Services.AddSingleton<PathStore>();
 builder.Services.AddHostedService<EventsStatusUpdater>();
 builder.Services.AddHostedService<EventsSeedMaker>();
 builder.Services.AddHostedService<TrackLogTracker>();
@@ -37,11 +38,14 @@ app.UseCors("AllowLocalhost5173");
 app.MapStaticAssets().ShortCircuit();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseExceptionHandler();
-
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.MapOpenApi();
+}
+else
+{
+    app.UseExceptionHandler();
 }
 app.MapEndpointsAdmin();
 app.MapEndpointsEvents();

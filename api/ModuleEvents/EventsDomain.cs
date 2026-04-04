@@ -98,32 +98,63 @@ public class Player
         Score = log.Score; // we always assume the latest log has the correct score
         foreach (var playerLog in log.Logs)
         {
-            var existingLogs = Logs.Where(x => x.Code == playerLog.Code);
-            bool found = false;
-            foreach (var existingLog in existingLogs)
+            // Path and Snap are telemetry-only, don't store in player event logs
+            if (playerLog.Code.StartsWith("Path=") || playerLog.Code.StartsWith("Snap="))
+                continue;
+
+            // Parse position suffix: "TrophyBoar@142,32,-87" → code="TrophyBoar", pos=(142,32,-87)
+            var (rawCode, x, y, z) = ParseCodePosition(playerLog.Code);
+
+            // Split pipe-delimited multi-events: "TrophyNeck|BonusMeadows" → ["TrophyNeck", "BonusMeadows"]
+            var segments = rawCode.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var code in segments)
             {
-                if (playerLog.Code.StartsWith("Trophy") || playerLog.Code.StartsWith("Bonus"))
-                {
-                    found = true; // only 1 trophy and bonus per type allowed
-                    continue;
-                }
-                // treat as duplicate if timestamps are within 5 seconds
-                if ((existingLog.At - playerLog.At).Duration() <= TimeSpan.FromSeconds(4))
-                {
-                    found = true; // already have this exact log at this time
-                    break;
-                }
-            }
-            if (!found)
-            {
-                Logs.Add(new PlayerLog(playerLog.Code, playerLog.At));
+                AddLogIfNew(code, playerLog.At, x, y, z);
             }
         }
         UpdatedAt = log.At;
     }
+
+    private void AddLogIfNew(string code, DateTime at, int x, int y, int z)
+    {
+        if (code.StartsWith("Trophy") || code.StartsWith("Bonus"))
+        {
+            // Only 1 per type allowed (dedup by clean code, ignoring position)
+            if (Logs.Any(x => x.Code == code))
+                return;
+        }
+        else
+        {
+            // Penalties etc: dedup within 4-second window
+            foreach (var existing in Logs.Where(x => x.Code == code))
+            {
+                if ((existing.At - at).Duration() <= TimeSpan.FromSeconds(4))
+                    return;
+            }
+        }
+        Logs.Add(new PlayerLog(code, at, x, y, z));
+    }
+
+    private static (string code, int x, int y, int z) ParseCodePosition(string raw)
+    {
+        var atIdx = raw.LastIndexOf('@');
+        if (atIdx < 0) return (raw, 0, 0, 0);
+
+        var code = raw[..atIdx];
+        var parts = raw[(atIdx + 1)..].Split(',');
+        if (parts.Length != 3) return (raw, 0, 0, 0);
+
+        if (int.TryParse(parts[0], out var x) &&
+            int.TryParse(parts[1], out var y) &&
+            int.TryParse(parts[2], out var z))
+            return (code, x, y, z);
+
+        return (raw, 0, 0, 0);
+    }
 }
 
-public record PlayerLog(string Code, DateTime At);
+public record PlayerLog(string Code, DateTime At, int X = 0, int Y = 0, int Z = 0);
 
 public enum PlayerStatus // positive for in, negative for out
 {
