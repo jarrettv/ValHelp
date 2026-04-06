@@ -93,27 +93,87 @@ public class Player
         UpdatedAt = at;
     }
 
-    internal void Update(TrackLog log)
+    internal void Update(TrackLog log, DateTime eventStartAt)
     {
         Score = log.Score; // we always assume the latest log has the correct score
         foreach (var playerLog in log.Logs)
         {
-            // Path and Snap are telemetry-only, don't store in player event logs
-            if (playerLog.Code.StartsWith("Path=") || playerLog.Code.StartsWith("Snap="))
-                continue;
-
-            // Parse position suffix: "TrophyBoar@142,32,-87" → code="TrophyBoar", pos=(142,32,-87)
-            var (rawCode, x, y, z) = ParseCodePosition(playerLog.Code);
-
-            // Split pipe-delimited multi-events: "TrophyNeck|BonusMeadows" → ["TrophyNeck", "BonusMeadows"]
-            var segments = rawCode.Split('|', StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var code in segments)
+            if (CompactEventParser.IsCompactFormat(playerLog.Code))
             {
-                AddLogIfNew(code, playerLog.At, x, y, z);
+                UpdateCompact(playerLog.Code, eventStartAt);
+            }
+            else
+            {
+                UpdateLegacy(playerLog);
             }
         }
         UpdatedAt = log.At;
+    }
+
+    private void UpdateCompact(string code, DateTime eventStartAt)
+    {
+        var events = CompactEventParser.Parse(code);
+        foreach (var evt in events)
+        {
+            var at = eventStartAt.AddSeconds(evt.Secs);
+
+            switch (evt.Tag)
+            {
+                case 'T':
+                {
+                    // extra = "Neck" or "Neck|BonusMeadows" or "Fader|BonusAshlands|BonusAll|BonusTime=840"
+                    var parts = evt.Extra.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var part in parts)
+                    {
+                        var logCode = part.StartsWith("Bonus") ? part : $"Trophy{part}";
+                        AddLogIfNew(logCode, at, evt.X, evt.Y, evt.Z);
+                    }
+                    break;
+                }
+                case 'D':
+                    AddLogIfNew("PenaltyDeath", at, evt.X, evt.Y, evt.Z);
+                    break;
+                case 'L':
+                    AddLogIfNew("PenaltyLogout", at, evt.X, evt.Y, evt.Z);
+                    break;
+                case 'S':
+                    AddLogIfNew("PenaltySlashDie", at, evt.X, evt.Y, evt.Z);
+                    break;
+                case 'J':
+                {
+                    // extra = "Portal", "Portal=base", or "Respawn"
+                    var portalName = evt.Extra;
+                    if (portalName.StartsWith("Portal"))
+                    {
+                        // Store as "Portal" or "Portal:<name>"
+                        var eqIdx = portalName.IndexOf('=');
+                        var logCode = eqIdx >= 0 ? $"Portal:{portalName[(eqIdx + 1)..]}" : "Portal";
+                        AddLogIfNew(logCode, at, evt.X, evt.Y, evt.Z);
+                    }
+                    // Respawn jumps don't need a separate log — the PenaltyDeath covers the death itself
+                    break;
+                }
+                // F, W, P — telemetry only, no player log needed
+            }
+        }
+    }
+
+    private void UpdateLegacy(TrackerLog playerLog)
+    {
+        // Path and Snap are telemetry-only, don't store in player event logs
+        if (playerLog.Code.StartsWith("Path=") || playerLog.Code.StartsWith("Snap="))
+            return;
+
+        // Parse position suffix: "TrophyBoar@142,32,-87" → code="TrophyBoar", pos=(142,32,-87)
+        var (rawCode, x, y, z) = ParseCodePosition(playerLog.Code);
+
+        // Split pipe-delimited multi-events: "TrophyNeck|BonusMeadows" → ["TrophyNeck", "BonusMeadows"]
+        var segments = rawCode.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var code in segments)
+        {
+            AddLogIfNew(code, playerLog.At, x, y, z);
+        }
     }
 
     private void AddLogIfNew(string code, DateTime at, int x, int y, int z)

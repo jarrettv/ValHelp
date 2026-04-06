@@ -12,6 +12,56 @@ public class TrackLog
 }
 public record TrackerLog(string Code, DateTime At);
 
+/// <summary>
+/// Parsed event from the new compact format: tag=secs@x,y,z[|extra];
+/// </summary>
+public record CompactEvent(char Tag, int Secs, int X, int Y, int Z, string Extra);
+
+public static class CompactEventParser
+{
+    private static readonly HashSet<char> ValidTags = ['F', 'W', 'P', 'J', 'T', 'D', 'L', 'S'];
+
+    /// <summary>
+    /// Returns true if the code string uses the new compact format: starts with a known tag letter followed by '='.
+    /// </summary>
+    public static bool IsCompactFormat(string code)
+        => code.Length >= 2 && code[1] == '=' && ValidTags.Contains(code[0]);
+
+    /// <summary>
+    /// Parse "W=5247@1138,44,495;W=5252@1126,43,486;" into CompactEvent records.
+    /// </summary>
+    public static List<CompactEvent> Parse(string code)
+    {
+        var results = new List<CompactEvent>();
+        foreach (var seg in code.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        {
+            // tag=secs@x,y,z  or  tag=secs@x,y,z|extra
+            if (seg.Length < 2 || seg[1] != '=') continue;
+            var tag = seg[0];
+
+            var atIdx = seg.IndexOf('@');
+            if (atIdx < 0) continue;
+
+            if (!int.TryParse(seg.AsSpan(2, atIdx - 2), out var secs)) continue;
+
+            // Split position from extra: "x,y,z|extra1|extra2" or just "x,y,z"
+            var rest = seg[(atIdx + 1)..];
+            var pipeIdx = rest.IndexOf('|');
+            var coordPart = pipeIdx >= 0 ? rest[..pipeIdx] : rest;
+            var extra = pipeIdx >= 0 ? rest[(pipeIdx + 1)..] : "";
+
+            var coords = coordPart.Split(',');
+            if (coords.Length != 3) continue;
+            if (!int.TryParse(coords[0], out var x) ||
+                !int.TryParse(coords[1], out var y) ||
+                !int.TryParse(coords[2], out var z)) continue;
+
+            results.Add(new CompactEvent(tag, secs, x, y, z, extra));
+        }
+        return results;
+    }
+}
+
 public class TrackMap
 {
     public string Seed { get; set; } = null!;

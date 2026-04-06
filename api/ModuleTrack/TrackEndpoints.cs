@@ -4,6 +4,7 @@ using System.Threading.Channels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using ValHelpApi.Config;
 using ValHelpApi.ModuleEvents;
 
@@ -144,6 +145,8 @@ public static class TrackEndpoints
         if (mapFile == null || heightFile == null || maskFile == null)
             return Results.BadRequest("mapTex, heightTex, and forestTex files are required");
 
+        // TODO: process the data using a channel so we can return early and not keep the client waiting for BVEC generation, which can be slow on large maps. For now we do it synchronously for simplicity.
+
         using var mapMs = new MemoryStream();
         using var heightMs = new MemoryStream();
         using var maskMs = new MemoryStream();
@@ -178,10 +181,11 @@ public static class TrackEndpoints
     }
 
 
-    public static async Task<IResult> GetTrackMapAsset(string seed, string asset, AppDbContext db, HttpContext ctx)
+    public static async Task<IResult> GetTrackMapAsset(string seed, string asset, AppDbContext db, HttpContext ctx,
+        IMemoryCache memoryCache)
     {
         if (asset == "biomes")
-            return await GetTrackMapBvec(seed, db, ctx);
+            return await GetTrackMapBvec(seed, db, ctx, memoryCache);
 
         if (asset == "forest")
         {
@@ -207,46 +211,33 @@ public static class TrackEndpoints
         return Results.File(map, "image/png");
     }
 
-    private static async Task<IResult> GetTrackMapBvec(string seed, AppDbContext db, HttpContext ctx)
+    private record BvecCacheEntry(byte[] Bvec, DateTime BvecAt);
+
+    private static async Task<IResult> GetTrackMapBvec(string seed, AppDbContext db, HttpContext ctx,
+        IMemoryCache memoryCache)
     {
-        var trackMap = await db.TrackMaps
-            .Where(m => m.Seed == seed)
-            .Select(m => new { m.Bvec, m.BvecAt, m.MapTex, m.HeightTex, m.MaskTex })
-            .FirstOrDefaultAsync();
-
-        if (trackMap == null)
-            return Results.NotFound();
-
-        byte[] bvec;
-        DateTime bvecAt;
-
-        if (trackMap.Bvec != null && trackMap.Bvec.Length > 0 && trackMap.BvecAt.HasValue)
+        var cacheKey = $"bvec:{seed}";
+        if (!memoryCache.TryGetValue(cacheKey, out BvecCacheEntry? cached))
         {
-            bvec = trackMap.Bvec;
-            bvecAt = trackMap.BvecAt.Value;
-        }
-        else
-        {
-            // Generate on demand if not cached (e.g. after vectorization code update)
-            bvec = await Task.Run(() =>
-                Rendering.BiomeExtractor.ExtractBinaryFromMemory(trackMap.MapTex, trackMap.HeightTex, trackMap.MaskTex));
-            bvecAt = DateTime.UtcNow;
+            var trackMap = await db.TrackMaps
+                .Where(m => m.Seed == seed && m.Bvec != null && m.BvecAt != null)
+                .Select(m => new { m.Bvec, m.BvecAt })
+                .FirstOrDefaultAsync();
 
-            // Cache it
-            await db.TrackMaps
-                .Where(m => m.Seed == seed)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(m => m.Bvec, bvec)
-                    .SetProperty(m => m.BvecAt, bvecAt));
+            if (trackMap == null)
+                return Results.NotFound();
+
+            cached = new BvecCacheEntry(trackMap.Bvec!, trackMap.BvecAt!.Value);
+            memoryCache.Set(cacheKey, cached, TimeSpan.FromHours(4));
         }
 
-        var etag = $"\"{bvecAt:yyyyMMddHHmmss}\"";
+        var etag = $"\"{cached.BvecAt:yyyyMMddHHmmss}\"";
         if (ctx.Request.Headers.IfNoneMatch == etag)
             return Results.StatusCode(304);
 
         ctx.Response.Headers.ETag = etag;
         ctx.Response.Headers.CacheControl = "public, max-age=86400";
-        return Results.File(bvec, "application/octet-stream");
+        return Results.File(cached.Bvec, "application/octet-stream");
     }
 
 
@@ -271,8 +262,19 @@ public static class TrackEndpoints
             {
                 foreach (var entry in log.Logs)
                 {
-                    if (!entry.Code.StartsWith("Path=")) continue;
-                    var points = ParsePathPoints(entry.Code);
+                    PathStore.PathPoint[] points;
+                    if (CompactEventParser.IsCompactFormat(entry.Code))
+                    {
+                        points = CompactEventParser.Parse(entry.Code)
+                            .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
+                            .ToArray();
+                    }
+                    else if (entry.Code.StartsWith("Path="))
+                    {
+                        points = ParsePathPoints(entry.Code);
+                    }
+                    else continue;
+
                     if (points.Length > 0)
                         pathStore.BackfillPaths(seed, log.Id, points);
                 }
@@ -336,8 +338,19 @@ public static class TrackEndpoints
         {
             foreach (var entry in log.Logs)
             {
-                if (!entry.Code.StartsWith("Path=")) continue;
-                var points = ParsePathPoints(entry.Code);
+                PathStore.PathPoint[] points;
+                if (CompactEventParser.IsCompactFormat(entry.Code))
+                {
+                    points = CompactEventParser.Parse(entry.Code)
+                        .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
+                        .ToArray();
+                }
+                else if (entry.Code.StartsWith("Path="))
+                {
+                    points = ParsePathPoints(entry.Code);
+                }
+                else continue;
+
                 if (points.Length == 0) continue;
 
                 if (!paths.TryGetValue(log.Id, out var list))
@@ -350,6 +363,13 @@ public static class TrackEndpoints
         }
 
         if (paths.Count == 0) return null;
+
+        // Deduplicate by time — replay logs can re-send entire history
+        foreach (var (id, list) in paths)
+        {
+            var seen = new HashSet<int>();
+            list.RemoveAll(p => !seen.Add(p.T));
+        }
 
         var json = JsonSerializer.Serialize(paths, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 

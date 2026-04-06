@@ -17,7 +17,7 @@ declare global {
 
 // ── Types ────────────────────────────────────────────────────────
 
-interface PathPoint { t: number; x: number; z: number; }
+interface PathPoint { t: number; x: number; z: number; j?: boolean; }
 
 interface TrophyMarker {
   code: string;       // e.g. "TrophyBoar"
@@ -32,16 +32,23 @@ interface PenaltyMarker {
   at: number;         // seconds since event start
 }
 
+interface PortalMarker {
+  code: string;       // "Portal" or "Portal:<name>"
+  x: number; z: number;
+  at: number;
+}
+
 interface PlayerMapData {
   index: number;
   id: string;
   name: string;
   avatarUrl: string;
   color: string;
-  path: [number, number][];       // [px, py] in map pixels
+  path: [number, number, number, boolean][];  // [px, py, t, isJump] in map pixels
   currentPos: [number, number] | null;
   trophies: TrophyMarker[];
   penalties: PenaltyMarker[];
+  portals: PortalMarker[];
   scoreAtTime: number;
 }
 
@@ -111,8 +118,11 @@ function buildPlayerMapData(
     // Path from SSE/GET data, filtered by time
     const rawPath = pathData[discordId] || [];
     const filteredPath = maxTime !== null ? rawPath.filter(p => p.t <= maxTime) : rawPath;
-    const path = filteredPath.map(p => worldToPixel(p.x, p.z, gs) as [number, number]);
-    const currentPos = path.length > 0 ? path[path.length - 1] : null;
+    const path = filteredPath.map(p => {
+      const [px, py] = worldToPixel(p.x, p.z, gs);
+      return [px, py, p.t, !!p.j] as [number, number, number, boolean];
+    });
+    const currentPos = path.length > 0 ? [path[path.length - 1][0], path[path.length - 1][1]] as [number, number] : null;
 
     // Find the path time `t` closest to a world position — aligns log events to path timeline.
     // If no path point is within ~200 world units, the trophy/penalty likely arrived before
@@ -159,6 +169,16 @@ function buildPlayerMapData(
       penalties.push({ code: log.code, x: log.x, z: log.z, at: t });
     }
 
+    // Portals from player logs
+    const portals: PortalMarker[] = [];
+    for (const log of player.logs) {
+      if (log.code !== 'Portal' && !log.code.startsWith('Portal:')) continue;
+      if (log.x === 0 && log.z === 0) continue;
+      const t = findPathTime(log.x, log.z);
+      if (maxTime !== null && t > maxTime) continue;
+      portals.push({ code: log.code, x: log.x, z: log.z, at: t });
+    }
+
     // Compute score at current scrub time (also aligned to path timeline)
     let scoreAtTime = 0;
     for (const log of player.logs) {
@@ -174,7 +194,7 @@ function buildPlayerMapData(
       if (points !== undefined) scoreAtTime += points;
     }
 
-    return { index: i, id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, scoreAtTime };
+    return { index: i, id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, portals, scoreAtTime };
   });
 }
 
@@ -304,47 +324,50 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       py * mScale * scale + panY,
     ];
 
-    // Teleport detection: if map-pixel distance between consecutive points
-    // exceeds this threshold, it's a death respawn / teleport
-    const TELEPORT_PX = 40 * scale; // ~40 grid pixels at current zoom
-
     for (const player of playerMapData) {
       if (hiddenRef.current.has(player.index)) continue;
 
-      // ── Draw path with dashed lines for teleport jumps ──
+      // ── Draw path, breaking at jump points (portal/respawn) ──
       if (player.path.length > 1) {
         ctx.strokeStyle = player.color;
         ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.globalAlpha = 0.7;
-
-        let inTeleport = false;
         ctx.setLineDash([]);
+
+        // Old-format paths have no j flags — use speed-based fallback
+        const hasJumpFlags = player.path.some(p => p[3]);
+        const SPEED_THRESHOLD = 30; // m/s — well above max Valheim speed
+
         ctx.beginPath();
         const [sx0, sy0] = toScreen(player.path[0][0], player.path[0][1]);
         ctx.moveTo(sx0, sy0);
 
         for (let i = 1; i < player.path.length; i++) {
           const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
-          const [prevSx, prevSy] = toScreen(player.path[i-1][0], player.path[i-1][1]);
-          const dx = sx - prevSx, dy = sy - prevSy;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const isTeleport = dist > TELEPORT_PX;
 
-          if (isTeleport !== inTeleport) {
-            // Style changed — stroke current path and start a new one
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(prevSx, prevSy);
-            inTeleport = isTeleport;
-            ctx.setLineDash(isTeleport ? [6, 4] : []);
+          let isBreak = player.path[i][3]; // j flag
+          if (!hasJumpFlags) {
+            // Speed fallback for old format: pixel dist → world dist / dt
+            const dt = player.path[i][2] - player.path[i - 1][2];
+            const dpx = player.path[i][0] - player.path[i - 1][0];
+            const dpy = player.path[i][1] - player.path[i - 1][1];
+            const pixelDist = Math.sqrt(dpx * dpx + dpy * dpy);
+            const worldDist = pixelDist * (TEX_SIZE * PIXEL_SIZE) / gs;
+            const speed = dt > 0 ? worldDist / dt : (worldDist > 100 ? Infinity : 0);
+            isBreak = speed > SPEED_THRESHOLD;
           }
 
-          ctx.lineTo(sx, sy);
+          if (isBreak) {
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+          } else {
+            ctx.lineTo(sx, sy);
+          }
         }
         ctx.stroke();
-        ctx.setLineDash([]);
         ctx.globalAlpha = 1.0;
       }
 
@@ -380,6 +403,16 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
         const r = Math.max(8, Math.min(14, 10 * scale));
         drawIconCircle(ctx, sx, sy, r, player.color, `/img/Penalty/${penalty.code}.webp`);
+      }
+
+      // ── Draw portals ──
+      for (const portal of player.portals) {
+        const [ppx, ppy] = worldToPixel(portal.x, portal.z, gs);
+        const [sx, sy] = toScreen(ppx, ppy);
+        if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
+
+        const r = Math.max(8, Math.min(14, 10 * scale));
+        drawIconCircle(ctx, sx, sy, r, player.color, `/img/Misc/portal_wood.png`);
       }
 
       // ── Draw avatar at current position ──

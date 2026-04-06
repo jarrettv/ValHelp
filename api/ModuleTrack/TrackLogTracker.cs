@@ -42,27 +42,39 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
         db.TrackLogs.Add(log);
         await db.SaveChangesAsync(stoppingToken);
 
-        int[] liveEventIds = await db.Events
+        var liveEvents = await db.Events
           .Where(h => h.Status == EventStatus.Live)
           .Where(h => h.Seed == log.Seed)
-          .Select(h => h.Id)
+          .Select(h => new { h.Id, h.StartAt })
           .ToArrayAsync(stoppingToken);
 
-        if (liveEventIds.Length == 0)
+        if (liveEvents.Length == 0)
         {
             logger.LogDebug("Process log no live event for seed={seed}", log.Seed);
             return;
         }
 
-        if (liveEventIds.Length > 1)
+        if (liveEvents.Length > 1)
         {
             logger.LogWarning("Process log multiple live events for seed={seed}", log.Seed);
         }
+
+        var liveEventIds = liveEvents.Select(e => e.Id).ToArray();
+        var eventStartAt = liveEvents[0].StartAt;
         
         // Feed path data to PathStore for live SSE streaming
         foreach (var entry in log.Logs)
         {
-            if (entry.Code.StartsWith("Path="))
+            if (CompactEventParser.IsCompactFormat(entry.Code))
+            {
+                var events = CompactEventParser.Parse(entry.Code);
+                var points = events
+                    .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
+                    .ToArray();
+                if (points.Length > 0)
+                    pathStore.AddPathPoints(log.Seed, log.Id, points);
+            }
+            else if (entry.Code.StartsWith("Path="))
             {
                 var points = ParsePathCode(entry.Code);
                 if (points.Length > 0)
@@ -81,7 +93,7 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
             return;
         }
 
-        player.Update(log);
+        player.Update(log, eventStartAt);
         await db.SaveChangesAsync(stoppingToken);
 
         var cache = scope.ServiceProvider.GetRequiredService<HybridCache>();

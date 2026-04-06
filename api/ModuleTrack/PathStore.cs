@@ -17,7 +17,7 @@ public class PathStore
 
     // ── Data structures ──
 
-    public record PathPoint(int T, int X, int Z);
+    public record PathPoint(int T, int X, int Z, bool J = false);
 
     public record PathEvent(string Type, string PlayerId, object Data);
 
