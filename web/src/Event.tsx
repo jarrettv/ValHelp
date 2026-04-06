@@ -43,6 +43,8 @@ export default function Event() {
   }
 
   const [tab, setTab] = React.useState<'standings' | 'map'>('standings');
+  const [mapAgreed, setMapAgreed] = React.useState(false);
+  const [participantAcknowledged, setParticipantAcknowledged] = React.useState(false);
 
   return (<>
     {isPending && <div><Spinner /></div>}
@@ -83,7 +85,21 @@ export default function Event() {
 
         {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
         {data.status >= EventStatus.Live && tab === 'standings' && <EventStandings players={data.players} /> }
-        {data.status >= EventStatus.Live && tab === 'map' && <EventMap event={data} onClose={() => setTab('standings')} /> }
+        {data.status >= EventStatus.Live && tab === 'map' && (
+          data.status === EventStatus.Live ? (
+            <LiveMapGate
+              isParticipant={!!data.players.find(x => x.userId === status?.id && x.status >= 0)}
+              participantAcknowledged={participantAcknowledged}
+              onParticipantAcknowledge={() => setParticipantAcknowledged(true)}
+              mapAgreed={mapAgreed}
+              onAgree={() => setMapAgreed(true)}
+            >
+              <EventMap event={data} onClose={() => setTab('standings')} />
+            </LiveMapGate>
+          ) : (
+            <EventMap event={data} onClose={() => setTab('standings')} />
+          )
+        )}
 
         {data.players.length === 0 && tab === 'standings' && <div className="card">No players yet</div>}
         
@@ -121,6 +137,98 @@ export default function Event() {
     )}
   </>
   );
+}
+
+const WarningIcon = () => (
+  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style={{ filter: 'drop-shadow(0 0 12px rgba(231, 76, 60, 0.8))' }}>
+    <path d="M12 2L1 21h22L12 2z" fill="#e74c3c" stroke="#ff6b6b" strokeWidth="0.5" />
+    <path d="M12 9v5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="12" cy="17" r="1" fill="#fff" />
+  </svg>
+);
+
+const gateStyle: React.CSSProperties = {
+  textAlign: 'center',
+  padding: '3rem 2rem',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '1rem',
+};
+
+const dangerBtnStyle: React.CSSProperties = {
+  marginTop: '1rem',
+  padding: '1rem 2.5rem',
+  fontSize: '1.1rem',
+  fontWeight: 700,
+  color: '#fff',
+  background: 'linear-gradient(135deg, #c0392b, #e74c3c)',
+  border: '2px solid #ff6b6b',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  boxShadow: '0 0 20px rgba(231, 76, 60, 0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
+  transition: 'box-shadow 0.2s, transform 0.1s',
+};
+
+function LiveMapGate({ isParticipant, participantAcknowledged, onParticipantAcknowledge, mapAgreed, onAgree, children }: {
+  isParticipant: boolean;
+  participantAcknowledged: boolean;
+  onParticipantAcknowledge: () => void;
+  mapAgreed: boolean;
+  onAgree: () => void;
+  children: React.ReactNode;
+}) {
+  // Participant in a live event must acknowledge they're done first
+  if (isParticipant && !participantAcknowledged) {
+    return (
+      <div className="card" style={gateStyle}>
+        <WarningIcon />
+        <h2 style={{ color: '#e74c3c', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          You are competing
+        </h2>
+        <p style={{ maxWidth: '500px', margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
+          Viewing the map while competing could give you an unfair advantage.
+          Only continue if you are <strong>finished participating</strong> and will
+          <strong> not share</strong> map details with other competitors still playing.
+        </p>
+        <button
+          onClick={onParticipantAcknowledge}
+          style={dangerBtnStyle}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(231, 76, 60, 0.7), inset 0 1px 0 rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'scale(1.03)'; }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = dangerBtnStyle.boxShadow as string; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          I'm done competing and won't share map details
+        </button>
+      </div>
+    );
+  }
+
+  // Everyone must agree not to share during a live event
+  if (!mapAgreed) {
+    return (
+      <div className="card" style={gateStyle}>
+        <WarningIcon />
+        <h2 style={{ color: '#e74c3c', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Tournament is LIVE
+        </h2>
+        <p style={{ maxWidth: '500px', margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
+          Do <strong>not</strong> share map details with competitors who are still playing.
+          Sharing map information during a live event is unsportsmanlike and may
+          result in <strong>disqualification</strong>.
+        </p>
+        <button
+          onClick={onAgree}
+          style={dangerBtnStyle}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(231, 76, 60, 0.7), inset 0 1px 0 rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'scale(1.03)'; }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = dangerBtnStyle.boxShadow as string; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          I agree — do not share
+        </button>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
 
 function EventStatusArea({ event }: { event: Ev}) {
