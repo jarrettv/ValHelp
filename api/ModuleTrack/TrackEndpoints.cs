@@ -342,6 +342,7 @@ public static class TrackEndpoints
                 if (CompactEventParser.IsCompactFormat(entry.Code))
                 {
                     points = CompactEventParser.Parse(entry.Code)
+                        .Where(e => e.Tag == 'F' || e.Tag == 'W' || e.Tag == 'P' || e.Tag == 'J')
                         .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
                         .ToArray();
                 }

@@ -236,6 +236,171 @@ public static class BiomeExtractor
         return (W, layers, contours);
     }
 
+    // ── V2: Targeted reduction (default) ─────────────────────────────
+    //
+    // Wraps the V1 Extract output and removes vertices in a targeted way:
+    //   • Shallow-water depth bands get aggressive simplification — they
+    //     are large, smooth, and visually low-stakes.
+    //   • Everything in the "deep north" (top NorthRegionFraction of the
+    //     map) gets a much higher simplification epsilon. Almost no players
+    //     venture there today, so coarser geometry is fine.
+    //   • Land / biome / overlay / contour layers receive only a light
+    //     baseline cleanup outside the north region.
+    //
+    // V1 Extract is left untouched and reachable via the *Legacy entry
+    // points below.
+
+    const float NorthRegionFraction = 0.15f; // top 15% of map = "deep north"
+
+    static (int gridSize, List<LayerData> layers, List<ContourData> contours) ExtractV2(
+        byte[] mapPx, int srcW, int srcH,
+        byte[]? heightPx, int heightW, int heightH,
+        byte[]? maskPx, int maskW, int maskH)
+    {
+        var (gridSize, layers, contours) = Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        ApplyTargetedReduction(gridSize, layers, contours);
+        return (gridSize, layers, contours);
+    }
+
+    static void ApplyTargetedReduction(int gridSize, List<LayerData> layers, List<ContourData> contours)
+    {
+        float northY = gridSize * NorthRegionFraction;
+
+        long totalBefore = 0, totalAfter = 0;
+        long shallowBefore = 0, shallowAfter = 0;
+        long northBefore = 0, northAfter = 0;
+        long contourBefore = 0, contourAfter = 0;
+        int polygonCount = 0, contourLineCount = 0;
+
+        foreach (var layer in layers)
+        {
+            // Per-type epsilon settings (base, northern).
+            // V1 used 0.1f for depth/elevation/contours and 0.4f for biomes.
+            float baseEps, northEps;
+            switch (layer.Type)
+            {
+                case TypeDepth:     baseEps = 2.0f; northEps = 4.0f; break; // shallow water — primary target
+                case TypeLand:      baseEps = 0.4f; northEps = 1.5f; break;
+                case TypeElevation: baseEps = 0.4f; northEps = 1.5f; break;
+                case TypeBiome:     baseEps = 0.5f; northEps = 1.5f; break;
+                case TypeForest:
+                case TypeMist:
+                case TypeLava:      baseEps = 0.3f; northEps = 1.0f; break;
+                default:            baseEps = 0.3f; northEps = 1.0f; break;
+            }
+
+            for (int p = 0; p < layer.Polygons.Count; p++)
+            {
+                var pts = layer.Polygons[p];
+                int vertsBefore = pts.Length / 2;
+                int northBeforeLocal = CountNorthVerts(pts, northY);
+
+                var reduced = SimplifyRegional(pts, baseEps, northEps, northY);
+                int vertsAfter = reduced.Length / 2;
+                int northAfterLocal = CountNorthVerts(reduced, northY);
+
+                totalBefore += vertsBefore;
+                totalAfter += vertsAfter;
+                northBefore += northBeforeLocal;
+                northAfter += northAfterLocal;
+                if (layer.Type == TypeDepth)
+                {
+                    shallowBefore += vertsBefore;
+                    shallowAfter += vertsAfter;
+                }
+
+                layer.Polygons[p] = reduced;
+                polygonCount++;
+            }
+        }
+
+        foreach (var c in contours)
+        {
+            for (int p = 0; p < c.Lines.Count; p++)
+            {
+                var pts = c.Lines[p];
+                int vertsBefore = pts.Length / 2;
+                int northBeforeLocal = CountNorthVerts(pts, northY);
+
+                var reduced = SimplifyRegional(pts, 0.25f, 1.5f, northY);
+                int vertsAfter = reduced.Length / 2;
+                int northAfterLocal = CountNorthVerts(reduced, northY);
+
+                totalBefore += vertsBefore;
+                totalAfter += vertsAfter;
+                northBefore += northBeforeLocal;
+                northAfter += northAfterLocal;
+                contourBefore += vertsBefore;
+                contourAfter += vertsAfter;
+
+                c.Lines[p] = reduced;
+                contourLineCount++;
+            }
+        }
+
+        static double Pct(long before, long after)
+            => before == 0 ? 0 : 100.0 * (before - after) / before;
+
+        Console.WriteLine($"[BiomeExtractor v2] targeted reduction report (gridSize={gridSize}, northY<{northY:F0}):");
+        Console.WriteLine($"  shallow water:  {shallowBefore,8} → {shallowAfter,8} verts  ({Pct(shallowBefore, shallowAfter):F1}% reduction)");
+        Console.WriteLine($"  north region:   {northBefore,8} → {northAfter,8} verts  ({Pct(northBefore, northAfter):F1}% reduction)");
+        Console.WriteLine($"  contours:       {contourBefore,8} → {contourAfter,8} verts  ({Pct(contourBefore, contourAfter):F1}% reduction)");
+        Console.WriteLine($"  TOTAL:          {totalBefore,8} → {totalAfter,8} verts  ({Pct(totalBefore, totalAfter):F1}% reduction)");
+        Console.WriteLine($"  layers={layers.Count}, polygons={polygonCount}, contour lines={contourLineCount}");
+    }
+
+    static int CountNorthVerts(float[] pts, float northY)
+    {
+        int n = 0;
+        for (int i = 1; i < pts.Length; i += 2)
+            if (pts[i] < northY) n++;
+        return n;
+    }
+
+    static float[] SimplifyRegional(float[] pts, float baseEps, float northEps, float northY)
+    {
+        int n = pts.Length / 2;
+        if (n <= 2) return pts;
+        var list = new List<(float X, float Y)>(n);
+        for (int i = 0; i < n; i++) list.Add((pts[i * 2], pts[i * 2 + 1]));
+        var simplified = DouglasPeuckerRegional(list, baseEps, northEps, northY);
+        if (simplified.Count == n) return pts;
+        var result = new float[simplified.Count * 2];
+        for (int i = 0; i < simplified.Count; i++)
+        {
+            result[i * 2] = simplified[i].X;
+            result[i * 2 + 1] = simplified[i].Y;
+        }
+        return result;
+    }
+
+    // Position-aware Douglas-Peucker. Uses northEps when the segment under
+    // consideration is centered in the northern band, baseEps otherwise.
+    static List<(float X, float Y)> DouglasPeuckerRegional(
+        List<(float X, float Y)> pts, float baseEps, float northEps, float northY)
+    {
+        if (pts.Count <= 2) return pts;
+        float maxD = 0; int maxI = 0;
+        var (ax, ay) = pts[0]; var (bx, by) = pts[^1];
+        for (int i = 1; i < pts.Count - 1; i++)
+        {
+            float d = PerpDist(pts[i].X, pts[i].Y, ax, ay, bx, by);
+            if (d > maxD) { maxD = d; maxI = i; }
+        }
+        float midY = (ay + by) * 0.5f;
+        float eps = midY < northY ? northEps : baseEps;
+        if (maxD > eps)
+        {
+            var left = DouglasPeuckerRegional(pts.GetRange(0, maxI + 1), baseEps, northEps, northY);
+            var right = DouglasPeuckerRegional(pts.GetRange(maxI, pts.Count - maxI), baseEps, northEps, northY);
+            var result = new List<(float X, float Y)>(left.Count + right.Count);
+            result.AddRange(left);
+            result.AddRange(right.GetRange(1, right.Count - 1));
+            return result;
+        }
+        return new List<(float X, float Y)> { pts[0], pts[^1] };
+    }
+
     // ── Binary serialization ─────────────────────────────────────────
     //
     // Format: "BVEC" v2, u16 fixed-point coords (1/32 pixel precision)
@@ -268,9 +433,12 @@ public static class BiomeExtractor
 
     public static byte[] ExtractBinary(byte[] mapPx, int srcW, int srcH,
         byte[]? heightPx = null, int heightW = 0, int heightH = 0,
-        byte[]? maskPx = null, int maskW = 0, int maskH = 0)
+        byte[]? maskPx = null, int maskW = 0, int maskH = 0,
+        bool legacy = false)
     {
-        var (gridSize, layers, contours) = Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        var (gridSize, layers, contours) = legacy
+            ? Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH)
+            : ExtractV2(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
 
         using var ms = new MemoryStream();
         using var w = new BinaryWriter(ms);
@@ -381,9 +549,12 @@ public static class BiomeExtractor
 
     public static string ExtractJson(byte[] mapPx, int srcW, int srcH,
         byte[]? heightPx = null, int heightW = 0, int heightH = 0,
-        byte[]? maskPx = null, int maskW = 0, int maskH = 0)
+        byte[]? maskPx = null, int maskW = 0, int maskH = 0,
+        bool legacy = false)
     {
-        var (gridSize, layers, contours) = Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        var (gridSize, layers, contours) = legacy
+            ? Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH)
+            : ExtractV2(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
 
         string[] typeNames = { "depth", "land", "elevation", "biome", "forest", "mist", "lava" };
         var jsonLayers = new List<object>();

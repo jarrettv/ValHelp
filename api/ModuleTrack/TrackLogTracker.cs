@@ -69,6 +69,7 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
             {
                 var events = CompactEventParser.Parse(entry.Code);
                 var points = events
+                    .Where(e => e.Tag == 'F' || e.Tag == 'W' || e.Tag == 'P' || e.Tag == 'J')
                     .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
                     .ToArray();
                 if (points.Length > 0)
