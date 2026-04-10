@@ -66,3 +66,4 @@ services:
       PGSYNC_INTERVAL_SECONDS: 14400
     volumes:
       - ./pgsync/config:/config:ro
+      - ./pgsync/logs:/logs

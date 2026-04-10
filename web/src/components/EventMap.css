@@ -75,6 +75,7 @@
   position: relative;
   overflow: hidden;
   cursor: grab;
+  touch-action: none;
 }
 .event-map.dragging {
   cursor: grabbing;
@@ -137,6 +138,27 @@
   display: block;
 }
 .event-map-player-toggle.hidden {
+  opacity: 0.25;
+}
+.event-map-portal-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #886644;
+  padding: 2px;
+  background: #222;
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.15s;
+  margin-left: 8px;
+}
+.event-map-portal-toggle img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.event-map-portal-toggle.hidden {
   opacity: 0.25;
 }
 .event-map-logo {

@@ -120,12 +120,12 @@ public static class Auth
             {
                 logger.LogInformation("Avatar with hash {Hash} already exists, reusing", hashString);
             }
-            return $"https://valheim.help/api/avatar/{hashString}.webp";
+            return $"/api/avatar/{hashString}.webp";
         }
         catch (Exception ex)
         {
             logger.LogWarning(ex, "Failed to download or store avatar url={AvatarUrl}", avatarUrl);
-            return "https://valheim.help/favicon.webp";
+            return "/favicon.webp";
         }
     }
 }

@@ -41,13 +41,13 @@ public static class AdminEndpointsAvatar
             .ToListAsync();
         foreach (var user in allUsers)
         {
-            if (user.AvatarUrl.StartsWith("https://valheim.help/api/avatar"))
+            if (user.AvatarUrl.StartsWith("/api/avatar"))
             {
                 logger.LogInformation("User {UserId} already has mapped avatar URL {AvatarUrl}", user.Id, user.AvatarUrl);
                 idToAvatarMap[user.Id] = user.AvatarUrl;
                 continue;
             }
-            else if (user.AvatarUrl == "https://valheim.help/favicon.webp")
+            else if (user.AvatarUrl == "/favicon.webp")
             {
                 logger.LogInformation("User {UserId} doesn't have a good avatar", user.Id);
                 continue;
@@ -57,7 +57,7 @@ public static class AdminEndpointsAvatar
             user.AvatarUrl = newUrl;
             await db.SaveChangesAsync();
 
-            if (newUrl != "https://valheim.help/favicon.webp")
+            if (newUrl != "/favicon.webp")
             {
                 idToAvatarMap[user.Id] = newUrl;
             }

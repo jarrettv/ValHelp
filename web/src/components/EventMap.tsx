@@ -204,6 +204,8 @@ const imageCache = new Map<string, HTMLImageElement>();
 let scheduleRedraw: (() => void) | null = null;
 
 function getCachedImage(url: string): HTMLImageElement | null {
+  // Rewrite legacy absolute avatar URLs to relative
+  if (url.startsWith('https://valheim.help/')) url = url.replace('https://valheim.help', '');
   const existing = imageCache.get(url);
   if (existing) return existing;
   const img = new Image();
@@ -262,6 +264,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const [hiddenPlayers, setHiddenPlayers] = useState<Set<number>>(new Set());
   const hiddenRef = useRef(hiddenPlayers);
   hiddenRef.current = hiddenPlayers;
+  const [hidePortals, setHidePortals] = useState(false);
+  const hidePortalsRef = useRef(hidePortals);
+  hidePortalsRef.current = hidePortals;
 
   const isLive = event.status === EventStatus.Live;
   const eventStartMs = new Date(event.startAt).getTime();
@@ -329,27 +334,17 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
       // ── Draw path, breaking at jump points (portal/respawn) ──
       if (player.path.length > 1) {
-        ctx.strokeStyle = player.color;
-        ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.globalAlpha = 0.7;
-        ctx.setLineDash([]);
-
-        // Old-format paths have no j flags — use speed-based fallback
-        const hasJumpFlags = player.path.some(p => p[3]);
         const SPEED_THRESHOLD = 30; // m/s — well above max Valheim speed
 
-        ctx.beginPath();
-        const [sx0, sy0] = toScreen(player.path[0][0], player.path[0][1]);
-        ctx.moveTo(sx0, sy0);
-
+        // Pre-classify each segment as portal or normal
+        const isPortalSeg: boolean[] = [false]; // index 0 = no prev segment
         for (let i = 1; i < player.path.length; i++) {
-          const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
-
-          let isBreak = player.path[i][3]; // j flag
-          if (!hasJumpFlags) {
-            // Speed fallback for old format: pixel dist → world dist / dt
+          let isBreak = !!player.path[i][3]; // j flag
+          // Always also check speed — j flags are missing on most portal teleports
+          if (!isBreak) {
             const dt = player.path[i][2] - player.path[i - 1][2];
             const dpx = player.path[i][0] - player.path[i - 1][0];
             const dpy = player.path[i][1] - player.path[i - 1][1];
@@ -358,16 +353,43 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
             const speed = dt > 0 ? worldDist / dt : (worldDist > 100 ? Infinity : 0);
             isBreak = speed > SPEED_THRESHOLD;
           }
+          isPortalSeg.push(isBreak);
+        }
 
-          if (isBreak) {
-            ctx.stroke();
-            ctx.beginPath();
+        // Draw normal segments (solid)
+        ctx.strokeStyle = player.color;
+        ctx.lineWidth = 6;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        const [sx0, sy0] = toScreen(player.path[0][0], player.path[0][1]);
+        ctx.moveTo(sx0, sy0);
+        for (let i = 1; i < player.path.length; i++) {
+          const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
+          if (isPortalSeg[i]) {
             ctx.moveTo(sx, sy);
           } else {
             ctx.lineTo(sx, sy);
           }
         }
         ctx.stroke();
+
+        // Draw portal segments (dotted)
+        if (!hidePortalsRef.current) {
+          ctx.strokeStyle = player.color;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([2, 4]);
+          ctx.globalAlpha = 0.25;
+          ctx.beginPath();
+          for (let i = 1; i < player.path.length; i++) {
+            if (!isPortalSeg[i]) continue;
+            const [sx0p, sy0p] = toScreen(player.path[i - 1][0], player.path[i - 1][1]);
+            const [sx, sy] = toScreen(player.path[i][0], player.path[i][1]);
+            ctx.moveTo(sx0p, sy0p);
+            ctx.lineTo(sx, sy);
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
         ctx.globalAlpha = 1.0;
       }
 
@@ -406,13 +428,15 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       }
 
       // ── Draw portals ──
-      for (const portal of player.portals) {
-        const [ppx, ppy] = worldToPixel(portal.x, portal.z, gs);
-        const [sx, sy] = toScreen(ppx, ppy);
-        if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
+      if (!hidePortalsRef.current) {
+        for (const portal of player.portals) {
+          const [ppx, ppy] = worldToPixel(portal.x, portal.z, gs);
+          const [sx, sy] = toScreen(ppx, ppy);
+          if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
 
-        const r = Math.max(8, Math.min(14, 10 * scale));
-        drawIconCircle(ctx, sx, sy, r, player.color, `/img/Misc/portal_wood.png`);
+          const r = Math.max(8, Math.min(14, 10 * scale));
+          drawIconCircle(ctx, sx, sy, r, player.color, `/img/Misc/portal_wood.png`);
+        }
       }
 
       // ── Draw avatar at current position ──
@@ -628,16 +652,93 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       area!.classList.remove('dragging');
     }
 
+    // ── Touch pan/zoom ──
+    let lastTouchDist = 0;
+    let lastTouchMidX = 0;
+    let lastTouchMidY = 0;
+    let touching = false;
+
+    function onTouchStart(e: TouchEvent) {
+      if (e.touches.length === 1) {
+        e.preventDefault();
+        const s = stateRef.current;
+        s.dragging = true;
+        s.lastMX = e.touches[0].clientX;
+        s.lastMY = e.touches[0].clientY;
+        area!.classList.add('dragging');
+      } else if (e.touches.length === 2) {
+        e.preventDefault();
+        touching = true;
+        stateRef.current.dragging = false;
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        lastTouchDist = Math.sqrt(dx * dx + dy * dy);
+        lastTouchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        lastTouchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      }
+    }
+
+    function onTouchMove(e: TouchEvent) {
+      e.preventDefault();
+      const s = stateRef.current;
+      if (e.touches.length === 1 && s.dragging) {
+        s.panX += e.touches[0].clientX - s.lastMX;
+        s.panY += e.touches[0].clientY - s.lastMY;
+        s.lastMX = e.touches[0].clientX;
+        s.lastMY = e.touches[0].clientY;
+        scheduleUpdate();
+      } else if (e.touches.length === 2 && touching) {
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const rect = area!.getBoundingClientRect();
+        const mx = midX - rect.left, my = midY - rect.top;
+
+        // Zoom
+        const factor = dist / lastTouchDist;
+        const minScale = Math.min(area!.clientWidth / s.imgW, area!.clientHeight / s.imgH) * 0.5;
+        const newScale = Math.min(Math.max(s.scale * factor, minScale), 20);
+        s.panX = mx - (mx - s.panX) * (newScale / s.scale);
+        s.panY = my - (my - s.panY) * (newScale / s.scale);
+        s.scale = newScale;
+
+        // Pan with midpoint movement
+        s.panX += midX - lastTouchMidX;
+        s.panY += midY - lastTouchMidY;
+
+        lastTouchDist = dist;
+        lastTouchMidX = midX;
+        lastTouchMidY = midY;
+        scheduleUpdate();
+      }
+    }
+
+    function onTouchEnd(e: TouchEvent) {
+      if (e.touches.length < 2) touching = false;
+      if (e.touches.length === 0) {
+        stateRef.current.dragging = false;
+        area!.classList.remove('dragging');
+      }
+    }
+
     area.addEventListener('wheel', onWheel, { passive: false });
     area.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+    area.addEventListener('touchstart', onTouchStart, { passive: false });
+    area.addEventListener('touchmove', onTouchMove, { passive: false });
+    area.addEventListener('touchend', onTouchEnd);
 
     return () => {
       area.removeEventListener('wheel', onWheel);
       area.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      area.removeEventListener('touchstart', onTouchStart);
+      area.removeEventListener('touchmove', onTouchMove);
+      area.removeEventListener('touchend', onTouchEnd);
     };
   }, [scheduleUpdate]);
 
@@ -698,6 +799,13 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
               </button>
             );
           })}
+          <button
+            className={`event-map-portal-toggle ${hidePortals ? 'hidden' : ''}`}
+            onClick={() => { setHidePortals(h => !h); scheduleUpdate(); }}
+            title={hidePortals ? 'Show portals' : 'Hide portals'}
+          >
+            <img src="/img/Misc/portal_wood.png" alt="Portals" />
+          </button>
         </div>
       )}
     </div>
