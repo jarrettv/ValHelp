@@ -262,6 +262,142 @@ public static class BiomeExtractor
         return (gridSize, layers, contours);
     }
 
+    // ── V3: Uniform simplification (no deep-north penalty) ──────────
+    //
+    // Same per-layer epsilon tuning as V2 but applies it uniformly
+    // across the entire map — no aggressive north-region reduction.
+    // Keeps full fidelity in the deep north at the cost of more vertices.
+
+    static (int gridSize, List<LayerData> layers, List<ContourData> contours) ExtractV3(
+        byte[] mapPx, int srcW, int srcH,
+        byte[]? heightPx, int heightW, int heightH,
+        byte[]? maskPx, int maskW, int maskH)
+    {
+        var (gridSize, layers, contours) = Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        ApplyUniformReduction(gridSize, layers, contours);
+        return (gridSize, layers, contours);
+    }
+
+    // ── V4: High-fidelity (half the V3 epsilons) ──────────────────────
+    //
+    // Gentler second pass — keeps more vertices than V3 for higher
+    // visual fidelity while still removing noise from marching squares.
+    // Epsilon values are ~half of V3, uniform across the map.
+
+    static (int gridSize, List<LayerData> layers, List<ContourData> contours) ExtractV4(
+        byte[] mapPx, int srcW, int srcH,
+        byte[]? heightPx, int heightW, int heightH,
+        byte[]? maskPx, int maskW, int maskH)
+    {
+        var (gridSize, layers, contours) = Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        ApplyHiFiReduction(layers, contours);
+        return (gridSize, layers, contours);
+    }
+
+    static void ApplyHiFiReduction(List<LayerData> layers, List<ContourData> contours)
+    {
+        foreach (var layer in layers)
+        {
+            float eps = layer.Type switch
+            {
+                TypeDepth     => 1.0f,  // v3=2.0  — still smooth out water, but keep more coastline detail
+                TypeLand      => 0.2f,  // v3=0.4
+                TypeElevation => 0.2f,  // v3=0.4
+                TypeBiome     => 0.25f, // v3=0.5
+                _             => 0.15f, // v3=0.3  — forest, mist, lava
+            };
+
+            for (int p = 0; p < layer.Polygons.Count; p++)
+            {
+                var pts = layer.Polygons[p];
+                int n = pts.Length / 2;
+                if (n <= 2) continue;
+                var list = new List<(float X, float Y)>(n);
+                for (int i = 0; i < n; i++) list.Add((pts[i * 2], pts[i * 2 + 1]));
+                var simplified = DouglasPeucker(list, eps);
+                if (simplified.Count < n)
+                {
+                    var result = new float[simplified.Count * 2];
+                    for (int i = 0; i < simplified.Count; i++)
+                    { result[i * 2] = simplified[i].X; result[i * 2 + 1] = simplified[i].Y; }
+                    layer.Polygons[p] = result;
+                }
+            }
+        }
+
+        foreach (var c in contours)
+        {
+            for (int p = 0; p < c.Lines.Count; p++)
+            {
+                var pts = c.Lines[p];
+                int n = pts.Length / 2;
+                if (n <= 2) continue;
+                var list = new List<(float X, float Y)>(n);
+                for (int i = 0; i < n; i++) list.Add((pts[i * 2], pts[i * 2 + 1]));
+                var simplified = DouglasPeucker(list, 0.12f); // v3=0.25
+                if (simplified.Count < n)
+                {
+                    var result = new float[simplified.Count * 2];
+                    for (int i = 0; i < simplified.Count; i++)
+                    { result[i * 2] = simplified[i].X; result[i * 2 + 1] = simplified[i].Y; }
+                    c.Lines[p] = result;
+                }
+            }
+        }
+    }
+
+    static void ApplyUniformReduction(int gridSize, List<LayerData> layers, List<ContourData> contours)
+    {
+        foreach (var layer in layers)
+        {
+            float eps = layer.Type switch
+            {
+                TypeDepth     => 2.0f,
+                TypeLand      => 0.4f,
+                TypeElevation => 0.4f,
+                TypeBiome     => 0.5f,
+                _             => 0.3f, // forest, mist, lava
+            };
+
+            for (int p = 0; p < layer.Polygons.Count; p++)
+            {
+                var pts = layer.Polygons[p];
+                int n = pts.Length / 2;
+                if (n <= 2) continue;
+                var list = new List<(float X, float Y)>(n);
+                for (int i = 0; i < n; i++) list.Add((pts[i * 2], pts[i * 2 + 1]));
+                var simplified = DouglasPeucker(list, eps);
+                if (simplified.Count < n)
+                {
+                    var result = new float[simplified.Count * 2];
+                    for (int i = 0; i < simplified.Count; i++)
+                    { result[i * 2] = simplified[i].X; result[i * 2 + 1] = simplified[i].Y; }
+                    layer.Polygons[p] = result;
+                }
+            }
+        }
+
+        foreach (var c in contours)
+        {
+            for (int p = 0; p < c.Lines.Count; p++)
+            {
+                var pts = c.Lines[p];
+                int n = pts.Length / 2;
+                if (n <= 2) continue;
+                var list = new List<(float X, float Y)>(n);
+                for (int i = 0; i < n; i++) list.Add((pts[i * 2], pts[i * 2 + 1]));
+                var simplified = DouglasPeucker(list, 0.25f);
+                if (simplified.Count < n)
+                {
+                    var result = new float[simplified.Count * 2];
+                    for (int i = 0; i < simplified.Count; i++)
+                    { result[i * 2] = simplified[i].X; result[i * 2 + 1] = simplified[i].Y; }
+                    c.Lines[p] = result;
+                }
+            }
+        }
+    }
+
     static void ApplyTargetedReduction(int gridSize, List<LayerData> layers, List<ContourData> contours)
     {
         float northY = gridSize * NorthRegionFraction;
@@ -431,14 +567,27 @@ public static class BiomeExtractor
 
     const float CoordScale = 32f; // u16 fixed-point: 1/32 pixel precision
 
+    public enum ExtractionMode { V1Legacy, V2Targeted, V3Uniform, V4HiFi }
+
     public static byte[] ExtractBinary(byte[] mapPx, int srcW, int srcH,
         byte[]? heightPx = null, int heightW = 0, int heightH = 0,
         byte[]? maskPx = null, int maskW = 0, int maskH = 0,
         bool legacy = false)
+        => ExtractBinary(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH,
+            legacy ? ExtractionMode.V1Legacy : ExtractionMode.V2Targeted);
+
+    public static byte[] ExtractBinary(byte[] mapPx, int srcW, int srcH,
+        byte[]? heightPx, int heightW, int heightH,
+        byte[]? maskPx, int maskW, int maskH,
+        ExtractionMode mode)
     {
-        var (gridSize, layers, contours) = legacy
-            ? Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH)
-            : ExtractV2(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH);
+        var (gridSize, layers, contours) = mode switch
+        {
+            ExtractionMode.V1Legacy => Extract(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH),
+            ExtractionMode.V3Uniform => ExtractV3(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH),
+            ExtractionMode.V4HiFi => ExtractV4(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH),
+            _ => ExtractV2(mapPx, srcW, srcH, heightPx, heightW, heightH, maskPx, maskW, maskH),
+        };
 
         using var ms = new MemoryStream();
         using var w = new BinaryWriter(ms);
@@ -543,6 +692,37 @@ public static class BiomeExtractor
         }
 
         return ExtractBinary(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH);
+    }
+
+    public static byte[] ExtractBinaryFromMemory(byte[] mapPng, byte[] heightPng, byte[] maskPng, bool legacy)
+        => ExtractBinaryFromMemory(mapPng, heightPng, maskPng,
+            legacy ? ExtractionMode.V1Legacy : ExtractionMode.V2Targeted);
+
+    public static byte[] ExtractBinaryFromMemory(byte[] mapPng, byte[] heightPng, byte[] maskPng, ExtractionMode mode)
+    {
+        using var img = Image.Load<Rgb24>(mapPng);
+        var px = new byte[img.Width * img.Height * 3];
+        img.CopyPixelDataTo(px);
+
+        byte[]? hPx = null; int hW = 0, hH = 0;
+        if (heightPng.Length > 0)
+        {
+            using var hImg = Image.Load<Rgba32>(heightPng);
+            hW = hImg.Width; hH = hImg.Height;
+            hPx = new byte[hW * hH * 4];
+            hImg.CopyPixelDataTo(hPx);
+        }
+
+        byte[]? mPx = null; int mW = 0, mH = 0;
+        if (maskPng.Length > 0)
+        {
+            using var mImg = Image.Load<Rgba32>(maskPng);
+            mW = mImg.Width; mH = mImg.Height;
+            mPx = new byte[mW * mH * 4];
+            mImg.CopyPixelDataTo(mPx);
+        }
+
+        return ExtractBinary(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH, mode);
     }
 
     // ── JSON serialization (kept for backwards compatibility) ────────

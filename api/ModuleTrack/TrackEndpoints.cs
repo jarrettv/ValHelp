@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using ValHelpApi.Config;
 using ValHelpApi.ModuleEvents;
+using ValHelpApi.ModuleTrack.Rendering;
 
 namespace ValHelpApi.ModuleTrack;
 
@@ -20,9 +21,11 @@ public static class TrackEndpoints
         app.MapPost("api/track/logs", PostTrackLogs);
         app.MapGet("api/track/standings", GetTrackStandings);
         app.MapPost("api/track/map", PostTrackMap);
-        app.MapGet("api/track/map/{seed}/{asset}", GetTrackMapAsset);
         app.MapGet("api/track/map/{seed}/paths", GetTrackMapPaths);
         app.MapGet("api/track/map/{seed}/paths/all", GetTrackMapPathsAll);
+        app.MapGet("api/track/map/{seed}/bvec-benchmark", BvecBenchmark);
+        app.MapPost("api/track/map/{seed}/bvec-regen", BvecRegen);
+        app.MapGet("api/track/map/{seed}/{asset}", GetTrackMapAsset);
     }
 
     public record TrackHuntRequest(string Player_Id, string Player_Name, string Player_Location, string Session_Id, int Current_Score, int Deaths, int Logouts, string Trophies, string Gamemode, JsonNode Extra);
@@ -158,9 +161,13 @@ public static class TrackEndpoints
         var heightBytes = heightMs.ToArray();
         var maskBytes = maskMs.ToArray();
 
-        // Generate BVEC server-side using the proven C# BiomeExtractor
+        // Generate BVEC server-side: v4 hi-fi extraction + v3 delta+deflate compression
         var bvec = await Task.Run(() =>
-            Rendering.BiomeExtractor.ExtractBinaryFromMemory(mapBytes, heightBytes, maskBytes));
+        {
+            var raw = Rendering.BiomeExtractor.ExtractBinaryFromMemory(
+                mapBytes, heightBytes, maskBytes, Rendering.BiomeExtractor.ExtractionMode.V4HiFi);
+            return Rendering.BvecCompressor.CompressV3(raw);
+        });
 
         var trackMap = new TrackMap
         {
@@ -240,6 +247,64 @@ public static class TrackEndpoints
         return Results.File(cached.Bvec, "application/octet-stream");
     }
 
+    /// <summary>POC: Compression benchmark — compares extraction × format combinations.</summary>
+    private static async Task<IResult> BvecBenchmark(string seed, AppDbContext db)
+    {
+        var trackMap = await db.TrackMaps
+            .Where(m => m.Seed == seed)
+            .Select(m => new { m.MapTex, m.HeightTex, m.MaskTex })
+            .FirstOrDefaultAsync();
+
+        if (trackMap == null || trackMap.MapTex.Length == 0)
+            return Results.NotFound("No map data for this seed");
+
+        // Re-extract with all four algorithms
+        var texArgs = (trackMap.MapTex, trackMap.HeightTex, trackMap.MaskTex);
+        var v1 = Rendering.BiomeExtractor.ExtractBinaryFromMemory(texArgs.MapTex, texArgs.HeightTex, texArgs.MaskTex,
+            Rendering.BiomeExtractor.ExtractionMode.V1Legacy);
+        var v2 = Rendering.BiomeExtractor.ExtractBinaryFromMemory(texArgs.MapTex, texArgs.HeightTex, texArgs.MaskTex,
+            Rendering.BiomeExtractor.ExtractionMode.V2Targeted);
+        var v3 = Rendering.BiomeExtractor.ExtractBinaryFromMemory(texArgs.MapTex, texArgs.HeightTex, texArgs.MaskTex,
+            Rendering.BiomeExtractor.ExtractionMode.V3Uniform);
+        var v4 = Rendering.BiomeExtractor.ExtractBinaryFromMemory(texArgs.MapTex, texArgs.HeightTex, texArgs.MaskTex,
+            Rendering.BiomeExtractor.ExtractionMode.V4HiFi);
+
+        var report = BvecCompressor.Benchmark(v1, v2, v3, v4);
+        return Results.Text(report, "text/plain");
+    }
+
+    /// <summary>Regenerate BVEC for a seed using v4 extraction + v3 compression.</summary>
+    private static async Task<IResult> BvecRegen(string seed, AppDbContext db, IMemoryCache memoryCache)
+    {
+        var trackMap = await db.TrackMaps.FirstOrDefaultAsync(m => m.Seed == seed);
+        if (trackMap == null || trackMap.MapTex.Length == 0)
+            return Results.NotFound("No map data for this seed");
+
+        var oldSize = trackMap.Bvec?.Length ?? 0;
+
+        var bvec = await Task.Run(() =>
+        {
+            var raw = Rendering.BiomeExtractor.ExtractBinaryFromMemory(
+                trackMap.MapTex, trackMap.HeightTex, trackMap.MaskTex,
+                Rendering.BiomeExtractor.ExtractionMode.V4HiFi);
+            return Rendering.BvecCompressor.CompressV3(raw);
+        });
+
+        trackMap.Bvec = bvec;
+        trackMap.BvecAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
+
+        // Invalidate cache
+        memoryCache.Remove($"bvec:{seed}");
+
+        return Results.Ok(new
+        {
+            seed,
+            oldSize,
+            newSize = bvec.Length,
+            reduction = oldSize > 0 ? $"{100.0 * (oldSize - bvec.Length) / oldSize:F1}%" : "N/A"
+        });
+    }
 
     /// <summary>SSE endpoint streaming player path updates for live map.</summary>
     public static async Task GetTrackMapPaths(string seed, HttpContext ctx, PathStore pathStore, AppDbContext db)

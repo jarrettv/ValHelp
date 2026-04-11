@@ -172,7 +172,12 @@ function init(canvasEl, worldName, baseUrl) {
       var forestImg = results[1];
       var maskImg = results[2];
 
-      var data = parseBinary(buf);
+      return parseBinaryAuto(buf).then(function(data) {
+        return { data: data, forestImg: forestImg, maskImg: maskImg, bufSize: buf.byteLength };
+      });
+    })
+    .then(function(r) {
+      var data = r.data, forestImg = r.forestImg, maskImg = r.maskImg;
       buildGPUBuffers(data);
 
       // Upload textures
@@ -197,7 +202,7 @@ function init(canvasEl, worldName, baseUrl) {
         contourLayers.length + ' contour levels, grid=' + gridSize,
         'types:', JSON.stringify(typeCounts),
         'textures:', _texturesReady ? 'ready' : 'unavailable',
-        'binary: ' + (buf.byteLength / 1024).toFixed(0) + 'KB');
+        'binary: ' + (r.bufSize / 1024).toFixed(0) + 'KB');
     });
 }
 
@@ -610,6 +615,135 @@ function createTexture(img, repeat) {
 function isPowerOf2(v) { return (v & (v - 1)) === 0 && v > 0; }
 
 // ── Binary parsing ───────────────────────────────────────────────────
+
+// Auto-detect v2 vs v3 format and parse accordingly.
+// v2 is synchronous, v3 is async (DecompressionStream). Always returns a Promise.
+function parseBinaryAuto(buf) {
+  var dv = new DataView(buf);
+  var version = dv.getUint8(4);
+  if (version === 3) return parseBinaryV3(buf);
+  return Promise.resolve(parseBinary(buf));
+}
+
+// ── v3: delta-encoded + deflate-raw ─────────────────────────────────
+
+function parseBinaryV3(buf) {
+  var dv = new DataView(buf);
+  var off = 5; // skip magic + version
+  var uncompressedSize = dv.getUint32(off, true); off += 4;
+
+  var compressed = new Uint8Array(buf, off);
+  return inflateRaw(compressed).then(function(inner) {
+    return decodeDelta(inner);
+  });
+}
+
+function inflateRaw(compressed) {
+  var ds = new DecompressionStream('deflate-raw');
+  var writer = ds.writable.getWriter();
+  writer.write(compressed);
+  writer.close();
+  var reader = ds.readable.getReader();
+  var chunks = [], totalLen = 0;
+  function pump() {
+    return reader.read().then(function(result) {
+      if (result.done) {
+        var out = new Uint8Array(totalLen);
+        var offset = 0;
+        for (var i = 0; i < chunks.length; i++) {
+          out.set(chunks[i], offset);
+          offset += chunks[i].length;
+        }
+        return out;
+      }
+      chunks.push(result.value);
+      totalLen += result.value.length;
+      return pump();
+    });
+  }
+  return pump();
+}
+
+function decodeDelta(buf) {
+  var pos = { v: 0 };
+  var invScale = 1.0 / COORD_SCALE;
+
+  gridSize = readU16(buf, pos);
+  var numLayers = readU16(buf, pos);
+
+  var layers = [];
+  for (var li = 0; li < numLayers; li++) {
+    var typeId = buf[pos.v++];
+    var r = buf[pos.v++], g = buf[pos.v++], b = buf[pos.v++];
+    var numPolygons = readU16(buf, pos);
+    var polygons = [];
+    for (var pi = 0; pi < numPolygons; pi++) {
+      var nv = readU16(buf, pos);
+      var verts = new Float32Array(nv * 2);
+      var prevX = 0, prevY = 0;
+      for (var vi = 0; vi < nv; vi++) {
+        var dx = zigzagDecode(readVarint(buf, pos));
+        var dy = zigzagDecode(readVarint(buf, pos));
+        prevX += dx; prevY += dy;
+        verts[vi * 2] = prevX * invScale;
+        verts[vi * 2 + 1] = prevY * invScale;
+      }
+      polygons.push(verts);
+    }
+    layers.push({
+      type: TYPE_NAMES[typeId] || ('type' + typeId),
+      r: r / 255, g: g / 255, b: b / 255,
+      polygons: polygons
+    });
+  }
+
+  var numContours = readU16(buf, pos);
+  var contours = [];
+  for (var ci = 0; ci < numContours; ci++) {
+    pos.v += 4; // skip height (f32)
+    var flags = buf[pos.v++];
+    var major = (flags & 1) !== 0;
+    var numLines = readU16(buf, pos);
+    var lines = [];
+    for (var pli = 0; pli < numLines; pli++) {
+      var nv = readU16(buf, pos);
+      var verts = new Float32Array(nv * 2);
+      var prevX = 0, prevY = 0;
+      for (var vi = 0; vi < nv; vi++) {
+        var dx = zigzagDecode(readVarint(buf, pos));
+        var dy = zigzagDecode(readVarint(buf, pos));
+        prevX += dx; prevY += dy;
+        verts[vi * 2] = prevX * invScale;
+        verts[vi * 2 + 1] = prevY * invScale;
+      }
+      lines.push(verts);
+    }
+    contours.push({ major: major, lines: lines });
+  }
+
+  return { layers: layers, contours: contours };
+}
+
+function zigzagDecode(n) { return (n >>> 1) ^ -(n & 1); }
+
+function readVarint(buf, pos) {
+  var result = 0, shift = 0;
+  while (true) {
+    var b = buf[pos.v++];
+    result |= (b & 0x7F) << shift;
+    if ((b & 0x80) === 0) break;
+    shift += 7;
+  }
+  return result >>> 0;
+}
+
+function readU16(buf, pos) {
+  var v = buf[pos.v] | (buf[pos.v + 1] << 8);
+  pos.v += 2;
+  return v;
+}
+
+// ── v2: absolute coordinates (original format) ──────────────────────
 
 function parseBinary(buf) {
   var dv = new DataView(buf);
