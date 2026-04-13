@@ -38,6 +38,23 @@ interface PortalMarker {
   at: number;
 }
 
+interface PoiMarker {
+  type: string;   // "boss", "trader", "start"
+  name: string;   // "Eikthyr", "Haldor", "Stones"
+  x: number;      // world X
+  z: number;      // world Z
+}
+
+// POI marker styling — white icons with drop shadow (matches vhcli)
+const POI_STYLES: Record<string, { color: string; icon: string }> = {
+  boss:     { color: '#ffffff', icon: '/img/Poi/boss.svg' },
+  haldor:   { color: '#ffffff', icon: '/img/Poi/haldor.svg' },
+  hildir:   { color: '#ffffff', icon: '/img/Poi/hildir.svg' },
+  bogwitch: { color: '#ffffff', icon: '/img/Poi/bogwitch.svg' },
+  trader:   { color: '#ffffff', icon: '/img/Poi/haldor.svg' },
+  start:    { color: '#ffffff', icon: '/img/Poi/start.svg' },
+};
+
 interface PlayerMapData {
   index: number;
   id: string;
@@ -267,7 +284,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const [hidePortals, setHidePortals] = useState(false);
   const hidePortalsRef = useRef(hidePortals);
   hidePortalsRef.current = hidePortals;
-
+  const [hidePois, setHidePois] = useState(false);
+  const hidePoisRef = useRef(hidePois);
+  hidePoisRef.current = hidePois;
+  const poisRef = useRef<PoiMarker[]>([]);
   const isLive = event.status === EventStatus.Live;
   const eventStartMs = new Date(event.startAt).getTime();
   const eventEndMs = new Date(event.endAt).getTime();
@@ -477,6 +497,31 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         }
       }
     }
+
+    // ── Draw POI markers on top of everything ──
+    if (!hidePoisRef.current) {
+      for (const poi of poisRef.current) {
+        const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
+        const [sx, sy] = toScreen(ppx, ppy);
+        if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
+
+        const style = POI_STYLES[poi.type] || POI_STYLES.boss;
+        const iconSize = Math.max(20, Math.min(35, 27.5 * scale));
+        const isStart = poi.type === 'start';
+        const sz = isStart ? iconSize * 1.5 : iconSize;
+
+        const icon = getCachedImage(style.icon);
+        if (icon && icon.complete && icon.naturalWidth > 0) {
+          ctx.save();
+          ctx.shadowColor = '#000';
+          ctx.shadowBlur = 6;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 2;
+          ctx.drawImage(icon, sx - sz / 2, sy - sz / 2, sz, sz);
+          ctx.restore();
+        }
+      }
+    }
   }, []);
 
   const applyTransform = useCallback(() => {
@@ -533,6 +578,12 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         const seed = encodeURIComponent(event.seed);
         await window.VectorMap.init(glCanvas, event.seed, `/api/track/map/${seed}`);
         if (cancelled) return;
+
+        // Fetch POIs (non-blocking — map renders fine without them)
+        fetch(`/api/track/map/${seed}/pois`)
+          .then(r => r.ok ? r.json() : [])
+          .then(pois => { poisRef.current = pois; scheduleUpdate(); })
+          .catch(() => {});
 
         const gs = window.VectorMap.getGridSize();
         const s = stateRef.current;
@@ -805,6 +856,13 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
             title={hidePortals ? 'Show portals' : 'Hide portals'}
           >
             <img src="/img/Misc/portal_wood.png" alt="Portals" />
+          </button>
+          <button
+            className={`event-map-portal-toggle ${hidePois ? 'hidden' : ''}`}
+            onClick={() => { setHidePois(h => !h); scheduleUpdate(); }}
+            title={hidePois ? 'Show POIs' : 'Hide POIs'}
+          >
+            <img src="/img/Poi/boss.svg" alt="POIs" />
           </button>
         </div>
       )}

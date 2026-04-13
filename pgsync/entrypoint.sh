@@ -88,17 +88,15 @@ run_delta() {
 }
 
 run_all() {
-	# Phase 1: small reference tables — truncate+copy (cheap, handles updates)
+	# Phase 1: small/medium tables — truncate+copy
+	# events before players (FK parent)
 	run_full small
 
-	# Phase 2: large tables — preserve + rolling watermark
-	# Only new rows within the window get copied; existing rows are skipped.
+	# Phase 2: track_logs — delete local rows since last watermark window
+	# (local testing can insert rows that conflict with upstream data)
+	echo "[pgsync] Cleaning local track_logs within watermark window" >&2
+	psql "${PGSYNC_TO_URL}" -c "DELETE FROM track_logs WHERE \"at\" > now() - interval '${WATERMARK_DAYS} days'"
 	run_delta track_logs at
-	run_delta players updated_at
-
-	# Phase 3: track_maps — bespoke row-by-row sync (blobs too large for pgsync bulk COPY)
-	echo "[pgsync] Row-by-row sync: track_maps" >&2
-	python3 /scripts/sync_track_maps.py
 }
 
 if [[ "${RUN_ONCE}" == "1" ]]; then

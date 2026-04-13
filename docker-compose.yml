@@ -5,38 +5,28 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: valhelp
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-
-  # Helper container for syncing production (Supabase) -> local Postgres.
-  # Not started by default; run it on-demand:
-  #   docker compose --profile sync run --rm valhelp-db-sync snapshot
-  #   docker compose --profile sync run --rm valhelp-db-sync logical-setup
-  valhelp-db-sync:
-    image: postgres:16
-    profiles: ["sync"]
+  
+  # Seed POI generator: runs Valheim dedicated server headless to extract
+  # accurate boss/trader/start locations from seeds.
+  # Polls seed_gen_jobs table, processes one seed at a time (~60s each).
+  # Start:  docker compose --profile seedgen up -d valhelp-seedgen
+  # Logs:   docker compose --profile seedgen logs -f valhelp-seedgen
+  # One-shot (no DB): docker compose run --rm valhelp-seedgen /entrypoint.sh "huntYR6F4J"
+  valhelp-seedgen:
+    profiles: ["seedgen"]
+    build:
+      context: ./seedgen
+    restart: unless-stopped
     depends_on:
       - valhelp-db
     environment:
-      LOCAL_HOST: valhelp-db
-      LOCAL_PORT: 5432
-      LOCAL_DB: valhelp
-      LOCAL_USER: postgres
-      LOCAL_PASSWORD: postgres
-      # Supabase typically requires TLS
-      SUPABASE_SSLMODE: require
-      # Tweak restore speed (directory format supports parallel)
-      JOBS: 4
-    env_file:
-      - .env
-    volumes:
-      - ./scripts/db_sync:/sync:ro
-    entrypoint: ["/bin/bash", "/sync/sync.sh"]
-    command: ["snapshot"]
-  
+      DATABASE_URL: "Host=valhelp-db;Port=5432;Database=valhelp;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+
   valhelp-otel:
     image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
     restart: always

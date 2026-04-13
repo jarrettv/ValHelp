@@ -11,12 +11,8 @@ RUN apk add --no-cache \
 
 RUN gem install pgsync -N
 
-# Python for bespoke track_maps sync (blobs too large for pgsync bulk COPY)
-RUN apk add --no-cache python3 py3-psycopg2
-
 WORKDIR /config
 
-COPY sync_track_maps.py /scripts/sync_track_maps.py
 COPY entrypoint.sh /entrypoint.sh
 RUN sed -i '1s/^\xEF\xBB\xBF//' /entrypoint.sh \
 	&& sed -i 's/\r$//' /entrypoint.sh \

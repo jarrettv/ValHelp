@@ -303,7 +303,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
             updatedAt = DateTime.Parse(etag, null, System.Globalization.DateTimeStyles.RoundtripKind);
         }
 
-        var maxPlayerUpdatedAt = hunt.Players.Max(p => p.UpdatedAt);
+        var maxPlayerUpdatedAt = hunt.Players.Any() ? hunt.Players.Max(p => p.UpdatedAt) : DateTime.MinValue;
         var maxUpdatedAt = hunt.UpdatedAt > maxPlayerUpdatedAt ? hunt.UpdatedAt : maxPlayerUpdatedAt;
         if (updatedAt != null && maxUpdatedAt == updatedAt)
         {

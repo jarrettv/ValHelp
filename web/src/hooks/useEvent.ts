@@ -1,19 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
 import { Event, EventStatus } from '../domain/event';
 
+class NotFoundError extends Error {
+  status = 404;
+  constructor() { super('Event not found'); }
+}
+
 const fetchEvent = async (id: number, password?: string): Promise<Event> => {
   const headers: Record<string, string> = {
     "If-None-Match": localStorage.getItem(`etag-${id}`) || ""
   };
-  
+
   if (password) {
     headers["X-Private-Password"] = password;
   }
-  
+
   const response = await fetch(`/api/events/${id}`, { headers });
   if (response.status === 304) {
     var json = localStorage.getItem(`event-${id}`);
     return JSON.parse(json!) as Event;
+  }
+  if (response.status === 404) {
+    throw new NotFoundError();
   }
   if (!response.ok) {
     throw new Error('Failed to fetch event details');

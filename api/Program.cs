@@ -14,6 +14,7 @@ builder.AddDatabase();
 builder.Services.AddHybridCache();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackLog>());
 builder.Services.AddSingleton(x => Channel.CreateUnbounded<TrackHunt>());
 builder.Services.AddSingleton<PathStore>();

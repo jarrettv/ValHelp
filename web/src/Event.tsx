@@ -25,11 +25,16 @@ export default function Event() {
   const eventId = isPasswordAccess ? 0 : parseInt(id!);
   const queryPassword = searchParams.get('password');
   
-  const { data: eventById, isPending: isPendingById } = useEvent(eventId, queryPassword || undefined);
-  const { data: eventByPassword, isPending: isPendingByPassword } = useEventByPassword(password || "");
+  const { data: eventById, isPending: isPendingById, isError: isErrorById } = useEvent(eventId, queryPassword || undefined);
+  const { data: eventByPassword, isPending: isPendingByPassword, isError: isErrorByPassword } = useEventByPassword(password || "");
   
   const data = isPasswordAccess ? eventByPassword : eventById;
   const isPending = isPasswordAccess ? isPendingByPassword : isPendingById;
+  const isError = isPasswordAccess ? isErrorByPassword : isErrorById;
+
+  const [tab, setTab] = React.useState<'standings' | 'map'>('standings');
+  const [mapAgreed, setMapAgreed] = React.useState(false);
+  const [participantAcknowledged, setParticipantAcknowledged] = React.useState(false);
 
   // Redirect to ID-based URL if accessing via password and we have the data
   if (isPasswordAccess && data && !isPending) {
@@ -42,12 +47,16 @@ export default function Event() {
     return false;
   }
 
-  const [tab, setTab] = React.useState<'standings' | 'map'>('standings');
-  const [mapAgreed, setMapAgreed] = React.useState(false);
-  const [participantAcknowledged, setParticipantAcknowledged] = React.useState(false);
-
   return (<>
     {isPending && <div><Spinner /></div>}
+    {!isPending && isError && (
+      <div className="card" style={{textAlign: "center", padding: "3rem 2rem"}}>
+        <Lock style={{width: "3rem", height: "3rem", margin: "0 auto 1rem"}} />
+        <h3>Event not found</h3>
+        <p style={{opacity: 0.7}}>This event doesn't exist or is private. If it's a private event, you'll need the invite link from the organizer.</p>
+        <Link to="/events">Browse public events</Link>
+      </div>
+    )}
     {!isPending && data && (
 
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>

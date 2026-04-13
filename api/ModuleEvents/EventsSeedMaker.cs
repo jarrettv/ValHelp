@@ -9,13 +9,18 @@ public class EventsSeedMaker : BackgroundService
 {
     private readonly ILogger<EventsSeedMaker> _logger;
     private readonly IServiceScopeFactory _serviceProvider;
+    private readonly IConfiguration _config;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(60); // Adjust the interval as needed
     private readonly ConcurrentDictionary<int, DateTime> _scheduledEvents = new();
 
-    public EventsSeedMaker(ILogger<EventsSeedMaker> logger, IServiceScopeFactory serviceProvider)
+    public EventsSeedMaker(ILogger<EventsSeedMaker> logger, IServiceScopeFactory serviceProvider,
+        IConfiguration config, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _config = config;
+        _httpClientFactory = httpClientFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -122,6 +127,27 @@ public class EventsSeedMaker : BackgroundService
         hunt.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(stoppingToken);
         await cache.RemoveAsync($"event-{eventId}");
+
+        _logger.LogInformation("Event {eventId}: seed={seed}, submitting to seedgen", eventId, hunt.Seed);
+        _ = SubmitToSeedGen(hunt.Seed);
+    }
+
+    private async Task SubmitToSeedGen(string seed)
+    {
+        var seedGenUrl = _config["SeedGenUrl"];
+        if (string.IsNullOrEmpty(seedGenUrl)) return;
+
+        try
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
+            var resp = await client.PostAsJsonAsync($"{seedGenUrl}/api/seedgen/submit", new { seed });
+            _logger.LogInformation("Seedgen submit {seed}: {status}", seed, resp.StatusCode);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Seedgen submit failed for {seed} — will generate on demand", seed);
+        }
     }
 
     private static string RandomString(int length)

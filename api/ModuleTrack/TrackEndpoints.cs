@@ -25,6 +25,7 @@ public static class TrackEndpoints
         app.MapGet("api/track/map/{seed}/paths/all", GetTrackMapPathsAll);
         app.MapGet("api/track/map/{seed}/bvec-benchmark", BvecBenchmark);
         app.MapPost("api/track/map/{seed}/bvec-regen", BvecRegen);
+        app.MapGet("api/track/map/{seed}/pois", GetTrackMapPois);
         app.MapGet("api/track/map/{seed}/{asset}", GetTrackMapAsset);
     }
 
@@ -189,10 +190,10 @@ public static class TrackEndpoints
 
 
     public static async Task<IResult> GetTrackMapAsset(string seed, string asset, AppDbContext db, HttpContext ctx,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache, IConfiguration config)
     {
         if (asset == "biomes")
-            return await GetTrackMapBvec(seed, db, ctx, memoryCache);
+            return await GetTrackMapBvec(seed, db, ctx, memoryCache, config);
 
         if (asset == "forest")
         {
@@ -211,17 +212,21 @@ public static class TrackEndpoints
                          asset == "mask" ? m.MaskTex : null)
             .FirstOrDefaultAsync();
 
-        if (map == null || map.Length == 0)
-            return Results.NotFound();
+        if (map != null && map.Length > 0)
+        {
+            ctx.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+            return Results.File(map, "image/png");
+        }
 
-        ctx.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-        return Results.File(map, "image/png");
+        // Fallback: redirect to seedgen service
+        var seedGenFile = asset switch { "map" => "mapTexCache", "height" => "heightTexCache", "mask" => "forestMaskTexCache", _ => null };
+        return await ProxyFromSeedGen(seed, seedGenFile, config, ctx);
     }
 
     private record BvecCacheEntry(byte[] Bvec, DateTime BvecAt);
 
     private static async Task<IResult> GetTrackMapBvec(string seed, AppDbContext db, HttpContext ctx,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache, IConfiguration config)
     {
         var cacheKey = $"bvec:{seed}";
         if (!memoryCache.TryGetValue(cacheKey, out BvecCacheEntry? cached))
@@ -232,7 +237,7 @@ public static class TrackEndpoints
                 .FirstOrDefaultAsync();
 
             if (trackMap == null)
-                return Results.NotFound();
+                return await ProxyFromSeedGen(seed, "bvec", config, ctx);
 
             cached = new BvecCacheEntry(trackMap.Bvec!, trackMap.BvecAt!.Value);
             memoryCache.Set(cacheKey, cached, TimeSpan.FromHours(4));
@@ -245,6 +250,53 @@ public static class TrackEndpoints
         ctx.Response.Headers.ETag = etag;
         ctx.Response.Headers.CacheControl = "public, max-age=86400";
         return Results.File(cached.Bvec, "application/octet-stream");
+    }
+
+    /// <summary>Get POIs (bosses, traders, start) for a seed via seedgen proxy.</summary>
+    private static async Task<IResult> GetTrackMapPois(string seed, IConfiguration config, HttpContext ctx)
+    {
+        return await ProxyFromSeedGen(seed, "pois", config, ctx);
+    }
+
+    private static async Task<IResult> ProxyFromSeedGen(string seed, string? file, IConfiguration config, HttpContext ctx)
+    {
+        var seedGenUrl = config["SeedGenUrl"];
+        if (string.IsNullOrEmpty(seedGenUrl) || string.IsNullOrEmpty(file))
+            return Results.NotFound();
+
+        int seedHash = Vh.Numerics.StableHash.GetStableHashCode(seed);
+        var url = $"{seedGenUrl}/api/v2/seed{seedHash}/{file}";
+
+        var httpFactory = ctx.RequestServices.GetRequiredService<IHttpClientFactory>();
+        var client = httpFactory.CreateClient();
+
+        // Forward client's If-None-Match to seedgen
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        var clientEtag = ctx.Request.Headers.IfNoneMatch.ToString();
+        if (!string.IsNullOrEmpty(clientEtag))
+            request.Headers.TryAddWithoutValidation("If-None-Match", clientEtag);
+
+        var resp = await client.SendAsync(request, ctx.RequestAborted);
+
+        // Seedgen returned 304 — pass it through
+        if (resp.StatusCode == System.Net.HttpStatusCode.NotModified)
+        {
+            ctx.Response.StatusCode = 304;
+            return Results.Empty;
+        }
+
+        if (!resp.IsSuccessStatusCode)
+            return Results.NotFound();
+
+        // Forward cache headers from seedgen
+        if (resp.Headers.ETag is { } etag)
+            ctx.Response.Headers.ETag = etag.ToString();
+        if (resp.Headers.CacheControl is { } cc)
+            ctx.Response.Headers.CacheControl = cc.ToString();
+
+        var contentType = resp.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
+        var bytes = await resp.Content.ReadAsByteArrayAsync(ctx.RequestAborted);
+        return Results.File(bytes, contentType);
     }
 
     /// <summary>POC: Compression benchmark — compares extraction × format combinations.</summary>
@@ -302,7 +354,7 @@ public static class TrackEndpoints
             seed,
             oldSize,
             newSize = bvec.Length,
-            reduction = oldSize > 0 ? $"{100.0 * (oldSize - bvec.Length) / oldSize:F1}%" : "N/A"
+            reduction = oldSize > 0 ? $"{100.0 * (oldSize - bvec.Length) / oldSize:F1}%" : "N/A",
         });
     }
 

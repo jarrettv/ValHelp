@@ -646,13 +646,13 @@ namespace ValHelpApi.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<int>("X")
+                            b1.Property<int?>("X")
                                 .HasColumnType("integer");
 
-                            b1.Property<int>("Y")
+                            b1.Property<int?>("Y")
                                 .HasColumnType("integer");
 
-                            b1.Property<int>("Z")
+                            b1.Property<int?>("Z")
                                 .HasColumnType("integer");
 
                             b1.HasKey("PlayerEventId", "PlayerUserId", "__synthesizedOrdinal");
