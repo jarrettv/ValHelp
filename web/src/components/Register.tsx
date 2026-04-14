@@ -30,7 +30,11 @@ export default function Register({ eventId, player }: RegisterProps) {
       });
       if (!response.ok) {
         var problem = await response.json();
-        throw new Error(problem.detail);
+        var msg = problem.detail;
+        if (!msg && problem.errors) {
+          msg = Object.values(problem.errors).flat().join(', ');
+        }
+        throw new Error(msg || 'Registration failed');
       } else {
         queryClient.invalidateQueries({ queryKey: ['event', eventId] });
         setShowForm(false);

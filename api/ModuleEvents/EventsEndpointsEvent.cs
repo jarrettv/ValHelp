@@ -520,8 +520,18 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
           .Where(hp => hp.UserId == req.UserId)
           .FirstOrDefaultAsync();
 
+        // Block new registrations when event description signals capacity is full
         if (player == null)
         {
+            var desc = await db.Events.Where(e => e.Id == id).Select(e => e.Desc).FirstOrDefaultAsync();
+            if (desc != null && desc.Contains("Event has reached maximum capacity"))
+            {
+                return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["registration"] = ["Event has reached maximum capacity"]
+                });
+            }
+
             player = new Player { EventId = id, UserId = req.UserId, AvatarUrl = userInfo.AvatarUrl };
             db.Players.Add(player);
         }
