@@ -1155,8 +1155,6 @@ const SbEquip: React.FC<{
   scrubTime: number;
   itemDb: Map<string, DataItem> | null;
 }> = ({ players, allPlayers, stateData, scrubTime, itemDb }) => {
-  const equipSlots = ['H', 'C', 'G', 'S', 'U', 'T'] as const;
-
   if (players.length === 0) return <div className="sb-empty">No players visible</div>;
 
   return (
