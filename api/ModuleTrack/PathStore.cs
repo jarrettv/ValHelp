@@ -70,7 +70,7 @@ public class PathStore
     /// <summary>
     /// Subscribe to path updates for a seed. Returns current state + a channel reader for live updates.
     /// </summary>
-    public (Dictionary<string, PathPoint[]> paths, Dictionary<string, StatePoint[]> states, ChannelReader<PathEvent> reader) Subscribe(string seed)
+    public (Dictionary<string, PathPoint[]> paths, Dictionary<string, StatePoint[]> states, int viewers, ChannelReader<PathEvent> reader, ChannelWriter<PathEvent> writer) Subscribe(string seed)
     {
         var state = _seeds.GetOrAdd(seed, _ => new SeedState());
         var channel = Channel.CreateBounded<PathEvent>(new BoundedChannelOptions(256)
@@ -78,9 +78,11 @@ public class PathStore
             FullMode = BoundedChannelFullMode.DropOldest
         });
 
+        int viewers;
         lock (state.SubLock)
         {
             state.Subscribers.Add(channel.Writer);
+            viewers = state.Subscribers.Count;
         }
 
         // Snapshot current paths and states
@@ -96,36 +98,40 @@ public class PathStore
             }
         }
 
-        return (snapshot, statesSnapshot, channel.Reader);
+        // Notify everyone else of the updated viewer count
+        BroadcastViewers(state, viewers);
+
+        return (snapshot, statesSnapshot, viewers, channel.Reader, channel.Writer);
     }
 
-    public void Unsubscribe(string seed, ChannelReader<PathEvent> reader)
+    /// <summary>Remove a specific subscriber and notify remaining viewers of the new count.</summary>
+    public void Unsubscribe(string seed, ChannelWriter<PathEvent> writer)
     {
         if (!_seeds.TryGetValue(seed, out var state)) return;
 
-        lock (state.SubLock)
-        {
-            state.Subscribers.RemoveAll(w =>
-            {
-                // Find the writer whose reader matches
-                if (w.TryComplete())
-                    return true; // Mark completed writers for removal
-                return false;
-            });
-
-            // Clean up completed writers
-            state.Subscribers.RemoveAll(w => !w.TryWrite(default!));
-        }
-    }
-
-    public void CompleteSubscription(string seed, ChannelWriter<PathEvent> writer)
-    {
-        writer.TryComplete();
-        if (!_seeds.TryGetValue(seed, out var state)) return;
-
+        int viewers;
         lock (state.SubLock)
         {
             state.Subscribers.Remove(writer);
+            viewers = state.Subscribers.Count;
+        }
+        writer.TryComplete();
+        BroadcastViewers(state, viewers);
+    }
+
+    private static void BroadcastViewers(SeedState state, int count)
+    {
+        var evt = new PathEvent("viewers", "", count);
+        lock (state.SubLock)
+        {
+            for (int i = state.Subscribers.Count - 1; i >= 0; i--)
+            {
+                if (!state.Subscribers[i].TryWrite(evt))
+                {
+                    state.Subscribers[i].TryComplete();
+                    state.Subscribers.RemoveAt(i);
+                }
+            }
         }
     }
 

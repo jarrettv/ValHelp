@@ -364,6 +364,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>('scores');
   const [sidebarOpen, setSidebarOpen] = useState(typeof window !== 'undefined' && window.innerWidth > 768);
   const [itemDb, setItemDb] = useState<Map<string, DataItem> | null>(null);
+  const [viewers, setViewers] = useState(0);
 
   // Load item database eagerly so sidebar tabs have it
   useEffect(() => { getItemDb().then(setItemDb); }, []);
@@ -684,19 +685,23 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         const payload = JSON.parse(e.data);
         stateRef.current.pathData = payload.paths || {};
         stateRef.current.stateData = payload.states || {};
+        if (typeof payload.viewers === 'number') setViewers(payload.viewers);
         rebuildRef.current();
       });
 
       es.addEventListener('update', (e: MessageEvent) => {
         const { type, playerId, data } = JSON.parse(e.data);
-        if (type === 'state') {
+        if (type === 'viewers') {
+          setViewers(data as number);
+        } else if (type === 'state') {
           const existing = stateRef.current.stateData[playerId] || [];
           stateRef.current.stateData[playerId] = [...existing, ...(data as StatePoint[])];
+          rebuildRef.current();
         } else {
           const existing = stateRef.current.pathData[playerId] || [];
           stateRef.current.pathData[playerId] = [...existing, ...(data as PathPoint[])];
+          rebuildRef.current();
         }
-        rebuildRef.current();
       });
 
       es.onerror = () => { /* SSE auto-reconnects */ };
@@ -890,7 +895,11 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
             />
             <span className="event-map-scrub-label">
               {formatTime(currentScrub)}
-              {isLive && pinnedToLive && ' LIVE'}
+              {isLive && pinnedToLive && (
+                <svg className="event-map-live-dot" width="12" height="12" viewBox="0 0 12 12" aria-label="LIVE">
+                  <circle cx="6" cy="6" r="4" fill="#ff3333" />
+                </svg>
+              )}
             </span>
             <button
               className={`header-toggle-btn ${hidePortals ? 'off' : ''}`}
@@ -917,6 +926,12 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
           {error && <div className="event-map-status error">{error}</div>}
           <canvas ref={glCanvasRef} className="event-map-gl" />
           <canvas ref={markerCanvasRef} className="event-map-markers" />
+          {isLive && viewers > 0 && (
+            <div className="event-map-viewers">
+              <span className="event-map-viewers-dot" />
+              {viewers} {viewers === 1 ? 'person' : 'people'} are here
+            </div>
+          )}
           <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" onClick={onClose} />
         </div>
         {!loading && !error && event.players.length > 0 && (

@@ -408,12 +408,12 @@ public static class TrackEndpoints
         }
 
         // Subscribe and get current snapshot
-        var (paths, states, reader) = pathStore.Subscribe(seed);
+        var (paths, states, viewers, reader, writer) = pathStore.Subscribe(seed);
 
         try
         {
-            // Send initial state (paths + player state snapshots)
-            var initData = JsonSerializer.Serialize(new { paths, states }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            // Send initial state (paths + player state snapshots + current viewer count)
+            var initData = JsonSerializer.Serialize(new { paths, states, viewers }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             await ctx.Response.WriteAsync($"event: init\ndata: {initData}\n\n", ct);
             await ctx.Response.Body.FlushAsync(ct);
 
@@ -428,6 +428,10 @@ public static class TrackEndpoints
             }
         }
         catch (OperationCanceledException) { /* client disconnected */ }
+        finally
+        {
+            pathStore.Unsubscribe(seed, writer);
+        }
     }
 
     /// <summary>GET endpoint returning all cached paths for replay/scrubbing.</summary>
