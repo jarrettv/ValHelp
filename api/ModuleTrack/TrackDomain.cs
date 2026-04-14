@@ -17,6 +17,20 @@ public record TrackerLog(string Code, DateTime At);
 /// </summary>
 public record CompactEvent(char Tag, int Secs, int X, int Y, int Z, string Extra);
 
+/// <summary>
+/// Snapshot of a player's state parsed from P tag extras:
+/// h:cur/max|s:cur/max|f:food1,food2|sk:Skill:level,...|eq:H=item,C=item,G=item|kd:Creature:kills/deaths,...
+/// </summary>
+public record PlayerStateSnapshot(
+    int T,
+    int Hp, int HpMax,
+    int Sp, int SpMax,
+    string[] Foods,
+    Dictionary<string, int> Skills,
+    Dictionary<string, string> Equipment,
+    Dictionary<string, int[]> KillDeaths
+);
+
 public static class CompactEventParser
 {
     private static readonly HashSet<char> ValidTags = ['F', 'W', 'P', 'J', 'T', 'D', 'L', 'S'];
@@ -26,6 +40,91 @@ public static class CompactEventParser
     /// </summary>
     public static bool IsCompactFormat(string code)
         => code.Length >= 2 && code[1] == '=' && ValidTags.Contains(code[0]);
+
+    /// <summary>
+    /// Parse the pipe-delimited extras from a P tag into a PlayerStateSnapshot.
+    /// Format: h:cur/max|s:cur/max|f:food1,food2|sk:Skill:level,...|eq:H=item,...|kd:Creature:kills/deaths,...
+    /// </summary>
+    public static PlayerStateSnapshot? ParsePExtras(int secs, string extra)
+    {
+        if (string.IsNullOrEmpty(extra)) return null;
+
+        int hp = 0, hpMax = 0, sp = 0, spMax = 0;
+        string[] foods = [];
+        var skills = new Dictionary<string, int>();
+        var equipment = new Dictionary<string, string>();
+        var killDeaths = new Dictionary<string, int[]>();
+
+        foreach (var field in extra.Split('|'))
+        {
+            if (field.Length < 2) continue;
+            var colonIdx = field.IndexOf(':');
+            if (colonIdx < 0) continue;
+            var key = field[..colonIdx];
+            var val = field[(colonIdx + 1)..];
+
+            switch (key)
+            {
+                case "h":
+                {
+                    var slash = val.IndexOf('/');
+                    if (slash > 0)
+                    {
+                        int.TryParse(val[..slash], out hp);
+                        int.TryParse(val[(slash + 1)..], out hpMax);
+                    }
+                    break;
+                }
+                case "s":
+                {
+                    var slash = val.IndexOf('/');
+                    if (slash > 0)
+                    {
+                        int.TryParse(val[..slash], out sp);
+                        int.TryParse(val[(slash + 1)..], out spMax);
+                    }
+                    break;
+                }
+                case "f":
+                    foods = val.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    break;
+                case "sk":
+                    foreach (var entry in val.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var c = entry.IndexOf(':');
+                        if (c > 0 && int.TryParse(entry[(c + 1)..], out var lvl))
+                            skills[entry[..c]] = lvl;
+                    }
+                    break;
+                case "eq":
+                    foreach (var entry in val.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var eq = entry.IndexOf('=');
+                        if (eq > 0)
+                            equipment[entry[..eq]] = entry[(eq + 1)..];
+                    }
+                    break;
+                case "kd":
+                    foreach (var entry in val.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var c = entry.IndexOf(':');
+                        if (c <= 0) continue;
+                        var creature = entry[..c];
+                        var kv = entry[(c + 1)..];
+                        var slash = kv.IndexOf('/');
+                        if (slash > 0 &&
+                            int.TryParse(kv[..slash], out var kills) &&
+                            int.TryParse(kv[(slash + 1)..], out var deaths))
+                        {
+                            killDeaths[creature] = [kills, deaths];
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return new PlayerStateSnapshot(secs, hp, hpMax, sp, spMax, foods, skills, equipment, killDeaths);
+    }
 
     /// <summary>
     /// Parse "W=5247@1138,44,495;W=5252@1126,43,486;" into CompactEvent records.

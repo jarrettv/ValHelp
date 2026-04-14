@@ -380,10 +380,19 @@ public static class TrackEndpoints
                 foreach (var entry in log.Logs)
                 {
                     PathStore.PathPoint[] points;
+                    PathStore.StatePoint[]? entryStates = null;
                     if (CompactEventParser.IsCompactFormat(entry.Code))
                     {
-                        points = CompactEventParser.Parse(entry.Code)
+                        var events = CompactEventParser.Parse(entry.Code);
+                        points = events
+                            .Where(e => e.Tag == 'F' || e.Tag == 'W' || e.Tag == 'P' || e.Tag == 'J')
                             .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
+                            .ToArray();
+                        entryStates = events
+                            .Where(e => e.Tag == 'P' && !string.IsNullOrEmpty(e.Extra))
+                            .Select(e => CompactEventParser.ParsePExtras(e.Secs, e.Extra))
+                            .Where(s => s != null)
+                            .Select(s => new PathStore.StatePoint(s!.T, s))
                             .ToArray();
                     }
                     else if (entry.Code.StartsWith("Path="))
@@ -393,18 +402,18 @@ public static class TrackEndpoints
                     else continue;
 
                     if (points.Length > 0)
-                        pathStore.BackfillPaths(seed, log.Id, points);
+                        pathStore.BackfillPaths(seed, log.Id, points, entryStates);
                 }
             }
         }
 
         // Subscribe and get current snapshot
-        var (paths, reader) = pathStore.Subscribe(seed);
+        var (paths, states, reader) = pathStore.Subscribe(seed);
 
         try
         {
-            // Send initial state
-            var initData = JsonSerializer.Serialize(paths, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            // Send initial state (paths + player state snapshots)
+            var initData = JsonSerializer.Serialize(new { paths, states }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             await ctx.Response.WriteAsync($"event: init\ndata: {initData}\n\n", ct);
             await ctx.Response.Body.FlushAsync(ct);
 
@@ -424,24 +433,15 @@ public static class TrackEndpoints
     /// <summary>GET endpoint returning all cached paths for replay/scrubbing.</summary>
     public static async Task<IResult> GetTrackMapPathsAll(string seed, AppDbContext db)
     {
-        // Check for cached paths first
-        var cached = await db.TrackMaps
-            .Where(m => m.Seed == seed)
-            .Select(m => m.Paths)
-            .FirstOrDefaultAsync();
-
-        if (cached != null)
-            return Results.Content(cached, "application/json");
-
-        // Build from track_logs and cache
-        var pathsJson = await BuildAndCachePaths(seed, db);
-        if (pathsJson == null)
+        // Always rebuild to include state data (paths cache is legacy format without states)
+        var result = await BuildPathsAndStates(seed, db);
+        if (result == null)
             return Results.NotFound();
 
-        return Results.Content(pathsJson, "application/json");
+        return Results.Content(result, "application/json");
     }
 
-    private static async Task<string?> BuildAndCachePaths(string seed, AppDbContext db)
+    private static async Task<string?> BuildPathsAndStates(string seed, AppDbContext db)
     {
         var logs = await db.TrackLogs
             .Where(l => l.Seed == seed)
@@ -451,6 +451,7 @@ public static class TrackEndpoints
         if (logs.Count == 0) return null;
 
         var paths = new Dictionary<string, List<PathStore.PathPoint>>();
+        var states = new Dictionary<string, List<PathStore.StatePoint>>();
         foreach (var log in logs)
         {
             foreach (var entry in log.Logs)
@@ -458,10 +459,29 @@ public static class TrackEndpoints
                 PathStore.PathPoint[] points;
                 if (CompactEventParser.IsCompactFormat(entry.Code))
                 {
-                    points = CompactEventParser.Parse(entry.Code)
+                    var events = CompactEventParser.Parse(entry.Code);
+                    points = events
                         .Where(e => e.Tag == 'F' || e.Tag == 'W' || e.Tag == 'P' || e.Tag == 'J')
                         .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
                         .ToArray();
+
+                    // Extract state snapshots from P tags
+                    var statePoints = events
+                        .Where(e => e.Tag == 'P' && !string.IsNullOrEmpty(e.Extra))
+                        .Select(e => CompactEventParser.ParsePExtras(e.Secs, e.Extra))
+                        .Where(s => s != null)
+                        .Select(s => new PathStore.StatePoint(s!.T, s))
+                        .ToArray();
+
+                    if (statePoints.Length > 0)
+                    {
+                        if (!states.TryGetValue(log.Id, out var stateList))
+                        {
+                            stateList = new List<PathStore.StatePoint>();
+                            states[log.Id] = stateList;
+                        }
+                        stateList.AddRange(statePoints);
+                    }
                 }
                 else if (entry.Code.StartsWith("Path="))
                 {
@@ -488,15 +508,13 @@ public static class TrackEndpoints
             var seen = new HashSet<int>();
             list.RemoveAll(p => !seen.Add(p.T));
         }
+        foreach (var (id, list) in states)
+        {
+            var seen = new HashSet<int>();
+            list.RemoveAll(s => !seen.Add(s.T));
+        }
 
-        var json = JsonSerializer.Serialize(paths, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-
-        // Cache in track_maps
-        await db.TrackMaps
-            .Where(m => m.Seed == seed)
-            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Paths, json));
-
-        return json;
+        return JsonSerializer.Serialize(new { paths, states }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
     }
 
     private static PathStore.PathPoint[] ParsePathPoints(string code)

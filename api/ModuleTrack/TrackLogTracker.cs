@@ -74,6 +74,16 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
                     .ToArray();
                 if (points.Length > 0)
                     pathStore.AddPathPoints(log.Seed, log.Id, points);
+
+                // Extract player state snapshots from P tags
+                var states = events
+                    .Where(e => e.Tag == 'P' && !string.IsNullOrEmpty(e.Extra))
+                    .Select(e => CompactEventParser.ParsePExtras(e.Secs, e.Extra))
+                    .Where(s => s != null)
+                    .Select(s => new PathStore.StatePoint(s!.T, s))
+                    .ToArray();
+                if (states.Length > 0)
+                    pathStore.AddStatePoints(log.Seed, log.Id, states);
             }
             else if (entry.Code.StartsWith("Path="))
             {

@@ -19,6 +19,8 @@ public class PathStore
 
     public record PathPoint(int T, int X, int Z, bool J = false);
 
+    public record StatePoint(int T, PlayerStateSnapshot State);
+
     public record PathEvent(string Type, string PlayerId, object Data);
 
     private class SeedState
@@ -31,6 +33,7 @@ public class PathStore
     private class PlayerPath
     {
         public readonly List<PathPoint> Points = new();
+        public readonly List<StatePoint> States = new();
         public readonly Lock PointsLock = new();
     }
 
@@ -49,12 +52,25 @@ public class PathStore
         Broadcast(state, new PathEvent("path", playerId, points));
     }
 
+    public void AddStatePoints(string seed, string playerId, StatePoint[] states)
+    {
+        var state = _seeds.GetOrAdd(seed, _ => new SeedState());
+        var player = state.Players.GetOrAdd(playerId, _ => new PlayerPath());
+
+        lock (player.PointsLock)
+        {
+            player.States.AddRange(states);
+        }
+
+        Broadcast(state, new PathEvent("state", playerId, states));
+    }
+
     // ── Called by SSE endpoint ──
 
     /// <summary>
     /// Subscribe to path updates for a seed. Returns current state + a channel reader for live updates.
     /// </summary>
-    public (Dictionary<string, PathPoint[]> paths, ChannelReader<PathEvent> reader) Subscribe(string seed)
+    public (Dictionary<string, PathPoint[]> paths, Dictionary<string, StatePoint[]> states, ChannelReader<PathEvent> reader) Subscribe(string seed)
     {
         var state = _seeds.GetOrAdd(seed, _ => new SeedState());
         var channel = Channel.CreateBounded<PathEvent>(new BoundedChannelOptions(256)
@@ -67,17 +83,20 @@ public class PathStore
             state.Subscribers.Add(channel.Writer);
         }
 
-        // Snapshot current paths
+        // Snapshot current paths and states
         var snapshot = new Dictionary<string, PathPoint[]>();
+        var statesSnapshot = new Dictionary<string, StatePoint[]>();
         foreach (var (id, player) in state.Players)
         {
             lock (player.PointsLock)
             {
                 snapshot[id] = player.Points.ToArray();
+                if (player.States.Count > 0)
+                    statesSnapshot[id] = player.States.ToArray();
             }
         }
 
-        return (snapshot, channel.Reader);
+        return (snapshot, statesSnapshot, channel.Reader);
     }
 
     public void Unsubscribe(string seed, ChannelReader<PathEvent> reader)
@@ -130,7 +149,7 @@ public class PathStore
 
     // ── Backfill from DB (called on SSE connect if PathStore is empty for this seed) ──
 
-    public void BackfillPaths(string seed, string playerId, PathPoint[] points)
+    public void BackfillPaths(string seed, string playerId, PathPoint[] points, StatePoint[]? states = null)
     {
         var state = _seeds.GetOrAdd(seed, _ => new SeedState());
         var player = state.Players.GetOrAdd(playerId, _ => new PlayerPath());
@@ -138,6 +157,8 @@ public class PathStore
         lock (player.PointsLock)
         {
             player.Points.AddRange(points);
+            if (states is { Length: > 0 })
+                player.States.AddRange(states);
         }
     }
 

@@ -69,6 +69,31 @@ interface PlayerMapData {
   scoreAtTime: number;
 }
 
+interface PlayerStateSnapshot {
+  t: number;
+  hp: number; hpMax: number;
+  sp: number; spMax: number;
+  foods: string[];
+  skills: Record<string, number>;
+  equipment: Record<string, string>;
+  killDeaths: Record<string, [number, number]>;
+}
+
+// Backend sends StatePoint { t, state: PlayerStateSnapshot }
+interface StatePoint {
+  t: number;
+  state: PlayerStateSnapshot;
+}
+
+type SidebarMode = 'scores' | 'drops' | 'equip' | 'skills';
+
+interface DataItem {
+  code: string;
+  name: string;
+  type: string;
+  image: string;
+}
+
 // Maximally distinct colors for player paths — high saturation, good visibility on dark maps
 const PLAYER_COLORS = [
   '#ff4444', // red
@@ -220,6 +245,33 @@ function buildPlayerMapData(
 const imageCache = new Map<string, HTMLImageElement>();
 let scheduleRedraw: (() => void) | null = null;
 
+// Item database (loaded lazily from /data.json)
+let itemDbPromise: Promise<Map<string, DataItem>> | null = null;
+function getItemDb(): Promise<Map<string, DataItem>> {
+  if (!itemDbPromise) {
+    itemDbPromise = fetch('/data.json')
+      .then(r => r.json())
+      .then((items: DataItem[]) => {
+        const map = new Map<string, DataItem>();
+        for (const item of items) map.set(item.code, item);
+        return map;
+      });
+  }
+  return itemDbPromise;
+}
+
+function findStateAtTime(states: StatePoint[] | undefined, t: number): PlayerStateSnapshot | null {
+  if (!states || states.length === 0) return null;
+  // Binary search for latest snapshot at or before t
+  let lo = 0, hi = states.length - 1, best = -1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (states[mid].t <= t) { best = mid; lo = mid + 1; }
+    else hi = mid - 1;
+  }
+  return best >= 0 ? states[best].state : null;
+}
+
 function getCachedImage(url: string): HTMLImageElement | null {
   // Rewrite legacy absolute avatar URLs to relative
   if (url.startsWith('https://valheim.help/')) url = url.replace('https://valheim.help', '');
@@ -309,6 +361,13 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     return () => clearInterval(id);
   }, [isLive, eventStartMs, eventDurationSec, pinnedToLive]);
 
+  const [sidebarMode, setSidebarMode] = useState<SidebarMode>('scores');
+  const [sidebarOpen, setSidebarOpen] = useState(typeof window !== 'undefined' && window.innerWidth > 768);
+  const [itemDb, setItemDb] = useState<Map<string, DataItem> | null>(null);
+
+  // Load item database eagerly so sidebar tabs have it
+  useEffect(() => { getItemDb().then(setItemDb); }, []);
+
   const stateRef = useRef({
     scale: 1, panX: 0, panY: 0,
     imgW: 0, imgH: 0,
@@ -316,6 +375,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     rafId: 0,
     ready: false,
     pathData: {} as Record<string, PathPoint[]>,
+    stateData: {} as Record<string, StatePoint[]>,
     playerMapData: [] as PlayerMapData[],
   });
 
@@ -522,6 +582,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         }
       }
     }
+
   }, []);
 
   const applyTransform = useCallback(() => {
@@ -620,15 +681,21 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       const es = new EventSource(`/api/track/map/${seed}/paths`);
 
       es.addEventListener('init', (e: MessageEvent) => {
-        const paths: Record<string, PathPoint[]> = JSON.parse(e.data);
-        stateRef.current.pathData = paths;
+        const payload = JSON.parse(e.data);
+        stateRef.current.pathData = payload.paths || {};
+        stateRef.current.stateData = payload.states || {};
         rebuildRef.current();
       });
 
       es.addEventListener('update', (e: MessageEvent) => {
-        const { playerId, data } = JSON.parse(e.data);
-        const existing = stateRef.current.pathData[playerId] || [];
-        stateRef.current.pathData[playerId] = [...existing, ...(data as PathPoint[])];
+        const { type, playerId, data } = JSON.parse(e.data);
+        if (type === 'state') {
+          const existing = stateRef.current.stateData[playerId] || [];
+          stateRef.current.stateData[playerId] = [...existing, ...(data as StatePoint[])];
+        } else {
+          const existing = stateRef.current.pathData[playerId] || [];
+          stateRef.current.pathData[playerId] = [...existing, ...(data as PathPoint[])];
+        }
         rebuildRef.current();
       });
 
@@ -638,9 +705,15 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       let cancelled = false;
       fetch(`/api/track/map/${seed}/paths/all`)
         .then(r => r.ok ? r.json() : null)
-        .then(paths => {
-          if (cancelled || !paths) return;
-          stateRef.current.pathData = paths;
+        .then(payload => {
+          if (cancelled || !payload) return;
+          // Support both old format (flat paths) and new format ({ paths, states })
+          if (payload.paths) {
+            stateRef.current.pathData = payload.paths;
+            stateRef.current.stateData = payload.states || {};
+          } else {
+            stateRef.current.pathData = payload;
+          }
           rebuildRef.current();
         });
       return () => { cancelled = true; };
@@ -793,6 +866,11 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     };
   }, [scheduleUpdate]);
 
+  const currentScrub = scrubTime ?? (isLive ? elapsedNow : eventDurationSec);
+
+  // Players not hidden — shown on map and in sidebar
+  const visiblePlayers = event.players.filter((_, i) => !hiddenPlayers.has(i));
+
   return (
     <div className="event-map-container">
       <div className="event-map-header">
@@ -802,70 +880,412 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
               type="range"
               min={0}
               max={isLive ? elapsedNow : eventDurationSec}
-              value={scrubTime ?? (isLive ? elapsedNow : eventDurationSec)}
+              value={currentScrub}
               onChange={(e) => {
                 const t = parseInt(e.target.value, 10);
                 const maxT = isLive ? elapsedNow : eventDurationSec;
                 setScrubTime(t);
-                // If dragged to the end during live, re-pin to live
                 setPinnedToLive(isLive && t >= maxT - 2);
               }}
             />
             <span className="event-map-scrub-label">
-              {formatTime(scrubTime ?? (isLive ? elapsedNow : eventDurationSec))}
+              {formatTime(currentScrub)}
               {isLive && pinnedToLive && ' LIVE'}
             </span>
+            <button
+              className={`header-toggle-btn ${hidePortals ? 'off' : ''}`}
+              onClick={() => { setHidePortals(h => !h); scheduleUpdate(); }}
+              title={hidePortals ? 'Show portals' : 'Hide portals'}
+            >
+              <img src="/img/Misc/portal_wood.png" alt="Portals" />
+            </button>
+            <button
+              className={`header-toggle-btn ${hidePois ? 'off' : ''}`}
+              onClick={() => { setHidePois(h => !h); scheduleUpdate(); }}
+              title={hidePois ? 'Show POIs' : 'Hide POIs'}
+            >
+              <img src="/img/Poi/boss.svg" alt="POIs" />
+            </button>
           </>
         )}
         {(loading || error) && <div style={{flex:1}} />}
         <button className="event-map-close" onClick={onClose} title="Close map">&times;</button>
       </div>
-      <div className="event-map" ref={mapAreaRef}>
-        {loading && <div className="event-map-status">Loading map...</div>}
-        {error && <div className="event-map-status error">{error}</div>}
-        <canvas ref={glCanvasRef} className="event-map-gl" />
-        <canvas ref={markerCanvasRef} className="event-map-markers" />
-        <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" />
-      </div>
-      {!loading && !error && event.players.length > 0 && (
-        <div className="event-map-players">
-          {event.players.map((player, i) => {
-            const hidden = hiddenPlayers.has(i);
-            return (
-              <button
-                key={player.userId}
-                className={`event-map-player-toggle ${hidden ? 'hidden' : ''}`}
-                style={{ borderColor: PLAYER_COLORS[i % PLAYER_COLORS.length] }}
-                onClick={() => {
-                  setHiddenPlayers(prev => {
-                    const next = new Set(prev);
-                    if (next.has(i)) next.delete(i); else next.add(i);
-                    return next;
-                  });
-                  scheduleUpdate();
-                }}
-                title={player.name}
-              >
-                <img src={player.avatarUrl} alt={player.name} />
-              </button>
-            );
-          })}
-          <button
-            className={`event-map-portal-toggle ${hidePortals ? 'hidden' : ''}`}
-            onClick={() => { setHidePortals(h => !h); scheduleUpdate(); }}
-            title={hidePortals ? 'Show portals' : 'Hide portals'}
-          >
-            <img src="/img/Misc/portal_wood.png" alt="Portals" />
-          </button>
-          <button
-            className={`event-map-portal-toggle ${hidePois ? 'hidden' : ''}`}
-            onClick={() => { setHidePois(h => !h); scheduleUpdate(); }}
-            title={hidePois ? 'Show POIs' : 'Hide POIs'}
-          >
-            <img src="/img/Poi/boss.svg" alt="POIs" />
-          </button>
+      <div className="event-map-body">
+        <div className="event-map" ref={mapAreaRef}>
+          {loading && <div className="event-map-status">Loading map...</div>}
+          {error && <div className="event-map-status error">{error}</div>}
+          <canvas ref={glCanvasRef} className="event-map-gl" />
+          <canvas ref={markerCanvasRef} className="event-map-markers" />
+          <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" onClick={onClose} />
         </div>
-      )}
+        {!loading && !error && event.players.length > 0 && (
+          <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-avatars">
+              {event.players.map((player, i) => {
+                const isHidden = hiddenPlayers.has(i);
+                return (
+                  <button
+                    key={player.userId}
+                    className={`sidebar-avatar ${isHidden ? 'off' : ''}`}
+                    style={{ borderColor: PLAYER_COLORS[i % PLAYER_COLORS.length] }}
+                    onClick={() => {
+                      setHiddenPlayers(prev => {
+                        const next = new Set(prev);
+                        if (next.has(i)) next.delete(i); else next.add(i);
+                        return next;
+                      });
+                      scheduleUpdate();
+                    }}
+                    title={player.name}
+                  >
+                    <img src={player.avatarUrl} alt={player.name} />
+                  </button>
+                );
+              })}
+              <div style={{ flex: 1 }} />
+              <button
+                className="sidebar-expand-btn"
+                onClick={() => setSidebarOpen(o => !o)}
+                title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+              >
+                {sidebarOpen ? '\u25B6' : '\u25C0'}
+              </button>
+            </div>
+            {sidebarOpen && (
+              <div className="sidebar-content">
+                <div className="sidebar-tabs">
+                  {(['scores', 'drops', 'equip', 'skills'] as SidebarMode[]).map(mode => (
+                    <button
+                      key={mode}
+                      className={sidebarMode === mode ? 'active' : ''}
+                      onClick={() => setSidebarMode(mode)}
+                    >
+                      {mode[0].toUpperCase() + mode.slice(1)}
+                    </button>
+                  ))}
+                </div>
+                <div className="sidebar-body">
+                  {sidebarMode === 'scores' ? (
+                    <SidebarScores
+                      players={visiblePlayers}
+                      allPlayers={event.players}
+                      scoring={event.scoring}
+                      scrubTime={currentScrub}
+                      eventStartMs={eventStartMs}
+                      itemDb={itemDb}
+                    />
+                  ) : sidebarMode === 'drops' ? (
+                    <SbDrops
+                      players={visiblePlayers}
+                      allPlayers={event.players}
+                      stateData={stateRef.current.stateData}
+                      scrubTime={currentScrub}
+                    />
+                  ) : sidebarMode === 'skills' ? (
+                    <SbSkills
+                      players={visiblePlayers}
+                      allPlayers={event.players}
+                      stateData={stateRef.current.stateData}
+                      scrubTime={currentScrub}
+                    />
+                  ) : (
+                    <SbEquip
+                      players={visiblePlayers}
+                      allPlayers={event.players}
+                      stateData={stateRef.current.stateData}
+                      scrubTime={currentScrub}
+                      itemDb={itemDb}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ── Sidebar Components ──────────────────────────────────────────
+
+const EQUIP_SLOTS: Record<string, string> = { H: 'Helmet', C: 'Chest', G: 'Legs', S: 'Cape', U: 'Belt', T: 'Trinket' };
+const SKILL_ORDER = [
+  'Swords','Knives','Clubs','Polearms','Spears','Axes','Bows','Crossbows',
+  'ElementalMagic','BloodMagic','Unarmed','Pickaxes','WoodCutting',
+  'Blocking','Dodge','Run','Jump','Sneak','Swim','Ride','Fishing','Cooking','Farming','Crafting'
+];
+
+const getPlayerId = (p: Player) => p.discordId || String(p.userId);
+
+// ── Scores tab: trophy checklist / leaderboard ──
+
+const SidebarScores: React.FC<{
+  players: Player[];
+  allPlayers: Player[];
+  scoring: Record<string, number>;
+  scrubTime: number;
+  eventStartMs: number;
+  itemDb: Map<string, DataItem> | null;
+}> = ({ players, allPlayers, scoring, scrubTime, eventStartMs }) => {
+  const scored = players.map(p => {
+    const idx = allPlayers.indexOf(p);
+    const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+    // Filter logs by scrub time, compute score
+    const logs = p.logs
+      .filter(l => {
+        const timeSec = (new Date(l.at).getTime() - eventStartMs) / 1000;
+        return timeSec <= scrubTime;
+      })
+      .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+    let score = 0;
+    for (const l of logs) {
+      const pts = scoring[l.code];
+      if (pts !== undefined) score += pts;
+    }
+    return { player: p, index: idx, color, score, logs };
+  }).sort((a, b) => b.score - a.score);
+
+  if (players.length === 0) return <div className="sb-empty">No players visible</div>;
+
+  return (
+    <div className="sb-scores">
+      {scored.map(({ player, color, score, logs }) => (
+        <div key={player.userId} className="sb-score-player">
+          <div className="sb-score-big" style={{ color }}>{score}</div>
+          <div className="sb-score-icons">
+            {logs.map((log, i) =>
+              log.code.startsWith('Trophy') ? (
+                <img key={i} src={`/img/Trophy/${log.code}.png`} alt="" className="sb-score-icon" style={{ outlineColor: color }} />
+              ) : log.code.startsWith('Penalty') ? (
+                <img key={i} src={`/img/Penalty/${log.code}.webp`} alt="" className="sb-score-icon penalty" style={{ outlineColor: color }} />
+              ) : log.code.startsWith('Bonus') ? (
+                <img key={i} src={`/img/Bonus/${log.code}.round.png`} alt="" className="sb-score-icon bonus" style={{ outlineColor: 'gold' }} />
+              ) : null
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
+const SbDrops: React.FC<{
+  players: Player[];
+  allPlayers: Player[];
+  stateData: Record<string, StatePoint[]>;
+  scrubTime: number;
+}> = ({ players, allPlayers, stateData, scrubTime }) => {
+  // kd data is enemy:kills/trophies — kills = total, trophies = how many dropped a trophy
+  // Collect per enemy across all visible players
+  const enemyMap = new Map<string, { playerIdx: number; color: string; kills: number; trophies: number }[]>();
+
+  for (const player of players) {
+    const pid = getPlayerId(player);
+    const idx = allPlayers.indexOf(player);
+    const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+    const snapshot = findStateAtTime(stateData[pid], scrubTime);
+    const kd = snapshot?.killDeaths || {};
+
+    for (const [creature, [kills, trophies]] of Object.entries(kd)) {
+      if (kills === 0 && trophies === 0) continue;
+      if (!enemyMap.has(creature)) enemyMap.set(creature, []);
+      enemyMap.get(creature)!.push({ playerIdx: idx, color, kills, trophies });
+    }
+  }
+
+  // Sort enemies by total kills descending
+  const enemies = [...enemyMap.entries()]
+    .map(([name, entries]) => {
+      const totalKills = entries.reduce((s, e) => s + e.kills, 0);
+      const totalTrophies = entries.reduce((s, e) => s + e.trophies, 0);
+      const dropRate = totalKills > 0 ? Math.round((totalTrophies / totalKills) * 100) : 0;
+      return { name, totalKills, totalTrophies, dropRate, entries };
+    })
+    .sort((a, b) => b.totalKills - a.totalKills);
+
+  if (enemies.length === 0) return <div className="sb-empty">No kill data available</div>;
+
+  return (
+    <div className="sb-drops">
+      {enemies.map(({ name, dropRate, entries }) => (
+        <div key={name} className="sb-drop-enemy">
+          <div className="sb-drop-icon-wrap">
+            <img src={`/img/Trophy/Trophy${name}.png`} alt={name} className="sb-drop-icon" title={name} />
+            <span className="sb-drop-rate">{dropRate}%</span>
+          </div>
+          <div className="sb-drop-boxes">
+            {entries.map((e, i) => {
+              const boxes: React.ReactNode[] = [];
+              // Filled boxes first = trophy drops
+              for (let t = 0; t < e.trophies; t++) {
+                boxes.push(
+                  <span
+                    key={`t${i}-${t}`}
+                    className="sb-box filled"
+                    style={{ borderColor: e.color, backgroundColor: e.color }}
+                  />
+                );
+              }
+              // Empty boxes = kills without trophy
+              for (let k = 0; k < e.kills - e.trophies; k++) {
+                boxes.push(
+                  <span
+                    key={`k${i}-${k}`}
+                    className="sb-box"
+                    style={{ borderColor: e.color }}
+                  />
+                );
+              }
+              return boxes;
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const SbEquip: React.FC<{
+  players: Player[];
+  allPlayers: Player[];
+  stateData: Record<string, StatePoint[]>;
+  scrubTime: number;
+  itemDb: Map<string, DataItem> | null;
+}> = ({ players, allPlayers, stateData, scrubTime, itemDb }) => {
+  const equipSlots = ['H', 'C', 'G', 'S', 'U', 'T'] as const;
+
+  if (players.length === 0) return <div className="sb-empty">No players visible</div>;
+
+  return (
+    <div className="sb-equip">
+      {players.map(player => {
+        const pid = getPlayerId(player);
+        const idx = allPlayers.indexOf(player);
+        const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+        const snapshot = findStateAtTime(stateData[pid], scrubTime);
+        const equip = snapshot?.equipment || {};
+        const foods = snapshot?.foods || [];
+
+        return (
+          <div key={player.userId} className="sb-equip-player">
+            <div className="sb-equip-row">
+              {(['H', 'C', 'G', 'S'] as const).map(slot => {
+                const code = equip[slot];
+                const item = code ? itemDb?.get(code) : null;
+                return (
+                  <div
+                    key={slot}
+                    className={`sb-equip-box ${code ? '' : 'empty'}`}
+                    style={{ borderColor: color }}
+                    title={item?.name || code || EQUIP_SLOTS[slot]}
+                  >
+                    {item?.image && <img src={item.image} alt="" />}
+                  </div>
+                );
+              })}
+              <div className="sb-equip-stack">
+                {(['U', 'T'] as const).map(slot => {
+                  const code = equip[slot];
+                  const item = code ? itemDb?.get(code) : null;
+                  return (
+                    <div
+                      key={slot}
+                      className={`sb-equip-box small ${code ? '' : 'empty'}`}
+                      style={{ borderColor: color }}
+                      title={item?.name || code || EQUIP_SLOTS[slot]}
+                    >
+                      {item?.image && <img src={item.image} alt="" />}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="sb-food-row">
+              <div className="sb-food-boxes">
+                {[0, 1, 2].map(i => {
+                  const food = foods[i];
+                  const item = food ? itemDb?.get(food) : null;
+                  return (
+                    <div
+                      key={i}
+                      className={`sb-equip-box ${food ? '' : 'empty'}`}
+                      style={{ borderColor: color }}
+                      title={item?.name || food || 'Food'}
+                    >
+                      {item?.image && <img src={item.image} alt="" />}
+                    </div>
+                  );
+                })}
+              </div>
+              {snapshot && (
+                <div className="sb-food-stats">
+                  <span className="sb-food-stat hp">{snapshot.hpMax} HP</span>
+                  <span className="sb-food-stat sp">{snapshot.spMax} SP</span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const SbSkills: React.FC<{
+  players: Player[];
+  allPlayers: Player[];
+  stateData: Record<string, StatePoint[]>;
+  scrubTime: number;
+}> = ({ players, allPlayers, stateData, scrubTime }) => {
+  // Collect all skills across visible players
+  const skillMap = new Map<string, { color: string; level: number }[]>();
+
+  for (const player of players) {
+    const pid = getPlayerId(player);
+    const idx = allPlayers.indexOf(player);
+    const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+    const snapshot = findStateAtTime(stateData[pid], scrubTime);
+    const sk = snapshot?.skills || {};
+
+    for (const [name, level] of Object.entries(sk)) {
+      if (!skillMap.has(name)) skillMap.set(name, []);
+      skillMap.get(name)!.push({ color, level });
+    }
+  }
+
+  // Order by SKILL_ORDER first, then any extras
+  const ordered: string[] = [];
+  const seen = new Set<string>();
+  for (const s of SKILL_ORDER) {
+    if (skillMap.has(s)) { ordered.push(s); seen.add(s); }
+  }
+  for (const s of skillMap.keys()) {
+    if (!seen.has(s)) ordered.push(s);
+  }
+
+  if (ordered.length === 0) return <div className="sb-empty">No skills data</div>;
+
+  return (
+    <div className="sb-skills">
+      {ordered.map(name => {
+        const entries = skillMap.get(name)!;
+        return (
+          <div key={name} className="sb-skill-group">
+            <span className="sb-skill-name">{name}</span>
+            <div className="sb-skill-bars">
+              {entries.map((e, i) => (
+                <div key={i} className="sb-skill-bar">
+                  <div className="sb-skill-fill" style={{ width: `${e.level}%`, backgroundColor: e.color }} />
+                  <span className="sb-skill-val">{e.level}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

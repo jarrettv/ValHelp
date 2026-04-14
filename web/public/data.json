@@ -1478,7 +1478,7 @@
     "code": "SledgeStagbreaker",
     "type": "Club",
     "name": "Stagbreaker",
-    "desc": "A weapon worthy of the Gods! If you get hit with this, you'll know it…",
+    "desc": "A weapon worthy of the Gods! If you get hit with this, you'll know it\u00e2\u20ac\u00a6",
     "image": "/img/Club/SledgeStagbreaker.png",
     "usage": "Weapon",
     "wield": "Two-handed",
@@ -2367,7 +2367,7 @@
     "code": "DyrnwynHiltFragment",
     "type": "Fragment",
     "name": "Dyrnwyn hilt fragment",
-    "desc": "The hilt of a long forgotten sword. Perhaps it could reforged if one had all the pieces…",
+    "desc": "The hilt of a long forgotten sword. Perhaps it could reforged if one had all the pieces\u00e2\u20ac\u00a6",
     "image": "/img/Fragment/DyrnwynHiltFragment.webp",
     "drop": "",
     "usage": "Crafting",
@@ -2379,7 +2379,7 @@
     "code": "DyrnwynTipFragment",
     "type": "Fragment",
     "name": "Dyrnwyn tip fragment",
-    "desc": "This shard of metal looks like the tip of a sword. One might be able to reforge the blade if more pieces are found…",
+    "desc": "This shard of metal looks like the tip of a sword. One might be able to reforge the blade if more pieces are found\u00e2\u20ac\u00a6",
     "image": "/img/Fragment/DyrnwynTipFragment.webp",
     "drop": "",
     "usage": "Crafting",
@@ -2696,7 +2696,7 @@
     "code": "BjornPaw",
     "type": "Material",
     "name": "Bear paw",
-    "desc": "Sharp claws suitable for picking berries – or for dismembering.",
+    "desc": "Sharp claws suitable for picking berries \u00e2\u20ac\u201c or for dismembering.",
     "image": "/img/Material/BjornPaw.png",
     "usage": "Building, Crafting",
     "source_url": "https://valheim.fandom.com/wiki/Bear_paw"
@@ -4711,7 +4711,7 @@
   {
     "code": "SwordNiedhogg",
     "type": "Sword",
-    "name": "Nidhögg",
+    "name": "Nidh\u00c3\u00b6gg",
     "desc": "Named after the evil dragon that dwells by the roots of the world tree, this sword heralds doom for those who cross its path.",
     "image": "/img/Sword/SwordNiedhogg.png",
     "usage": "Weapon",
@@ -4748,7 +4748,7 @@
   {
     "code": "SwordNiedhoggBlood",
     "type": "Sword",
-    "name": "Nidhögg the Bleeding",
+    "name": "Nidh\u00c3\u00b6gg the Bleeding",
     "desc": "If you bleed, your foes are sure to do so as well.",
     "image": "/img/Sword/SwordNiedhoggBlood.webp",
     "usage": "Weapon",
@@ -4757,10 +4757,10 @@
     "power": 200,
     "source": "Black forge",
     "durab": "200>250>300>350",
-    "craft": "4>5>6§>7§",
+    "craft": "4>5>6\u00c2\u00a7>7\u00c2\u00a7",
     "repair": "3>3>3>3",
     "mats": {
-      "Nidhögg": "1>0>0>0",
+      "Nidh\u00c3\u00b6gg": "1>0>0>0",
       "Flametal": "6>6>12>18",
       "Bloodstone": "1>1>2>3"
     },
@@ -4786,7 +4786,7 @@
   {
     "code": "SwordNiedhoggLightning",
     "type": "Sword",
-    "name": "Nidhögg the Thundering",
+    "name": "Nidh\u00c3\u00b6gg the Thundering",
     "desc": "The power of lightning dances along the blade of this sword, a promise of the pain to come.",
     "image": "/img/Sword/SwordNiedhoggLightning.webp",
     "usage": "Weapon",
@@ -4795,10 +4795,10 @@
     "power": 200,
     "source": "Black forge",
     "durab": "200>250>300>350",
-    "craft": "4>5>6§>7§",
+    "craft": "4>5>6\u00c2\u00a7>7\u00c2\u00a7",
     "repair": "3>3>3>3",
     "mats": {
-      "Nidhögg": "1>0>0>0",
+      "Nidh\u00c3\u00b6gg": "1>0>0>0",
       "Flametal": "6>6>12>18",
       "Iolite": "1>1>2>3"
     },
@@ -4824,7 +4824,7 @@
   {
     "code": "SwordNiedhoggNature",
     "type": "Sword",
-    "name": "Nidhögg the Primal",
+    "name": "Nidh\u00c3\u00b6gg the Primal",
     "desc": "Tangle your foes in roots, like the namesake of this blade.",
     "image": "/img/Sword/SwordNiedhoggNature.webp",
     "usage": "Weapon",
@@ -4833,10 +4833,10 @@
     "power": 200,
     "source": "Black forge",
     "durab": "200>250>300>350",
-    "craft": "4>5>6§>7§",
+    "craft": "4>5>6\u00c2\u00a7>7\u00c2\u00a7",
     "repair": "3>3>3>3",
     "mats": {
-      "Nidhögg": "1>0>0>0",
+      "Nidh\u00c3\u00b6gg": "1>0>0>0",
       "Flametal": "6>6>12>18",
       "Jade": "1>1>2>3"
     },
@@ -5829,5 +5829,2993 @@
     "weight": 2.0,
     "stack": 50,
     "mats": {}
+  },
+  {
+    "code": "Acorn",
+    "name": "Acorns",
+    "type": "Material",
+    "image": "/img/Material/Acorn.png"
+  },
+  {
+    "code": "Amber",
+    "name": "Amber",
+    "type": "Material",
+    "image": "/img/Material/Amber.png"
+  },
+  {
+    "code": "AmberPearl",
+    "name": "Amber Pearl",
+    "type": "Material",
+    "image": "/img/Material/AmberPearl.png"
+  },
+  {
+    "code": "AncientSeed",
+    "name": "Ancient Seed",
+    "type": "Material",
+    "image": "/img/Material/AncientSeed.png"
+  },
+  {
+    "code": "ArmorAshlandsMediumChest",
+    "name": "Breastplate of Ask",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorAshlandsMediumChest.png"
+  },
+  {
+    "code": "ArmorAshlandsMediumlegs",
+    "name": "Trousers of Ask",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorAshlandsMediumlegs.png"
+  },
+  {
+    "code": "ArmorBerserkerChest",
+    "name": "Patterns of the Bear",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBerserkerChest.png"
+  },
+  {
+    "code": "ArmorBerserkerLegs",
+    "name": "Loincloth of the Bear",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBerserkerLegs.png"
+  },
+  {
+    "code": "ArmorBerserkerUndeadChest",
+    "name": "Vilebone Cage",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBerserkerUndeadChest.png"
+  },
+  {
+    "code": "ArmorBerserkerUndeadLegs",
+    "name": "Vilebone Drapes",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBerserkerUndeadLegs.png"
+  },
+  {
+    "code": "ArmorBronzeChest",
+    "name": "Bronze Plate Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBronzeChest.png"
+  },
+  {
+    "code": "ArmorBronzeLegs",
+    "name": "Bronze Plate Leggings",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorBronzeLegs.png"
+  },
+  {
+    "code": "ArmorCarapaceChest",
+    "name": "Carapace Breastplate",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorCarapaceChest.png"
+  },
+  {
+    "code": "ArmorCarapaceLegs",
+    "name": "Carapace Greaves",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorCarapaceLegs.png"
+  },
+  {
+    "code": "ArmorDress1",
+    "name": "Plain Brown Dress",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress1.png"
+  },
+  {
+    "code": "ArmorDress10",
+    "name": "Simple Undyed Dress",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress10.png"
+  },
+  {
+    "code": "ArmorDress2",
+    "name": "Brown Dress with Shawl",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress2.png"
+  },
+  {
+    "code": "ArmorDress3",
+    "name": "Brown Dress with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress3.png"
+  },
+  {
+    "code": "ArmorDress4",
+    "name": "Plain Blue Dress",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress4.png"
+  },
+  {
+    "code": "ArmorDress5",
+    "name": "Blue Dress with Shawl",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress5.png"
+  },
+  {
+    "code": "ArmorDress6",
+    "name": "Blue Dress with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress6.png"
+  },
+  {
+    "code": "ArmorDress7",
+    "name": "Plain Yellow Dress",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress7.png"
+  },
+  {
+    "code": "ArmorDress8",
+    "name": "Yellow Dress with Shawl",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress8.png"
+  },
+  {
+    "code": "ArmorDress9",
+    "name": "Yellow Dress with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorDress9.png"
+  },
+  {
+    "code": "ArmorFenringChest",
+    "name": "Fenris Coat",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorFenringChest.png"
+  },
+  {
+    "code": "ArmorFenringLegs",
+    "name": "Fenris Leggings",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorFenringLegs.png"
+  },
+  {
+    "code": "ArmorFlametalChest",
+    "name": "Flametal Breastplate",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorFlametalChest.png"
+  },
+  {
+    "code": "ArmorFlametalLegs",
+    "name": "Flametal Greaves",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorFlametalLegs.png"
+  },
+  {
+    "code": "ArmorHarvester1",
+    "name": "Harvest Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorHarvester1.png"
+  },
+  {
+    "code": "ArmorHarvester2",
+    "name": "Harvest Dress",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorHarvester2.png"
+  },
+  {
+    "code": "ArmorIronChest",
+    "name": "Iron Scale Mail",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorIronChest.png"
+  },
+  {
+    "code": "ArmorIronLegs",
+    "name": "Iron Greaves",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorIronLegs.png"
+  },
+  {
+    "code": "ArmorLeatherChest",
+    "name": "Leather Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorLeatherChest.png"
+  },
+  {
+    "code": "ArmorLeatherLegs",
+    "name": "Leather Trousers",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorLeatherLegs.png"
+  },
+  {
+    "code": "ArmorMageChest",
+    "name": "Eitr-weave Robe",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorMageChest.png"
+  },
+  {
+    "code": "ArmorMageChest_Ashlands",
+    "name": "Robes of Embla",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorMageChest_Ashlands.png"
+  },
+  {
+    "code": "ArmorMageLegs",
+    "name": "Eitr-weave Trousers",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorMageLegs.png"
+  },
+  {
+    "code": "ArmorMageLegs_Ashlands",
+    "name": "Trousers of Embla",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorMageLegs_Ashlands.png"
+  },
+  {
+    "code": "ArmorPaddedCuirass",
+    "name": "Padded Cuirass",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorPaddedCuirass.png"
+  },
+  {
+    "code": "ArmorPaddedGreaves",
+    "name": "Padded Greaves",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorPaddedGreaves.png"
+  },
+  {
+    "code": "ArmorRagsChest",
+    "name": "Rag Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorRagsChest.png"
+  },
+  {
+    "code": "ArmorRagsLegs",
+    "name": "Rag Trousers",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorRagsLegs.png"
+  },
+  {
+    "code": "ArmorRootLegs",
+    "name": "Root Leggings",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorRootLegs.png"
+  },
+  {
+    "code": "ArmorTrollLeatherChest",
+    "name": "Troll Leather Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTrollLeatherChest.png"
+  },
+  {
+    "code": "ArmorTrollLeatherLegs",
+    "name": "Troll Leather Trousers",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTrollLeatherLegs.png"
+  },
+  {
+    "code": "ArmorTunic1",
+    "name": "Plain Blue Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic1.png"
+  },
+  {
+    "code": "ArmorTunic10",
+    "name": "Simple Undyed Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic10.png"
+  },
+  {
+    "code": "ArmorTunic2",
+    "name": "Blue Tunic with Cape",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic2.png"
+  },
+  {
+    "code": "ArmorTunic3",
+    "name": "Blue Tunic with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic3.png"
+  },
+  {
+    "code": "ArmorTunic4",
+    "name": "Plain Red Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic4.png"
+  },
+  {
+    "code": "ArmorTunic5",
+    "name": "Red Tunic with Cape",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic5.png"
+  },
+  {
+    "code": "ArmorTunic6",
+    "name": "Red Tunic with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic6.png"
+  },
+  {
+    "code": "ArmorTunic7",
+    "name": "Plain Yellow Tunic",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic7.png"
+  },
+  {
+    "code": "ArmorTunic8",
+    "name": "Yellow Tunic with Cape",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic8.png"
+  },
+  {
+    "code": "ArmorTunic9",
+    "name": "Yellow Tunic with Beads",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorTunic9.png"
+  },
+  {
+    "code": "ArmorWolfChest",
+    "name": "Wolf Hide Chestpiece",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorWolfChest.png"
+  },
+  {
+    "code": "ArmorWolfLegs",
+    "name": "Wolf Hide Trousers",
+    "type": "Armor",
+    "image": "/img/Armor/ArmorWolfLegs.png"
+  },
+  {
+    "code": "AsksvinCarrionNeck",
+    "name": "Asksvin Neck",
+    "type": "Material",
+    "image": "/img/Material/AsksvinCarrionNeck.png"
+  },
+  {
+    "code": "AsksvinCarrionPelvic",
+    "name": "Asksvin Pelvis",
+    "type": "Material",
+    "image": "/img/Material/AsksvinCarrionPelvic.png"
+  },
+  {
+    "code": "AsksvinCarrionRibcage",
+    "name": "Asksvin Ribcage",
+    "type": "Material",
+    "image": "/img/Material/AsksvinCarrionRibcage.png"
+  },
+  {
+    "code": "AsksvinCarrionSkull",
+    "name": "Asksvin Skull",
+    "type": "Material",
+    "image": "/img/Material/AsksvinCarrionSkull.png"
+  },
+  {
+    "code": "AsksvinEgg",
+    "name": "Asksvin Egg",
+    "type": "Material",
+    "image": "/img/Material/AsksvinEgg.png"
+  },
+  {
+    "code": "AsksvinMeat",
+    "name": "Asksvin Tail",
+    "type": "Material",
+    "image": "/img/Material/AsksvinMeat.png"
+  },
+  {
+    "code": "AtgeirWood",
+    "name": "Wooden Atgeir",
+    "type": "Tool",
+    "image": "/img/Tool/AtgeirWood.png"
+  },
+  {
+    "code": "AxeBerzerkrBlood",
+    "name": "Bleeding Berserkir Axes",
+    "type": "Tool",
+    "image": "/img/Tool/AxeBerzerkrBlood.png"
+  },
+  {
+    "code": "AxeBerzerkrLightning",
+    "name": "Thundering Berserkir Axes",
+    "type": "Tool",
+    "image": "/img/Tool/AxeBerzerkrLightning.png"
+  },
+  {
+    "code": "AxeBerzerkrNature",
+    "name": "Primal Berserkir Axes",
+    "type": "Tool",
+    "image": "/img/Tool/AxeBerzerkrNature.png"
+  },
+  {
+    "code": "AxeEarly",
+    "name": "Early Axes",
+    "type": "Tool",
+    "image": "/img/Tool/AxeEarly.png"
+  },
+  {
+    "code": "AxeHead1",
+    "name": "Curious Axe Head",
+    "type": "Material",
+    "image": "/img/Material/AxeHead1.png"
+  },
+  {
+    "code": "AxeHead2",
+    "name": "Mysterious Axe Head",
+    "type": "Material",
+    "image": "/img/Material/AxeHead2.png"
+  },
+  {
+    "code": "AxeWood",
+    "name": "Wooden Axe",
+    "type": "Weapon",
+    "image": "/img/Weapon/AxeWood.png"
+  },
+  {
+    "code": "BarberKit",
+    "name": "Barber Kit",
+    "type": "Material",
+    "image": "/img/Material/BarberKit.png"
+  },
+  {
+    "code": "BarleyFlour",
+    "name": "Barley Flour",
+    "type": "Material",
+    "image": "/img/Material/BarleyFlour.png"
+  },
+  {
+    "code": "BarleyWine",
+    "name": "Fire Resistance Barley Wine",
+    "type": "Consumable",
+    "image": "/img/Consumable/BarleyWine.png"
+  },
+  {
+    "code": "BarleyWineBase",
+    "name": "Barley Wine Base: Fire Resistance",
+    "type": "Material",
+    "image": "/img/Material/BarleyWineBase.png"
+  },
+  {
+    "code": "BarrelRings",
+    "name": "Barrel Hoops",
+    "type": "Material",
+    "image": "/img/Material/BarrelRings.png"
+  },
+  {
+    "code": "BattleaxeBlackmetal",
+    "name": "Black Metal Battleaxe",
+    "type": "Tool",
+    "image": "/img/Tool/BattleaxeBlackmetal.png"
+  },
+  {
+    "code": "BattleaxeSkullSplittur",
+    "name": "Skull Splittur",
+    "type": "Tool",
+    "image": "/img/Tool/BattleaxeSkullSplittur.png"
+  },
+  {
+    "code": "BattleaxeWood",
+    "name": "Wooden Battleaxe",
+    "type": "Tool",
+    "image": "/img/Tool/BattleaxeWood.png"
+  },
+  {
+    "code": "BeechSeeds",
+    "name": "Beech Seeds",
+    "type": "Material",
+    "image": "/img/Material/BeechSeeds.png"
+  },
+  {
+    "code": "Bell",
+    "name": "Bell",
+    "type": "Material",
+    "image": "/img/Material/Bell.png"
+  },
+  {
+    "code": "BirchSeeds",
+    "name": "Birch Seeds",
+    "type": "Material",
+    "image": "/img/Material/BirchSeeds.png"
+  },
+  {
+    "code": "BlackSoup",
+    "name": "Black Soup",
+    "type": "Consumable",
+    "image": "/img/Consumable/BlackSoup.png"
+  },
+  {
+    "code": "BlobVial",
+    "name": "Corked Vial",
+    "type": "Material",
+    "image": "/img/Material/BlobVial.png"
+  },
+  {
+    "code": "BloodPudding",
+    "name": "Blood Pudding",
+    "type": "Consumable",
+    "image": "/img/Consumable/BloodPudding.png"
+  },
+  {
+    "code": "BoarJerky",
+    "name": "Boar Jerky",
+    "type": "Consumable",
+    "image": "/img/Consumable/BoarJerky.png"
+  },
+  {
+    "code": "BombBlob_Frost",
+    "name": "Blob Bomb: Frost",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombBlob_Frost.png"
+  },
+  {
+    "code": "BombBlob_Lava",
+    "name": "Blob Bomb: Lava",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombBlob_Lava.png"
+  },
+  {
+    "code": "BombBlob_Poison",
+    "name": "Blob Bomb: Poison",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombBlob_Poison.png"
+  },
+  {
+    "code": "BombBlob_PoisonElite",
+    "name": "Blob Bomb: Elite Poison",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombBlob_PoisonElite.png"
+  },
+  {
+    "code": "BombBlob_Tar",
+    "name": "Blob Bomb: Tar",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombBlob_Tar.png"
+  },
+  {
+    "code": "BombLava",
+    "name": "Basalt Bomb",
+    "type": "Weapon",
+    "image": "/img/Weapon/BombLava.png"
+  },
+  {
+    "code": "BombSiege",
+    "name": "Explosive Payload",
+    "type": "Material",
+    "image": "/img/Material/BombSiege.png"
+  },
+  {
+    "code": "BoneMawSerpentMeat",
+    "name": "Bonemaw Meat",
+    "type": "Material",
+    "image": "/img/Material/BoneMawSerpentMeat.png"
+  },
+  {
+    "code": "BonemawSerpentScale",
+    "name": "Bonemaw Scale",
+    "type": "Material",
+    "image": "/img/Material/BonemawSerpentScale.png"
+  },
+  {
+    "code": "BowAshlandsBlood",
+    "name": "Blood Fang",
+    "type": "Bow",
+    "image": "/img/Bow/BowAshlandsBlood.png"
+  },
+  {
+    "code": "BowAshlandsRoot",
+    "name": "Root Fang",
+    "type": "Bow",
+    "image": "/img/Bow/BowAshlandsRoot.png"
+  },
+  {
+    "code": "BowAshlandsStorm",
+    "name": "Storm Fang",
+    "type": "Bow",
+    "image": "/img/Bow/BowAshlandsStorm.png"
+  },
+  {
+    "code": "Bread",
+    "name": "Bread",
+    "type": "Consumable",
+    "image": "/img/Consumable/Bread.png"
+  },
+  {
+    "code": "BreadDough",
+    "name": "Bread Dough",
+    "type": "Material",
+    "image": "/img/Material/BreadDough.png"
+  },
+  {
+    "code": "BronzeScrap",
+    "name": "Scrap Bronze",
+    "type": "Material",
+    "image": "/img/Material/BronzeScrap.png"
+  },
+  {
+    "code": "CandleWick",
+    "name": "Candle Wick",
+    "type": "Material",
+    "image": "/img/Material/CandleWick.png"
+  },
+  {
+    "code": "CapeAsh",
+    "name": "Ashen Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeAsh.png"
+  },
+  {
+    "code": "CapeAsksvin",
+    "name": "Asksvin Cloak",
+    "type": "Utility",
+    "image": "/img/Utility/CapeAsksvin.png"
+  },
+  {
+    "code": "CapeDeerHide",
+    "name": "Deer Hide Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeDeerHide.png"
+  },
+  {
+    "code": "CapeFeather",
+    "name": "Feather Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeFeather.png"
+  },
+  {
+    "code": "CapeLinen",
+    "name": "Linen Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeLinen.png"
+  },
+  {
+    "code": "CapeLox",
+    "name": "Lox Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeLox.png"
+  },
+  {
+    "code": "CapeOdin",
+    "name": "Cape of Odin",
+    "type": "Utility",
+    "image": "/img/Utility/CapeOdin.png"
+  },
+  {
+    "code": "CapeTrollHide",
+    "name": "Troll Hide Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeTrollHide.png"
+  },
+  {
+    "code": "CapeWolf",
+    "name": "Wolf Fur Cape",
+    "type": "Utility",
+    "image": "/img/Utility/CapeWolf.png"
+  },
+  {
+    "code": "Carrot",
+    "name": "Carrot",
+    "type": "Consumable",
+    "image": "/img/Consumable/Carrot.png"
+  },
+  {
+    "code": "CarrotSoup",
+    "name": "Carrot Soup",
+    "type": "Consumable",
+    "image": "/img/Consumable/CarrotSoup.png"
+  },
+  {
+    "code": "Catapult_ammo",
+    "name": "Grausten Payload",
+    "type": "Material",
+    "image": "/img/Material/Catapult_ammo.png"
+  },
+  {
+    "code": "CharcoalResin",
+    "name": "Charcoal Resin",
+    "type": "Material",
+    "image": "/img/Material/CharcoalResin.png"
+  },
+  {
+    "code": "CharredCogwheel",
+    "name": "Charred Cogwheel",
+    "type": "Material",
+    "image": "/img/Material/CharredCogwheel.png"
+  },
+  {
+    "code": "Charredskull",
+    "name": "Charred Skull",
+    "type": "Material",
+    "image": "/img/Material/Charredskull.png"
+  },
+  {
+    "code": "ChickenEgg",
+    "name": "Egg",
+    "type": "Material",
+    "image": "/img/Material/ChickenEgg.png"
+  },
+  {
+    "code": "ChickenMeat",
+    "name": "Chicken Meat",
+    "type": "Material",
+    "image": "/img/Material/ChickenMeat.png"
+  },
+  {
+    "code": "Coins",
+    "name": "Coins",
+    "type": "Material",
+    "image": "/img/Material/Coins.png"
+  },
+  {
+    "code": "CookedAsksvinMeat",
+    "name": "Cooked Asksvin Tail",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedAsksvinMeat.png"
+  },
+  {
+    "code": "CookedBjornMeat",
+    "name": "Cooked Bear Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedBjornMeat.png"
+  },
+  {
+    "code": "CookedBoneMawSerpentMeat",
+    "name": "Cooked Bonemaw Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedBoneMawSerpentMeat.png"
+  },
+  {
+    "code": "CookedBugMeat",
+    "name": "Cooked Seeker Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedBugMeat.png"
+  },
+  {
+    "code": "CookedChickenMeat",
+    "name": "Cooked Chicken Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedChickenMeat.png"
+  },
+  {
+    "code": "CookedDeerMeat",
+    "name": "Cooked Deer Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedDeerMeat.png"
+  },
+  {
+    "code": "CookedEgg",
+    "name": "Cooked Egg",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedEgg.png"
+  },
+  {
+    "code": "CookedHareMeat",
+    "name": "Cooked Hare Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedHareMeat.png"
+  },
+  {
+    "code": "CookedLoxMeat",
+    "name": "Cooked Lox Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedLoxMeat.png"
+  },
+  {
+    "code": "CookedMeat",
+    "name": "Cooked Boar Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedMeat.png"
+  },
+  {
+    "code": "CookedVoltureMeat",
+    "name": "Cooked Volture Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedVoltureMeat.png"
+  },
+  {
+    "code": "CookedWolfMeat",
+    "name": "Cooked Wolf Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/CookedWolfMeat.png"
+  },
+  {
+    "code": "CopperScrap",
+    "name": "Copper Scrap",
+    "type": "Material",
+    "image": "/img/Material/CopperScrap.png"
+  },
+  {
+    "code": "CrossbowRipperBlood",
+    "name": "Wound Ripper",
+    "type": "Bow",
+    "image": "/img/Bow/CrossbowRipperBlood.png"
+  },
+  {
+    "code": "CrossbowRipperLightning",
+    "name": "Storm Ripper",
+    "type": "Bow",
+    "image": "/img/Bow/CrossbowRipperLightning.png"
+  },
+  {
+    "code": "CrossbowRipperNature",
+    "name": "Root Ripper",
+    "type": "Bow",
+    "image": "/img/Bow/CrossbowRipperNature.png"
+  },
+  {
+    "code": "CuredSquirrelHamstring",
+    "name": "Cured Squirrel Hamstring",
+    "type": "Material",
+    "image": "/img/Material/CuredSquirrelHamstring.png"
+  },
+  {
+    "code": "Dandelion",
+    "name": "Dandelion",
+    "type": "Material",
+    "image": "/img/Material/Dandelion.png"
+  },
+  {
+    "code": "DeerMeat",
+    "name": "Deer Meat",
+    "type": "Material",
+    "image": "/img/Material/DeerMeat.png"
+  },
+  {
+    "code": "DeerStew",
+    "name": "Deer Stew",
+    "type": "Consumable",
+    "image": "/img/Consumable/DeerStew.png"
+  },
+  {
+    "code": "Demister",
+    "name": "Wisplight",
+    "type": "Tool",
+    "image": "/img/Tool/Demister.png"
+  },
+  {
+    "code": "DragonEgg",
+    "name": "Dragon Egg",
+    "type": "Material",
+    "image": "/img/Material/DragonEgg.png"
+  },
+  {
+    "code": "DvergerArbalest",
+    "name": "Arbalest",
+    "type": "Tool",
+    "image": "/img/Tool/DvergerArbalest.png"
+  },
+  {
+    "code": "DvergrKey",
+    "name": "Sealbreaker",
+    "type": "Material",
+    "image": "/img/Material/DvergrKey.png"
+  },
+  {
+    "code": "Ectoplasm",
+    "name": "Ectoplasm",
+    "type": "Material",
+    "image": "/img/Material/Ectoplasm.png"
+  },
+  {
+    "code": "Entrails",
+    "name": "Entrails",
+    "type": "Material",
+    "image": "/img/Material/Entrails.png"
+  },
+  {
+    "code": "Eyescream",
+    "name": "Eyescream",
+    "type": "Consumable",
+    "image": "/img/Consumable/Eyescream.png"
+  },
+  {
+    "code": "FaderDrop",
+    "name": "Fader Relic",
+    "type": "Material",
+    "image": "/img/Material/FaderDrop.png"
+  },
+  {
+    "code": "FeastAshlands",
+    "name": "Ashlands Gourmet Bowl",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastAshlands.png"
+  },
+  {
+    "code": "FeastAshlands_Material",
+    "name": "Ashlands Gourmet Bowl",
+    "type": "Material",
+    "image": "/img/Material/FeastAshlands_Material.png"
+  },
+  {
+    "code": "FeastBlackforest",
+    "name": "Black Forest Buffet Platter",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastBlackforest.png"
+  },
+  {
+    "code": "FeastBlackforest_Material",
+    "name": "Black Forest Buffet Platter",
+    "type": "Material",
+    "image": "/img/Material/FeastBlackforest_Material.png"
+  },
+  {
+    "code": "FeastMeadows",
+    "name": "Whole Roasted Meadow Boar",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastMeadows.png"
+  },
+  {
+    "code": "FeastMeadows_Material",
+    "name": "Whole Roasted Meadow Boar",
+    "type": "Material",
+    "image": "/img/Material/FeastMeadows_Material.png"
+  },
+  {
+    "code": "FeastMistlands",
+    "name": "Mushrooms Galore \u00e1 la Mistlands",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastMistlands.png"
+  },
+  {
+    "code": "FeastMistlands_Material",
+    "name": "Mushrooms Galore \u00e1 la Mistlands",
+    "type": "Material",
+    "image": "/img/Material/FeastMistlands_Material.png"
+  },
+  {
+    "code": "FeastMountains",
+    "name": "Hearty Mountain Logger's Stew",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastMountains.png"
+  },
+  {
+    "code": "FeastMountains_Material",
+    "name": "Hearty Mountain Logger's Stew",
+    "type": "Material",
+    "image": "/img/Material/FeastMountains_Material.png"
+  },
+  {
+    "code": "FeastOceans",
+    "name": "Sailor's Bounty",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastOceans.png"
+  },
+  {
+    "code": "FeastOceans_Material",
+    "name": "Sailor's Bounty",
+    "type": "Material",
+    "image": "/img/Material/FeastOceans_Material.png"
+  },
+  {
+    "code": "FeastPlains",
+    "name": "Plains Pie Picnic",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastPlains.png"
+  },
+  {
+    "code": "FeastPlains_Material",
+    "name": "Plains Pie Picnic",
+    "type": "Material",
+    "image": "/img/Material/FeastPlains_Material.png"
+  },
+  {
+    "code": "FeastSwamps",
+    "name": "Swamp Dweller's Delight",
+    "type": "Consumable",
+    "image": "/img/Consumable/FeastSwamps.png"
+  },
+  {
+    "code": "FeastSwamps_Material",
+    "name": "Swamp Dweller's Delight",
+    "type": "Material",
+    "image": "/img/Material/FeastSwamps_Material.png"
+  },
+  {
+    "code": "Feaster",
+    "name": "Serving Tray",
+    "type": "Tool",
+    "image": "/img/Tool/Feaster.png"
+  },
+  {
+    "code": "FierySvinstew",
+    "name": "Fiery Svinstew",
+    "type": "Consumable",
+    "image": "/img/Consumable/FierySvinstew.png"
+  },
+  {
+    "code": "FirCone",
+    "name": "Fir Cone",
+    "type": "Material",
+    "image": "/img/Material/FirCone.png"
+  },
+  {
+    "code": "FireworksRocket_Blue",
+    "name": "Blue Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Blue.png"
+  },
+  {
+    "code": "FireworksRocket_Cyan",
+    "name": "Cyan Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Cyan.png"
+  },
+  {
+    "code": "FireworksRocket_Green",
+    "name": "Green Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Green.png"
+  },
+  {
+    "code": "FireworksRocket_Purple",
+    "name": "Purple Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Purple.png"
+  },
+  {
+    "code": "FireworksRocket_Red",
+    "name": "Red Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Red.png"
+  },
+  {
+    "code": "FireworksRocket_White",
+    "name": "Basic Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_White.png"
+  },
+  {
+    "code": "FireworksRocket_Yellow",
+    "name": "Yellow Fireworks",
+    "type": "Material",
+    "image": "/img/Material/FireworksRocket_Yellow.png"
+  },
+  {
+    "code": "Fish1",
+    "name": "Perch",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish1.png"
+  },
+  {
+    "code": "Fish10",
+    "name": "Northern Salmon",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish10.png"
+  },
+  {
+    "code": "Fish11",
+    "name": "Magmafish",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish11.png"
+  },
+  {
+    "code": "Fish12",
+    "name": "Pufferfish",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish12.png"
+  },
+  {
+    "code": "Fish2",
+    "name": "Pike",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish2.png"
+  },
+  {
+    "code": "Fish3",
+    "name": "Tuna",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish3.png"
+  },
+  {
+    "code": "Fish4_cave",
+    "name": "Tetra",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish4_cave.png"
+  },
+  {
+    "code": "Fish5",
+    "name": "Trollfish",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish5.png"
+  },
+  {
+    "code": "Fish6",
+    "name": "Giant Herring",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish6.png"
+  },
+  {
+    "code": "Fish7",
+    "name": "Grouper",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish7.png"
+  },
+  {
+    "code": "Fish8",
+    "name": "Coral Cod",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish8.png"
+  },
+  {
+    "code": "Fish9",
+    "name": "Anglerfish",
+    "type": "Ammo",
+    "image": "/img/Ammo/Fish9.png"
+  },
+  {
+    "code": "FishAndBread",
+    "name": "Fish 'n' Bread",
+    "type": "Consumable",
+    "image": "/img/Consumable/FishAndBread.png"
+  },
+  {
+    "code": "FishAndBreadUncooked",
+    "name": "Uncooked Fish 'n' Bread",
+    "type": "Material",
+    "image": "/img/Material/FishAndBreadUncooked.png"
+  },
+  {
+    "code": "FishAnglerRaw",
+    "name": "Raw Fish",
+    "type": "Material",
+    "image": "/img/Material/FishAnglerRaw.png"
+  },
+  {
+    "code": "FishCooked",
+    "name": "Cooked Fish",
+    "type": "Consumable",
+    "image": "/img/Consumable/FishCooked.png"
+  },
+  {
+    "code": "FishRaw",
+    "name": "Raw Fish",
+    "type": "Material",
+    "image": "/img/Material/FishRaw.png"
+  },
+  {
+    "code": "FishWraps",
+    "name": "Fish Wraps",
+    "type": "Consumable",
+    "image": "/img/Consumable/FishWraps.png"
+  },
+  {
+    "code": "FishingBait",
+    "name": "Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBait.png"
+  },
+  {
+    "code": "FishingBaitAshlands",
+    "name": "Hot Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitAshlands.png"
+  },
+  {
+    "code": "FishingBaitCave",
+    "name": "Cold Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitCave.png"
+  },
+  {
+    "code": "FishingBaitDeepNorth",
+    "name": "Frosty Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitDeepNorth.png"
+  },
+  {
+    "code": "FishingBaitForest",
+    "name": "Mossy Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitForest.png"
+  },
+  {
+    "code": "FishingBaitMistlands",
+    "name": "Misty Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitMistlands.png"
+  },
+  {
+    "code": "FishingBaitOcean",
+    "name": "Heavy Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitOcean.png"
+  },
+  {
+    "code": "FishingBaitPlains",
+    "name": "Stingy Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitPlains.png"
+  },
+  {
+    "code": "FishingBaitSwamp",
+    "name": "Sticky Fishing Bait",
+    "type": "Ammo",
+    "image": "/img/Ammo/FishingBaitSwamp.png"
+  },
+  {
+    "code": "FishingRod",
+    "name": "Fishing Rod",
+    "type": "Tool",
+    "image": "/img/Tool/FishingRod.png"
+  },
+  {
+    "code": "FistBjornUndeadClaw",
+    "name": "Vilebone Maulclaws",
+    "type": "Tool",
+    "image": "/img/Tool/FistBjornUndeadClaw.png"
+  },
+  {
+    "code": "Flametal",
+    "name": "Ancient Metal",
+    "type": "Material",
+    "image": "/img/Material/Flametal.png"
+  },
+  {
+    "code": "FlametalOre",
+    "name": "Glowing Metal Ore",
+    "type": "Material",
+    "image": "/img/Material/FlametalOre.png"
+  },
+  {
+    "code": "FragrantBundle",
+    "name": "Fragrant Bundle",
+    "type": "Material",
+    "image": "/img/Material/FragrantBundle.png"
+  },
+  {
+    "code": "FreshSeaweed",
+    "name": "Fresh Seaweed",
+    "type": "Material",
+    "image": "/img/Material/FreshSeaweed.png"
+  },
+  {
+    "code": "Grausten",
+    "name": "Grausten",
+    "type": "Material",
+    "image": "/img/Material/Grausten.png"
+  },
+  {
+    "code": "Hammer",
+    "name": "Hammer",
+    "type": "Tool",
+    "image": "/img/Tool/Hammer.png"
+  },
+  {
+    "code": "HardAntler",
+    "name": "Hard Antler",
+    "type": "Material",
+    "image": "/img/Material/HardAntler.png"
+  },
+  {
+    "code": "HealthUpgrade_Bonemass",
+    "name": "Bonemass heart",
+    "type": "Consumable",
+    "image": "/img/Consumable/HealthUpgrade_Bonemass.png"
+  },
+  {
+    "code": "HealthUpgrade_GDKing",
+    "name": "Elder heart",
+    "type": "Consumable",
+    "image": "/img/Consumable/HealthUpgrade_GDKing.png"
+  },
+  {
+    "code": "HelmetAshlandsMediumHood",
+    "name": "Hood of Ask",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetAshlandsMediumHood.png"
+  },
+  {
+    "code": "HelmetBerserkerHood",
+    "name": "Headdress of the Bear",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetBerserkerHood.png"
+  },
+  {
+    "code": "HelmetBerserkerUndead",
+    "name": "Vilebone Visage",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetBerserkerUndead.png"
+  },
+  {
+    "code": "HelmetBronze",
+    "name": "Bronze Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetBronze.png"
+  },
+  {
+    "code": "HelmetCarapace",
+    "name": "Carapace Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetCarapace.png"
+  },
+  {
+    "code": "HelmetCelebration",
+    "name": "Celebratory Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetCelebration.png"
+  },
+  {
+    "code": "HelmetDrake",
+    "name": "Drake Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetDrake.png"
+  },
+  {
+    "code": "HelmetDverger",
+    "name": "Dverger Circlet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetDverger.png"
+  },
+  {
+    "code": "HelmetFenring",
+    "name": "Fenris Hood",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetFenring.png"
+  },
+  {
+    "code": "HelmetFishingHat",
+    "name": "Fishing Hat",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetFishingHat.png"
+  },
+  {
+    "code": "HelmetFlametal",
+    "name": "Flametal Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetFlametal.png"
+  },
+  {
+    "code": "HelmetHat1",
+    "name": "Blue Tied Headscarf",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat1.png"
+  },
+  {
+    "code": "HelmetHat10",
+    "name": "Simple Purple Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat10.png"
+  },
+  {
+    "code": "HelmetHat2",
+    "name": "Green Twisted Headscarf",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat2.png"
+  },
+  {
+    "code": "HelmetHat3",
+    "name": "Brown Fur Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat3.png"
+  },
+  {
+    "code": "HelmetHat4",
+    "name": "Extravagant Green Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat4.png"
+  },
+  {
+    "code": "HelmetHat5",
+    "name": "Simple Red Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat5.png"
+  },
+  {
+    "code": "HelmetHat6",
+    "name": "Yellow Tied Headscarf",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat6.png"
+  },
+  {
+    "code": "HelmetHat7",
+    "name": "Red Twisted Headscarf",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat7.png"
+  },
+  {
+    "code": "HelmetHat8",
+    "name": "Grey Fur Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat8.png"
+  },
+  {
+    "code": "HelmetHat9",
+    "name": "Extravagant Orange Cap",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetHat9.png"
+  },
+  {
+    "code": "HelmetIron",
+    "name": "Iron Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetIron.png"
+  },
+  {
+    "code": "HelmetLeather",
+    "name": "Leather Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetLeather.png"
+  },
+  {
+    "code": "HelmetMage",
+    "name": "Eitr-weave Hood",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetMage.png"
+  },
+  {
+    "code": "HelmetMage_Ashlands",
+    "name": "Hood of Embla",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetMage_Ashlands.png"
+  },
+  {
+    "code": "HelmetMidsummerCrown",
+    "name": "Midsummer Crown",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetMidsummerCrown.png"
+  },
+  {
+    "code": "HelmetOdin",
+    "name": "Hood of Odin",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetOdin.png"
+  },
+  {
+    "code": "HelmetPadded",
+    "name": "Padded Helmet",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetPadded.png"
+  },
+  {
+    "code": "HelmetPointyHat",
+    "name": "Pointy Hat",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetPointyHat.png"
+  },
+  {
+    "code": "HelmetRoot",
+    "name": "Root Mask",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetRoot.png"
+  },
+  {
+    "code": "HelmetStrawHat",
+    "name": "Straw Hat",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetStrawHat.png"
+  },
+  {
+    "code": "HelmetSweatBand",
+    "name": "Headband",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetSweatBand.png"
+  },
+  {
+    "code": "HelmetTrollLeather",
+    "name": "Troll Leather Hood",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetTrollLeather.png"
+  },
+  {
+    "code": "HelmetYule",
+    "name": "Yule Hat",
+    "type": "Armor",
+    "image": "/img/Armor/HelmetYule.png"
+  },
+  {
+    "code": "HildirKey_forestcrypt",
+    "name": "Hildir's Brass Key",
+    "type": "Material",
+    "image": "/img/Material/HildirKey_forestcrypt.png"
+  },
+  {
+    "code": "HildirKey_mountaincave",
+    "name": "Hildir's Silver Key",
+    "type": "Material",
+    "image": "/img/Material/HildirKey_mountaincave.png"
+  },
+  {
+    "code": "HildirKey_plainsfortress",
+    "name": "Hildir's Bronze Key",
+    "type": "Material",
+    "image": "/img/Material/HildirKey_plainsfortress.png"
+  },
+  {
+    "code": "Hoe",
+    "name": "Hoe",
+    "type": "Tool",
+    "image": "/img/Tool/Hoe.png"
+  },
+  {
+    "code": "Honey",
+    "name": "Honey",
+    "type": "Consumable",
+    "image": "/img/Consumable/Honey.png"
+  },
+  {
+    "code": "HoneyGlazedChicken",
+    "name": "Honey Glazed Chicken",
+    "type": "Consumable",
+    "image": "/img/Consumable/HoneyGlazedChicken.png"
+  },
+  {
+    "code": "HoneyGlazedChickenUncooked",
+    "name": "Uncooked Honey Glazed Chicken",
+    "type": "Material",
+    "image": "/img/Material/HoneyGlazedChickenUncooked.png"
+  },
+  {
+    "code": "IronScrap",
+    "name": "Scrap Iron",
+    "type": "Material",
+    "image": "/img/Material/IronScrap.png"
+  },
+  {
+    "code": "Ironpit",
+    "name": "Iron Pit",
+    "type": "Material",
+    "image": "/img/Material/Ironpit.png"
+  },
+  {
+    "code": "JuteBlue",
+    "name": "Blue Jute",
+    "type": "Material",
+    "image": "/img/Material/JuteBlue.png"
+  },
+  {
+    "code": "JuteRed",
+    "name": "Red Jute",
+    "type": "Material",
+    "image": "/img/Material/JuteRed.png"
+  },
+  {
+    "code": "KnifeWood",
+    "name": "Wooden Knife",
+    "type": "Weapon",
+    "image": "/img/Weapon/KnifeWood.png"
+  },
+  {
+    "code": "Lantern",
+    "name": "Dvergr Lantern",
+    "type": "Misc",
+    "image": "/img/Misc/Lantern.png"
+  },
+  {
+    "code": "Larva",
+    "name": "$item_larva",
+    "type": "Material",
+    "image": "/img/Material/Larva.png"
+  },
+  {
+    "code": "LoxMeat",
+    "name": "Lox Meat",
+    "type": "Material",
+    "image": "/img/Material/LoxMeat.png"
+  },
+  {
+    "code": "LoxPelt",
+    "name": "Lox Pelt",
+    "type": "Material",
+    "image": "/img/Material/LoxPelt.png"
+  },
+  {
+    "code": "LoxPie",
+    "name": "Lox Meat Pie",
+    "type": "Consumable",
+    "image": "/img/Consumable/LoxPie.png"
+  },
+  {
+    "code": "LoxPieUncooked",
+    "name": "Unbaked Lox Pie",
+    "type": "Material",
+    "image": "/img/Material/LoxPieUncooked.png"
+  },
+  {
+    "code": "MaceEldnerBlood",
+    "name": "Bloodgeon",
+    "type": "Weapon",
+    "image": "/img/Weapon/MaceEldnerBlood.png"
+  },
+  {
+    "code": "MaceEldnerLightning",
+    "name": "Storm Star",
+    "type": "Weapon",
+    "image": "/img/Weapon/MaceEldnerLightning.png"
+  },
+  {
+    "code": "MaceEldnerNature",
+    "name": "Klossen",
+    "type": "Weapon",
+    "image": "/img/Weapon/MaceEldnerNature.png"
+  },
+  {
+    "code": "MaceWood",
+    "name": "Wooden Mace",
+    "type": "Weapon",
+    "image": "/img/Weapon/MaceWood.png"
+  },
+  {
+    "code": "MagicallyStuffedShroom",
+    "name": "Stuffed Mushroom",
+    "type": "Consumable",
+    "image": "/img/Consumable/MagicallyStuffedShroom.png"
+  },
+  {
+    "code": "MagicallyStuffedShroomUncooked",
+    "name": "Uncooked Stuffed Mushroom",
+    "type": "Material",
+    "image": "/img/Material/MagicallyStuffedShroomUncooked.png"
+  },
+  {
+    "code": "MarinatedGreens",
+    "name": "Marinated Greens",
+    "type": "Consumable",
+    "image": "/img/Consumable/MarinatedGreens.png"
+  },
+  {
+    "code": "MashedMeat",
+    "name": "Mashed Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/MashedMeat.png"
+  },
+  {
+    "code": "MeadBaseBugRepellent",
+    "name": "Mead Base: Anti-Sting",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseBugRepellent.png"
+  },
+  {
+    "code": "MeadBaseBzerker",
+    "name": "Mead base: Berserkir",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseBzerker.png"
+  },
+  {
+    "code": "MeadBaseEitrLingering",
+    "name": "Mead Base: Lingering Eitr",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseEitrLingering.png"
+  },
+  {
+    "code": "MeadBaseEitrMinor",
+    "name": "Mead Base: Minor Eitr",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseEitrMinor.png"
+  },
+  {
+    "code": "MeadBaseFrostResist",
+    "name": "Mead Base: Frost Resistance",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseFrostResist.png"
+  },
+  {
+    "code": "MeadBaseHasty",
+    "name": "Mead base: Ratatosk",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseHasty.png"
+  },
+  {
+    "code": "MeadBaseHealthLingering",
+    "name": "Mead Base: Lingering Health",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseHealthLingering.png"
+  },
+  {
+    "code": "MeadBaseHealthMajor",
+    "name": "Mead Base: Major Healing",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseHealthMajor.png"
+  },
+  {
+    "code": "MeadBaseHealthMedium",
+    "name": "Mead Base: Medium Healing",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseHealthMedium.png"
+  },
+  {
+    "code": "MeadBaseHealthMinor",
+    "name": "Mead Base: Minor Healing",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseHealthMinor.png"
+  },
+  {
+    "code": "MeadBaseLightFoot",
+    "name": "Mead Base: Lightfoot",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseLightFoot.png"
+  },
+  {
+    "code": "MeadBasePoisonResist",
+    "name": "Mead Base: Poison Resistance",
+    "type": "Material",
+    "image": "/img/Material/MeadBasePoisonResist.png"
+  },
+  {
+    "code": "MeadBaseStaminaLingering",
+    "name": "Mead Base: Lingering Stamina",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseStaminaLingering.png"
+  },
+  {
+    "code": "MeadBaseStaminaMedium",
+    "name": "Mead Base: Medium Stamina",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseStaminaMedium.png"
+  },
+  {
+    "code": "MeadBaseStaminaMinor",
+    "name": "Mead Base: Minor Stamina",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseStaminaMinor.png"
+  },
+  {
+    "code": "MeadBaseStrength",
+    "name": "Mead Base: Troll Endurance",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseStrength.png"
+  },
+  {
+    "code": "MeadBaseSwimmer",
+    "name": "Mead Base: Vananidir",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseSwimmer.png"
+  },
+  {
+    "code": "MeadBaseTamer",
+    "name": "Mead Base: Animal Whispers",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseTamer.png"
+  },
+  {
+    "code": "MeadBaseTasty",
+    "name": "Mead Base: Tasty",
+    "type": "Material",
+    "image": "/img/Material/MeadBaseTasty.png"
+  },
+  {
+    "code": "MeadBugRepellent",
+    "name": "Anti-Sting Concoction",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadBugRepellent.png"
+  },
+  {
+    "code": "MeadBzerker",
+    "name": "Berserkir Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadBzerker.png"
+  },
+  {
+    "code": "MeadEitrLingering",
+    "name": "Lingering Eitr Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadEitrLingering.png"
+  },
+  {
+    "code": "MeadEitrMinor",
+    "name": "Minor Eitr Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadEitrMinor.png"
+  },
+  {
+    "code": "MeadHasty",
+    "name": "Tonic of Ratatosk",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadHasty.png"
+  },
+  {
+    "code": "MeadHealthLingering",
+    "name": "Lingering Healing Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadHealthLingering.png"
+  },
+  {
+    "code": "MeadHealthMajor",
+    "name": "Major Healing Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadHealthMajor.png"
+  },
+  {
+    "code": "MeadHealthMedium",
+    "name": "Medium Healing Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadHealthMedium.png"
+  },
+  {
+    "code": "MeadHealthMinor",
+    "name": "Minor Healing Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadHealthMinor.png"
+  },
+  {
+    "code": "MeadLightfoot",
+    "name": "Lightfoot Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadLightfoot.png"
+  },
+  {
+    "code": "MeadPoisonResist",
+    "name": "Poison Resistance Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadPoisonResist.png"
+  },
+  {
+    "code": "MeadStaminaLingering",
+    "name": "Lingering Stamina Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadStaminaLingering.png"
+  },
+  {
+    "code": "MeadStaminaMedium",
+    "name": "Medium Stamina Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadStaminaMedium.png"
+  },
+  {
+    "code": "MeadStaminaMinor",
+    "name": "Minor Stamina Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadStaminaMinor.png"
+  },
+  {
+    "code": "MeadStrength",
+    "name": "Mead of Troll Endurance",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadStrength.png"
+  },
+  {
+    "code": "MeadSwimmer",
+    "name": "Draught of Vananidir",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadSwimmer.png"
+  },
+  {
+    "code": "MeadTamer",
+    "name": "Brew of Animal Whispers",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadTamer.png"
+  },
+  {
+    "code": "MeadTasty",
+    "name": "Tasty Mead",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadTasty.png"
+  },
+  {
+    "code": "MeadTrollPheromones",
+    "name": "Love Potion",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeadTrollPheromones.png"
+  },
+  {
+    "code": "MeatPlatter",
+    "name": "Meat Platter",
+    "type": "Consumable",
+    "image": "/img/Consumable/MeatPlatter.png"
+  },
+  {
+    "code": "MeatPlatterUncooked",
+    "name": "Uncooked Meat Platter",
+    "type": "Material",
+    "image": "/img/Material/MeatPlatterUncooked.png"
+  },
+  {
+    "code": "MechanicalSpring",
+    "name": "Mechanical Spring",
+    "type": "Material",
+    "image": "/img/Material/MechanicalSpring.png"
+  },
+  {
+    "code": "MinceMeatSauce",
+    "name": "Minced Meat Sauce",
+    "type": "Consumable",
+    "image": "/img/Consumable/MinceMeatSauce.png"
+  },
+  {
+    "code": "MisthareSupreme",
+    "name": "Misthare Supreme",
+    "type": "Consumable",
+    "image": "/img/Consumable/MisthareSupreme.png"
+  },
+  {
+    "code": "MisthareSupremeUncooked",
+    "name": "Uncooked Misthare Supreme",
+    "type": "Material",
+    "image": "/img/Material/MisthareSupremeUncooked.png"
+  },
+  {
+    "code": "MoltenCore",
+    "name": "Molten Core",
+    "type": "Material",
+    "image": "/img/Material/MoltenCore.png"
+  },
+  {
+    "code": "MorgenHeart",
+    "name": "Morgen Heart",
+    "type": "Material",
+    "image": "/img/Material/MorgenHeart.png"
+  },
+  {
+    "code": "Mushroom",
+    "name": "Mushroom",
+    "type": "Consumable",
+    "image": "/img/Consumable/Mushroom.png"
+  },
+  {
+    "code": "MushroomBlue",
+    "name": "Blue Mushroom",
+    "type": "Consumable",
+    "image": "/img/Consumable/MushroomBlue.png"
+  },
+  {
+    "code": "MushroomBzerker",
+    "name": "Toadstool",
+    "type": "Consumable",
+    "image": "/img/Consumable/MushroomBzerker.png"
+  },
+  {
+    "code": "MushroomMagecap",
+    "name": "Magecap",
+    "type": "Consumable",
+    "image": "/img/Consumable/MushroomMagecap.png"
+  },
+  {
+    "code": "MushroomOmelette",
+    "name": "Mushroom Omelette",
+    "type": "Consumable",
+    "image": "/img/Consumable/MushroomOmelette.png"
+  },
+  {
+    "code": "MushroomYellow",
+    "name": "Yellow Mushroom",
+    "type": "Consumable",
+    "image": "/img/Consumable/MushroomYellow.png"
+  },
+  {
+    "code": "NeckTail",
+    "name": "Neck Tail",
+    "type": "Material",
+    "image": "/img/Material/NeckTail.png"
+  },
+  {
+    "code": "NeckTailGrilled",
+    "name": "Grilled Neck Tail",
+    "type": "Consumable",
+    "image": "/img/Consumable/NeckTailGrilled.png"
+  },
+  {
+    "code": "Onion",
+    "name": "Onion",
+    "type": "Consumable",
+    "image": "/img/Consumable/Onion.png"
+  },
+  {
+    "code": "OnionSoup",
+    "name": "Onion Soup",
+    "type": "Consumable",
+    "image": "/img/Consumable/OnionSoup.png"
+  },
+  {
+    "code": "PickaxeBlackMetal",
+    "name": "Black Metal Pickaxe",
+    "type": "Tool",
+    "image": "/img/Tool/PickaxeBlackMetal.png"
+  },
+  {
+    "code": "PickaxeBronze",
+    "name": "Bronze Pickaxe",
+    "type": "Tool",
+    "image": "/img/Tool/PickaxeBronze.png"
+  },
+  {
+    "code": "PickaxeIron",
+    "name": "Iron Pickaxe",
+    "type": "Tool",
+    "image": "/img/Tool/PickaxeIron.png"
+  },
+  {
+    "code": "PickaxeStone",
+    "name": "Stone Pickaxe",
+    "type": "Tool",
+    "image": "/img/Tool/PickaxeStone.png"
+  },
+  {
+    "code": "PineCone",
+    "name": "Pine Cone",
+    "type": "Material",
+    "image": "/img/Material/PineCone.png"
+  },
+  {
+    "code": "PiquantPie",
+    "name": "Piquant Pie",
+    "type": "Consumable",
+    "image": "/img/Consumable/PiquantPie.png"
+  },
+  {
+    "code": "PiquantPieUncooked",
+    "name": "Uncooked Piquant Pie",
+    "type": "Material",
+    "image": "/img/Material/PiquantPieUncooked.png"
+  },
+  {
+    "code": "Pot_Shard_Green",
+    "name": "Pot Shard",
+    "type": "Material",
+    "image": "/img/Material/Pot_Shard_Green.png"
+  },
+  {
+    "code": "Pot_Shard_Red",
+    "name": "$item_pot_shard_red",
+    "type": "Material",
+    "image": "/img/Material/Pot_Shard_Red.png"
+  },
+  {
+    "code": "PowderedDragonEgg",
+    "name": "Powdered Dragon Eggshells",
+    "type": "Material",
+    "image": "/img/Material/PowderedDragonEgg.png"
+  },
+  {
+    "code": "Pukeberries",
+    "name": "Bukeperries",
+    "type": "Consumable",
+    "image": "/img/Consumable/Pukeberries.png"
+  },
+  {
+    "code": "PungentPebbles",
+    "name": "Pungent Pebbles",
+    "type": "Material",
+    "image": "/img/Material/PungentPebbles.png"
+  },
+  {
+    "code": "QueensJam",
+    "name": "Queen's Jam",
+    "type": "Consumable",
+    "image": "/img/Consumable/QueensJam.png"
+  },
+  {
+    "code": "RawMeat",
+    "name": "Boar Meat",
+    "type": "Material",
+    "image": "/img/Material/RawMeat.png"
+  },
+  {
+    "code": "RoastedCrustPie",
+    "name": "Roasted Crust Pie",
+    "type": "Consumable",
+    "image": "/img/Consumable/RoastedCrustPie.png"
+  },
+  {
+    "code": "RoastedCrustPieUncooked",
+    "name": "Uncooked Roasted Crust Pie",
+    "type": "Material",
+    "image": "/img/Material/RoastedCrustPieUncooked.png"
+  },
+  {
+    "code": "RottenMeat",
+    "name": "Rotten Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/RottenMeat.png"
+  },
+  {
+    "code": "RoyalJelly",
+    "name": "Royal Jelly",
+    "type": "Consumable",
+    "image": "/img/Consumable/RoyalJelly.png"
+  },
+  {
+    "code": "Ruby",
+    "name": "Ruby",
+    "type": "Material",
+    "image": "/img/Material/Ruby.png"
+  },
+  {
+    "code": "SaddleAsksvin",
+    "name": "Asksvin Saddle",
+    "type": "Material",
+    "image": "/img/Material/SaddleAsksvin.png"
+  },
+  {
+    "code": "SaddleLox",
+    "name": "Lox Saddle",
+    "type": "Material",
+    "image": "/img/Material/SaddleLox.png"
+  },
+  {
+    "code": "Salad",
+    "name": "Salad",
+    "type": "Consumable",
+    "image": "/img/Consumable/Salad.png"
+  },
+  {
+    "code": "Sausages",
+    "name": "Sausages",
+    "type": "Consumable",
+    "image": "/img/Consumable/Sausages.png"
+  },
+  {
+    "code": "ScorchingMedley",
+    "name": "Scorching Medley",
+    "type": "Consumable",
+    "image": "/img/Consumable/ScorchingMedley.png"
+  },
+  {
+    "code": "Scythe",
+    "name": "Scythe",
+    "type": "Tool",
+    "image": "/img/Tool/Scythe.png"
+  },
+  {
+    "code": "ScytheHandle",
+    "name": "Scythe Handle",
+    "type": "Material",
+    "image": "/img/Material/ScytheHandle.png"
+  },
+  {
+    "code": "SeekerAspic",
+    "name": "Seeker Aspic",
+    "type": "Consumable",
+    "image": "/img/Consumable/SeekerAspic.png"
+  },
+  {
+    "code": "SerpentMeat",
+    "name": "Serpent Meat",
+    "type": "Material",
+    "image": "/img/Material/SerpentMeat.png"
+  },
+  {
+    "code": "SerpentMeatCooked",
+    "name": "Cooked Serpent Meat",
+    "type": "Consumable",
+    "image": "/img/Consumable/SerpentMeatCooked.png"
+  },
+  {
+    "code": "SerpentStew",
+    "name": "Serpent Stew",
+    "type": "Consumable",
+    "image": "/img/Consumable/SerpentStew.png"
+  },
+  {
+    "code": "SharpeningStone",
+    "name": "Sharpening Stone",
+    "type": "Material",
+    "image": "/img/Material/SharpeningStone.png"
+  },
+  {
+    "code": "ShieldCore",
+    "name": "Shield Core",
+    "type": "Material",
+    "image": "/img/Material/ShieldCore.png"
+  },
+  {
+    "code": "ShieldFlametalTower",
+    "name": "Flametal Tower Shield",
+    "type": "Shield",
+    "image": "/img/Shield/ShieldFlametalTower.png"
+  },
+  {
+    "code": "ShieldIronSquare",
+    "name": "Iron Shield",
+    "type": "Shield",
+    "image": "/img/Shield/ShieldIronSquare.png"
+  },
+  {
+    "code": "ShocklateSmoothie",
+    "name": "Muckshake",
+    "type": "Consumable",
+    "image": "/img/Consumable/ShocklateSmoothie.png"
+  },
+  {
+    "code": "SilverNecklace",
+    "name": "Silver Necklace",
+    "type": "Material",
+    "image": "/img/Material/SilverNecklace.png"
+  },
+  {
+    "code": "SizzlingBerryBroth",
+    "name": "Sizzling Berry Broth",
+    "type": "Consumable",
+    "image": "/img/Consumable/SizzlingBerryBroth.png"
+  },
+  {
+    "code": "SledgeWood",
+    "name": "Wooden Sledge",
+    "type": "Tool",
+    "image": "/img/Tool/SledgeWood.png"
+  },
+  {
+    "code": "Sparkler",
+    "name": "Sparkler",
+    "type": "Misc",
+    "image": "/img/Misc/Sparkler.png"
+  },
+  {
+    "code": "SparklingShroomshake",
+    "name": "Sparkling Shroomshake",
+    "type": "Consumable",
+    "image": "/img/Consumable/SparklingShroomshake.png"
+  },
+  {
+    "code": "SpearChitin",
+    "name": "Abyssal Harpoon",
+    "type": "Weapon",
+    "image": "/img/Weapon/SpearChitin.png"
+  },
+  {
+    "code": "SpearSplitner_Blood",
+    "name": "Splitnir the Bleeding",
+    "type": "Weapon",
+    "image": "/img/Weapon/SpearSplitner_Blood.png"
+  },
+  {
+    "code": "SpearSplitner_Lightning",
+    "name": "Splitnir the Storming",
+    "type": "Weapon",
+    "image": "/img/Weapon/SpearSplitner_Lightning.png"
+  },
+  {
+    "code": "SpearSplitner_Nature",
+    "name": "Splitnir the Primal",
+    "type": "Weapon",
+    "image": "/img/Weapon/SpearSplitner_Nature.png"
+  },
+  {
+    "code": "SpearWood",
+    "name": "Wooden Spear",
+    "type": "Weapon",
+    "image": "/img/Weapon/SpearWood.png"
+  },
+  {
+    "code": "SpiceAshlands",
+    "name": "Fiery Spice Powder",
+    "type": "Material",
+    "image": "/img/Material/SpiceAshlands.png"
+  },
+  {
+    "code": "SpiceForests",
+    "name": "Woodland Herb Blend",
+    "type": "Material",
+    "image": "/img/Material/SpiceForests.png"
+  },
+  {
+    "code": "SpiceMistlands",
+    "name": "Herbs of the Hidden Hills",
+    "type": "Material",
+    "image": "/img/Material/SpiceMistlands.png"
+  },
+  {
+    "code": "SpiceMountains",
+    "name": "Mountain Peak Pepper Powder",
+    "type": "Material",
+    "image": "/img/Material/SpiceMountains.png"
+  },
+  {
+    "code": "SpiceOceans",
+    "name": "Seafarer's Herbs",
+    "type": "Material",
+    "image": "/img/Material/SpiceOceans.png"
+  },
+  {
+    "code": "SpicePlains",
+    "name": "Grasslands Herbalist Harvest",
+    "type": "Material",
+    "image": "/img/Material/SpicePlains.png"
+  },
+  {
+    "code": "SpicyMarmalade",
+    "name": "Spicy Marmalade",
+    "type": "Consumable",
+    "image": "/img/Consumable/SpicyMarmalade.png"
+  },
+  {
+    "code": "StaminaUpgrade_Greydwarf",
+    "name": "Stamina Greydwarf",
+    "type": "Consumable",
+    "image": "/img/Consumable/StaminaUpgrade_Greydwarf.png"
+  },
+  {
+    "code": "StaminaUpgrade_Troll",
+    "name": "Stamina Troll",
+    "type": "Consumable",
+    "image": "/img/Consumable/StaminaUpgrade_Troll.png"
+  },
+  {
+    "code": "StaminaUpgrade_Wraith",
+    "name": "Stamina Wraith",
+    "type": "Consumable",
+    "image": "/img/Consumable/StaminaUpgrade_Wraith.png"
+  },
+  {
+    "code": "StoneRock",
+    "name": "Rock",
+    "type": "Material",
+    "image": "/img/Material/StoneRock.png"
+  },
+  {
+    "code": "SwordIronFire",
+    "name": "Dyrnwyn",
+    "type": "Weapon",
+    "image": "/img/Weapon/SwordIronFire.png"
+  },
+  {
+    "code": "SwordWood",
+    "name": "Wooden Sword",
+    "type": "Weapon",
+    "image": "/img/Weapon/SwordWood.png"
+  },
+  {
+    "code": "THSwordWood",
+    "name": "Wooden Greatsword",
+    "type": "Tool",
+    "image": "/img/Tool/THSwordWood.png"
+  },
+  {
+    "code": "Tankard",
+    "name": "Tankard",
+    "type": "Weapon",
+    "image": "/img/Weapon/Tankard.png"
+  },
+  {
+    "code": "TankardAnniversary",
+    "name": "Horn of Celebration",
+    "type": "Weapon",
+    "image": "/img/Weapon/TankardAnniversary.png"
+  },
+  {
+    "code": "TankardOdin",
+    "name": "Mead Horn of Odin",
+    "type": "Weapon",
+    "image": "/img/Weapon/TankardOdin.png"
+  },
+  {
+    "code": "Tankard_dvergr",
+    "name": "Dvergr Tankard",
+    "type": "Weapon",
+    "image": "/img/Weapon/Tankard_dvergr.png"
+  },
+  {
+    "code": "Tar",
+    "name": "Tar",
+    "type": "Material",
+    "image": "/img/Material/Tar.png"
+  },
+  {
+    "code": "Thistle",
+    "name": "Thistle",
+    "type": "Material",
+    "image": "/img/Material/Thistle.png"
+  },
+  {
+    "code": "Thunderstone",
+    "name": "Thunder Stone",
+    "type": "Material",
+    "image": "/img/Material/Thunderstone.png"
+  },
+  {
+    "code": "TorchMist",
+    "name": "$item_torchmist",
+    "type": "Misc",
+    "image": "/img/Misc/TorchMist.png"
+  },
+  {
+    "code": "TrinketBlackDamageHealth",
+    "name": "Bracelets of the Brave",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketBlackDamageHealth.png"
+  },
+  {
+    "code": "TrinketBlackStamina",
+    "name": "Evasion Mantle",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketBlackStamina.png"
+  },
+  {
+    "code": "TrinketBronzeHealth",
+    "name": "Heart of the Forest",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketBronzeHealth.png"
+  },
+  {
+    "code": "TrinketBronzeStamina",
+    "name": "Bronze Pendant",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketBronzeStamina.png"
+  },
+  {
+    "code": "TrinketCarapaceEitr",
+    "name": "Pulsating Earrings",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketCarapaceEitr.png"
+  },
+  {
+    "code": "TrinketChitinSwim",
+    "name": "Fins of Destiny",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketChitinSwim.png"
+  },
+  {
+    "code": "TrinketFlametalEitr",
+    "name": "J\u00f6rmundling ",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketFlametalEitr.png"
+  },
+  {
+    "code": "TrinketFlametalStaminaHealth",
+    "name": "Brimstone",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketFlametalStaminaHealth.png"
+  },
+  {
+    "code": "TrinketIronHealth",
+    "name": "Iron Brooch",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketIronHealth.png"
+  },
+  {
+    "code": "TrinketIronStamina",
+    "name": "Nimble Anklet",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketIronStamina.png"
+  },
+  {
+    "code": "TrinketScaleStaminaDamage",
+    "name": "Resounding Shackle",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketScaleStaminaDamage.png"
+  },
+  {
+    "code": "TrinketSilverDamage",
+    "name": "Wolf Sight",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketSilverDamage.png"
+  },
+  {
+    "code": "TrinketSilverResist",
+    "name": "Crystal Heart",
+    "type": "Trinket",
+    "image": "/img/Trinket/TrinketSilverResist.png"
+  },
+  {
+    "code": "TrophyDraugrFem",
+    "name": "Draugr Trophy",
+    "type": "Weapon",
+    "image": "/img/Weapon/TrophyDraugrFem.png"
+  },
+  {
+    "code": "TrophyForestTroll",
+    "name": "Troll Trophy",
+    "type": "Weapon",
+    "image": "/img/Weapon/TrophyForestTroll.png"
+  },
+  {
+    "code": "Turnip",
+    "name": "Turnip",
+    "type": "Material",
+    "image": "/img/Material/Turnip.png"
+  },
+  {
+    "code": "TurnipStew",
+    "name": "Turnip Stew",
+    "type": "Consumable",
+    "image": "/img/Consumable/TurnipStew.png"
+  },
+  {
+    "code": "UndeadBjornRibcage",
+    "name": "Vile Ribcage",
+    "type": "Material",
+    "image": "/img/Material/UndeadBjornRibcage.png"
+  },
+  {
+    "code": "VegvisirShard_Bonemass",
+    "name": "Yagluth thing",
+    "type": "Material",
+    "image": "/img/Material/VegvisirShard_Bonemass.png"
+  },
+  {
+    "code": "VikingCupcake",
+    "name": "Frosted Sweetbread",
+    "type": "Consumable",
+    "image": "/img/Consumable/VikingCupcake.png"
+  },
+  {
+    "code": "VikingCupcakeUncooked",
+    "name": "Unbaked Sweetbread",
+    "type": "Material",
+    "image": "/img/Material/VikingCupcakeUncooked.png"
+  },
+  {
+    "code": "VineGreenSeeds",
+    "name": "Ivy Seeds",
+    "type": "Material",
+    "image": "/img/Material/VineGreenSeeds.png"
+  },
+  {
+    "code": "Vineberry",
+    "name": "Vineberry Cluster",
+    "type": "Consumable",
+    "image": "/img/Consumable/Vineberry.png"
+  },
+  {
+    "code": "VineberrySeeds",
+    "name": "Vineberry Seeds",
+    "type": "Material",
+    "image": "/img/Material/VineberrySeeds.png"
+  },
+  {
+    "code": "VoltureEgg",
+    "name": "Volture Egg",
+    "type": "Material",
+    "image": "/img/Material/VoltureEgg.png"
+  },
+  {
+    "code": "VoltureMeat",
+    "name": "Volture Meat",
+    "type": "Material",
+    "image": "/img/Material/VoltureMeat.png"
+  },
+  {
+    "code": "WitheredBone",
+    "name": "Withered Bone",
+    "type": "Material",
+    "image": "/img/Material/WitheredBone.png"
+  },
+  {
+    "code": "WolfJerky",
+    "name": "Wolf Jerky",
+    "type": "Consumable",
+    "image": "/img/Consumable/WolfJerky.png"
+  },
+  {
+    "code": "WolfMeat",
+    "name": "Wolf Meat",
+    "type": "Material",
+    "image": "/img/Material/WolfMeat.png"
+  },
+  {
+    "code": "WolfMeatSkewer",
+    "name": "Wolf Skewer",
+    "type": "Consumable",
+    "image": "/img/Consumable/WolfMeatSkewer.png"
+  },
+  {
+    "code": "WolfPelt",
+    "name": "Wolf Pelt",
+    "type": "Material",
+    "image": "/img/Material/WolfPelt.png"
+  },
+  {
+    "code": "YagluthDrop",
+    "name": "Torn Spirit",
+    "type": "Material",
+    "image": "/img/Material/YagluthDrop.png"
+  },
+  {
+    "code": "YggdrasilPorridge",
+    "name": "Yggdrasil Porridge",
+    "type": "Consumable",
+    "image": "/img/Consumable/YggdrasilPorridge.png"
+  },
+  {
+    "code": "chest_hildir1",
+    "name": "Hildir's Brass Chest",
+    "type": "Material",
+    "image": "/img/Material/chest_hildir1.png"
+  },
+  {
+    "code": "chest_hildir2",
+    "name": "Hildir's Silver Chest",
+    "type": "Material",
+    "image": "/img/Material/chest_hildir2.png"
+  },
+  {
+    "code": "chest_hildir3",
+    "name": "Hildir's Bronze Chest",
+    "type": "Material",
+    "image": "/img/Material/chest_hildir3.png"
+  },
+  {
+    "code": "piece_stonecutter",
+    "name": "Stonecutter",
+    "type": "Workstation",
+    "image": "/img/Workstation/piece_stonecutter.png"
+  },
+  {
+    "code": "piece_cookingstation_iron",
+    "name": "Iron Cooking Station",
+    "type": "Workstation",
+    "image": "/img/Workstation/piece_cookingstation_iron.png"
+  },
+  {
+    "code": "piece_cookingstation",
+    "name": "Cooking Station",
+    "type": "Workstation",
+    "image": "/img/Workstation/piece_cookingstation.png"
+  },
+  {
+    "code": "Bestiary_Asksvin_hatchling",
+    "name": "Asksvin Hatchling",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Asksvin_hatchling.png"
+  },
+  {
+    "code": "Bestiary_SeekerBrood",
+    "name": "Seeker Brood",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_SeekerBrood.png"
+  },
+  {
+    "code": "Bestiary_Lox_Calf",
+    "name": "Lox Calf",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Lox_Calf.png"
+  },
+  {
+    "code": "Bestiary_Hen",
+    "name": "Hen",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Hen.png"
+  },
+  {
+    "code": "Bestiary_BlobFrost",
+    "name": "Frost Blob",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_BlobFrost.png"
+  },
+  {
+    "code": "Bestiary_Bat",
+    "name": "Bat",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Bat.png"
+  },
+  {
+    "code": "Bestiary_BlobLava",
+    "name": "Lava Blob",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_BlobLava.png"
+  },
+  {
+    "code": "Bestiary_Charred_Twitcher",
+    "name": "Charred Twitcher",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Charred_Twitcher.png"
+  },
+  {
+    "code": "Bestiary_Boar_piggy",
+    "name": "Piggy",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Boar_piggy.png"
+  },
+  {
+    "code": "Bestiary_Wolf_cub",
+    "name": "Wolf Cub",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Wolf_cub.png"
+  },
+  {
+    "code": "Bestiary_Greyling",
+    "name": "Greyling",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Greyling.png"
+  },
+  {
+    "code": "Bestiary_Chicken",
+    "name": "Chicken",
+    "type": "Bestiary",
+    "image": "/img/Bestiary/Bestiary_Chicken.png"
+  },
+  {
+    "code": "piece_chair02",
+    "name": "Wood Chair",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_chair02.png"
+  },
+  {
+    "code": "piece_banner06",
+    "name": "Blue, Red and White Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner06.png"
+  },
+  {
+    "code": "piece_logbench01",
+    "name": "Sitting Log",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_logbench01.png"
+  },
+  {
+    "code": "piece_blackwood_bench01",
+    "name": "Ashwood Bench",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_blackwood_bench01.png"
+  },
+  {
+    "code": "piece_table_round",
+    "name": "Round Table",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_table_round.png"
+  },
+  {
+    "code": "fire_pit",
+    "name": "Campfire",
+    "type": "Comfort",
+    "image": "/img/Comfort/fire_pit.png"
+  },
+  {
+    "code": "piece_chair03",
+    "name": "Darkwood Chair",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_chair03.png"
+  },
+  {
+    "code": "rug_straw",
+    "name": "Straw",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_straw.png"
+  },
+  {
+    "code": "piece_brazierfloor02",
+    "name": "Blue Standing Brazier",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_brazierfloor02.png"
+  },
+  {
+    "code": "rug_wolf",
+    "name": "Wolf Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_wolf.png"
+  },
+  {
+    "code": "piece_Lavalantern",
+    "name": "Lava Lantern",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_Lavalantern.png"
+  },
+  {
+    "code": "bonfire",
+    "name": "Bonfire",
+    "type": "Comfort",
+    "image": "/img/Comfort/bonfire.png"
+  },
+  {
+    "code": "rug_hare",
+    "name": "Hare Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_hare.png"
+  },
+  {
+    "code": "piece_banner09",
+    "name": "Purple Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner09.png"
+  },
+  {
+    "code": "piece_throne02",
+    "name": "Stone Throne",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_throne02.png"
+  },
+  {
+    "code": "piece_banner05",
+    "name": "Green Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner05.png"
+  },
+  {
+    "code": "piece_blackmarble_throne",
+    "name": "Black Marble Throne",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_blackmarble_throne.png"
+  },
+  {
+    "code": "jute_carpet",
+    "name": "Red Jute Carpet",
+    "type": "Comfort",
+    "image": "/img/Comfort/jute_carpet.png"
+  },
+  {
+    "code": "bed",
+    "name": "Bed",
+    "type": "Comfort",
+    "image": "/img/Comfort/bed.png"
+  },
+  {
+    "code": "piece_banner07",
+    "name": "White and Blue Striped Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner07.png"
+  },
+  {
+    "code": "piece_table",
+    "name": "Table",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_table.png"
+  },
+  {
+    "code": "ashwood_bed",
+    "name": "Ashwood Bed",
+    "type": "Comfort",
+    "image": "/img/Comfort/ashwood_bed.png"
+  },
+  {
+    "code": "piece_throne01",
+    "name": "Raven Throne",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_throne01.png"
+  },
+  {
+    "code": "piece_table_oak",
+    "name": "Long Heavy Table",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_table_oak.png"
+  },
+  {
+    "code": "rug_Bjorn",
+    "name": "Bearskin Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_Bjorn.png"
+  },
+  {
+    "code": "piece_barber",
+    "name": "Barber Station",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_barber.png"
+  },
+  {
+    "code": "piece_xmastree",
+    "name": "Yule Tree",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_xmastree.png"
+  },
+  {
+    "code": "piece_banner03",
+    "name": "White and Red Striped Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner03.png"
+  },
+  {
+    "code": "ArmorStand",
+    "name": "Armour Stand",
+    "type": "Comfort",
+    "image": "/img/Comfort/ArmorStand.png"
+  },
+  {
+    "code": "piece_bone_throne",
+    "name": "Bone Throne",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_bone_throne.png"
+  },
+  {
+    "code": "piece_brazierceiling01",
+    "name": "Hanging Brazier",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_brazierceiling01.png"
+  },
+  {
+    "code": "piece_banner01",
+    "name": "Black Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner01.png"
+  },
+  {
+    "code": "piece_bed02",
+    "name": "Dragon Bed",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_bed02.png"
+  },
+  {
+    "code": "piece_bench01",
+    "name": "Wood Bench",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_bench01.png"
+  },
+  {
+    "code": "jute_carpet_blue",
+    "name": "Blue Jute Carpet",
+    "type": "Comfort",
+    "image": "/img/Comfort/jute_carpet_blue.png"
+  },
+  {
+    "code": "piece_blackmarble_table",
+    "name": "Black Marble Table",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_blackmarble_table.png"
+  },
+  {
+    "code": "piece_chair",
+    "name": "Stool",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_chair.png"
+  },
+  {
+    "code": "piece_banner08",
+    "name": "Yellow Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner08.png"
+  },
+  {
+    "code": "piece_blackmarble_bench",
+    "name": "Black Marble Bench",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_blackmarble_bench.png"
+  },
+  {
+    "code": "rug_deer",
+    "name": "Deer Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_deer.png"
+  },
+  {
+    "code": "hearth",
+    "name": "Hearth",
+    "type": "Comfort",
+    "image": "/img/Comfort/hearth.png"
+  },
+  {
+    "code": "piece_banner04",
+    "name": "Red Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner04.png"
+  },
+  {
+    "code": "fire_pit_iron",
+    "name": "Iron Fire Pit",
+    "type": "Comfort",
+    "image": "/img/Comfort/fire_pit_iron.png"
+  },
+  {
+    "code": "piece_maypole",
+    "name": "Maypole",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_maypole.png"
+  },
+  {
+    "code": "piece_bathtub",
+    "name": "Hot Tub",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_bathtub.png"
+  },
+  {
+    "code": "rug_asksvin",
+    "name": "Asksvin Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_asksvin.png"
+  },
+  {
+    "code": "piece_banner11",
+    "name": "White Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner11.png"
+  },
+  {
+    "code": "piece_blackwood_bench",
+    "name": "Wood Bench",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_blackwood_bench.png"
+  },
+  {
+    "code": "piece_banner10",
+    "name": "Orange Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner10.png"
+  },
+  {
+    "code": "piece_brazierfloor01",
+    "name": "Standing Brazier",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_brazierfloor01.png"
+  },
+  {
+    "code": "rug_fur",
+    "name": "Lox Rug",
+    "type": "Comfort",
+    "image": "/img/Comfort/rug_fur.png"
+  },
+  {
+    "code": "piece_banner02",
+    "name": "Blue Banner",
+    "type": "Comfort",
+    "image": "/img/Comfort/piece_banner02.png"
   }
 ]
