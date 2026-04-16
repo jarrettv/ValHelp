@@ -31,7 +31,7 @@ export default function CategorySideNav({
                 "cat-item" + (isActive || effectiveCategory === cat.slug ? " active" : "")
               }
             >
-              <Trophy mode={cat.mode} hours={cat.hours} style={{ width: 22, height: 22 }} />
+              <Trophy mode={cat.mode} style={{ width: 22, height: 22 }} />
               <span>{cat.label}</span>
             </NavLink>
           </li>
