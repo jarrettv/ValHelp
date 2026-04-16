@@ -2,7 +2,7 @@
 title: "7-boss NGRSG Hard Guide"
 author: "JV"
 description: "Route planning, resource management, and helpful hints to conquer all 7 bosses fast on hard preset"
-href: "/guides/ng-rsg"
+href: "/guides/info/ng-rsg"
 accent:
   - "#fbe3c2ff"
   - "#ce804fff"

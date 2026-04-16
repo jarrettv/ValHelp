@@ -2,7 +2,7 @@
 title: "7-boss NGRSG WR Analysis"
 author: "JV"
 description: "Analysis of Rattlery's WR speedrun including materials and pathing"
-href: "/guides/7boss-wr"
+href: "/guides/info/7boss-wr"
 accent:
   - "rgb(251, 194, 213)"
   - "rgb(198, 42, 104)"

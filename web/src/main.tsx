@@ -22,12 +22,21 @@ import EventScoreboard from './EventScoreboard.tsx'
 import EventOverview from './EventOverview.tsx'
 import EventTimelineView from './EventTimelineView.tsx'
 import Runs from './Runs.tsx'
+import SpeedRuns from './SpeedRuns.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
 import EventRedirect from './EventRedirect.tsx'
 import EventTrophies from './EventTrophies.tsx'
 import TrophyCalc from './TrophyCalc.tsx'
-import HelpGuides from './HelpGuides.tsx'
-import GuideArticle from './GuideArticle.tsx'
+import GuidesLayout from './guides/vh/GuidesLayout'
+import GuideArticle from './GuideArticle'
+import {
+  WeaponsPage,
+  GearPage,
+  FoodPage,
+  ComfortPage,
+  EnemiesPage,
+  WeatherPage,
+} from './guides/vh/pages'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -49,6 +58,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/events/saga" element={<EventRedirect mode="TrophySaga" />} />
             <Route path="/events/blaze" element={<EventRedirect mode="TrophyTrailblazer" />} />
             <Route path="/events/all" element={<Events />} />
+            <Route path="/events/all/:category" element={<Events />} />
             <Route path="/events/private" element={<PrivateEvents />} />
             <Route path="/events/private/:password" element={<Event />} />
             <Route path="/events/:id" element={<Event />} />
@@ -58,9 +68,19 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
             <Route path="/trophy/calc" element={<TrophyCalc />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
+            <Route path="/leaderboard/:category" element={<PlayerLeaderboard />} />
             <Route path="/runs" element={<Runs />} />
-            <Route path="/guides" element={<HelpGuides />} />
-            <Route path="/guides/:slug" element={<GuideArticle />} />
+            <Route path="/speedruns" element={<SpeedRuns />} />
+            <Route path="/guides" element={<GuidesLayout />}>
+              <Route index element={<Navigate to="/guides/weapons" replace />} />
+              <Route path="weapons/:category?/:itemCode?" element={<WeaponsPage />} />
+              <Route path="gear/:category?/:itemCode?" element={<GearPage />} />
+              <Route path="food/:category?/:itemCode?" element={<FoodPage />} />
+              <Route path="comfort/:category?/:itemCode?" element={<ComfortPage />} />
+              <Route path="enemies/:category?/:itemCode?" element={<EnemiesPage />} />
+              <Route path="weather" element={<WeatherPage />} />
+              <Route path="info/:slug" element={<GuideArticle />} />
+            </Route>
           </Route>
           <Route path="/events/:id/score/:playerId" element={<EventScore />} />
           <Route path="/events/:id/scores/:playerId" element={<EventScoreboard />} />

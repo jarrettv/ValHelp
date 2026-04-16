@@ -1,4 +1,18 @@
 
+.guide-banner {
+  max-width: 620px;
+  margin: 0.5rem auto 1rem;
+  padding: 0.6rem 1rem;
+  background: #7289DA22;
+  border: 1px solid #7289DA55;
+  border-radius: 0.4rem;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+.guide-banner a {
+  color: #a6c1ee;
+}
+
 .competition {
   margin: 1rem auto;
   min-width: 360px;

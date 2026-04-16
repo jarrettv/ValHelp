@@ -1,0 +1,28 @@
+.category-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  background: #242424;
+  overflow: hidden;
+}
+
+.category-layout > .content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .category-layout {
+    flex-direction: column;
+  }
+  .category-layout > .content {
+    order: 1;
+    flex: 1;
+    min-height: 0;
+    padding: 0.5rem;
+  }
+}

@@ -14,7 +14,7 @@ export default function User() {
           </div>
         </NavLink>
       ) : (
-        <NavLink to="/auth/login" style={{ margin: "0.5rem 0 0 1rem" }}>Login</NavLink>
+        <NavLink to="/auth/login">Login</NavLink>
       )}
     </div>
   );

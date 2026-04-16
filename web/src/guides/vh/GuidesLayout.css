@@ -1,0 +1,319 @@
+/* Sidebar + items page styles, ported from ValHelpTools vhcli/wwwroot/index.html */
+.vh-guides {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: #242424;
+  color: #ddd;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.vh-guides .vh-sidebar {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  flex: 0 0 48px;
+  background: #1e1e2e;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 0 0 0;
+  margin: 0;
+  gap: 4px;
+  z-index: 30;
+  box-sizing: border-box;
+}
+.vh-guides .vh-nav-btn {
+  width: 40px;
+  height: 40px;
+  max-height: 40px;
+  flex: 0 0 40px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+  text-decoration: none;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.vh-guides .vh-nav-btn:hover { background: #2a2a3e; color: #aaa; }
+.vh-guides .vh-nav-btn.active { background: #2b3a4e; color: #88bbff; box-shadow: inset 3px 0 0 #5588cc; }
+.vh-guides .vh-nav-btn svg { width: 22px; height: 22px; display: block; margin: 0 auto; }
+.vh-guides .vh-nav-btn:hover { color: #aaa; }
+.vh-guides .vh-nav-btn.active { color: #88bbff; }
+
+.vh-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* Items page */
+.vh-items-container { display: flex; flex: 1; overflow: hidden; }
+.vh-items-left {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #333;
+  background: #1e1e2e;
+}
+.vh-items-search { position: relative; padding: 8px; border-bottom: 1px solid #333; display: flex; gap: 6px; align-items: center; }
+.vh-items-search input { flex: 1; min-width: 0; background: #222; color: #eee; border: 1px solid #444; border-radius: 4px; padding: 5px 24px 5px 8px; font-size: 12px; }
+.vh-items-search input:focus { outline: 1px solid #5588cc; border-color: #5588cc; }
+.vh-items-search input::placeholder { color: #666; }
+.vh-items-search-clear { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; font-size: 14px; cursor: pointer; padding: 0 4px; line-height: 1; }
+.vh-items-search-clear:hover { color: #ccc; }
+.vh-items-cat-btn { background: #222; border: 1px solid #444; color: #666; padding: 3px; border-radius: 4px; cursor: pointer; flex-shrink: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.vh-items-cat-btn:hover { color: #ccc; border-color: #666; }
+.vh-items-cat-btn.active { background: #2a3a5a; border-color: #5588cc; color: #8cf; }
+.vh-items-cat-btn svg { width: 18px; height: 18px; }
+
+.vh-items-categories { flex: 1; overflow-y: auto; padding: 8px; }
+.vh-items-list { flex: 1; overflow-y: auto; }
+
+.vh-cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.vh-cat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  background: #2a2a3e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.vh-cat-card:hover { background: #222; border-color: #555; }
+.vh-cat-card.active { background: #2b3a4e; border-color: #5588cc; }
+.vh-cat-card svg, .vh-cat-card img.cat-icon { width: 32px; height: 32px; color: #aaa; }
+.vh-cat-card.active svg { color: #8cf; }
+.vh-cat-card-label { font-size: 10px; color: #888; text-align: center; }
+.vh-cat-card.active .vh-cat-card-label { color: #8cf; }
+.vh-cat-bg {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  width: 64px;
+  height: 64px;
+  opacity: 0.12;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+.vh-cat-sep { grid-column: 1 / -1; height: 1px; background: #333; margin: 2px 0; }
+
+/* Tips card (full-width) */
+.vh-tips-row { grid-column: span 3; margin-bottom: 2px; padding-bottom: 8px; border-bottom: 1px solid #333; }
+.vh-tips-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #2a2a3e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.vh-tips-card:hover { background: #222; border-color: #555; }
+.vh-tips-card.active { background: #2b3a4e; border-color: #5588cc; }
+.vh-tips-card svg { width: 20px; height: 20px; flex-shrink: 0; color: #888; }
+.vh-tips-label { font-size: 12px; color: #aaa; }
+.vh-tips-card.active .vh-tips-label, .vh-tips-card.active svg { color: #8cf; }
+
+/* List items */
+.vh-craft-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 0; cursor: pointer; border-bottom: 1px solid #2a2a3e; transition: background 0.1s; }
+.vh-craft-item:hover { background: #2a2a3e; }
+.vh-craft-item.selected { background: #2b3a4e; }
+.vh-craft-item img { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; margin-left: 6px; }
+.vh-craft-item-info { flex: 1; min-width: 0; }
+.vh-craft-item-name { font-size: 13px; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vh-craft-item-cat { font-size: 11px; color: #666; }
+
+/* Detail panel */
+.vh-items-detail { flex: 1; overflow-y: auto; padding: 16px 20px; max-width: 640px; }
+.vh-items-detail-empty { color: #555; font-size: 14px; padding: 40px; text-align: center; }
+
+/* Markdown rendering — based on vhcli inline styles */
+.vh-md h2 { color: #fff; font-size: 1.25rem; margin-top: 20px; margin-bottom: 8px; }
+.vh-md h3 { color: #aad; font-size: 1rem; margin-top: 16px; margin-bottom: 6px; }
+.vh-md h4 { color: #8cf; font-size: 0.875rem; margin-top: 12px; margin-bottom: 4px; }
+.vh-md p { color: #bbb; font-size: 13px; line-height: 1.6; margin: 6px 0; }
+.vh-md ul { color: #ccc; font-size: 13px; line-height: 1.6; padding-left: 18px; margin: 4px 0; }
+.vh-md a { color: #8cf; text-decoration: none; }
+.vh-md a:hover { text-decoration: underline; }
+.vh-md code { background: #222; padding: 1px 5px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 12px; color: #cda; }
+.vh-md table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0; }
+.vh-md th { color: #8cf; text-align: left; padding: 4px 8px; border-bottom: 1px solid #444; }
+.vh-md td { color: #ccc; padding: 4px 8px; border-bottom: 1px solid #2a2a3a; }
+.vh-md strong { color: #fff; }
+
+/* ── Ported vhcli classes (scoped under .vh-guides so they don't bleed to the rest of the app) ── */
+.vh-guides .craft-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 0; cursor: pointer; border-bottom: 1px solid #2a2a3e; transition: background 0.1s; }
+.vh-guides .craft-item:hover { background: #2a2a3e; }
+.vh-guides .craft-item.selected { background: #2b3a4e; }
+.vh-guides .craft-item img { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
+.vh-guides .craft-item-icon-placeholder { width: 32px; height: 32px; background: #222; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #555; }
+.vh-guides .craft-item-info { flex: 1; min-width: 0; }
+.vh-guides .craft-item-name { font-size: 13px; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vh-guides .craft-item-cat { font-size: 11px; color: #666; }
+.vh-guides .craft-item-food { display: flex; gap: 6px; font-size: 10px; color: #666; margin-top: 1px; }
+.vh-guides .craft-item-food span { white-space: nowrap; }
+.vh-guides .craft-item-food .fhp { color: #a55; }
+.vh-guides .craft-item-food .fst { color: #aa5; }
+.vh-guides .craft-item-food .fei { color: #58a; }
+.vh-guides .craft-item-bars { display: flex; gap: 4px; align-items: center; margin-top: 2px; justify-content: space-between; }
+.vh-guides .craft-bar-group { display: flex; align-items: center; gap: 2px; }
+.vh-guides .craft-bar-label { font-size: 9px; color: #666; width: 10px; text-align: center; }
+.vh-guides .craft-bar-svg { display: block; }
+.vh-guides .craft-item-badge { flex-shrink: 0; width: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; align-self: stretch; }
+.vh-guides .craft-item-badge svg { width: 10px; height: 10px; }
+.vh-guides .craft-item.fav-bg { background: linear-gradient(to right, rgba(200,160,0,0.25), transparent 60%); }
+.vh-guides .craft-item.speed-bg { background: linear-gradient(to right, rgba(60,140,255,0.25), transparent 60%); }
+.vh-guides .craft-item.both-bg { background: linear-gradient(to right, rgba(60,200,80,0.25), transparent 60%); }
+.vh-guides .craft-item.selected.fav-bg { background: linear-gradient(to right, rgba(200,160,0,0.25), #2b3a4e 60%); }
+.vh-guides .craft-item.selected.speed-bg { background: linear-gradient(to right, rgba(60,140,255,0.25), #2b3a4e 60%); }
+.vh-guides .craft-item.selected.both-bg { background: linear-gradient(to right, rgba(60,200,80,0.25), #2b3a4e 60%); }
+
+/* Detail styles */
+.vh-guides .detail-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.vh-guides .detail-icon { width: 48px; height: 48px; image-rendering: pixelated; flex-shrink: 0; }
+.vh-guides .detail-title { font-size: 18px; font-weight: bold; color: #fff; }
+.vh-guides .detail-desc { font-size: 12px; color: #999; margin-top: 2px; }
+.vh-guides .detail-meta { font-size: 11px; color: #666; margin-top: 2px; }
+.vh-guides .detail-section { color: #888; font-size: 11px; text-transform: uppercase; margin-top: 12px; margin-bottom: 6px; border-top: 1px solid #333; padding-top: 6px; }
+.vh-guides .detail-stat-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 13px; }
+.vh-guides .detail-stat-row .label { color: #aaa; }
+.vh-guides .detail-stat-row .val { color: #fff; }
+.vh-guides .detail-toggles { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; align-self: stretch; }
+.vh-guides .detail-toggle-btn { display: flex; align-items: center; justify-content: center; flex: 1; width: 22px; background: #2a2a3e; border: 1px solid #333; cursor: pointer; transition: all 0.15s; padding: 0; }
+.vh-guides .detail-toggle-btn:first-child { border-radius: 4px 4px 0 0; }
+.vh-guides .detail-toggle-btn:last-child { border-radius: 0 0 4px 4px; }
+.vh-guides .detail-toggle-btn svg { width: 12px; height: 12px; filter: grayscale(1) brightness(0.5); transition: filter 0.15s; }
+.vh-guides .detail-toggle-btn:hover svg { filter: grayscale(0.5) brightness(0.8); }
+.vh-guides .detail-toggle-btn.active { border-color: #5588cc; background: #2b3a4e; }
+.vh-guides .detail-toggle-btn.active svg { filter: none; }
+
+/* Recipe cards */
+.vh-guides .recipe-cards { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; align-items: stretch; }
+.vh-guides .recipe-card { width: 56px; display: flex; flex-direction: column; align-items: center; background: #2a2a3e; border: 1px solid #333; border-radius: 4px; padding: 1px 2px 2px; }
+.vh-guides .recipe-card-name { width: 100%; text-align: center; color: #aaa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 1px; height: 13px; line-height: 13px; }
+.vh-guides .recipe-card img { width: 32px; height: 32px; image-rendering: pixelated; margin: -2px 0; }
+.vh-guides .recipe-card-count { font-size: 13px; font-weight: bold; color: #fff; line-height: 1; }
+.vh-guides .recipe-station-card { width: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; }
+.vh-guides .recipe-station-star { position: relative; width: 32px; height: 32px; }
+.vh-guides .recipe-station-star svg { width: 32px; height: 32px; }
+.vh-guides .recipe-station-star .lvl-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #ffe066; text-shadow: 0 1px 2px #000; }
+.vh-guides .recipe-station-name { font-size: 8px; color: #888; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+/* Food stat cards */
+.vh-guides .food-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.vh-guides .food-stat { background: #2a2a3e; border: 1px solid #333; border-radius: 4px; padding: 6px 12px; font-size: 12px; text-align: center; min-width: 64px; }
+.vh-guides .food-stat .fs-val { font-size: 16px; font-weight: bold; color: #fff; }
+.vh-guides .food-stat .fs-label { color: #888; font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+.vh-guides .food-stat.hp .fs-val { color: #c66; }
+.vh-guides .food-stat.sta .fs-val { color: #cc6; }
+.vh-guides .food-stat.etr .fs-val { color: #6ac; }
+
+/* Comfort tags */
+.vh-guides .comfort-tag { font-size: 9px; padding: 1px 5px; border-radius: 3px; }
+.vh-guides .comfort-tag.pb { background: #2a3a2a; color: #6b6; }
+.vh-guides .comfort-tag.aos { background: #3a2a2a; color: #b66; }
+.vh-guides .comfort-tag.seasonal { background: #3a3a2a; color: #bb6; }
+.vh-guides .comfort-tag.fire { background: #3a2a1a; color: #c84; }
+
+/* Page placeholder */
+.vh-stub { padding: 40px; color: #666; font-size: 14px; text-align: center; }
+
+/* Back button (mobile detail view) */
+.vh-detail-back {
+  display: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) { .vh-items-left { width: 220px; } .vh-items-detail { max-width: none; } }
+
+@media (max-width: 768px) {
+  .vh-guides { flex-direction: column; }
+  .vh-guides .vh-sidebar {
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    height: 48px;
+    flex: 0 0 48px;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid #333;
+    order: 2;
+    padding: 4px 0 env(safe-area-inset-bottom, 0);
+    justify-content: space-around;
+    overflow-x: auto;
+  }
+  .vh-guides .vh-nav-btn { width: 36px; height: 36px; flex: 0 0 36px; }
+  .vh-guides .vh-nav-btn svg { width: 20px; height: 20px; }
+  .vh-guides .vh-nav-btn.active { box-shadow: inset 0 -3px 0 #5588cc; }
+  .vh-main { order: 1; flex: 1; min-height: 0; }
+
+  /* Stack list and detail vertically; detail hidden until item selected */
+  .vh-items-container { flex-direction: column; position: relative; }
+  .vh-items-left {
+    width: 100%;
+    flex: 1;
+    border-right: none;
+    border-bottom: none;
+    overflow-y: auto;
+  }
+  .vh-items-detail {
+    display: none;
+    max-width: none;
+    padding: 12px 14px;
+  }
+
+  /* When an item is selected or tips are active, detail takes over the full area */
+  .vh-items-container.has-selection .vh-items-left,
+  .vh-items-container.show-tips .vh-items-left { display: none; }
+  .vh-items-container.has-selection .vh-items-detail,
+  .vh-items-container.show-tips .vh-items-detail {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Show back button on mobile */
+  .vh-detail-back {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #88bbff;
+    font-size: 13px;
+    padding: 10px 0 12px;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #242424;
+    margin: -12px -14px 0;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid #333;
+  }
+  .vh-detail-back svg { width: 16px; height: 16px; }
+  .vh-detail-back:active { color: #aad; }
+
+  .vh-cat-card { padding: 8px 2px; }
+  .vh-cat-card svg, .vh-cat-card img.cat-icon { width: 28px; height: 28px; }
+}

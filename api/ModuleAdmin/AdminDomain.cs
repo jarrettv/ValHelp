@@ -22,6 +22,12 @@ public class User
 
     public string ObsSecretCode { get; set; } = "";
 
+    // JSON bag of user preferences.
+    // Shape: { favs: { items: [...], at: "ISO utc" }, speedRuns: { items: [...], at: "ISO utc" }, ... }
+    // Stored as jsonb in Postgres; raw string on the CLR side for forward-compat
+    // (per-section timestamps live inside the JSON, so no separate column is needed).
+    public string Prefs { get; set; } = "{}";
+
     public List<Player> Players { get; set; } = [];
 }
 

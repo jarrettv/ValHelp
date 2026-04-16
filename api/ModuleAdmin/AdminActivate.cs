@@ -21,6 +21,11 @@ public static class AdminActivate
           .HasIndex(u => u.DiscordId)
           .IsUnique();
 
+        modelBuilder.Entity<User>()
+          .Property(u => u.Prefs)
+          .HasColumnType("jsonb")
+          .HasDefaultValue("{}");
+
         modelBuilder.Entity<Avatar>()
           .HasKey(a => a.Hash);
 

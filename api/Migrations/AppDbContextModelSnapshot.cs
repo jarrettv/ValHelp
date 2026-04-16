@@ -135,6 +135,13 @@ namespace ValHelpApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("obs_secret_code");
 
+                    b.Property<string>("Prefs")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("jsonb")
+                        .HasDefaultValue("{}")
+                        .HasColumnName("prefs");
+
                     b.PrimitiveCollection<string[]>("Roles")
                         .IsRequired()
                         .HasColumnType("text[]")

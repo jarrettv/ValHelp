@@ -1,0 +1,151 @@
+.feedback-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 16px 16px;
+  border-top: 1px solid #333;
+  padding-top: 12px;
+}
+
+.feedback-row > .feedback {
+  flex: 1;
+  margin: 0;
+  border-top: none;
+  padding: 0;
+  text-align: left;
+}
+
+.feedback-row .kofi-link {
+  font-weight: normal;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #555;
+  color: #ddd;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  text-decoration: none;
+  line-height: 1.2;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.feedback-row .kofi-link:hover {
+  background: #2a2a2a;
+  border-color: #777;
+  color: #fff;
+}
+
+.feedback {
+  margin: 24px 16px 16px;
+  padding: 12px 14px;
+  border-top: 1px solid #333;
+  font-size: 13px;
+  color: #bbb;
+  text-align: center;
+}
+
+.feedback.faded {
+  color: #666;
+}
+
+.feedback.faded a {
+  color: #888;
+  text-decoration: underline;
+}
+
+.feedback.sent {
+  color: #8c8;
+}
+
+.feedback-trigger {
+  background: none;
+  border: 1px solid #555;
+  color: #ddd;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.feedback-trigger:hover {
+  background: #2a2a2a;
+  border-color: #777;
+}
+
+.feedback.open {
+  text-align: left;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feedback textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #ddd;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.feedback textarea:focus {
+  outline: none;
+  border-color: #88b;
+}
+
+.feedback-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.feedback-count {
+  font-size: 11px;
+  color: #666;
+}
+
+.feedback-error {
+  color: #d66;
+  font-size: 12px;
+  flex: 1;
+}
+
+.feedback-footer button {
+  background: none;
+  border: 1px solid #555;
+  color: #ddd;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.feedback-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.feedback-send {
+  background: #3a5a8a !important;
+  border-color: #3a5a8a !important;
+}
+
+.feedback-send:hover:not(:disabled) {
+  background: #4a6aaa !important;
+}
+
+.feedback-footer .feedback-error + button {
+  margin-left: 0;
+}
+
+.feedback-footer .feedback-count {
+  margin-right: auto;
+}

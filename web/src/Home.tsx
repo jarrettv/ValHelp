@@ -1,71 +1,19 @@
 import "./Home.css"
-import Badge from "./components/Badge";
-import Calendar from "./components/Calendar";
 import EventLatest from "./components/EventsLatest";
 import EventsUpcoming from "./components/EventsUpcoming";
-import Lock from "./components/Lock";
-import { Link } from "react-router";
-import { useAuth } from "./contexts/AuthContext";
-import Leaderboard from "./components/Leaderboard";
-import { Calc } from "./components/Calc";
-import { HelpGuide } from "./components/HelpGuide";
 
 
 export default function Home() {
-  const { status } = useAuth();
   return (
-    <>
-      <section style={{margin: "0 auto", display:"flex", flexWrap: "wrap", justifyContent: "space-around", maxWidth: "1000px"}}>
-        <div style={{marginRight: "1rem"}}>
-          <h2>Latest Events</h2>
-          <EventLatest />
-        </div>
-        <div>
-          <h2>Upcoming Events</h2>
-          <EventsUpcoming />
-        </div>
+    <div className="home-events">
+      <section>
+        <h2>Latest Events</h2>
+        <EventLatest />
       </section>
-      <nav>
-        { status?.isActive &&
-        <Link to="/events/0/edit">
-          <Calendar style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Host Event <small>Public or private</small>
-        </Link> }
-        {/* { status?.isActive &&
-        <Link to="/runs">
-          <Watch style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Speedrun Timeline <small>Plan your route</small>
-        </Link> } */}
-        <Link to="/events/all">
-          <Badge style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          All Events <small>Current and historic</small>
-        </Link>
-        { status?.isActive &&
-        <Link to="/events/private">
-          <Lock style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Private Events <small>For me and friends</small>
-        </Link> }
-        <Link to="/leaderboard">
-          <Leaderboard style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Leaderboards <small>PBs for all events</small>
-        </Link>
-        <Link to="/trophy/calc">
-          <Calc style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Trophy Calculator <small>Scoring and drop rates</small>
-        </Link>
-        <Link to="/guides">
-          <HelpGuide style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Help Guides <small>Tips and strategies</small>
-        </Link>
-        {/* <a href="/gear">
-          <Swords style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Gear <small>Weapons &amp; Armor Info</small>
-        </a>
-        <a href="/food">
-          <Food style={{ verticalAlign: "middle", marginTop: "-0.3rem", width: "1.8rem" }} />
-          Food <small>Recipes &amp; Stats</small>
-        </a> */}
-      </nav>
-    </>
+      <section>
+        <h2>Upcoming Events</h2>
+        <EventsUpcoming />
+      </section>
+    </div>
   )
 }

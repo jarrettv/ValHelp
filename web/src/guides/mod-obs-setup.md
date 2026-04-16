@@ -2,7 +2,7 @@
 title: "Mod and OBS Setup"
 author: "JV"
 description: "Participation guide for setting up mods and showing OBS overlays to your viewers."
-href: "/guides/mod-obs-setup"
+href: "/guides/info/mod-obs-setup"
 accent:
   - "#84fab0"
   - "#8fd3f4"

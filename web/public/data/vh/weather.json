@@ -1,0 +1,525 @@
+{
+  "environments": {
+    "Ashlands_ashrain": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.5
+    },
+    "Ashlands_ashrain_clear": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.5
+    },
+    "Ashlands_storm": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 2.5,
+      "windMax": 3.0
+    },
+    "Ashlands_meteorshower": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.5
+    },
+    "Ashlands_misty": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.5
+    },
+    "Ashlands_CinderRain": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.75,
+      "windMax": 0.7
+    },
+    "Ashlands_SeaStorm": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.8,
+      "windMax": 1.0
+    },
+    "Fader": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.5
+    },
+    "Mistlands_clear": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.05,
+      "windMax": 0.2
+    },
+    "Mistlands_rain": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.05,
+      "windMax": 0.5
+    },
+    "Mistlands_thunder": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.5,
+      "windMax": 1.0
+    },
+    "InfectedMine": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "Queen": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "Caves": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "CavesHildir": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "Clear": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.6
+    },
+    "Twilight_Clear": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.2,
+      "windMax": 0.6
+    },
+    "Misty": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.3
+    },
+    "Darklands_dark": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.1,
+      "windMax": 0.6
+    },
+    "Heath clear": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.4,
+      "windMax": 0.8
+    },
+    "DeepForest Mist": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.6
+    },
+    "GDKing": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.3
+    },
+    "Rain": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.5,
+      "windMax": 1.0
+    },
+    "LightRain": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.1,
+      "windMax": 0.6
+    },
+    "ThunderStorm": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.8,
+      "windMax": 1.0
+    },
+    "Eikthyr": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.9,
+      "windMax": 1.0
+    },
+    "GoblinKing": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.5,
+      "windMax": 0.7
+    },
+    "nofogts": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 1.0,
+      "windMax": 1.0
+    },
+    "SwampRain": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.1,
+      "windMax": 0.3
+    },
+    "Bonemass": {
+      "isWet": true,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.3
+    },
+    "Snow": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": false,
+      "windMin": 0.1,
+      "windMax": 0.6
+    },
+    "Twilight_Snow": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.3,
+      "windMax": 0.6
+    },
+    "Twilight_SnowStorm": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.7,
+      "windMax": 1.0
+    },
+    "SnowStorm": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 0.8,
+      "windMax": 1.0
+    },
+    "Moder": {
+      "isWet": false,
+      "isFreezing": true,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": true,
+      "alwaysDark": false,
+      "windMin": 1.0,
+      "windMax": 1.0
+    },
+    "Crypt": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "Ghosts": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": true,
+      "isColdAtNight": true,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "SunkenCrypt": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    },
+    "CryptHildir": {
+      "isWet": false,
+      "isFreezing": false,
+      "isFreezingAtNight": false,
+      "isCold": false,
+      "isColdAtNight": false,
+      "alwaysDark": true,
+      "windMin": 0.0,
+      "windMax": 0.0
+    }
+  },
+  "biomes": {
+    "Meadows": [
+      {
+        "environment": "Clear",
+        "weight": 5.0
+      },
+      {
+        "environment": "Rain",
+        "weight": 0.2
+      },
+      {
+        "environment": "Misty",
+        "weight": 0.2
+      },
+      {
+        "environment": "ThunderStorm",
+        "weight": 0.2
+      },
+      {
+        "environment": "LightRain",
+        "weight": 0.2
+      }
+    ],
+    "BlackForest": [
+      {
+        "environment": "DeepForest Mist",
+        "weight": 2.0
+      },
+      {
+        "environment": "Rain",
+        "weight": 0.1
+      },
+      {
+        "environment": "Misty",
+        "weight": 0.1
+      },
+      {
+        "environment": "ThunderStorm",
+        "weight": 0.1
+      }
+    ],
+    "Ocean": [
+      {
+        "environment": "Rain",
+        "weight": 0.1
+      },
+      {
+        "environment": "LightRain",
+        "weight": 0.1
+      },
+      {
+        "environment": "Misty",
+        "weight": 0.1
+      },
+      {
+        "environment": "Clear",
+        "weight": 1.0
+      },
+      {
+        "environment": "ThunderStorm",
+        "weight": 0.1
+      }
+    ],
+    "Swamp": [
+      {
+        "environment": "SwampRain",
+        "weight": 1.0
+      }
+    ],
+    "Mountain": [
+      {
+        "environment": "SnowStorm",
+        "weight": 1.0
+      },
+      {
+        "environment": "Snow",
+        "weight": 5.0
+      }
+    ],
+    "Plains": [
+      {
+        "environment": "Heath clear",
+        "weight": 2.0
+      },
+      {
+        "environment": "Misty",
+        "weight": 0.4
+      },
+      {
+        "environment": "LightRain",
+        "weight": 0.4
+      }
+    ],
+    "Mistlands": [
+      {
+        "environment": "Mistlands_clear",
+        "weight": 1.5
+      },
+      {
+        "environment": "Mistlands_rain",
+        "weight": 0.1
+      },
+      {
+        "environment": "Mistlands_thunder",
+        "weight": 0.1
+      }
+    ],
+    "Ashlands": [
+      {
+        "environment": "Ashlands_ashrain",
+        "weight": 1.5
+      },
+      {
+        "environment": "Ashlands_misty",
+        "weight": 0.1
+      },
+      {
+        "environment": "Ashlands_CinderRain",
+        "weight": 0.2
+      },
+      {
+        "environment": "Ashlands_storm",
+        "weight": 0.05
+      }
+    ]
+  },
+  "dayLengthSec": 1800,
+  "nightStartFraction": 0.75,
+  "morningStartFraction": 0.15,
+  "weatherDurationSec": 120,
+  "introTime": 1800
+}

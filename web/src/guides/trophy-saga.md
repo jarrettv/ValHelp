@@ -2,7 +2,7 @@
 title: "Trophy Saga Guide"
 author: "Xpert Malfunction"
 description: "Route planning, resource management, and helpful hints to conquer Trophy Saga events."
-href: "/guides/trophy-saga"
+href: "/guides/info/trophy-saga"
 accent:
   - "#fbc2eb"
   - "#a6c1ee"

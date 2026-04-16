@@ -580,21 +580,27 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         {
             var eventType = await db.Events
               .Where(h => h.Id == id)
-              .Select(h => new { h.Mode, h.ScoringCode, h.Hours })
+              .Select(h => new { h.Mode, h.ScoringCode, h.Hours, h.IsPrivate })
               .SingleAsync();
 
-            var best = await db.Players
-              .Where(hp => hp.UserId == req.UserId)
-              .Where(hp => hp.Event.Mode == eventType.Mode)
-              .Where(hp => hp.Event.ScoringCode == eventType.ScoringCode)
-              .Where(hp => hp.Event.Hours == eventType.Hours)
-              .Where(hp => hp.Status >= 0)
-              .Select(hp => hp.Score)
-              .MaxAsync();
-
-            if (best > 0)
+            // Private events do not count toward personal bests — skip entirely for private events
+            // and exclude private events from the aggregation for public events.
+            if (!eventType.IsPrivate)
             {
-                player.Logs.Add(new PlayerLog($"PersonalBest={best}", DateTime.UtcNow));
+                var best = await db.Players
+                  .Where(hp => hp.UserId == req.UserId)
+                  .Where(hp => !hp.Event.IsPrivate)
+                  .Where(hp => hp.Event.Mode == eventType.Mode)
+                  .Where(hp => hp.Event.ScoringCode == eventType.ScoringCode)
+                  .Where(hp => hp.Event.Hours == eventType.Hours)
+                  .Where(hp => hp.Status >= 0)
+                  .Select(hp => hp.Score)
+                  .MaxAsync();
+
+                if (best > 0)
+                {
+                    player.Logs.Add(new PlayerLog($"PersonalBest={best}", DateTime.UtcNow));
+                }
             }
         }
 
