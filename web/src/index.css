@@ -61,6 +61,10 @@ main.layout {
   overflow: hidden;
 }
 
+body.map-open header {
+  display: none !important;
+}
+
 header {
   display: flex !important;
   flex-direction: row !important;

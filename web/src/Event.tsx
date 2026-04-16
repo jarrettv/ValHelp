@@ -36,6 +36,13 @@ export default function Event() {
   const [mapAgreed, setMapAgreed] = React.useState(false);
   const [participantAcknowledged, setParticipantAcknowledged] = React.useState(false);
 
+  React.useEffect(() => {
+    if (tab === 'map') {
+      document.body.classList.add('map-open');
+      return () => document.body.classList.remove('map-open');
+    }
+  }, [tab]);
+
   // Redirect to ID-based URL if accessing via password and we have the data
   if (isPasswordAccess && data && !isPending) {
     return <Navigate to={`/events/${data.id}?password=${password}`} replace />;
