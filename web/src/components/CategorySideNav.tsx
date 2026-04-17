@@ -51,7 +51,7 @@ export default function CategorySideNav({
           <li className="action">
             <NavLink to="/events/0/edit" className="cat-item host-event">
               <span className="plus">+</span>
-              <span>Host Event</span>
+              <span>Host<span className="label-suffix"> Event</span></span>
             </NavLink>
           </li>
         )}

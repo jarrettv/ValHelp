@@ -211,19 +211,6 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
     renderDetailInto(el, selectedCode, config.page);
   }, [selectedCode, view.kind, config.page, tick]);
 
-  const clearSelection = () => {
-    setSelectedCode(null);
-    const base = `/guides/${config.pageSlug}`;
-    const slug = viewToSlug(view, config);
-    navigate(slug ? `${base}/${slug}` : base);
-  };
-
-  const backBtn = (
-    <button className="vh-detail-back" onClick={clearSelection}>
-      {BACK_ICON} Back to list
-    </button>
-  );
-
   const containerClass = `vh-items-container${selectedCode ? ' has-selection' : ''}${tipsActive ? ' show-tips' : ''}`;
 
   return (
@@ -318,7 +305,6 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
         </div>
       ) : (
         <div className="vh-items-detail" key={selectedCode}>
-          {backBtn}
           <div ref={detailRef} />
           <Feedback />
         </div>
