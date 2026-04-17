@@ -244,7 +244,9 @@ public static class AdminEndpointsAuth
             return TypedResults.Ok(doc.RootElement.Clone());
         }).RequireAuthorization();
 
-        // PUT /api/auth/prefs — replaces the whole prefs bag.
+        // PUT /api/auth/prefs — shallow-merges top-level keys from the body into the
+        // stored prefs bag. Keys not present in the body are preserved (e.g. feedback,
+        // which is written server-side and never sent by the client).
         // Per-section timestamps live inside the JSON (e.g. prefs.favs.at) so clients
         // can implement their own conflict resolution without extra columns.
         api.MapPut("prefs", async Task<Results<Ok<JsonElement>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, JsonElement body) =>
@@ -257,7 +259,15 @@ public static class AdminEndpointsAuth
             {
                 return TypedResults.Problem("Prefs must be a JSON object", statusCode: 400);
             }
-            var serialized = body.GetRawText();
+
+            var raw = string.IsNullOrWhiteSpace(currentUser.Prefs) ? "{}" : currentUser.Prefs;
+            var merged = JsonNode.Parse(raw) as JsonObject ?? new JsonObject();
+            foreach (var prop in body.EnumerateObject())
+            {
+                merged[prop.Name] = JsonNode.Parse(prop.Value.GetRawText());
+            }
+
+            var serialized = merged.ToJsonString();
             if (serialized.Length > 64 * 1024)
             {
                 return TypedResults.Problem("Prefs too large (max 64KB)", statusCode: 400);

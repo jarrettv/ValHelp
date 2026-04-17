@@ -95,26 +95,25 @@ export default function Feedback() {
     <div className="feedback-row">
       <div className="feedback open">
         <textarea
-        value={msg}
-        onChange={e => setMsg(e.target.value.slice(0, MAX_LEN))}
-        placeholder="What's on your mind? Corrections, suggestions, bugs…"
-        rows={4}
-        maxLength={MAX_LEN}
-        disabled={sending}
-        autoFocus
-      />
-      <div className="feedback-footer">
-        <span className="feedback-count">{msg.length}/{MAX_LEN}</span>
-        {error && <span className="feedback-error">{error}</span>}
-        <button type="button" onClick={() => { setOpen(false); setError(null); }} disabled={sending}>
-          Cancel
-        </button>
-        <button type="button" className="feedback-send" onClick={submit} disabled={sending || !msg.trim()}>
-          {sending ? 'Sending…' : 'Send'}
-        </button>
+          value={msg}
+          onChange={e => setMsg(e.target.value.slice(0, MAX_LEN))}
+          placeholder="What's on your mind? Corrections, suggestions, bugs…"
+          rows={4}
+          maxLength={MAX_LEN}
+          disabled={sending}
+          autoFocus
+        />
+        <div className="feedback-footer">
+          <span className="feedback-count">{msg.length}/{MAX_LEN}</span>
+          {error && <span className="feedback-error">{error}</span>}
+          <button type="button" onClick={() => { setOpen(false); setError(null); }} disabled={sending}>
+            Cancel
+          </button>
+          <button type="button" className="feedback-send" onClick={submit} disabled={sending || !msg.trim()}>
+            {sending ? 'Sending…' : 'Send'}
+          </button>
         </div>
       </div>
-      {kofi}
     </div>
   );
 }

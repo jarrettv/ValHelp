@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Event as Ev, EventStatus, Player } from '../domain/event';
 import '../lib/vector-map.js';
 import './EventMap.css';
+import TimelineSlider from './TimelineSlider';
 
 declare global {
   interface Window {
@@ -881,26 +882,19 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       <div className="event-map-header">
         {!loading && !error && (
           <>
-            <input
-              type="range"
+            <TimelineSlider
+              value={currentScrub}
               min={0}
               max={isLive ? elapsedNow : eventDurationSec}
-              value={currentScrub}
-              onChange={(e) => {
-                const t = parseInt(e.target.value, 10);
+              onChange={(t) => {
                 const maxT = isLive ? elapsedNow : eventDurationSec;
                 setScrubTime(t);
                 setPinnedToLive(isLive && t >= maxT - 2);
               }}
+              isLive={isLive}
+              pinnedToLive={pinnedToLive}
+              formatTime={formatTime}
             />
-            <span className="event-map-scrub-label">
-              {formatTime(currentScrub)}
-              {isLive && pinnedToLive && (
-                <svg className="event-map-live-dot" width="12" height="12" viewBox="0 0 12 12" aria-label="LIVE">
-                  <circle cx="6" cy="6" r="4" fill="#ff3333" />
-                </svg>
-              )}
-            </span>
             <button
               className={`header-toggle-btn ${hidePortals ? 'off' : ''}`}
               onClick={() => { setHidePortals(h => !h); scheduleUpdate(); }}
