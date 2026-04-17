@@ -8,6 +8,7 @@ import { createMaterialExtension } from "./utils/markedMaterials";
 import { MatsProvider, useMats } from "./contexts/MatsContext";
 import { Marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
+import SEO from "./components/SEO";
 
 type Guide = NonNullable<ReturnType<typeof findGuideBySlug>>;
 
@@ -51,6 +52,12 @@ const GuideArticle = () => {
   if (!guide) {
     return (
       <main className="guide-article guide-article--missing">
+        <SEO
+          title="Guide not found"
+          description="The requested Valheim guide could not be found."
+          path={`/guides/info/${slug}`}
+          noindex
+        />
         <div className="guide-article__missing-card">
           <h1>Guide not found</h1>
           <p>We couldn't find that guide. It might have been moved or unpublished.</p>
@@ -64,6 +71,12 @@ const GuideArticle = () => {
 
   return (
     <MatsProvider>
+      <SEO
+        title={guide.title}
+        description={guide.description}
+        path={guide.href}
+        type="article"
+      />
       <GuideArticleContent guide={guide} />
     </MatsProvider>
   );

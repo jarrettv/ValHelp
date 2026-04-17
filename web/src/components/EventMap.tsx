@@ -304,6 +304,30 @@ function drawIconCircle(ctx: CanvasRenderingContext2D, sx: number, sy: number, r
   }
 }
 
+const PORTAL_PATH_D = 'M 3.7251132,1.2997237 C 3.6487834,1.2993788 3.5878467,1.3665205 3.5570252,1.5382255 3.6935416,2.0794409 3.5064843,2.8603158 2.7930752,2.5082556 2.4642195,2.532416 1.6725428,1.6287179 1.9182786,2.3571149 2.1943151,3.0031885 2.8093609,3.4461776 2.9598274,4.1489824 3.1863698,4.9376791 2.5518742,5.5552378 2.1917791,6.1788906 1.9947448,6.9996931 1.1031194,6.2960383 0.62588625,6.1052099 -0.05323035,5.5054061 0.42428515,6.6109252 0.60009435,6.8692515 1.1355255,7.8368544 1.614198,8.8541001 1.7628966,9.9618467 2.0191228,10.738285 1.4976514,11.406974 1.363353,12.136266 c 0.1576498,0.05704 0.3270564,0.05828 0.4920154,0.07304 1.4481186,0.303612 2.9357945,0.05368 4.3937374,0.241034 0.6134343,0.168789 1.2509441,0.08898 1.8799639,0.107899 1.249429,0.04672 2.4857923,-0.155623 3.7309623,-0.203041 0.625745,0.204071 0.411098,-0.454825 0.313796,-0.784628 0.03613,-0.731409 -0.327649,-1.6392244 0.203271,-2.2421602 C 12.699088,8.952149 13.960308,9.0229532 13.620723,8.3336484 13.118847,7.8606617 13.658822,7.188852 13.591109,6.6536406 13.054521,6.9404409 12.742487,7.7728663 12.033505,7.6500587 11.557009,7.2701518 11.55652,6.5951267 11.652337,6.0470029 11.301954,5.3787409 11.754566,4.4438972 11.881672,3.8845595 11.740767,3.9896606 10.690226,4.8495968 10.153449,4.4146574 9.4320449,3.7740313 8.6802636,3.1325074 7.7887917,2.7371827 7.0337512,2.5084255 6.2021505,2.7687186 5.4511666,2.8866196 4.8567067,3.3595608 4.13925,2.8142799 4.4290973,2.1234064 4.3215072,1.9091335 3.9540947,1.3007704 3.7251065,1.2997274 Z m 3.9157212,2.6808019 c 0.3994058,0.2293651 0.7274225,0.5512185 1.1603162,0.7368714 0.4722336,0.1782558 0.6609514,0.6012183 0.813223,1.0363856 0.2078138,0.4988248 0.4334974,0.9850482 0.4777874,1.5134913 0.02284,0.4034504 0.08807,0.8046457 0.174535,1.2020393 0.06622,0.4075459 0.03109,0.821591 0.09892,1.2299003 C 10.385286,10.00605 9.9976418,10.65451 9.6638298,10.840038 9.0982954,11.164969 8.8528179,11.047707 8.2323217,11.26483 7.66637,11.432165 7.068875,11.481423 6.4834654,11.565777 5.8780741,11.633632 5.2958792,11.425518 4.7008084,11.362459 3.5583892,10.506797 3.6894833,9.8722794 3.4021433,9.0153006 3.3704957,8.4426488 3.2625237,7.8405531 3.3000271,7.2688359 3.2974196,6.862024 3.5550512,6.4471935 3.8372459,6.1133575 4.2671029,5.4848935 4.6152315,4.9230218 5.174972,4.512805 5.5015039,4.3445405 5.7900633,4.2268343 6.1160231,4.0535633 6.7080715,3.6694585 6.4511261,3.3422791 7.6408344,3.9805256 Z';
+let _portalPath: Path2D | null = null;
+function getPortalPath(): Path2D {
+  if (!_portalPath) _portalPath = new Path2D(PORTAL_PATH_D);
+  return _portalPath;
+}
+
+function drawPortalMarker(ctx: CanvasRenderingContext2D, sx: number, sy: number, r: number, color: string) {
+  const size = r * 2;
+  const scale = size / 14;
+  const outsideWidth = 3;
+  ctx.save();
+  ctx.translate(sx - size / 2, sy - size / 2);
+  ctx.scale(scale, scale);
+  const path = getPortalPath();
+  ctx.lineWidth = (outsideWidth * 2) / scale;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = color;
+  ctx.stroke(path);
+  ctx.fillStyle = '#fff';
+  ctx.fill(path);
+  ctx.restore();
+}
+
 function drawBadge(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, fill: string, symbol: string) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -411,10 +435,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       py * mScale * scale + panY,
     ];
 
+    // ── Pass 1: draw paths for all players ──
     for (const player of playerMapData) {
       if (hiddenRef.current.has(player.index)) continue;
-
-      // ── Draw path, breaking at jump points (portal/respawn) ──
       if (player.path.length > 1) {
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
@@ -474,6 +497,25 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         }
         ctx.globalAlpha = 1.0;
       }
+    }
+
+    // ── Pass 2: draw all portal markers (above paths, below player events) ──
+    if (!hidePortalsRef.current) {
+      for (const player of playerMapData) {
+        if (hiddenRef.current.has(player.index)) continue;
+        for (const portal of player.portals) {
+          const [ppx, ppy] = worldToPixel(portal.x, portal.z, gs);
+          const [sx, sy] = toScreen(ppx, ppy);
+          if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
+          const r = Math.max(8, Math.min(14, 10 * scale));
+          drawPortalMarker(ctx, sx, sy, r, player.color);
+        }
+      }
+    }
+
+    // ── Pass 3: draw player events (trophies, penalties, avatars) on top ──
+    for (const player of playerMapData) {
+      if (hiddenRef.current.has(player.index)) continue;
 
       // ── Draw trophies along the path ──
       for (const trophy of player.trophies) {
@@ -507,18 +549,6 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
         const r = Math.max(8, Math.min(14, 10 * scale));
         drawIconCircle(ctx, sx, sy, r, player.color, `/img/Penalty/${penalty.code}.webp`);
-      }
-
-      // ── Draw portals ──
-      if (!hidePortalsRef.current) {
-        for (const portal of player.portals) {
-          const [ppx, ppy] = worldToPixel(portal.x, portal.z, gs);
-          const [sx, sy] = toScreen(ppx, ppy);
-          if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
-
-          const r = Math.max(8, Math.min(14, 10 * scale));
-          drawIconCircle(ctx, sx, sy, r, player.color, `/img/Misc/portal_wood.png`);
-        }
       }
 
       // ── Draw avatar at current position ──
@@ -891,8 +921,6 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
                 setScrubTime(t);
                 setPinnedToLive(isLive && t >= maxT - 2);
               }}
-              isLive={isLive}
-              pinnedToLive={pinnedToLive}
               formatTime={formatTime}
             />
             <button
@@ -900,7 +928,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
               onClick={() => { setHidePortals(h => !h); scheduleUpdate(); }}
               title={hidePortals ? 'Show portals' : 'Hide portals'}
             >
-              <img src="/img/Misc/portal_wood.png" alt="Portals" />
+              <img src="/img/Misc/portal.svg" alt="Portals" />
             </button>
             <button
               className={`header-toggle-btn ${hidePois ? 'off' : ''}`}
@@ -920,10 +948,25 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
           {error && <div className="event-map-status error">{error}</div>}
           <canvas ref={glCanvasRef} className="event-map-gl" />
           <canvas ref={markerCanvasRef} className="event-map-markers" />
+          {!loading && !error && (
+            isLive ? (
+              <div className="event-map-status-badge live">
+                <span className="event-map-status-dot" />
+                LIVE
+              </div>
+            ) : (
+              <div className="event-map-status-badge final">
+                <svg className="event-map-status-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+                FINAL
+              </div>
+            )
+          )}
           {isLive && viewers > 0 && (
             <div className="event-map-viewers">
               <span className="event-map-viewers-dot" />
-              {viewers} {viewers === 1 ? 'person' : 'people'} are here
+              {viewers} {viewers === 1 ? 'person is' : 'people are'} here
             </div>
           )}
           <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" onClick={onClose} />

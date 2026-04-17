@@ -170,7 +170,7 @@ function dmgBarSvg(val, it, globalMaxDmg, large) {
 }
 
 var _shieldId = 0;
-function shieldSvg(pct, val) {
+function shieldSvg(pct, val, size) {
   var id = 'sm' + (++_shieldId);
   var r = 9, cx = 10, cy = 10;
   var angle = pct * 360;
@@ -182,8 +182,10 @@ function shieldSvg(pct, val) {
     ? '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#ca0"/>'
     : '<path d="M' + cx + ',' + cy + ' L' + cx + ',' + (cy - r) + ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x.toFixed(2) + ',' + y.toFixed(2) + ' Z" fill="#ca0"/>';
   var sp = 'M10 1C10 1 3 3.5 3 3.5v8c0 3 3 6 7 7.5 4-1.5 7-4.5 7-7.5V3.5S10 1 10 1z';
+  var px = size || 20;
+  var labelPx = Math.max(8, Math.round(px * 0.45));
   return '<div class="craft-bar-group" title="Block: ' + val + '">' +
-    '<svg class="craft-bar-svg" width="20" height="20" viewBox="0 0 20 20">' +
+    '<svg class="craft-bar-svg" width="' + px + '" height="' + px + '" viewBox="0 0 20 20">' +
     '<defs><clipPath id="' + id + '"><path d="' + sp + '"/></clipPath></defs>' +
     '<path d="' + sp + '" fill="#222"/>' +
     '<g clip-path="url(#' + id + ')">' +
@@ -192,7 +194,7 @@ function shieldSvg(pct, val) {
     '</g>' +
     '<path d="' + sp + '" fill="none" stroke="#48c" stroke-width="1"/>' +
     '</svg>' +
-    '<span style="font-size:8px;color:#999">' + Math.round(val) + '</span>' +
+    '<span style="font-size:' + labelPx + 'px;color:#ccc;font-weight:bold">' + Math.round(val) + '</span>' +
     '</div>';
 }
 
@@ -1100,7 +1102,24 @@ function renderGenericDetail(code, detail) {
     for (var _j=0;_j<_dk2.length;_j++) { if (!NON_COMBAT_DMG[_dk2[_j]]) combatTotal += it.damages[_dk2[_j]] * (_ds[_dk2[_j]] || 1); }
     var sub = it.subcategory || '';
     var catMax = (pageMaxStats && pageMaxStats.skillMaxDmg[sub]) || combatTotal;
-    h += dmgBarSvg(combatTotal, it, catMax, true);
+    var _hasBlock = !!(it.block && it.block.power);
+    if (_hasBlock) {
+      h += '<div style="display:flex;align-items:center;gap:12px">';
+      h += '<div style="flex:1;min-width:0">' + dmgBarSvg(combatTotal, it, catMax, true) + '</div>';
+      h += '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
+      var _skillMaxBlock = (pageMaxStats && pageMaxStats.skillMaxBlock && pageMaxStats.skillMaxBlock[sub]) || it.block.power;
+      var _blockPct = Math.min(it.block.power / Math.max(_skillMaxBlock, 64), 1);
+      h += shieldSvg(_blockPct, it.block.power, 48);
+      if (it.block.parryBonus) {
+        var _pb = it.block.parryBonus;
+        var _pbColor = _pb >= 2 ? '#4c8' : '#ca0';
+        h += '<div style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:4px 10px;text-align:center"><div style="font-size:16px;font-weight:bold;color:' + _pbColor + '">' + _pb + 'x</div><div style="font-size:9px;color:#888;text-transform:uppercase">Parry</div></div>';
+      }
+      h += '</div>';
+      h += '</div>';
+    } else {
+      h += dmgBarSvg(combatTotal, it, catMax, true);
+    }
     // Legend
     var _dScale = it.damageScale || {};
     h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">';

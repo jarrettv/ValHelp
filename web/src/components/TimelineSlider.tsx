@@ -6,17 +6,17 @@ type Props = {
   min?: number;
   max: number;
   onChange: (v: number) => void;
-  isLive?: boolean;
-  pinnedToLive?: boolean;
   formatTime: (s: number) => string;
 };
 
-const SPEEDS = [0, 16, 32, 64, 128] as const;
+const SPEEDS = [16, 32, 64, 128] as const;
+const DEFAULT_SPEED = 64;
 
-export default function TimelineSlider({ value, min = 0, max, onChange, isLive, pinnedToLive, formatTime }: Props) {
+export default function TimelineSlider({ value, min = 0, max, onChange, formatTime }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
-  const [speed, setSpeed] = useState<number>(0);
+  const [speed, setSpeed] = useState<number>(DEFAULT_SPEED);
+  const [isPlaying, setIsPlaying] = useState(false);
   const range = Math.max(1, max - min);
   const pct = Math.max(0, Math.min(1, (value - min) / range));
 
@@ -28,17 +28,17 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
 
   useEffect(() => {
-    if (speed <= 0) return;
+    if (!isPlaying) return;
     const tickMs = 100;
     const id = setInterval(() => {
       const cur = valueRef.current;
       const m = maxRef.current;
-      if (cur >= m) { setSpeed(0); return; }
+      if (cur >= m) { setIsPlaying(false); return; }
       const next = Math.min(m, cur + speed * (tickMs / 1000));
       onChangeRef.current(Math.round(next));
     }, tickMs);
     return () => clearInterval(id);
-  }, [speed]);
+  }, [isPlaying, speed]);
 
   const bumpSpeed = () => {
     setSpeed(s => {
@@ -46,6 +46,8 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
       return SPEEDS[(idx + 1) % SPEEDS.length];
     });
   };
+
+  const togglePlay = () => setIsPlaying(p => !p);
 
   const jumpToClient = useCallback((clientX: number) => {
     const el = trackRef.current;
@@ -59,7 +61,7 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
   const onDown = (e: React.PointerEvent) => {
     (e.currentTarget as Element).setPointerCapture(e.pointerId);
     setDragging(true);
-    setSpeed(0);
+    setIsPlaying(false);
     jumpToClient(e.clientX);
   };
   const onMove = (e: React.PointerEvent) => {
@@ -73,10 +75,10 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
 
   const onKey = (e: React.KeyboardEvent) => {
     const step = e.shiftKey ? Math.max(60, Math.round(range / 20)) : Math.max(1, Math.round(range / 200));
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { setSpeed(0); onChange(Math.max(min, value - step)); e.preventDefault(); }
-    else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { setSpeed(0); onChange(Math.min(max, value + step)); e.preventDefault(); }
-    else if (e.key === 'Home') { setSpeed(0); onChange(min); e.preventDefault(); }
-    else if (e.key === 'End') { setSpeed(0); onChange(max); e.preventDefault(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { setIsPlaying(false); onChange(Math.max(min, value - step)); e.preventDefault(); }
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { setIsPlaying(false); onChange(Math.min(max, value + step)); e.preventDefault(); }
+    else if (e.key === 'Home') { setIsPlaying(false); onChange(min); e.preventDefault(); }
+    else if (e.key === 'End') { setIsPlaying(false); onChange(max); e.preventDefault(); }
   };
 
   const hourTicks: number[] = [];
@@ -108,18 +110,30 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
     <div className="timeline-slider">
       <button
         type="button"
-        className={`tl-ff ${speed > 0 ? 'playing' : ''}`}
-        onClick={bumpSpeed}
-        title={speed > 0 ? `Playing at ${speed}x — click to cycle` : 'Fast-forward playback'}
-        aria-label={speed > 0 ? `Playback speed ${speed}x` : 'Start fast-forward'}
+        className={`tl-play ${isPlaying ? 'playing' : ''}`}
+        onClick={togglePlay}
+        title={isPlaying ? 'Pause' : 'Play'}
+        aria-label={isPlaying ? 'Pause playback' : 'Start playback'}
       >
-        {speed > 0 ? (
-          <span className="tl-ff-speed">{speed}<small>x</small></span>
+        {isPlaying ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" fill="currentColor" />
+            <rect x="14" y="5" width="4" height="14" fill="currentColor" />
+          </svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 5 L13 12 L4 19 Z M13 5 L22 12 L13 19 Z" fill="currentColor" />
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 5 L19 12 L7 19 Z" fill="currentColor" />
           </svg>
         )}
+      </button>
+      <button
+        type="button"
+        className={`tl-ff ${isPlaying ? 'playing' : ''}`}
+        onClick={bumpSpeed}
+        title={`Playback speed ${speed}x — click to cycle`}
+        aria-label={`Playback speed ${speed}x`}
+      >
+        <span className="tl-ff-speed">{speed}<small>x</small></span>
       </button>
       <div
         ref={trackRef}
@@ -224,9 +238,6 @@ export default function TimelineSlider({ value, min = 0, max, onChange, isLive, 
         <span className="tl-current">{formatTime(value)}</span>
         <span className="tl-sep">/</span>
         <span className="tl-max">{formatTime(max)}</span>
-        {isLive && pinnedToLive && (
-          <span className="tl-live"><span className="tl-live-dot" />LIVE</span>
-        )}
       </div>
     </div>
   );

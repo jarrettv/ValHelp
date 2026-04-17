@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /obs/
+Disallow: /api/
+
+Sitemap: https://valheim.help/sitemap.xml
