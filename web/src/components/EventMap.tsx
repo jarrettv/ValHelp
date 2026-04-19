@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Event as Ev, EventStatus, Player } from '../domain/event';
 import '../lib/vector-map.js';
 import './EventMap.css';
@@ -369,6 +369,11 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const eventStartMs = new Date(event.startAt).getTime();
   const eventEndMs = new Date(event.endAt).getTime();
   const eventDurationSec = Math.max(1, Math.round((eventEndMs - eventStartMs) / 1000));
+  // Only players still in the hunt — excludes PlayerOut/OwnerOut/Disqualified (status < 0)
+  const activePlayers = useMemo(
+    () => event.players.filter(p => p.status >= 0),
+    [event.players]
+  );
 
   // For live events, track elapsed time and auto-advance slider
   useEffect(() => {
@@ -648,10 +653,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     if (!stateRef.current.ready) return;
     const gs = window.VectorMap.getGridSize();
     stateRef.current.playerMapData = buildPlayerMapData(
-      event.players, stateRef.current.pathData, gs, eventStartMs, scrubTime, event.scoring
+      activePlayers, stateRef.current.pathData, gs, eventStartMs, scrubTime, event.scoring
     );
     scheduleUpdate();
-  }, [event.players, scheduleUpdate, eventStartMs, scrubTime, event.scoring]);
+  }, [activePlayers, scheduleUpdate, eventStartMs, scrubTime, event.scoring]);
 
   // Stable ref so SSE handlers always call the latest rebuildMapData without causing reconnects
   const rebuildRef = useRef(rebuildMapData);
@@ -759,7 +764,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   // ── Update trophy markers when event players change ──
   useEffect(() => {
     rebuildMapData();
-  }, [event.players, rebuildMapData]);
+  }, [activePlayers, rebuildMapData]);
 
   // ── Resize ──
   useEffect(() => {
@@ -905,7 +910,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   const currentScrub = scrubTime ?? (isLive ? elapsedNow : eventDurationSec);
 
   // Players not hidden — shown on map and in sidebar
-  const visiblePlayers = event.players.filter((_, i) => !hiddenPlayers.has(i));
+  const visiblePlayers = activePlayers.filter((_, i) => !hiddenPlayers.has(i));
 
   return (
     <div className="event-map-container">
@@ -971,10 +976,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
           )}
           <img src="/valheim-logo.webp" alt="Valheim Help" className="event-map-logo" onClick={onClose} />
         </div>
-        {!loading && !error && event.players.length > 0 && (
+        {!loading && !error && activePlayers.length > 0 && (
           <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
             <div className="sidebar-avatars">
-              {event.players.map((player, i) => {
+              {activePlayers.map((player, i) => {
                 const isHidden = hiddenPlayers.has(i);
                 return (
                   <button
@@ -1021,7 +1026,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
                   {sidebarMode === 'scores' ? (
                     <SidebarScores
                       players={visiblePlayers}
-                      allPlayers={event.players}
+                      allPlayers={activePlayers}
                       scoring={event.scoring}
                       scrubTime={currentScrub}
                       eventStartMs={eventStartMs}
@@ -1030,21 +1035,21 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
                   ) : sidebarMode === 'drops' ? (
                     <SbDrops
                       players={visiblePlayers}
-                      allPlayers={event.players}
+                      allPlayers={activePlayers}
                       stateData={stateRef.current.stateData}
                       scrubTime={currentScrub}
                     />
                   ) : sidebarMode === 'skills' ? (
                     <SbSkills
                       players={visiblePlayers}
-                      allPlayers={event.players}
+                      allPlayers={activePlayers}
                       stateData={stateRef.current.stateData}
                       scrubTime={currentScrub}
                     />
                   ) : (
                     <SbEquip
                       players={visiblePlayers}
-                      allPlayers={event.players}
+                      allPlayers={activePlayers}
                       stateData={stateRef.current.stateData}
                       scrubTime={currentScrub}
                       itemDb={itemDb}

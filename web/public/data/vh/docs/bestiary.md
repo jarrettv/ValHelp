@@ -8,7 +8,7 @@
 
 **Aggressive** — hostile creatures that attack on sight or when alerted. They drop loot, trophies, and resources when killed.
 
-**Passive** — animals like Deer, Hare, Neck, and Chicken that flee from players and never attack. Provide resources when killed.
+**Passive** — animals like Deer, Hare, and Chicken that flee from players and never attack. Provide resources when killed.
 
 **Tameable** — Boar, Wolf, Lox, and Asksvin can be tamed by feeding them. Once tamed they can breed, and some can be ridden.
 
@@ -18,9 +18,9 @@ Non-boss creatures can spawn with star levels that increase their power and loot
 
 | Level | HP | Damage | Drops |
 |-------|:--:|:------:|-------|
-| 0★ | {bar:33:#c55} Base | {bar:33:#da4} Base | Base amount |
-| 1★ | {bar:66:#c55} ×2 | {bar:50:#da4} ×1.5 | ×2 on starred mobs |
-| 2★ | {bar:100:#c55} ×3 | {bar:66:#da4} ×2 | ×4 on starred mobs |
+| 0 | {bar:33:#c55} Base | {bar:33:#da4} Base | Base amount |
+| 1-★ | {bar:66:#c55} ×2 | {bar:50:#da4} ×1.5 | ×2 on starred mobs |
+| 2-★★ | {bar:100:#c55} ×3 | {bar:66:#da4} ×2 | ×4 on starred mobs |
 
 Wolves and other creatures with stars are more likely to spawn at **night** and will despawn at dawn if not engaged.
 
