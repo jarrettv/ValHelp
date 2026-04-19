@@ -681,6 +681,7 @@ function renderComfortDetailFull(code) {
   if (resources.length) {
     h += renderRecipeCards(it);
   }
+  h += '<div class="detail-item-md" data-code="' + esc(code) + '"></div>';
 
   detail.innerHTML = h;
 }
@@ -784,6 +785,8 @@ function renderBestiaryDetailFull(code) {
     }
     h += '</div>';
   }
+
+  h += '<div class="detail-item-md" data-code="' + esc(code) + '"></div>';
 
   // Vendor price if any
   if (it.vendorPrice) {
@@ -1239,6 +1242,7 @@ function renderGenericDetail(code, detail) {
     h += '<div class="detail-section">' + esc(_recipeLabel) + '</div>';
     h += renderRecipeByQuality(it);
   }
+  h += '<div class="detail-item-md" data-code="' + esc(code) + '"></div>';
   if (stats.length) {
     h += '<div class="detail-section">Properties</div>';
     stats.forEach(function(s) {
@@ -1539,6 +1543,77 @@ export function renderListItemHTML(it: any, page: VhPageKey, maxStats: any): str
   }
 }
 
+// ── Per-item detail markdown enhancement ───────────────────────────
+// Each category has a single Markdown file. Sections are keyed to an
+// item by an HTML comment containing the item code on the ### heading:
+//   ### Iron Sword <!-- SwordIron -->
+//   Notes here...
+// ## headings are author-facing groupings and are not rendered on screen.
+
+const itemDetailsCache: Record<string, Promise<Record<string, string>>> = {};
+
+function parseItemDetails(md: string): Record<string, string> {
+  const map: Record<string, string> = {};
+  const lines = md.split('\n');
+  let curCode: string | null = null;
+  let buf: string[] = [];
+  const flush = () => {
+    if (curCode) {
+      const body = buf.join('\n').replace(/^\s+|\s+$/g, '');
+      if (body) map[curCode] = body;
+    }
+    curCode = null;
+    buf = [];
+  };
+  for (const raw of lines) {
+    const m = /^###\s+.*?<!--\s*([A-Za-z0-9_\-]+)\s*-->/.exec(raw);
+    if (m) { flush(); curCode = m[1]; continue; }
+    if (curCode) {
+      // New ## heading ends the current section
+      if (/^##\s/.test(raw) && !/^###/.test(raw)) { flush(); continue; }
+      buf.push(raw);
+    }
+  }
+  flush();
+  return map;
+}
+
+function loadItemDetails(docName: string): Promise<Record<string, string>> {
+  const existing = itemDetailsCache[docName];
+  if (existing) return existing;
+  const p = fetch('/data/vh/docs/' + docName + '.md')
+    .then(r => r.ok ? r.text() : '')
+    .then(parseItemDetails)
+    .catch(() => ({} as Record<string, string>));
+  itemDetailsCache[docName] = p;
+  return p;
+}
+
+function pageToDetailsDoc(page: VhPageKey): string | null {
+  switch (page) {
+    case 'craft': return 'weapons_details';
+    case 'armor': return 'gear_details';
+    case 'comfort': return 'comfort_details';
+    case 'bestiary': return 'bestiary_details';
+    default: return null;
+  }
+}
+
+function injectItemDetailMd(detail: HTMLElement, code: string, page: VhPageKey) {
+  const docName = pageToDetailsDoc(page);
+  if (!docName) return;
+  const placeholder = detail.querySelector('.detail-item-md') as HTMLElement | null;
+  if (!placeholder || placeholder.getAttribute('data-code') !== code) return;
+  loadItemDetails(docName).then(map => {
+    // Bail if the user navigated away to a different item while we fetched
+    const live = detail.querySelector('.detail-item-md') as HTMLElement | null;
+    if (!live || live.getAttribute('data-code') !== code) return;
+    const body = map[code];
+    if (body) renderMdToElement(body, live);
+    else live.remove();
+  });
+}
+
 /** Renders the detail HTML into the given element (page's detail pane).
  *  Several ported detail renderers call document.getElementById('items-detail'),
  *  so we shim the element's id during the call. */
@@ -1558,4 +1633,5 @@ export function renderDetailInto(detail: HTMLElement, code: string, page: VhPage
   } finally {
     detail.id = prevId;
   }
+  injectItemDetailMd(detail, code, page);
 }

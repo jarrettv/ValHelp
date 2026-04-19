@@ -1,6 +1,7 @@
 import "./Home.css"
 import EventLatest from "./components/EventsLatest";
 import EventsUpcoming from "./components/EventsUpcoming";
+import HomeGuidesCard from "./components/HomeGuidesCard";
 import SEO from "./components/SEO";
 
 
@@ -19,6 +20,8 @@ export default function Home() {
       <section>
         <h2>Upcoming Events</h2>
         <EventsUpcoming />
+        <h2>Guides</h2>
+        <HomeGuidesCard />
       </section>
     </div>
   )

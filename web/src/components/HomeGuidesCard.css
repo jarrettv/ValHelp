@@ -1,0 +1,76 @@
+.guides-card {
+  background: linear-gradient(135deg, #7289DA33 0%, #7289DA11 100%);
+  border: 1px solid #7289DA55;
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+}
+
+.guides-card-desc {
+  color: #bbb;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 0.8rem;
+}
+
+.guides-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.guides-card-tags a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  background: #7289DA22;
+  color: #a6c1ee;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.3rem;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.guides-card-tags a:hover {
+  background: #7289DA44;
+  border-color: #7289DA88;
+  color: #fff;
+}
+
+.guides-card-tags a svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.guides-card-update {
+  display: block;
+  border-top: 1px solid #7289DA33;
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.15s ease;
+}
+
+.guides-card-update:hover {
+  opacity: 0.85;
+}
+
+.guides-card-update-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7289DA;
+  margin-bottom: 0.2rem;
+}
+
+.guides-card-update-text {
+  display: block;
+  color: #ddd;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}

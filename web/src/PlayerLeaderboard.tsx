@@ -47,6 +47,11 @@ function PlayerLeaderboard() {
     const allRows: LeaderboardRow[] = [];
     data.data.forEach(event => {
       if (event.status < EventStatus.Over) return;
+      const nameEligible =
+        /^Trophy\s+(?:(?:Hunt|Saga|Rush)\s+)?#\d+/.test(event.name) ||
+        /^Trailblazer\s+#\d+/.test(event.name) ||
+        /^Saga\s+ToC\s+#\d+/.test(event.name);
+      if (!nameEligible) return;
       if (event.mode !== category.mode || Math.round(event.hours) !== category.hours) return;
       const sortedPlayers = [...event.players].sort((a, b) => b.score - a.score);
       sortedPlayers.forEach((player, idx) => {

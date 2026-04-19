@@ -26,6 +26,8 @@
 }
 .competition.empty {
   color: #fff5;
+  padding: 2rem 1rem;
+  text-align: center;
 }
 .competition a {
   color: #7289DA;
