@@ -47,29 +47,27 @@ Resistance meads and utility meads have independent cooldowns.
 
 | Mead                  | Duration | Effect                | When to Use                                            |
 |-----------------------|:--------:|-----------------------|--------------------------------------------------------|
-| **Poison Resistance** |  10 min  | Poison Very Resistant | Useful in Swamp. Situational in other biomes           |
-| **Barley Wine**       |  10 min  | Fire Resistant        | Required with Root armor, Feather Cape, or in Ashlands |
-| **Frost Resistance**  |  10 min  | Frost Resistant       | Mountains without frost-resist gear                    |
-| **Major Healing**     | 2 min CD | +125 HP over 10s      | Emergency heal in combat                               |
-| **Medium Stamina**    | 2 min CD | +160 Stamina instant  | Clutch stamina recovery mid-fight                      |
-| **Tonic of Ratatosk** |  10 min  | +15% speed            | Overland travel, speed runs                            |
+| [MeadPoisonResist]@"Poison Resist" |  10 min  | Poison Very Resistant | Useful in Swamp. Situational in other biomes           |
+| [BarleyWine]@"Barley Wine"       |  10 min  | Fire Resistant        | Required with Root armor, Feather Cape, or in Ashlands |
+| [MeadFrostResist]@"Frost Resist"  |  10 min  | Frost Resistant       | Mountains without frost-resist gear                    |
+| [MeadHealthMajor]@"Major Heal"    | 2 min CD | +125 HP over 10s      | Emergency heal in combat                               |
+| [MeadStaminaMedium]@"Medium Stam"   | 2 min CD | +160 Stamina instant  | Clutch stamina recovery mid-fight                      |
+| [MeadHasty]@"Ratatosk" |  10 min  | +15% speed            | Overland travel, speed runs                            |
 
 ### Situational Meads
 
 | Mead                 | Duration | Effect                          | When to Use                              |
 |----------------------|:--------:|---------------------------------|------------------------------------------|
-| Lingering Healing    |  5 min   | HP regen +25%                   | Sustained fights, pairs with rested buff |
-| Lingering Stamina    |  5 min   | Stamina regen +25%              | Exploration, mining, woodcutting         |
-| Lingering Eitr       |  5 min   | Eitr regen +25%                 | Extended magic combat                    |
-| Minor Eitr           | 2 min CD | +125 Eitr over 10s              | Quick Eitr refill for burst casting      |
-| Lightfoot            |  10 min  | +20% jump, -30% jump stamina    | Mountain & Mistlands traversal           |
-| Troll Endurance      |  5 min   | +250 carry weight (2 min CD)    | Ore runs, base building                  |
-| Draught of Vananidir |  5 min   | -50% swim stamina               | Ocean crossings without a boat           |
-| Berserkir            |   20s    | -75% stam, physical weak (2 min CD) | Boss fights, DPS buff                    |
+| [MeadStaminaLingering]@"Lingering Stam"    |  5 min   | Stamina regen +25%              | Exploration, mining, woodcutting         |
+| [MeadEitrLingering]@"Lingering Eitr"      |  5 min   | Eitr regen +25%                 | Extended magic combat, boss fights                    |
+| [MeadLightfoot]@"Lightfoot"            |  10 min  | +20% jump, -30% jump stamina    | Mountain & Mistlands traversal           |
+| [MeadStrength]@"Troll Endurance"      |  5 min   | +250 carry weight (2 min CD)    | Ore runs, base building                  |
+| [MeadSwimmer]@"Vananidir" |  5 min   | -50% swim stamina               | Ocean crossings without a boat           |
+| [MeadBzerker]@"Berserkir"            |   20s    | -75% stam, physical weak (2 min CD) | Boss fights, DPS buff                    |
 
 ## Feasts
 
-Feasts are special balanced foods crafted at the Prep Table. They provide equal HP and Stamina (and sometimes Eitr), have **50-minute duration** — the longest of any food — and yield **10 servings** per craft. They use the boss trophy spice from their biome. [See Prep Table for a list of feasts](/consumables/PrepTable)
+Feasts are special balanced foods crafted at the Prep Table. They provide equal HP and Stamina (and sometimes Eitr), have **50-minute duration** — the longest of any food — and yield **10 servings** per craft. They use the boss trophy spice from their biome. [See Prep Table for a list of feasts](/guides/food/preptable)
 
 Feasts are excellent for **exploration, building, and sailing** where you want long-lasting balanced stats without micromanaging food timers. For combat, dedicated HP/Stamina foods still provide higher individual stats.
 

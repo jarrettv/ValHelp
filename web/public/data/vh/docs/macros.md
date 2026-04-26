@@ -45,6 +45,23 @@ Reference any game item by its code or name. Items render as clickable chips wit
 | `[ShieldBronzeBuckler]+` | [ShieldBronzeBuckler]+ |
 | `[Club]+`                | [Club]+                |
 
+### Hyperlink
+
+`[ItemCode]@` -- shows a small icon + name styled as an underlined hyperlink to the item.
+
+| Syntax                   | Result                 |
+|--------------------------|------------------------|
+| `[SwordIron]@`           | [SwordIron]@           |
+| `[Wood]@`                | [Wood]@                |
+| `[MeadBzerker]@`         | [MeadBzerker]@         |
+
+`[ItemCode]@"Custom Name"` -- override the display name (still links to the same item).
+
+| Syntax                              | Result                            |
+|-------------------------------------|-----------------------------------|
+| `[MeadPoisonResist]@"Poison Resist"` | [MeadPoisonResist]@"Poison Resist" |
+| `[MeadHasty]@"Ratatosk"`            | [MeadHasty]@"Ratatosk"            |
+
 Item lookup tries: exact code, case-insensitive code, exact display name, then partial name match.
 
 ## Recipe Block

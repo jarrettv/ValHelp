@@ -64,7 +64,7 @@ Timed block within **0.25 seconds** of impact. Multiplies block power by the par
 ## Capes
 
 Capes generally provide very little armor and since they take a valuable inventory slot, they can be de-prioritized.
-However, a cape is a great way to gain frost protection. It isn't until the late game **Ashen Cape** do you get any substantial armor.
+However, a cape is a great way to gain Frost protection. It isn't until the late game [CapeAsh](1) do you get any substantial armor.
 
 | Top Capes                   | Base Armor | +/lvl  | Resistance | Notes                                                   |
 |-----------------------------|:----------:|:------:|------------|---------------------------------------------------------|

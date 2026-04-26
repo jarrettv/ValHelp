@@ -5,15 +5,17 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 ## 2026-04-26
 
 * Food detail screen: large fork icon now sits to the left of the stat bars; bar tracks darkened for better contrast
-* Mead base detail: shows fermentation result as a hyperlink to the finished mead and other improvements
-* Added mead notes for every single mead in the game.
-* Combat: [MeadBzerker]* [Berserkir Mead](/guides/food/fermenter/MeadBzerker), [MeadTasty]* [Tasty Mead](/guides/food/fermenter/MeadTasty)
-* Healing: [MeadHealthMinor]* [Minor Healing](/guides/food/fermenter/MeadHealthMinor), [MeadHealthMedium]* [Medium Healing](/guides/food/fermenter/MeadHealthMedium), [MeadHealthMajor]* [Major Healing](/guides/food/fermenter/MeadHealthMajor), [MeadHealthLingering]* [Lingering Healing](/guides/food/fermenter/MeadHealthLingering)
-* Stamina: [MeadStaminaMinor]* [Minor Stamina](/guides/food/fermenter/MeadStaminaMinor), [MeadStaminaMedium]* [Medium Stamina](/guides/food/fermenter/MeadStaminaMedium), [MeadStaminaLingering]* [Lingering Stamina](/guides/food/fermenter/MeadStaminaLingering)
-* Eitr: [MeadEitrMinor]* [Minor Eitr](/guides/food/fermenter/MeadEitrMinor), [MeadEitrLingering]* [Lingering Eitr](/guides/food/fermenter/MeadEitrLingering)
-* Resistance: [BarleyWine]* [Fire Resistance Barley Wine](/guides/food/fermenter/BarleyWine), [MeadFrostResist]* [Frost Resistance](/guides/food/fermenter/MeadFrostResist), [MeadPoisonResist]* [Poison Resistance](/guides/food/fermenter/MeadPoisonResist)
-* Movement: [MeadHasty]* [Tonic of Ratatosk](/guides/food/fermenter/MeadHasty), [MeadSwimmer]* [Draught of Vananidir](/guides/food/fermenter/MeadSwimmer), [MeadLightfoot]* [Lightfoot](/guides/food/fermenter/MeadLightfoot)
-* Utility: [MeadBugRepellent]* [Anti-Sting Concoction](/guides/food/fermenter/MeadBugRepellent), [MeadTamer]* [Brew of Animal Whispers](/guides/food/fermenter/MeadTamer), [MeadStrength]* [Mead of Troll Endurance](/guides/food/fermenter/MeadStrength), [MeadTrollPheromones]* [Love Potion](/guides/food/fermenter/MeadTrollPheromones)
+* Mead base detail: shows fermentation result as a hyperlink to the finished mead, with the recipe shown above the effect section and other reordering improvements
+
+* Added mead notes for every single mead in the game:
+  * Combat: [MeadBzerker]@"Berserkir Mead", [MeadTasty]@"Tasty Mead"
+  * Healing: [MeadHealthMinor]@"Minor Healing", [MeadHealthMedium]@"Medium Healing", [MeadHealthMajor]@"Major Healing", [MeadHealthLingering]@"Lingering Healing"
+  * Stamina: [MeadStaminaMinor]@"Minor Stamina", [MeadStaminaMedium]@"Medium Stamina", [MeadStaminaLingering]@"Lingering Stamina"
+  * Eitr: [MeadEitrMinor]@"Minor Eitr", [MeadEitrLingering]@"Lingering Eitr"
+  * Resistance: [BarleyWine]@"Fire Resistance", [MeadFrostResist]@"Frost Resistance", [MeadPoisonResist]@"Poison Resistance"
+  * Movement: [MeadHasty]@"Tonic of Ratatosk", [MeadSwimmer]@"Draught of Vananidir", [MeadLightfoot]@"Lightfoot"
+  * Utility: [MeadBugRepellent]@"Anti-Sting", [MeadTamer]@"Animal Whispers", [MeadStrength]@"Troll Endurance", [MeadTrollPheromones]@"Love Potion"
+* Added notes for every cape in the game: [CapeDeerHide]@"Deer Hide", [CapeTrollHide]@"Troll Hide", [CapeWolf]@"Wolf Fur", [CapeLinen]@"Linen", [CapeLox]@"Lox", [CapeFeather]@"Feather", [CapeAsksvin]@"Asksvin Cloak", [CapeAsh]@"Ashen", [CapeOdin]@"Cape of Odin"
 
 
 ## 2026-04-25

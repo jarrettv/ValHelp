@@ -71,25 +71,25 @@ Most melee weapons have a 3-hit combo. The **3rd hit deals double damage** and +
 
 | Class        | Speed     | Move Penalty | Parry | Notes                                            |
 |--------------|-----------|--------------|-------|--------------------------------------------------|
-| Knives       | Very fast | 0%           | {parry:4}    | 10× backstab. Slash + Pierce.                    |
-| Fists        | Fast      | 0%           | {parry:6}    | Highest parry bonus. Pairs with Fenris set.      |
-| Swords       | Medium    | -5%          | —     | Reliable Slash damage, good all-rounder.         |
-| Spears       | Medium    | -5%          | —     | Pierce + ranged throw. Fastest skill leveling.   |
-| Clubs/Maces  | Medium    | -5%          | —     | High knockback. Blunt is widely effective.       |
-| Axes (1H)    | Medium    | -5%          | —     | Double duty: Slash + woodcutting.                |
-| Polearms     | Slow      | -5%          | —     | Long reach Pierce. Spin = 6× stagger AoE†.        |
-| Great Swords | Slow      | -5%          | —     | Slower but Massive Slash damage.                  |
-| Battle Axes  | Slow      | -20%         | —     | AoE† Slash cleave. Heavy movement penalty.        |
-| Sledges      | Slow      | varies       | —     | AoE† Blunt ground slam. Great for dungeons.  |
-| Bows         | —         | -5%          | —     | Pierce, draw speed scales up to 400% with skill. |
-| Crossbows    | —         | varies       | —     | High burst, slow reload. No skill scaling.       |
-| Staves       | —         | -5%          | —     | Eitr-based. Cast while moving/sprinting.         |
+| [Fists](/guides/weapons/unarmed)        | Fast      | 0%           | {parry:6}    | Highest parry bonus. Pairs with Fenris set.      |
+| [Knives](/guides/weapons/knives)       | Very fast | 0%           | {parry:4}    | 10× backstab. Slash + Pierce.                    |
+| [Spears](/guides/weapons/spears)       | Fast    | -5%          | {parry:2}     | Pierce + ranged throw. Fastest skill leveling.   |
+| [Swords](/guides/weapons/swords)       | Medium    | -5%          | {parry:2}      | Reliable Slash damage, good all-rounder.         |
+| [Clubs/Maces](/guides/weapons/clubs)  | Medium    | -5%          | {parry:2}      | High knockback. Blunt is widely effective.       |
+| [Axes (1H) & Dual](/guides/weapons/axes)    | Medium    | -5%          | {parry:2}      | Double duty: Slash + woodcutting.                |
+| [Polearms](/guides/weapons/polearms)     | Slow      | -5%          | {parry:2}      | Long reach Pierce. Spin = 6× stagger AoE†.        |
+| [Great Swords](/guides/weapons/swords) | Slow      | -5%          | {parry:2}      | Slower but Massive Slash damage.                  |
+| [Battle Axes](/guides/weapons/axes) | Slow      | -20%         | {parry:2}      | AoE† Slash cleave. Heavy movement penalty.        |
+| [Sledges](/guides/weapons/clubs)      | Slow      | varies       | {parry:2}      | AoE† Blunt ground slam. Great for dungeons.  |
+| [Bows](/guides/weapons/bows)         | —         | -5%          | {parry:1.5}      | Pierce, draw speed scales up to 400% with skill. |
+| [Crossbows](/guides/weapons/bows)    | —         | varies       | {parry:1.5}      | High burst, slow reload. No skill scaling.       |
+| [Staves](/guides/weapons/staves)       | —         | -5%          | {parry:2}      | Eitr-based. Cast while moving/sprinting.         |
 
 †AoE attacks go through walls/ground, sledges create 8m sphere of damage
 
 ## Adrenaline
 
-Fill the bar by landing attacks, parrying (5 per parry), perfect dodges, and using Forsaken Powers. **Fast weapons fill faster.** See [Trinkets](/gear#trinkets) for more details.
+Fill the bar by landing attacks, parrying (5 per parry), perfect dodges, and using Forsaken Powers. **Fast weapons fill faster.** See [Trinkets](/guides/gear/trinkets) for more details.
 
 ## Best Weapons per Biome
 

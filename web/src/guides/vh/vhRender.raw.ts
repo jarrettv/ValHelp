@@ -1429,6 +1429,13 @@ function mdItemChip(name: string, kind: string, value: string) {
   if (kind === 'icon') {
     return '<span class="md-item" title="' + esc(displayName) + '" style="display:inline-flex;align-items:center;vertical-align:middle">' + iconHtml + '</span>';
   }
+  if (kind === 'link') {
+    var linkLabel = value || displayName;
+    var linkClick = it ? ' onclick="selectPageItem(\'' + code.replace(/'/g, "\\'") + '\')"' : '';
+    return '<span class="md-item-link" title="' + esc(displayName) + '"' + linkClick
+      + ' style="display:inline-flex;align-items:center;gap:3px;vertical-align:middle;color:#88bbff;text-decoration:underline;cursor:' + (it ? 'pointer' : 'default') + '">'
+      + iconHtml + '<span>' + esc(linkLabel) + '</span></span>';
+  }
 
   var qty = '';
   if (kind === 'level') {
@@ -1523,13 +1530,15 @@ export function mdInline(text: string): string {
     var s = adrenalineSvg(14);
     imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
   });
-  safe = safe.replace(/\[([^\]]+)\](?:\((?:(lvl)(\d+)|(\d+))\)|\*|\+)/g, function(m, name, lvlPrefix, lvlVal, amount) {
+  safe = safe.replace(/\[([^\]]+)\](?:\((?:(lvl)(\d+)|(\d+))\)|(\*)|(\+)|(@)(?:"([^"]*)")?)/g, function(_m, name, lvlPrefix, lvlVal, amount, _star, plus, atSign, linkLabel) {
     var s;
     if (lvlPrefix) {
       s = mdItemChip(name, 'level', lvlVal);
     } else if (amount !== undefined) {
       s = mdItemChip(name, 'amount', amount);
-    } else if (m.charAt(m.length - 1) === '+') {
+    } else if (atSign) {
+      s = mdItemChip(name, 'link', linkLabel || '');
+    } else if (plus) {
       s = mdItemChip(name, 'icon2x', '');
     } else {
       s = mdItemChip(name, 'icon', '');

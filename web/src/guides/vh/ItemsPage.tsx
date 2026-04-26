@@ -132,11 +132,10 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
     const slug = viewToSlug(view, config);
     const handler = (code: string) => {
       const base = `/guides/${config.pageSlug}`;
-      if (slug) {
-        navigate(`${base}/${slug}/${code}`, { replace: true });
-      } else {
-        navigate(`${base}/all/${code}`, { replace: true });
-      }
+      // 'tips' is the markdown reader view, not an item-list category — fall back to 'all' so the detail panel renders.
+      const navSlug = slug && slug !== 'tips' ? slug : 'all';
+      const target = `${base}/${navSlug}/${code}`;
+      navigate(target, { replace: true });
     };
     (window as any).__vhItemClick = handler;
     (window as any).selectPageItem = handler;
