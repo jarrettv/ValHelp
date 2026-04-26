@@ -106,7 +106,7 @@ Valid damage types: Slash, Blunt, Pierce, Fire, Frost, Lightning, Poison, Spirit
 
 ## Fork Icons (Food Type)
 
-`{fork:type}` -- colored fork SVG indicating food stat focus.
+`{fork:type}` -- colored fork SVG indicating food stat focus. Default size is 14px.
 
 | Syntax       | Result     | Meaning              |
 |--------------|------------|----------------------|
@@ -114,6 +114,14 @@ Valid damage types: Slash, Blunt, Pierce, Fire, Frost, Lightning, Poison, Spirit
 | `{fork:sta}` | {fork:sta} | Stamina-focused food |
 | `{fork:etr}` | {fork:etr} | Eitr-focused food    |
 | `{fork}`     | {fork}     | Balanced food        |
+
+`{fork:type:size}` -- custom pixel size. Use `bal` for balanced when specifying size.
+
+| Syntax           | Result         |
+|------------------|----------------|
+| `{fork:hp:32}`   | {fork:hp:32}   |
+| `{fork:sta:48}`  | {fork:sta:48}  |
+| `{fork:bal:48}`  | {fork:bal:48}  |
 
 ## Adrenaline Icon
 

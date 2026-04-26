@@ -24,7 +24,7 @@ function parseLatestGuideUpdate(md: string): LatestUpdate | null {
     }
     if (!inLatestDate) continue;
     if (/^##\s/.test(raw)) break;
-    const m = /^-\s+(.*)$/.exec(raw.trim());
+    const m = /^[-*]\s+(.*)$/.exec(raw.trim());
     if (m) bullets.push(m[1]);
   }
   for (const b of bullets) {
@@ -66,10 +66,15 @@ export default function HomeGuidesCard() {
         ))}
       </div>
       {latest && (
-        <Link to={latest.route} className="guides-card-update">
-          <span className="guides-card-update-label">Recent updates</span>
-          <span className="guides-card-update-text">{latest.text}</span>
-        </Link>
+        <div className="guides-card-update">
+          <Link to={latest.route} className="guides-card-update-link">
+            <span className="guides-card-update-label">Recent updates</span>
+            <span className="guides-card-update-text">{latest.text}</span>
+          </Link>
+          <Link to="/guides/changelog" className="guides-card-update-more">
+            View full changelog →
+          </Link>
+        </div>
       )}
     </div>
   );

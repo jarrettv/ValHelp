@@ -11,10 +11,10 @@ You can eat up to **three different foods** at once. Each food provides a tempor
 ### Food Types (Fork Color)
 
 The fork icon on each food item tells you its primary stat:
-* {fork:hp} Red fork = HP-focused food
-* {fork:sta} Yellow fork = Stamina-focused food
-* {fork:etr} Blue fork = Eitr-focused food
-* {fork} White fork = balanced stats
+
+| {fork:hp:48} | {fork:sta:48}   | {fork:etr:48} | {fork:bal:48} |
+|:------------:|:---------------:|:-------------:|:-------------:|
+| HP-focused   | Stamina-focused | Eitr-focused  | Balanced      |
 
 ### Effect Decay
 

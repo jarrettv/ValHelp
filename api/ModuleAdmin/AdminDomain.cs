@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ValHelpApi.ModuleEvents;
 
 namespace ValHelpApi.ModuleAdmin;
@@ -22,14 +23,26 @@ public class User
 
     public string ObsSecretCode { get; set; } = "";
 
-    // JSON bag of user preferences.
-    // Shape: { favs: { items: [...], at: "ISO utc" }, speedRuns: { items: [...], at: "ISO utc" }, ... }
-    // Stored as jsonb in Postgres; raw string on the CLR side for forward-compat
-    // (per-section timestamps live inside the JSON, so no separate column is needed).
-    public string Prefs { get; set; } = "{}";
+    public UserPrefs Prefs { get; set; } = new UserPrefs();
 
     public List<Player> Players { get; set; } = [];
 }
+
+public class UserPrefs
+{
+    public UserPrefsItems? Favs { get; set; }
+    public UserPrefsItems? SpeedRuns { get; set; }
+
+    public List<UserPrefsFeedback>? Feedback { get; set; }
+
+    public string? Blocked { get; set; }
+
+}
+
+public record UserPrefsItems(string[] Items, DateTime? At);
+
+public record UserPrefsFeedback(string Page, string Msg, DateTime At);
+
 
 public class Avatar
 {

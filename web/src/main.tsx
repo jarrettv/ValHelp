@@ -36,6 +36,7 @@ import {
   ComfortPage,
   EnemiesPage,
   WeatherPage,
+  ChangelogPage,
 } from './guides/vh/pages'
 
 // Create a client
@@ -79,6 +80,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="comfort/:category?/:itemCode?" element={<ComfortPage />} />
               <Route path="enemies/:category?/:itemCode?" element={<EnemiesPage />} />
               <Route path="weather" element={<WeatherPage />} />
+              <Route path="changelog" element={<ChangelogPage />} />
               <Route path="info/:slug" element={<GuideArticle />} />
             </Route>
           </Route>

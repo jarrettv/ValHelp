@@ -11,8 +11,8 @@ public static class AdminActivate
     {
         AdminEndpointsAuth.Map(app);
         AdminEndpointsAvatar.Map(app);
-        AdminEndpointsDb.Map(app);
         AdminEndpointsScoring.Map(app);
+        AdminEndpointsNotes.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,10 +21,13 @@ public static class AdminActivate
           .HasIndex(u => u.DiscordId)
           .IsUnique();
 
-        modelBuilder.Entity<User>()
-          .Property(u => u.Prefs)
-          .HasColumnType("jsonb")
-          .HasDefaultValue("{}");
+        modelBuilder.Entity<User>().OwnsOne(u => u.Prefs, b =>
+        {
+            b.ToJson();
+            b.OwnsOne(p => p.Favs);
+            b.OwnsOne(p => p.SpeedRuns);
+            b.OwnsMany(p => p.Feedback);
+        });
 
         modelBuilder.Entity<Avatar>()
           .HasKey(a => a.Hash);

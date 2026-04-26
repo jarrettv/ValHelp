@@ -1434,8 +1434,8 @@ export function mdInline(text: string): string {
     var s = '<span style="color:' + col + ';font-weight:bold">' + val + '×</span>';
     imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
   });
-  safe = safe.replace(/\{fork(?::(\w+))?\}/g, function(_, t) {
-    var s = forkSvg(t || 'bal', 14);
+  safe = safe.replace(/\{fork(?::([a-z]+))?(?::(\d+))?\}/g, function(_, t, sz) {
+    var s = forkSvg(t || 'bal', sz ? parseInt(sz, 10) : 14);
     imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
   });
   safe = safe.replace(/\{adrenaline\}/g, function() {
@@ -1589,7 +1589,7 @@ function loadItemDetails(docName: string): Promise<Record<string, string>> {
   return p;
 }
 
-function pageToDetailsDoc(page: VhPageKey): string | null {
+export function pageToDetailsDoc(page: VhPageKey): string | null {
   switch (page) {
     case 'craft': return 'weapons_details';
     case 'armor': return 'gear_details';
@@ -1597,6 +1597,11 @@ function pageToDetailsDoc(page: VhPageKey): string | null {
     case 'bestiary': return 'bestiary_details';
     default: return null;
   }
+}
+
+export function invalidateItemDetails(page: VhPageKey) {
+  const docName = pageToDetailsDoc(page);
+  if (docName) delete itemDetailsCache[docName];
 }
 
 function injectItemDetailMd(detail: HTMLElement, code: string, page: VhPageKey) {
@@ -1609,8 +1614,8 @@ function injectItemDetailMd(detail: HTMLElement, code: string, page: VhPageKey) 
     const live = detail.querySelector('.detail-item-md') as HTMLElement | null;
     if (!live || live.getAttribute('data-code') !== code) return;
     const body = map[code];
+    live.innerHTML = '';
     if (body) renderMdToElement(body, live);
-    else live.remove();
   });
 }
 

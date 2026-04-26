@@ -1,4 +1,5 @@
 import ItemsPage from './ItemsPage';
+import TipsMarkdown from './TipsMarkdown';
 import Feedback from '../../components/Feedback';
 import SEO from '../../components/SEO';
 import {
@@ -72,6 +73,18 @@ export const WeatherPage = () => (
       path="/guides/weather"
     />
     <div className="vh-stub">Weather and wind details coming soon</div>
+    <Feedback />
+  </div>
+);
+
+export const ChangelogPage = () => (
+  <div className="vh-items-detail">
+    <SEO
+      title="ValHelp Changelog"
+      description="Recent updates to ValHelp data, docs, and detail screens."
+      path="/guides/changelog"
+    />
+    <TipsMarkdown name="changelog" />
     <Feedback />
   </div>
 );

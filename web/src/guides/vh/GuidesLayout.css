@@ -244,6 +244,38 @@
   display: none;
 }
 
+/* Admin notes editor */
+.vh-notes-edit-bar { margin-top: 12px; display: flex; justify-content: flex-end; }
+.vh-notes-edit-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #2a2a3e; border: 1px solid #444; border-radius: 4px;
+  color: #aad; font-size: 11px; padding: 3px 8px; cursor: pointer;
+}
+.vh-notes-edit-btn:hover { background: #333355; color: #fff; }
+.vh-notes-edit-btn svg { width: 12px; height: 12px; }
+.vh-notes-editor {
+  margin-top: 12px; border: 1px solid #444; border-radius: 4px;
+  background: #1e1e2e; padding: 8px;
+}
+.vh-notes-editor-head { font-size: 11px; color: #888; margin-bottom: 6px; }
+.vh-notes-editor-head code { background: #2a2a3e; padding: 0 4px; border-radius: 3px; color: #cda; font-size: 11px; }
+.vh-notes-editor-loading { color: #888; font-size: 12px; padding: 8px; }
+.vh-notes-editor-text {
+  width: 100%; box-sizing: border-box; min-height: 200px; resize: vertical;
+  background: #15151f; color: #ddd; border: 1px solid #333; border-radius: 3px;
+  padding: 8px; font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.5;
+}
+.vh-notes-editor-error { color: #c66; font-size: 11px; margin-top: 6px; }
+.vh-notes-editor-actions { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
+.vh-notes-editor-save, .vh-notes-editor-cancel {
+  padding: 4px 12px; font-size: 12px; border-radius: 3px; cursor: pointer; border: 1px solid #444;
+}
+.vh-notes-editor-save { background: #2b4a2b; color: #cfc; border-color: #4a7a4a; }
+.vh-notes-editor-save:hover:not(:disabled) { background: #3a6a3a; }
+.vh-notes-editor-cancel { background: #2a2a3e; color: #ccc; }
+.vh-notes-editor-cancel:hover:not(:disabled) { background: #333355; }
+.vh-notes-editor-save:disabled, .vh-notes-editor-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* ── Responsive ── */
 @media (max-width: 1024px) { .vh-items-left { width: 220px; } .vh-items-detail { max-width: none; } }
 

@@ -46,17 +46,33 @@
 }
 
 .guides-card-update {
-  display: block;
   border-top: 1px solid #7289DA33;
   padding-top: 0.6rem;
   margin-top: 0.3rem;
+}
+
+.guides-card-update-link {
+  display: block;
   text-decoration: none;
   color: inherit;
   transition: opacity 0.15s ease;
 }
 
-.guides-card-update:hover {
+.guides-card-update-link:hover {
   opacity: 0.85;
+}
+
+.guides-card-update-more {
+  display: inline-block;
+  margin-top: 0.4rem;
+  color: #7289DA;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.guides-card-update-more:hover {
+  color: #a6c1ee;
+  text-decoration: underline;
 }
 
 .guides-card-update-label {

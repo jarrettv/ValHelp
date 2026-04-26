@@ -260,7 +260,7 @@ RULES:
 » No stream sniping other competitors
 » No clipping
 » No console commands
-» Using /printseeds is banned (Vanilla Hunt only)
+» Using /printseeds is allowed (all modes)
 » Using /die is allowed (with penalty)
 » No emote animation cancelling
 
@@ -356,7 +356,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     public record EventRequest(int Id, string Name, string Desc, string Mode, string ScoringCode, DateTime StartAt, int Hours, string Seed, int Status, bool IsPrivate);
     public record EventResponse(int Id);
 
-    public static async Task<Results<NotFound, UnauthorizedHttpResult, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
+    public static async Task<Results<NotFound, UnauthorizedHttpResult, ProblemHttpResult, ValidationProblem, Ok<EventResponse>, CreatedAtRoute<EventResponse>>>
       PostEvent(EventRequest req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
     {
         var scoring = await db.Scorings
@@ -366,10 +366,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
 
         if (scoring == null)
         {
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "scoringCode", new[] { "Please choose a valid scoring mechanism" } }
-            }, title: "Please choose a valid scoring mechanism");
+            return TypedResults.Problem("Please choose a valid scoring mechanism", statusCode: 400);
         }
 
         if (req.Name.Length < 5 || req.Name.Length > 26)
@@ -385,6 +382,11 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
 
         var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await db.Users.FindAsync(userId);
+
+        if (user.Prefs.Blocked != null)
+        {
+            return TypedResults.Problem(user.Prefs.Blocked, statusCode: 400);
+        }
 
         Event? hunt = null;
         var now = DateTime.UtcNow;
@@ -460,10 +462,15 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
           .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
-    public static async Task<Results<UnauthorizedHttpResult, ValidationProblem, Ok, NotFound>> DeleteEvent(int id, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
+    public static async Task<Results<UnauthorizedHttpResult, ValidationProblem, ProblemHttpResult, Ok, NotFound>> DeleteEvent(int id, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
     {
         var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await db.Users.FindAsync(userId);
+        
+        if (user.Prefs.Blocked != null)
+        {
+            return TypedResults.Problem(user.Prefs.Blocked, statusCode: 400);
+        }
 
         var hunt = await db.Events
           .Include(x => x.Players)
@@ -500,7 +507,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     public record PlayerLogRow(string Code, DateTime At, int X = 0, int Y = 0, int Z = 0);
     public record PlayerReq(int UserId, string Name, string Stream, string In, string Youtube, string Twitch, string Best);
     public record PlayerResp(int EventId, int UserId, string Name, string AvatarUrl, string Stream, int Score, PlayerLogRow[] logs, DateTime UpdatedAt);
-    private static async Task<Results<Ok<PlayerResp>, ValidationProblem, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
+    private static async Task<Results<Ok<PlayerResp>, ValidationProblem, ProblemHttpResult, UnauthorizedHttpResult, NotFound>> PostPlayer(int id, PlayerReq req, AppDbContext db, ClaimsPrincipal cp, HybridCache cache)
     {
         // TODO: Validate request
         var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -512,8 +519,13 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
 
         var userInfo = await db.Users
           .Where(u => u.Id == req.UserId)
-          .Select(u => new { u.Username, u.AvatarUrl, u.Youtube, u.Twitch })
+          .Select(u => new { u.Username, u.AvatarUrl, u.Youtube, u.Twitch, u.Prefs.Blocked })
           .SingleAsync();
+        
+        if (userInfo.Blocked != null)
+        {
+            return TypedResults.Problem(userInfo.Blocked, statusCode: 400);
+        }
 
         var player = await db.Players
           .Where(hp => hp.EventId == id)

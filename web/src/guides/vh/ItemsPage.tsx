@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router';
 import { useVhItems, useVhDefaults } from './data';
 import { useAuth } from '../../contexts/AuthContext';
 import type { VhItem } from './types';
 import TipsMarkdown from './TipsMarkdown';
+import NotesEditor from './NotesEditor';
 import Feedback from '../../components/Feedback';
 import {
   initVhState,
@@ -16,9 +18,10 @@ import {
   subscribe,
   syncWithServer,
   clearServerSync,
+  bumpChange,
   type VhPageKey,
 } from './vhRender';
-import { state as vhState } from './vhRender.raw';
+import { state as vhState, pageToDetailsDoc } from './vhRender.raw';
 
 export type CategoryTag = {
   id: string;
@@ -204,11 +207,22 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
   }, [filtered, showList, items, config.page, tick]);
 
   const detailRef = useRef<HTMLDivElement>(null);
+  const [editorAnchor, setEditorAnchor] = useState<HTMLDivElement | null>(null);
   useLayoutEffect(() => {
     const el = detailRef.current;
     if (!el) return;
-    if (view.kind === 'tips' || !selectedCode) return;
+    if (view.kind === 'tips' || !selectedCode) { setEditorAnchor(null); return; }
     renderDetailInto(el, selectedCode, config.page);
+    const notes = el.querySelector('.detail-item-md');
+    const anchor = document.createElement('div');
+    anchor.className = 'vh-notes-anchor';
+    if (notes && notes.parentNode) {
+      notes.parentNode.insertBefore(anchor, notes.nextSibling);
+    } else {
+      el.appendChild(anchor);
+    }
+    setEditorAnchor(anchor);
+    return () => { anchor.remove(); };
   }, [selectedCode, view.kind, config.page, tick]);
 
   const containerClass = `vh-items-container${selectedCode ? ' has-selection' : ''}${tipsActive ? ' show-tips' : ''}`;
@@ -306,6 +320,15 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
       ) : (
         <div className="vh-items-detail" key={selectedCode}>
           <div ref={detailRef} />
+          {editorAnchor && status?.id === 1 && pageToDetailsDoc(config.page) && createPortal(
+            <NotesEditor
+              page={config.page}
+              code={selectedCode}
+              name={items?.find(x => x.code === selectedCode)?.name || selectedCode}
+              onSaved={() => bumpChange()}
+            />,
+            editorAnchor
+          )}
           <Feedback />
         </div>
       )}

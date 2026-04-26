@@ -28,30 +28,29 @@ export function useVhItems() {
 
 export type VhDefaults = { favorites?: string[]; speedrun?: string[] };
 
-export type VhPrefsSection = { items: string[]; at: string };
-export type VhPrefs = {
-  favs?: VhPrefsSection;
-  speedRuns?: VhPrefsSection;
-  [key: string]: unknown;
-};
+export type VhPrefsCode = 'favs' | 'speedruns';
+export type VhPrefsSection = { items: string[]; at: string | null };
 
-export async function fetchPrefs(): Promise<VhPrefs | null> {
-  const res = await fetch('/api/auth/prefs', { credentials: 'include' });
-  if (res.status === 401) return null;
-  if (!res.ok) throw new Error(`prefs GET ${res.status}`);
+export async function fetchPrefsSection(code: VhPrefsCode): Promise<VhPrefsSection | null> {
+  const res = await fetch(`/api/auth/prefs/${code}`, { credentials: 'include' });
+  if (res.status === 401 || res.status === 404) return null;
+  if (!res.ok) throw new Error(`prefs ${code} GET ${res.status}`);
   return res.json();
 }
 
-export async function savePrefs(prefs: VhPrefs): Promise<VhPrefs> {
+async function savePrefs(code: VhPrefsCode, items: string[]): Promise<VhPrefsSection> {
   const res = await fetch('/api/auth/prefs', {
-    method: 'PUT',
+    method: 'POST',
     credentials: 'include',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(prefs),
+    body: JSON.stringify({ code, items }),
   });
-  if (!res.ok) throw new Error(`prefs PUT ${res.status}`);
+  if (!res.ok) throw new Error(`prefs ${code} POST ${res.status}`);
   return res.json();
 }
+
+export const saveFavs = (items: string[]) => savePrefs('favs', items);
+export const saveSpeedRuns = (items: string[]) => savePrefs('speedruns', items);
 
 export function useVhDefaults() {
   return useQuery({

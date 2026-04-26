@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +10,6 @@ public static class AdminEndpointsAuth
 {
     internal static void Map(WebApplication app)
     {
-        MapPrefs(app);
-        MapFeedback(app);
         var api = app.MapGroup("api/auth");
 
         api.MapGet("status", async (ClaimsPrincipal user, AppDbContext db) =>
@@ -23,9 +19,9 @@ public static class AdminEndpointsAuth
             {
                 var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
                 var currentUser = await db.Users
-              .Where(u => u.Id == userId)
-              .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive, x.Youtube, x.Twitch })
-              .SingleOrDefaultAsync() ?? none;
+                    .Where(u => u.Id == userId)
+                    .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.IsActive, x.Youtube, x.Twitch })
+                    .SingleOrDefaultAsync() ?? none;
                 return TypedResults.Ok(currentUser);
             }
             return TypedResults.Ok(none);
@@ -34,12 +30,10 @@ public static class AdminEndpointsAuth
         api.MapGet("users", async (AppDbContext db) =>
         {
             var users = await db.Users
-          .Select(x => new { x.Id, x.Username, x.Email, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.SteamId, x.AltName, x.IsActive })
-          .ToListAsync();
+                .Select(x => new { x.Id, x.Username, x.Email, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.SteamId, x.AltName, x.IsActive })
+                .ToListAsync();
             return TypedResults.Ok(users);
         }).RequireAuthorization("Admin");
-
-        //api.MapPost("users", PostUsers).RequireAuthorization("Admin");
 
         api.MapGet("discord", async (HttpContext ctx) =>
         {
@@ -55,18 +49,19 @@ public static class AdminEndpointsAuth
         api.MapGet("profile", async (ClaimsPrincipal user, AppDbContext db) =>
         {
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var currentUser = await db.Users
-          .Where(u => u.Id == userId)
-          .SingleAsync();
-            return TypedResults.Ok(currentUser);
+            var profile = await db.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new ProfileResp(u.Id, u.Username, u.Email, u.DiscordId, u.AvatarUrl, u.Youtube, u.Twitch, u.SteamId, u.AltName, u.ObsSecretCode))
+                .SingleAsync();
+            return TypedResults.Ok(profile);
         }).RequireAuthorization();
 
-        api.MapPost("profile", async Task<Results<Ok<User>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, ProfileReq req) =>
+        api.MapPost("profile", async Task<Results<Ok<ProfileResp>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, ProfileReq req) =>
         {
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var currentUser = await db.Users
-          .Where(u => u.Id == userId)
-          .SingleAsync();
+                .Where(u => u.Id == userId)
+                .SingleAsync();
 
             if (string.IsNullOrWhiteSpace(req.Username))
             {
@@ -76,7 +71,7 @@ public static class AdminEndpointsAuth
             if (!string.IsNullOrWhiteSpace(req.Youtube))
             {
                 var youtube = req.Youtube.Replace("http://", "https://")
-              .Replace("www.youtube.com", "youtube.com");
+                    .Replace("www.youtube.com", "youtube.com");
                 if (!Uri.IsWellFormedUriString(youtube, UriKind.Absolute))
                 {
                     return TypedResults.Problem("Invalid Youtube URL", statusCode: 400);
@@ -100,7 +95,7 @@ public static class AdminEndpointsAuth
             if (!string.IsNullOrWhiteSpace(req.Twitch))
             {
                 var twitch = req.Twitch.Replace("http://", "https://")
-              .Replace("www.twitch.tv", "twitch.tv");
+                    .Replace("www.twitch.tv", "twitch.tv");
                 if (!Uri.IsWellFormedUriString(twitch, UriKind.Absolute))
                 {
                     return TypedResults.Problem("Invalid Twitch URL", statusCode: 400);
@@ -118,72 +113,10 @@ public static class AdminEndpointsAuth
             currentUser.Username = req.Username.Trim();
             currentUser.UpdatedAt = DateTime.UtcNow;
             await db.SaveChangesAsync();
-            return TypedResults.Ok(currentUser);
+            return TypedResults.Ok(new ProfileResp(currentUser.Id, currentUser.Username, currentUser.Email, currentUser.DiscordId, currentUser.AvatarUrl,
+                currentUser.Youtube, currentUser.Twitch, currentUser.SteamId, currentUser.AltName, currentUser.ObsSecretCode));
         }).RequireAuthorization();
-    }
-
-
-    // public static async Task<Results<Ok, BadRequest>> PostUsers(HttpRequest request, AppDbContext db, ILoggerFactory logger)
-    // {
-    //   var log = logger.CreateLogger("PostUsers");
-
-    //   try
-    //   {
-    //     using var reader = new StreamReader(request.Body);
-    //     var csvData = await reader.ReadToEndAsync();
-    //     var alts = CsvHelper.ParseCsv(csvData, new UserAltsMap());
-    //     foreach (var alt in alts)
-    //     {
-    //       var user = await db.Users.SingleOrDefaultAsync(u => u.DiscordId == alt.DiscordId);
-    //       if (user == null)
-    //       {
-    //         log.LogInformation("User {discordId} not found, creating new user", alt.DiscordId);
-    //         user = new User
-    //         {
-    //           Username = alt.Username,
-    //           Email = $"{alt.Username.ToLower()}@valheim.help",
-    //           DiscordId = alt.DiscordId,
-    //           AvatarUrl = "https://valheim.help/favicon.webp",
-    //           CreatedAt = DateTime.UtcNow,
-    //           UpdatedAt = DateTime.UtcNow,
-    //           LastLoginAt = DateTime.UtcNow,
-    //           IsActive = true,
-    //         };
-    //       }
-
-    //       if (user.Username != alt.Username)
-    //       {
-    //         log.LogWarning("User {discordId} has a different username ({oldUsername} -> {newUsername})", alt.DiscordId, user.Username, alt.Username);
-    //       }
-
-    //       user.AltName = alt.AltName;
-    //       user.SteamId = alt.SteamId;
-    //       db.Users.Update(user);
-
-    //       log.LogInformation("User {discordId} updated with alt name {altName} and steam id {steamId}", alt.DiscordId, alt.AltName, alt.SteamId);
-    //     }
-
-    //     await db.SaveChangesAsync();
-    //   }
-    //   catch (Exception ex)
-    //   {
-    //     log.LogError(ex, "Error updating alts");
-    //     return TypedResults.BadRequest();
-    //   }
-    //   return TypedResults.Ok();
-    // }
-
-
-    public record ProfileReq(string Username, string? Youtube, string? Twitch);
-
-    public record FeedbackReq(string? Page, string? Msg);
-
-    internal static void MapFeedback(WebApplication app)
-    {
-        var api = app.MapGroup("api/auth");
-
-        // POST /api/auth/feedback — appends to user's prefs.feedback array.
-        // Stored as { at: ISO-UTC, page: relative-path, msg: text }.
+    
         api.MapPost("feedback", async Task<Results<Ok, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, FeedbackReq req) =>
         {
             var msg = (req.Msg ?? "").Trim();
@@ -201,83 +134,81 @@ public static class AdminEndpointsAuth
             var currentUser = await db.Users.SingleOrDefaultAsync(u => u.Id == userId);
             if (currentUser == null) return TypedResults.Problem("User not found", statusCode: 404);
 
-            var raw = string.IsNullOrWhiteSpace(currentUser.Prefs) ? "{}" : currentUser.Prefs;
-            var node = JsonNode.Parse(raw) as JsonObject ?? new JsonObject();
-            if (node["feedback"] is not JsonArray arr) { arr = new JsonArray(); node["feedback"] = arr; }
-
-            // Cap history at 50 entries per user to bound growth.
-            while (arr.Count >= 50) arr.RemoveAt(0);
-
-            arr.Add(new JsonObject
-            {
-                ["at"] = DateTime.UtcNow.ToString("o"),
-                ["page"] = page,
-                ["msg"] = msg,
-            });
-
-            var serialized = node.ToJsonString();
-            if (serialized.Length > 64 * 1024)
-            {
-                return TypedResults.Problem("Prefs storage exceeds size limit", statusCode: 400);
-            }
-            currentUser.Prefs = serialized;
+            var existing = currentUser.Prefs.Feedback ?? [];
+            var kept = existing.Count >= MaxFeedbackEntries
+                ? existing[(existing.Count - MaxFeedbackEntries + 1)..]
+                : existing;
+            currentUser.Prefs.Feedback = [.. kept, new UserPrefsFeedback(page, msg, DateTime.UtcNow)];
             await db.SaveChangesAsync();
             return TypedResults.Ok();
         }).RequireAuthorization();
-    }
-
-    internal static void MapPrefs(WebApplication app)
-    {
-        var api = app.MapGroup("api/auth");
-
-        // GET /api/auth/prefs — returns the user's prefs bag.
-        api.MapGet("prefs", async Task<Results<Ok<JsonElement>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db) =>
+    
+        api.MapGet("prefs/{code}", async Task<Results<Ok<UserPrefsItems>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, string code) =>
         {
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var raw = await db.Users
-              .Where(u => u.Id == userId)
-              .Select(u => u.Prefs)
-              .SingleOrDefaultAsync();
-            if (raw == null) return TypedResults.Problem("User not found", statusCode: 404);
+            var prefs = await db.Users
+                .AsNoTracking()
+                .Where(u => u.Id == userId)
+                .Select(u => u.Prefs)
+                .SingleOrDefaultAsync();
 
-            using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(raw) ? "{}" : raw);
-            return TypedResults.Ok(doc.RootElement.Clone());
-        }).RequireAuthorization();
+            var data = code.ToLower() switch
+            {
+                "favs" => prefs?.Favs,
+                "speedruns" => prefs?.SpeedRuns,
+                _ => null
+            };
 
-        // PUT /api/auth/prefs — shallow-merges top-level keys from the body into the
-        // stored prefs bag. Keys not present in the body are preserved (e.g. feedback,
-        // which is written server-side and never sent by the client).
-        // Per-section timestamps live inside the JSON (e.g. prefs.favs.at) so clients
-        // can implement their own conflict resolution without extra columns.
-        api.MapPut("prefs", async Task<Results<Ok<JsonElement>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, JsonElement body) =>
+            if (data == null) return TypedResults.Problem("User prefs not found", statusCode: 404);
+            return TypedResults.Ok(data);
+        });
+    
+        api.MapPost("prefs", async Task<Results<Ok<UserPrefsItems>, ProblemHttpResult>> (ClaimsPrincipal user, AppDbContext db, PrefsItemsReq req) =>
         {
+            
+            if (req.Items.Length > MaxItemsPerSection) return TypedResults.Problem($"Too many items (max {MaxItemsPerSection})", statusCode: 400);
+            foreach (var s in req.Items)
+            {
+                if (string.IsNullOrWhiteSpace(s) || s.Length > MaxItemCodeLen)
+                    return TypedResults.Problem("Invalid item code", statusCode: 400);
+            }
+
+            var items = req.Items.Distinct(StringComparer.Ordinal).ToArray();
+
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var currentUser = await db.Users.SingleOrDefaultAsync(u => u.Id == userId);
             if (currentUser == null) return TypedResults.Problem("User not found", statusCode: 404);
 
-            if (body.ValueKind != JsonValueKind.Object)
+            var now = DateTime.UtcNow;
+            switch (req.Code.ToLower())
             {
-                return TypedResults.Problem("Prefs must be a JSON object", statusCode: 400);
+                case "favs":
+                    currentUser.Prefs.Favs = new UserPrefsItems(items, now);
+                    break;
+                case "speedruns":
+                    currentUser.Prefs.SpeedRuns = new UserPrefsItems(items, now);
+                    break;
+                default:
+                    return TypedResults.Problem("Invalid prefs code", statusCode: 400);
             }
-
-            var raw = string.IsNullOrWhiteSpace(currentUser.Prefs) ? "{}" : currentUser.Prefs;
-            var merged = JsonNode.Parse(raw) as JsonObject ?? new JsonObject();
-            foreach (var prop in body.EnumerateObject())
-            {
-                merged[prop.Name] = JsonNode.Parse(prop.Value.GetRawText());
-            }
-
-            var serialized = merged.ToJsonString();
-            if (serialized.Length > 64 * 1024)
-            {
-                return TypedResults.Problem("Prefs too large (max 64KB)", statusCode: 400);
-            }
-
-            currentUser.Prefs = serialized;
             await db.SaveChangesAsync();
-
-            using var doc = JsonDocument.Parse(currentUser.Prefs);
-            return TypedResults.Ok(doc.RootElement.Clone());
-        }).RequireAuthorization();
+            return TypedResults.Ok(new UserPrefsItems(items, now));
+        });
+    
     }
+
+    public record ProfileReq(string Username, string? Youtube, string? Twitch);
+
+    public record ProfileResp(
+        int Id, string Username, string Email, string DiscordId, string AvatarUrl,
+        string Youtube, string Twitch, string SteamId, string AltName, string ObsSecretCode);
+
+
+    public record FeedbackReq(string Page, string Msg);
+
+    public record PrefsItemsReq(string Code, string[] Items);
+
+    const int MaxItemsPerSection = 1000;
+    const int MaxItemCodeLen = 64;
+    const int MaxFeedbackEntries = 50;
 }

@@ -10,8 +10,8 @@ import {
   type VhPageKey,
 } from './vhRender.raw';
 import type { VhItem } from './types';
-import type { VhDefaults, VhPrefs } from './data';
-import { fetchPrefs, savePrefs } from './data';
+import type { VhDefaults } from './data';
+import { fetchPrefsSection, saveFavs, saveSpeedRuns } from './data';
 
 export type { VhPageKey };
 
@@ -43,34 +43,33 @@ let changeCounter = 0;
 export function subscribe(l: Listener) { listeners.add(l); return () => { listeners.delete(l); }; }
 export function getChangeCounter() { return changeCounter; }
 function notify() { changeCounter++; listeners.forEach(l => l()); }
+export function bumpChange() { notify(); }
 
 let initialized = false;
 let cachedMaxStats: any = null;
 
 // Server sync state
 let syncUserId: number | null = null;
-let favsUpdatedAt: string = '';
-let speedRunsUpdatedAt: string = '';
+let canSync = false;
+let favsDirty = false;
+let spdDirty = false;
 let saveTimer: number | null = null;
 const SAVE_DEBOUNCE_MS = 1000;
 
-function currentPrefs(): VhPrefs {
-  return {
-    favs: { items: mapToArray(state.craftFavorites), at: favsUpdatedAt },
-    speedRuns: { items: mapToArray(state.craftSpeedrun), at: speedRunsUpdatedAt },
-  };
-}
-
-function touchFavs() { favsUpdatedAt = new Date().toISOString(); }
-function touchSpeedRuns() { speedRunsUpdatedAt = new Date().toISOString(); }
-
 function scheduleServerSave() {
-  if (!syncUserId) return;
+  if (!canSync) return;
   if (saveTimer != null) window.clearTimeout(saveTimer);
   saveTimer = window.setTimeout(async () => {
     saveTimer = null;
     try {
-      await savePrefs(currentPrefs());
+      if (favsDirty) {
+        favsDirty = false;
+        await saveFavs(mapToArray(state.craftFavorites));
+      }
+      if (spdDirty) {
+        spdDirty = false;
+        await saveSpeedRuns(mapToArray(state.craftSpeedrun));
+      }
     } catch (err) {
       console.warn('vh prefs save failed:', err);
     }
@@ -122,7 +121,7 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
     if (state.craftFavorites[code]) delete state.craftFavorites[code];
     else state.craftFavorites[code] = true;
     saveMap(FAV_KEY, state.craftFavorites);
-    touchFavs();
+    favsDirty = true;
     scheduleServerSave();
     notify();
   };
@@ -130,7 +129,7 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
     if (state.craftSpeedrun[code]) delete state.craftSpeedrun[code];
     else state.craftSpeedrun[code] = true;
     saveMap(SPD_KEY, state.craftSpeedrun);
-    touchSpeedRuns();
+    spdDirty = true;
     scheduleServerSave();
     notify();
   };
@@ -139,47 +138,45 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
   w.__vhToggleSpd = w.toggleSpeedrun;
 }
 
-/** Call once a logged-in user's id is known.
- *  Server is the source of truth; on first login with empty server prefs,
- *  we upload the user's localStorage selections. */
+/** Call once a logged-in user's id is known. Sections are independent:
+ *  for each, if the server has data, it wins and replaces local; if the
+ *  server has no data, local is left alone (subsequent user toggles will
+ *  upload). This preserves "never set" on the server for usage tracking. */
 export async function syncWithServer(userId: number) {
   if (syncUserId === userId) return;
   syncUserId = userId;
+  canSync = true;
   try {
-    const server = await fetchPrefs();
-    if (!server) { syncUserId = null; return; }
-    const favsSec = server.favs;
-    const spdSec = server.speedRuns;
-    const hasServerData =
-      (favsSec?.items && favsSec.items.length > 0) ||
-      (spdSec?.items && spdSec.items.length > 0);
-    if (hasServerData) {
-      // Server wins — replace local state and persist to localStorage.
-      const favs = arrayToMap(favsSec?.items);
-      const spds = arrayToMap(spdSec?.items);
-      favsUpdatedAt = favsSec?.at || '';
-      speedRunsUpdatedAt = spdSec?.at || '';
+    const [favsSec, spdSec] = await Promise.all([
+      fetchPrefsSection('favs'),
+      fetchPrefsSection('speedruns'),
+    ]);
+    const updates: { craftFavorites?: Record<string, true>; craftSpeedrun?: Record<string, true> } = {};
+    if (favsSec?.items) {
+      const favs = arrayToMap(favsSec.items);
       saveMap(FAV_KEY, favs);
+      updates.craftFavorites = favs;
+    }
+    if (spdSec?.items) {
+      const spds = arrayToMap(spdSec.items);
       saveMap(SPD_KEY, spds);
-      setState({ craftFavorites: favs, craftSpeedrun: spds });
+      updates.craftSpeedrun = spds;
+    }
+    if (updates.craftFavorites || updates.craftSpeedrun) {
+      setState(updates);
       notify();
-    } else {
-      // Server empty — upload whatever we have locally.
-      if (!favsUpdatedAt) touchFavs();
-      if (!speedRunsUpdatedAt) touchSpeedRuns();
-      await savePrefs(currentPrefs());
     }
   } catch (err) {
     console.warn('vh prefs sync failed:', err);
-    syncUserId = null;
   }
 }
 
 /** Call when user logs out — stop syncing but leave localStorage intact. */
 export function clearServerSync() {
   syncUserId = null;
-  favsUpdatedAt = '';
-  speedRunsUpdatedAt = '';
+  canSync = false;
+  favsDirty = false;
+  spdDirty = false;
   if (saveTimer != null) { window.clearTimeout(saveTimer); saveTimer = null; }
 }
 
