@@ -12,6 +12,7 @@ public static class AdminEndpointsNotes
         ["armor"] = "gear_details",
         ["comfort"] = "comfort_details",
         ["bestiary"] = "bestiary_details",
+        ["food"] = "consumable_details",
     };
 
     static readonly Regex CodePattern = new(@"^[A-Za-z0-9_\-]{1,64}$", RegexOptions.Compiled);

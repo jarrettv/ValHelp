@@ -2,6 +2,20 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-04-26
+
+* Food detail screen: large fork icon now sits to the left of the stat bars; bar tracks darkened for better contrast
+* Mead base detail: shows fermentation result as a hyperlink to the finished mead and other improvements
+* Added mead notes for every single mead in the game.
+* Combat: [MeadBzerker]* [Berserkir Mead](/guides/food/fermenter/MeadBzerker), [MeadTasty]* [Tasty Mead](/guides/food/fermenter/MeadTasty)
+* Healing: [MeadHealthMinor]* [Minor Healing](/guides/food/fermenter/MeadHealthMinor), [MeadHealthMedium]* [Medium Healing](/guides/food/fermenter/MeadHealthMedium), [MeadHealthMajor]* [Major Healing](/guides/food/fermenter/MeadHealthMajor), [MeadHealthLingering]* [Lingering Healing](/guides/food/fermenter/MeadHealthLingering)
+* Stamina: [MeadStaminaMinor]* [Minor Stamina](/guides/food/fermenter/MeadStaminaMinor), [MeadStaminaMedium]* [Medium Stamina](/guides/food/fermenter/MeadStaminaMedium), [MeadStaminaLingering]* [Lingering Stamina](/guides/food/fermenter/MeadStaminaLingering)
+* Eitr: [MeadEitrMinor]* [Minor Eitr](/guides/food/fermenter/MeadEitrMinor), [MeadEitrLingering]* [Lingering Eitr](/guides/food/fermenter/MeadEitrLingering)
+* Resistance: [BarleyWine]* [Fire Resistance Barley Wine](/guides/food/fermenter/BarleyWine), [MeadFrostResist]* [Frost Resistance](/guides/food/fermenter/MeadFrostResist), [MeadPoisonResist]* [Poison Resistance](/guides/food/fermenter/MeadPoisonResist)
+* Movement: [MeadHasty]* [Tonic of Ratatosk](/guides/food/fermenter/MeadHasty), [MeadSwimmer]* [Draught of Vananidir](/guides/food/fermenter/MeadSwimmer), [MeadLightfoot]* [Lightfoot](/guides/food/fermenter/MeadLightfoot)
+* Utility: [MeadBugRepellent]* [Anti-Sting Concoction](/guides/food/fermenter/MeadBugRepellent), [MeadTamer]* [Brew of Animal Whispers](/guides/food/fermenter/MeadTamer), [MeadStrength]* [Mead of Troll Endurance](/guides/food/fermenter/MeadStrength), [MeadTrollPheromones]* [Love Potion](/guides/food/fermenter/MeadTrollPheromones)
+
+
 ## 2026-04-25
 
 * Added weapon notes for many new items across swords, unarmed, axes, spears, knives, and clubs/maces

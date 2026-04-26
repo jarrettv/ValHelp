@@ -230,7 +230,7 @@ function foodMiniBar(pct, val, color, label, large) {
   var fontSize = large ? 14 : 7;
   var fontWeight = large ? 'bold' : 'normal';
   return '<svg width="' + w + '" height="' + svgH + '" viewBox="0 0 ' + w + ' ' + svgH + '"' + opacity + '>' +
-    '<rect x="0" y="' + padY + '" width="' + trackW + '" height="' + barH + '" rx="' + (2*s) + '" fill="#222"/>' +
+    '<rect x="0" y="' + padY + '" width="' + trackW + '" height="' + barH + '" rx="' + (2*s) + '" fill="#0a0a0a"/>' +
     (val > 0 ? '<rect x="0" y="' + padY + '" width="' + barW + '" height="' + barH + '" rx="' + (2*s) + '" fill="' + color + '"/>' : '') +
     '<text x="' + (trackW + 2*s) + '" y="' + (padY + barH - s) + '" font-size="' + fontSize + '" font-weight="' + fontWeight + '" fill="#999" font-family="system-ui">' + Math.round(val) + '</text>' +
     '</svg>';
@@ -881,6 +881,39 @@ function renderFoodDetailFull(code) {
   }
   var detail = document.getElementById('items-detail');
   renderGenericDetail(code, detail);
+  // Finished mead → show its base + the base's ingredients (above Properties)
+  if (it.subcategory === 'Fermenter') {
+    var meadBase = findMeadBase(code);
+    if (meadBase) {
+      var stationName = 'Mead Cauldron';
+      if (meadBase.recipe && meadBase.recipe.station) {
+        var _ms = craftItemsByCode[meadBase.recipe.station];
+        if (_ms && _ms.name) stationName = _ms.name;
+      }
+      var hm = '<div class="detail-section">' + esc(stationName) + '</div>';
+      hm += '<div class="mead-link" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer" onclick="selectPageItem(\'' + esc(meadBase.code) + '\')">';
+      if (meadBase.hasIcon) hm += '<img src="/data/vh/icons/' + encodeURIComponent(meadBase.code) + '.png" style="width:24px;height:24px;image-rendering:pixelated">';
+      hm += '<div><div style="color:#8cf;font-size:12px;font-weight:bold;text-decoration:underline">' + esc(meadBase.name || meadBase.code) + '</div>';
+      hm += '<div style="color:#888;font-size:11px">Ferments in ~2 days</div></div></div>';
+      if (meadBase.recipe && meadBase.recipe.resources) {
+        hm += renderRecipeByQuality(meadBase);
+      }
+      // Insert above Properties section if present, else append
+      var sections = detail.querySelectorAll('.detail-section');
+      var propsSection = null;
+      for (var _si = 0; _si < sections.length; _si++) {
+        if (sections[_si].textContent === 'Properties') { propsSection = sections[_si]; break; }
+      }
+      var temp = document.createElement('div');
+      temp.innerHTML = hm;
+      if (propsSection && propsSection.parentNode) {
+        while (temp.firstChild) propsSection.parentNode.insertBefore(temp.firstChild, propsSection);
+      } else {
+        while (temp.firstChild) detail.appendChild(temp.firstChild);
+      }
+    }
+    return;
+  }
   // If no recipe, check for a cooking source
   if (it.recipe) return;
   var sourceCode = it.cookSource;
@@ -914,25 +947,51 @@ function renderMeadDetailFull(code) {
   var detail = document.getElementById('items-detail');
   // Show base as main item with generic detail (recipe, stats, etc.)
   renderGenericDetail(code, detail);
-  // Append fermentation result
+
+  // Reorder: Effect → (Ferments into) → Properties
+  function findSection(label) {
+    var ss = detail.querySelectorAll('.detail-section');
+    for (var i = 0; i < ss.length; i++) if (ss[i].textContent === label) return ss[i];
+    return null;
+  }
+  function sectionRange(secEl) {
+    var nodes = [secEl];
+    var n = secEl.nextElementSibling;
+    while (n && !n.classList.contains('detail-section')) { nodes.push(n); n = n.nextElementSibling; }
+    return nodes;
+  }
+
+  var propsSection = findSection('Properties');
+  var effectSection = findSection('Effect');
+  if (propsSection && effectSection) {
+    var effectNodes = sectionRange(effectSection);
+    var anchor = effectNodes[effectNodes.length - 1].nextSibling;
+    var propsNodes = sectionRange(propsSection);
+    propsNodes.forEach(function(n) { detail.insertBefore(n, anchor); });
+  }
+
+  // Insert "Ferments into" block above (now-relocated) Properties section
   var paired = base.meadFinished ? craftItemsByCode[base.meadFinished] : null;
   if (paired) {
     var meadCount = (code === 'MeadBaseBzerker') ? 3 : 6;
-    var h = detail.innerHTML;
-    h += '<div style="margin-top:12px;border-top:1px solid #333;padding-top:8px">';
-    h += '<div style="display:flex;align-items:center;gap:8px">';
+    var h = '<div class="mead-ferments-block" style="margin-top:12px;border-top:1px solid #333;padding-top:8px">';
+    h += '<div class="mead-link" style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="selectPageItem(\'' + esc(paired.code) + '\')">';
     if (paired.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(paired.code) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
-    h += '<div><div style="color:#fff;font-size:13px">Ferments into ' + meadCount + 'x <span style="font-weight:bold">' + esc(paired.name || paired.code) + '</span> in ~2 days</div>';
+    h += '<div><div style="color:#8cf;font-size:13px">Ferments into ' + meadCount + 'x <span style="font-weight:bold;text-decoration:underline">' + esc(paired.name || paired.code) + '</span> in ~2 days</div>';
     if (paired.description) {
       var desc = paired.description.replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '');
       h += '<div style="color:#888;font-size:11px;margin-top:2px">' + esc(desc) + '</div>';
     }
     h += '</div></div>';
-    // Show status effect from the finished mead (or fallback to base)
-    var se = paired.statusEffect || base.statusEffect;
-    h += renderStatusEffectSection(se);
     h += '</div>';
-    detail.innerHTML = h;
+
+    var temp = document.createElement('div');
+    temp.innerHTML = h;
+    var insertBefore = findSection('Effect') || findSection('Properties');
+    while (temp.firstChild) {
+      if (insertBefore && insertBefore.parentNode) insertBefore.parentNode.insertBefore(temp.firstChild, insertBefore);
+      else detail.appendChild(temp.firstChild);
+    }
   }
 }
 
@@ -1067,12 +1126,15 @@ function renderGenericDetail(code, detail) {
   if (it.food) {
     var f = it.food;
     var _fMax = pageMaxStats || { maxHp: f.health||1, maxSta: f.stamina||1, maxEitr: f.eitr||1, maxRegen: f.regen||1 };
-    h += '<div class="detail-section">' + forkSvg(foodForkType(f), 16) + ' Stats</div>';
-    h += '<div class="craft-item-bars" style="gap:3px;margin:8px 0">';
+    h += '<div class="detail-section">Stats</div>';
+    h += '<div style="display:flex;align-items:center;gap:12px">';
+    h += forkSvg(foodForkType(f), 48);
+    h += '<div class="craft-item-bars" style="flex:1;min-width:0;gap:3px;margin:8px 0">';
     h += foodMiniBar(_fMax.maxHp ? (f.health||0) / _fMax.maxHp : 0, f.health||0, '#c55', 'HP', true);
     h += foodMiniBar(_fMax.maxSta ? (f.stamina||0) / _fMax.maxSta : 0, f.stamina||0, '#cc5', 'STA', true);
     h += foodMiniBar(_fMax.maxEitr ? (f.eitr||0) / _fMax.maxEitr : 0, f.eitr||0, '#58c', 'EITR', true);
     if (f.regen && _fMax.maxRegen) h += regenHeart(f.regen / _fMax.maxRegen, f.regen, true);
+    h += '</div>';
     h += '</div>';
     var dur = f.duration ? Math.round(f.duration / 60) : 0;
     stats.push(['Duration', dur + ' min']);
@@ -1595,6 +1657,7 @@ export function pageToDetailsDoc(page: VhPageKey): string | null {
     case 'armor': return 'gear_details';
     case 'comfort': return 'comfort_details';
     case 'bestiary': return 'bestiary_details';
+    case 'food': return 'consumable_details';
     default: return null;
   }
 }
