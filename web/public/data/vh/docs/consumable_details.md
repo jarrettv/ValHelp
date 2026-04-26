@@ -36,6 +36,10 @@ This mead makes you **very resistant to Fire** damage and is generally useful in
 * Raiding Fuling villages to negate Shamans
 * Engaging a Gjall in the Mistlands
 
+**WARNING** You must consume the mead prior to taking the Fire damage.
+
+
+
 
 
 
@@ -44,7 +48,7 @@ This mead makes you **very resistant to Fire** damage and is generally useful in
 
 You need to purchase [FragrantBundle](5) from the Bog Witch (post-Moder) for 140 coins.
 
-Makes you **immune to Deathsquitoes**, which still attack but you will take no damage.
+Makes you **immune to Deathsquitos**, which still attack but you will take no damage.
 
 
 
@@ -65,6 +69,10 @@ This mead grants Frost Resistance for 600 seconds (10 minutes), which **prevents
 **Highly useful in the Mountains** but also useful in other biomes to remove the Cold debuff at night.
 
 Once you have Frost Resistance gear, you'll no longer need this mead as the effect will not stack.
+
+**WARNING** You must consume the mead prior to taking the Frost damage.
+
+
 
 
 

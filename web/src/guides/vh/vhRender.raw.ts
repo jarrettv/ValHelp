@@ -472,12 +472,12 @@ function renderFoodListItem(it, maxStats) {
     h += renderTinyRecipe(it.recipe.resources);
     var baseSe = (it.meadFinished && craftItemsByCode[it.meadFinished]) ? (craftItemsByCode[it.meadFinished].statusEffect || it.statusEffect) : it.statusEffect;
     if (baseSe) {
-      h += '<div style="font-size:10px;color:#8ac;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + statusEffectSummary(baseSe) + '</div>';
+      h += '<div style="font-size:10px;color:#8ac;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + statusEffectSummary(baseSe, it.meadFinished || it.code) + '</div>';
     }
   } else if (it.subcategory === 'Fermenter') {
     var se = it.statusEffect;
     if (se) {
-      h += '<div style="font-size:10px;color:#8ac;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + statusEffectSummary(se) + '</div>';
+      h += '<div style="font-size:10px;color:#8ac;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + statusEffectSummary(se, it.code) + '</div>';
     }
   } else {
     h += '<div class="craft-item-cat">' + esc(it.subcategory || '') + '</div>';
@@ -852,8 +852,27 @@ function renderStatusEffectSection(se) {
   return h;
 }
 
-function statusEffectSummary(se) {
+var SPECIAL_EFFECT_NOTES = {
+  MeadBugRepellent: 'Immune to Deathsquito',
+  MeadBaseBugRepellent: 'Immune to Deathsquito',
+  MeadTamer: '2x Faster Tames',
+  MeadBaseTamer: '2x Faster Tames',
+  MeadTrollPheromones: 'Increased spawns',
+  MeadBzerker: '-80% Stam usage',
+  MeadBaseBzerker: '-80% Stam usage'
+};
+
+function statusEffectSummary(se, code) {
   if (!se) return '';
+  // Items with a curated note override the auto-generated stat list
+  if (code && SPECIAL_EFFECT_NOTES[code]) {
+    var override = SPECIAL_EFFECT_NOTES[code];
+    if (se.duration) {
+      var dur = se.duration >= 60 ? Math.round(se.duration / 60) + ' min' : Math.round(se.duration) + ' secs';
+      override += ' · ' + dur;
+    }
+    return override;
+  }
   var parts = [];
   if (se.healthOverTime) parts.push('+' + se.healthOverTime + ' HP');
   if (se.healthRegenMultiplier && se.healthRegenMultiplier !== 1) parts.push('HP regen ' + (se.healthRegenMultiplier > 1 ? '+' : '') + Math.round((se.healthRegenMultiplier - 1) * 100) + '%');
