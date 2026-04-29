@@ -1,16 +1,15 @@
 import { useParams, useSearchParams } from 'react-router';
-import { useEvent, useObsTarget } from './hooks/useEvent';
+import { useEvent, useObsByCode } from './hooks/useEvent';
 import ObsScores from './components/ObsScores';
 
-export default function EventScoreboard() {
-  const { id, playerId } = useParams<{ id: string, playerId: string }>();
+export default function Obs2Scoreboard() {
+  const { code } = useParams<{ code: string }>();
   const [searchParams] = useSearchParams();
-  const overrideEventId = id ? parseInt(id) : undefined;
 
-  const { userId, eventId } = useObsTarget(parseInt(playerId ?? '0'), overrideEventId);
-  const { data, isPending } = useEvent(eventId);
+  const { userId, eventId, obsCode, isPending: lookupPending } = useObsByCode(code);
+  const { data, isPending: eventPending } = useEvent(eventId, undefined, obsCode);
 
-  if (isPending) return 'Loading...';
+  if (lookupPending || eventPending) return 'Loading...';
   if (!data) return 'No data';
 
   return (

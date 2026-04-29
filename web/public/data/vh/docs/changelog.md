@@ -2,6 +2,12 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-04-28
+
+* Gear docs: new **Armor Set Bonus Effects** table under Armor (Berserk/Bear, Vilebone Wrath, Endurance/Ask, Fenris Blessing, Ranger/Root, Sneaky/Troll)
+* Weapon docs: tier rankings now use clickable item chips ([SpearFlint](1) format) for every weapon listed
+* OBS browser sources moved to **`/obs2/<view>/<secret code>`** URLs — generated for you on the [OBS page](/auth/obs). The new URLs work for **both public and private events** you participate in. Old `/obs/<view>/<playerId>` URLs continue to serve public events for backwards compat.
+
 ## 2026-04-26
 
 * Food detail screen: large fork icon now sits to the left of the stat bars; bar tracks darkened for better contrast

@@ -1,6 +1,6 @@
 # Gear Mechanics
 
-Jump to [Shields](/gear#shields) · [Capes](/gear#capes) · [Trinkets](/gear#trinkets) · [Best Gear per Biome](/gear#best-gear-per-biome) · [Tips](/gear#tips)
+Jump to [Set Bonuses](/gear#armor-set-bonus-effects) · [Shields](/gear#shields) · [Capes](/gear#capes) · [Trinkets](/gear#trinkets) · [Best Gear per Biome](/gear#best-gear-per-biome) · [Tips](/gear#tips)
 
 ## Armor
 
@@ -26,6 +26,19 @@ The second case means stacking armor has **diminishing returns** — doubling yo
 | Heavy (Bronze, Iron, Wolf, Padded, Carapace, Flametal) | Highest  |  -10% total  | Players who tank hits      |
 | Medium (Bear, Root, Vilebone, Ask)                     | Moderate |  0% to -4%   | Balanced players           |
 | Light (Troll, Fenris, Eitr-weave, Embla)               |  Lowest  |  0% to +9%   | Dodge/parry players, mages |
+
+### Armor Set Bonus Effects
+
+Wearing all pieces of a set grants extra effects on top of each piece's individual bonuses.
+
+| Set | Pieces & Effects |
+|-----|--------|---------|
+| Sneaky (Troll) | [HelmetTrollLeather](1) [ArmorTrollLeatherChest](1) [ArmorTrollLeatherLegs](1) [CapeTrollHide](1) <br> **+15 Sneak skill** |
+| Berserk (Bear) | [HelmetBerserkerHood](1) [ArmorBerserkerChest](1) [ArmorBerserkerLegs](1) <br> **+30% Health regen, +15% Stamina regen, +10% Slash, +10% Chop**, Slightly weak (+25%) vs Blunt, Slash and Pierce |
+| Ranger (Root) | [HelmetRoot](1) [ArmorRootChest](1) [ArmorRootLegs](1) <br> **+15 Bow skill**, Pierce resistant (chest), Poison resistant (helmet), Weak vs Fire |
+| Fenris Blessing | [HelmetFenring](1) [ArmorFenringChest](1) [ArmorFenringLegs](1) <br> +9% movement speed, Frost resistent (chest), Fire resistant, **+15 Unarmed skill** |
+| Vilebone Wrath | [HelmetBerserkerUndead](1) [ArmorBerserkerUndeadChest](1) [ArmorBerserkerUndeadLegs](1) <br> **+20% Health regen, +40% Stamina regen**, Slightly weak (+25%) vs Blunt, Slash and Pierce, **+20% Blunt, +20% Pierce** |
+| Endurance (Ask) | [HelmetAshlandsMediumHood](1) [ArmorAshlandsMediumChest](1) [ArmorAshlandsMediumlegs](1) <br> **-10% run stamina, -10% jump stamina, -20% attack stamina**, +10% Pierce |
 
 ## Shields
 

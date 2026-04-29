@@ -13,6 +13,7 @@ public static class AdminActivate
         AdminEndpointsAvatar.Map(app);
         AdminEndpointsScoring.Map(app);
         AdminEndpointsNotes.Map(app);
+        AdminEndpointsFeedback.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet ef migrations:*)"
+      "Bash(dotnet ef migrations:*)",
+      "Bash(xargs grep *)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 *)",
+      "WebFetch(domain:valheim.fandom.com)",
+      "WebFetch(domain:valheim-qwiki.notion.site)",
+      "WebFetch(domain:www.valheim.wiki)",
+      "WebFetch(domain:valheim.wiki.gg)",
+      "WebFetch(domain:web.archive.org)",
+      "WebSearch"
     ]
   }
 }

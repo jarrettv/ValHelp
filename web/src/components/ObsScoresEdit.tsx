@@ -6,6 +6,7 @@ import { Event as Ev } from '../domain/event';
 interface ObsScoresEditProps {
     playerId: number;
     event: Ev;
+    obsCode?: string;
 }
 
 export default function ObsScoresEdit(props: ObsScoresEditProps) {
@@ -48,6 +49,14 @@ export default function ObsScoresEdit(props: ObsScoresEditProps) {
         return color.replace('#', '%23');
     }
 
+    const baseUrl = props.obsCode
+        ? `${window.location.protocol}//${window.location.host}/obs2/scores/${props.obsCode}`
+        : '';
+    const plainUrl = baseUrl;
+    const customUrl = baseUrl
+        ? `${baseUrl}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&bubble=${encodeColor(bubble)}&max=${max}&hideTitle=${hideTitle}`
+        : '';
+
     return (
         <div className="card">
         <div style={{display:'flex', alignItems:'baseline'}}>
@@ -63,20 +72,20 @@ export default function ObsScoresEdit(props: ObsScoresEditProps) {
             <input
                 type="text"
                 readOnly
-                value={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}`}
+                value={plainUrl}
                 style={{ flex: '1', width: '100%', marginRight: '1rem' }}
             />
-            <a href={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
+            <a href={plainUrl} target="_blank" rel="noreferrer">Test in browser</a>
           </div>
           <h4>Customize</h4>
             <div style={{display:'flex'}}>
                 <input
                     type="text"
                     readOnly
-                    value={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&bubble=${encodeColor(bubble)}&max=${max}&hideTitle=${hideTitle}`}
+                    value={customUrl}
                     style={{ flex: '1', width: '100%', marginRight: '1rem' }}
                 />
-            <a href={`${window.location.protocol}//${window.location.host}/obs/scores/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&title=${encodeColor(title)}&active=${encodeColor(active)}&bubble=${encodeColor(bubble)}&max=${max}&hideTitle=${hideTitle}`} target="_blank" rel="noreferrer">Test in browser</a>
+            <a href={customUrl} target="_blank" rel="noreferrer">Test in browser</a>
             </div>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
                 <div>

@@ -6,13 +6,18 @@ class NotFoundError extends Error {
   constructor() { super('Event not found'); }
 }
 
-const fetchEvent = async (id: number, password?: string): Promise<Event> => {
+const fetchEvent = async (id: number, password?: string, obsCode?: string): Promise<Event> => {
   const headers: Record<string, string> = {
     "If-None-Match": localStorage.getItem(`etag-${id}`) || ""
   };
 
   if (password) {
     headers["X-Private-Password"] = password;
+  }
+
+  // Sending X-Obs-Code switches the server to obs-code auth (cookie ignored).
+  if (obsCode) {
+    headers["X-Obs-Code"] = obsCode;
   }
 
   const response = await fetch(`/api/events/${id}`, { headers });
@@ -48,17 +53,17 @@ export const useEditEvent = (id: number) => {
   return useQuery({ queryKey: ['event', id], queryFn: () => fetchEvent(id) });
 };
 
-export const useEvent = (id: number, password?: string) => {
-  return useQuery({ 
-    queryKey: ['event', id, password], 
-    queryFn: () => fetchEvent(id, password), 
+export const useEvent = (id: number, password?: string, obsCode?: string) => {
+  return useQuery({
+    queryKey: ['event', id, password, obsCode],
+    queryFn: () => fetchEvent(id, password, obsCode),
     refetchInterval(query) {
       if (query.state.data && query.state.data?.status <= EventStatus.Live) {
         return 5000;
       }
       return false;
-    }, 
-    enabled: id !== 0 
+    },
+    enabled: id !== 0
   });
 };
 
@@ -85,3 +90,57 @@ export const fetchPlayerCurrentEventId = async (id: number): Promise<number> => 
   console.debug('fetchPlayerCurrentEventId', id, data);
   return data;
 };
+
+// Legacy hook for /obs/<view>/<playerId> and /events/:id/<view>/:playerId.
+// Uses cookie auth; private events only resolve when the viewer happens to
+// be the owner/player. Use useObsByCode for the modern /obs2/* routes.
+export interface ObsTarget {
+  userId: number;
+  eventId: number;
+  isPending: boolean;
+}
+
+export function useObsTarget(playerId: number, eventIdOverride?: number): ObsTarget {
+  const playerEvent = useQuery({
+    queryKey: ['player-current-event', playerId],
+    queryFn: () => fetchPlayerCurrentEventId(playerId),
+    enabled: playerId > 0 && eventIdOverride === undefined,
+    refetchInterval: 600_000,
+  });
+
+  return {
+    userId: playerId,
+    eventId: eventIdOverride ?? playerEvent.data ?? 0,
+    isPending: eventIdOverride !== undefined ? false : playerEvent.isPending,
+  };
+}
+
+// Hook for /obs2/<view>/<obsCode>. Resolves the user + their current event
+// from the secret code only. The fetched event is gated server-side by the
+// X-Obs-Code header (see fetchEvent), so cookie identity never grants access.
+export interface ObsByCodeTarget {
+  userId: number;
+  eventId: number;
+  obsCode: string | undefined;
+  isPending: boolean;
+}
+
+export function useObsByCode(code: string | undefined): ObsByCodeTarget {
+  const lookup = useQuery({
+    queryKey: ['obs-lookup', code],
+    queryFn: async () => {
+      const res = await fetch(`/api/obs/lookup/${code}`);
+      if (!res.ok) throw new Error('OBS code not found');
+      return (await res.json()) as { userId: number; eventId: number };
+    },
+    enabled: !!code,
+    refetchInterval: 600_000,
+  });
+
+  return {
+    userId: lookup.data?.userId ?? 0,
+    eventId: lookup.data?.eventId ?? 0,
+    obsCode: code,
+    isPending: lookup.isPending,
+  };
+}

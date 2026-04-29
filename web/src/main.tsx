@@ -16,11 +16,16 @@ import EventEdit from './EventEdit.tsx'
 import Events from './Events.tsx'
 import PrivateEvents from './PrivateEvents.tsx'
 import Users from './Users.tsx'
+import AdminFeedback from './AdminFeedback.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
 import EventOverview from './EventOverview.tsx'
 import EventTimelineView from './EventTimelineView.tsx'
+import Obs2Score from './Obs2Score.tsx'
+import Obs2Scoreboard from './Obs2Scoreboard.tsx'
+import Obs2Trophies from './Obs2Trophies.tsx'
+import Obs2Overview from './Obs2Overview.tsx'
 import Runs from './Runs.tsx'
 import SpeedRuns from './SpeedRuns.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
@@ -52,6 +57,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index path="/" element={<Home />} />
             <Route path="/auth/login" element={<Auth />} />
             <Route path="/auth/users" element={<Users />} />
+            <Route path="/auth/feedback" element={<AdminFeedback />} />
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/hunt" element={<EventRedirect mode="TrophyHunt" />} />
@@ -92,6 +98,10 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/obs/scores/:playerId" element={<EventScoreboard />} />
           <Route path="/obs/trophies/:playerId" element={<EventTrophies />} />
           <Route path="/obs/overview/:playerId" element={<EventOverview />} />
+          <Route path="/obs2/score/:code" element={<Obs2Score />} />
+          <Route path="/obs2/scores/:code" element={<Obs2Scoreboard />} />
+          <Route path="/obs2/trophies/:code" element={<Obs2Trophies />} />
+          <Route path="/obs2/overview/:code" element={<Obs2Overview />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

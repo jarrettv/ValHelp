@@ -282,7 +282,18 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
     public static async Task<Results<StatusCodeHttpResult, NotFound, Ok<EventDetails>>> GetEvent(int id, AppDbContext db, HttpContext ctx,
       ClaimsPrincipal cp, HybridCache cache, CancellationToken token)
     {
-        var userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        // If X-Obs-Code is present, use the code to identify the user (OBS
+        // browser source flow). Otherwise use the cookie. We never combine
+        // the two — an OBS URL is shared and stands on its own.
+        int userId;
+        if (ctx.Request.Headers.ContainsKey("X-Obs-Code"))
+        {
+            userId = await ResolveObsCodeUserId(ctx, db);
+        }
+        else
+        {
+            userId = int.Parse(cp.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        }
 
         var hunt = await cache.GetOrCreateAsync($"event-{id}", async cancel => await GetEventFromDatabase(id, db, cancel), cancellationToken: token);
 
@@ -646,6 +657,20 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         return TypedResults.Ok(players);
     }
 
+    private static async Task<int> ResolveObsCodeUserId(HttpContext ctx, AppDbContext db)
+    {
+        var obsCode = ctx.Request.Headers["X-Obs-Code"].FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(obsCode) || obsCode.Length < 8 || obsCode == "CHANGEME")
+        {
+            return 0;
+        }
+        return await db.Users
+            .AsNoTracking()
+            .Where(u => u.ObsSecretCode == obsCode)
+            .Select(u => u.Id)
+            .FirstOrDefaultAsync();
+    }
+
     private static bool CanAccessEvent(EventDetails hunt, int userId, HttpContext ctx)
     {
         if (!hunt.IsPrivate)
@@ -666,7 +691,10 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         var providedPassword = ctx.Request.Query["password"].FirstOrDefault() ??
                               ctx.Request.Headers["X-Private-Password"].FirstOrDefault();
 
-        if (providedPassword == hunt.PrivatePassword)
+        // Both sides must be present — otherwise an event with a null/empty
+        // PrivatePassword would be reachable by an anonymous request that
+        // also has no password (null == null).
+        if (!string.IsNullOrEmpty(providedPassword) && providedPassword == hunt.PrivatePassword)
         {
             return true;
         }

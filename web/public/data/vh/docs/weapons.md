@@ -79,7 +79,7 @@ Most melee weapons have a 3-hit combo. The **3rd hit deals double damage** and +
 | [Axes (1H) & Dual](/guides/weapons/axes)    | Medium    | -5%          | {parry:2}      | Double duty: Slash + woodcutting.                |
 | [Polearms](/guides/weapons/polearms)     | Slow      | -5%          | {parry:2}      | Long reach Pierce. Spin = 6× stagger AoE†.        |
 | [Great Swords](/guides/weapons/swords) | Slow      | -5%          | {parry:2}      | Slower but Massive Slash damage.                  |
-| [Battle Axes](/guides/weapons/axes) | Slow      | -20%         | {parry:2}      | AoE† Slash cleave. Heavy movement penalty.        |
+| [Battle Axes](/guides/weapons/axes) | Slow      | -15%         | {parry:2}      | AoE† Slash cleave. Heavy movement penalty.        |
 | [Sledges](/guides/weapons/clubs)      | Slow      | varies       | {parry:2}      | AoE† Blunt ground slam. Great for dungeons.  |
 | [Bows](/guides/weapons/bows)         | —         | -5%          | {parry:1.5}      | Pierce, draw speed scales up to 400% with skill. |
 | [Crossbows](/guides/weapons/bows)    | —         | varies       | {parry:1.5}      | High burst, slow reload. No skill scaling.       |
@@ -93,19 +93,19 @@ Fill the bar by landing attacks, parrying (5 per parry), perfect dodges, and usi
 
 ## Best Weapons per Biome
 
-| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | [SpearFlint]* **Flint Spear.** Cheap, melee + ranged, fast skill leveling. **Early Axes** are OP and chop finewood. [Club]* **Club** at level 4 is strong Blunt early. |
-| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | [KnifeChitin]* **Abyssal Razor** if you find chitin — iron-tier damage, fast adrenaline, {parry:4} parry. Otherwise [AtgeirBronze]* **Bronze Atgeir** — spin crowd-controls greydwarfs and stagger-locks trolls. [FistBjornClaw]* **Fists of the Bear** offer {parry:6} parry and kick can stagger for many biomes. |
-| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | [BowHuntsman]* **Huntsman Bow.** Only bow with reduced noise (4m vs 15m), assassinate without alerting. Stays relevant through Plains. Melee: [MaceIron]* **Iron Mace** — most swamp creatures are weak to Blunt including boss. |
-| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | [FistFenrirClaw]* **Flesh Rippers** (fists). Pairs well with Fenris set. Alt: [SwordSilver]* **Silver Sword** and [MaceSilver]* **Frostner** — both stay viable into Ashlands via Frost slow + Spirit damage. |
-| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | [AtgeirBlackmetal]* **Blackmetal Atgeir.** Spin attack dominates multi-target fights, long range pokes lox safely. Alt: [MaceNeedle]* **Porcupine** (Blunt+Pierce) and [FistBjornUndeadClaw]* **Vilebone Maulclaws** (Slash+Pierce fists). |
-| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | **Magic:** [StaffShield]* **Staff of Protection** (OP bubble, parry anything) + [StaffIceShards]* **Staff of Frost** (fast cast, slows, adrenaline gen). **Melee:** [SwordMistwalker]* **Mistwalker** (Frost+Spirit+Slash, strong into Ashlands). Sleeper: [KnifeSilver]* **Skoll and Hati** knives. |
-| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | **Magic:** [StaffGreenRoots]* **Staff of the Wild** (root summons, Poison, scales with difficulty). **Melee:** [AxeBerzerkr]* **Lightning Berzerkir Axes** (chain Lightning vs swarms). Alt: [SpearSplitner]* **Splitnir Spear** — target Askvin and flying, quick adrenaline procs |
+| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | [SpearFlint]* **Flint Spear** Cheap melee + ranged, fast skill-up. **Early Axes** are OP and chop finewood. [Club]* **Club** at level 4 is strong Blunt early. |
+| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | [KnifeChitin]* **Abyssal Razor** if you find chitin — iron-tier damage, fast adrenaline, {parry:4} parry. Otherwise [AtgeirBronze]* **Bronze Atgeir** — spin crowd-controls greydwarfs and stagger-locks trolls. [FistBjornClaw]* **Fists of the Bear** offer {parry:6} parry and kick stagger for many biomes. |
+| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | [BowHuntsman]* **Huntsman Bow** Only bow with reduced noise (4m vs 15m). Melee: [MaceIron]* **Iron Mace** — most swamp creatures are weak to Blunt including boss. |
+| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | [FistFenrirClaw]* **Flesh Rippers** pair with Fenris set to attack faster. [SwordSilver]* **Silver Sword** and [MaceSilver]* **Frostner** — both stay viable into Ashlands via Frost slow + Spirit damage. |
+| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | [AtgeirBlackmetal]* **Blackmetal Atgeir** Control swarms, poke lox safely. [MaceNeedle]* **Porcupine** Blunt+Pierce and [FistBjornUndeadClaw]* **Vilebone Maulclaws** Slash+Pierce fists. |
+| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | **Magic:** [StaffShield]* **Staff of Protection** OP bubble can parry anything + [StaffIceShards]* **Staff of Frost** fast cast adrenaline procs. **Melee:** [SwordMistwalker]* **Mistwalker** Frost+Spirit+Slash, strong into Ashlands. Sleeper: [KnifeSkollAndHati]* **Skoll and Hati** knives. |
+| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | **Magic:** [StaffGreenRoots]* **Staff of the Wild** root summons + Poison. **Melee:** [AxeBerzerkrLightning]* **Lightning Berzerkir Axes** and sword  [SwordNiedhoggLightning]* chain lightning will stagger. |
 
 
 ## Tier Rankings
 
-**OP Tier:** Paws of the Bear, Staff of Protection, Staff of the Wild, Staff of Embers, Himmin Afl (lightning atgeir)
+**OP Tier:** [FistBjornClaw](1), [MaceSilver](1), [StaffShield](1), [SpearCarapace](1), [AtgeirHimminAfl](1)
 
-**A Tier:** Mistwalker, Frostner, Iron Atgeir, all Spears, Huntsman bow and above, Bronze Atgeir, Abyssal Razor, 2-handed Clubs (for dungeons)
+**A Tier:** [SwordMistwalker](1), [StaffFireball](1), [StaffGreenRoots](1), [AtgeirIron](1), all Spears e.g. [SpearFlint](1), [BowHuntsman](1) and above, [FistFenrirClaw](1), [KnifeChitin](1), 2-handed Clubs for dungeons [SledgeDemolisher](1) max Blunt
 
-**Key insights:** Iron Atgeir is so strong you can skip the Blackmetal Atgeir entirely. Frostner (mountain weapon) stays competitive through Ashlands. Paws of the Bear when paired with a spear can be effective all the way into the Mistlands. Bows are A-tier minimum — commit to the skill for massive draw speed scaling. Staff of Protection is worth using even in melee builds (swap one health food for eitr food to cast bubble).
+**Key insights:** [AtgeirIron](1) is so strong you can skip [AtgeirBlackmetal](1) entirely. [MaceSilver](1) stays competitive through Ashlands. [FistBjornClaw](1) when paired with a spear like [SpearFlint](1) works until Mistlands. Bows are A-tier especially with high skills. [StaffShield](1) hybrid is worth eating an Eitr food

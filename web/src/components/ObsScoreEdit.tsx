@@ -7,6 +7,7 @@ interface ObsScoreEditProps {
     playerId: number;
     avatarUrl: string;
     name: string;
+    obsCode?: string;
 }
 
 export default function ObsScoreEdit(props: ObsScoreEditProps) {
@@ -63,6 +64,14 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
         return color.replace('#', '%23');
     }
 
+    const baseUrl = props.obsCode
+        ? `${window.location.protocol}//${window.location.host}/obs2/score/${props.obsCode}`
+        : '';
+    const plainUrl = baseUrl;
+    const customUrl = baseUrl
+        ? `${baseUrl}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`
+        : '';
+
     return (
         <div className="card">
           <div style={{display:'flex', alignItems:'baseline'}}>
@@ -78,10 +87,10 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
             <input
                 type="text"
                 readOnly
-                value={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}`}
+                value={plainUrl}
                 style={{ flex: '1', width: '100%', marginRight: '1rem' }}
             />
-            <a href={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}`} target="_blank" rel="noreferrer">Test in browser</a>
+            <a href={plainUrl} target="_blank" rel="noreferrer">Test in browser</a>
           </div>
           <h4>Customize</h4>
             <div style={{ display: 'flex', marginBottom: '1rem' }}>
@@ -103,7 +112,7 @@ export default function ObsScoreEdit(props: ObsScoreEditProps) {
                 <input
                     type="text"
                     readOnly
-                    value={`${window.location.protocol}//${window.location.host}/obs/score/${props.playerId}?bg=${encodeColor(bg)}&score=${encodeColor(score)}&pre=${encodeColor(pre)}&live=${encodeColor(live)}&post=${encodeColor(post)}`}
+                    value={customUrl}
                     style={{ width: '100%' }}
                 />
             </div>

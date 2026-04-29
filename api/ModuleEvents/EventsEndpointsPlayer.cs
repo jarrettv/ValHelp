@@ -16,7 +16,29 @@ public static class EventsEndpointsPlayer
         api.MapGet("{userId:int}/score", RedirectToPlayerScore);
         api.MapGet("{userId:int}", GetPlayer);
 
+        app.MapGet("api/obs/lookup/{code}", GetObsLookup);
         app.MapGet("api/obs/{view}/{userId}", RedirectObsView);
+    }
+
+    public record ObsLookup(int UserId, int EventId);
+
+    public static async Task<Results<NotFound, Ok<ObsLookup>>> GetObsLookup(string code, AppDbContext db, CancellationToken cancel)
+    {
+        if (string.IsNullOrWhiteSpace(code) || code.Length < 8 || code == "CHANGEME")
+        {
+            return TypedResults.NotFound();
+        }
+
+        var userId = await db.Users
+            .AsNoTracking()
+            .Where(u => u.ObsSecretCode == code)
+            .Select(u => u.Id)
+            .FirstOrDefaultAsync(cancel);
+
+        if (userId == 0) return TypedResults.NotFound();
+
+        var eventId = await LookupCurrentEventId(userId, db, cancel);
+        return TypedResults.Ok(new ObsLookup(userId, eventId));
     }
 
     public record PlayerResponse(int UserId, string Username, string AvatarUrl, string Youtube, string Twitch, PlayerEventRow[] Events);

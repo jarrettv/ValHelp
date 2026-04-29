@@ -1480,6 +1480,7 @@ export function mdInline(text: string): string {
   });
   var imgs: string[] = [];
   safe = safe.replace(/<img [^>]+>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
+  safe = safe.replace(/<br\s*\/?>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
   safe = safe.replace(/\{modbox:([^}]+)\}/g, function(_, spec) {
     var parts = spec.split('|');
     var s = '<span style="display:inline-flex;gap:2px;vertical-align:middle">';
