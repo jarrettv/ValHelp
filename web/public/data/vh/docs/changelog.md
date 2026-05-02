@@ -2,6 +2,27 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-05-02
+
+* Huge update adding notes for crossbows, polearms, staves, arrows, bombs, and tools
+* Bows: [BowAshlands]@"Ash Fang", [BowAshlandsBlood]@"Blood Fang", [BowAshlandsRoot]@"Root Fang", [BowAshlandsStorm]@"Storm Fang"
+* Crossbows: [CrossbowArbalest]@"Arbalest", [CrossbowRipper]@"Ripper", [CrossbowRipperBlood]@"Wound Ripper", [CrossbowRipperLightning]@"Storm Ripper", [CrossbowRipperNature]@"Root Ripper", [DvergerArbalest]@"Dverger Arbalest"
+* Polearms: [AtgeirWood]@"Wooden Atgeir", [AtgeirBronze]@"Bronze Atgeir", [AtgeirIron]@"Iron Atgeir", [AtgeirBlackmetal]@"Black Metal Atgeir", [AtgeirHimminAfl]@"Himminafl"
+* Staves: [StaffFireball]@"Staff of Embers", [StaffIceShards]@"Staff of Frost", [StaffShield]@"Staff of Protection", [StaffGreenRoots]@"Staff of the Wild", [StaffLightning]@"Dundr", [StaffClusterbomb]@"Staff of Fracturing", [StaffRedTroll]@"Trollstav", [StaffSkeleton]@"Dead Raiser"
+* Wooden trainers: [AxeWood]@"Wooden Axe", [BattleaxeWood]@"Wooden Battleaxe"
+* Axes: [AxeBronze]@"Bronze Axe", [AxeBerzerkr]@"Berserkir Axes" (+ [AxeBerzerkrBlood]@"Bleeding", [AxeBerzerkrNature]@"Primal", [AxeBerzerkrLightning]@"Thundering" gem variants)
+* Battleaxes: [Battleaxe]@"Battleaxe", [BattleaxeCrystal]@"Crystal", [BattleaxeBlackmetal]@"Black Metal", [BattleaxeSkullSplittur]@"Skull Splittur"
+* Wooden trainers: [KnifeWood]@"Wooden Knife", [MaceWood]@"Wooden Mace", [SledgeWood]@"Wooden Sledge", [SpearWood]@"Wooden Spear", [THSwordWood]@"Wooden Greatsword"
+* [KnifeButcher]@"Butcher Knife"
+* Clubs: [MaceEldner]@"Flametal Mace" + gem variants [MaceEldnerBlood]@"Bloodgeon", [MaceEldnerNature]@"Klossen", [MaceEldnerLightning]@"Storm Star"
+* Spears: [SpearChitin]@"Abyssal Harpoon" + Splitnir gem variants [SpearSplitner_Blood]@"Bleeding", [SpearSplitner_Nature]@"Primal", [SpearSplitner_Lightning]@"Storming"
+* Swords: Nidhögg gem variants [SwordNiedhoggBlood]@"Bleeding", [SwordNiedhoggNature]@"Primal", [SwordNiedhoggLightning]@"Thundering"
+* Added notes for tools: [Hammer]@"Hammer", [Hoe]@"Hoe", [Cultivator]@"Cultivator", [Scythe]@"Scythe", [FishingRod]@"Fishing Rod", [FishingBait]@"Fishing Bait", [Feaster]@"Serving Tray"
+* Added notes for every pickaxe: [PickaxeAntler]@"Antler", [PickaxeBronze]@"Bronze", [PickaxeIron]@"Iron", [PickaxeBlackMetal]@"Black Metal"
+* Added notes for every arrow: [ArrowWood]@"Wood", [ArrowFlint]@"Flinthead", [ArrowFire]@"Fire", [ArrowBronze]@"Bronzehead", [ArrowIron]@"Ironhead", [ArrowObsidian]@"Obsidian", [ArrowSilver]@"Silver", [ArrowPoison]@"Poison", [ArrowFrost]@"Frost", [ArrowNeedle]@"Needle", [ArrowCarapace]@"Carapace", [ArrowCharred]@"Charred"
+* Added notes for every bolt: [BoltBone]@"Bone", [BoltIron]@"Iron", [BoltBlackmetal]@"Black Metal", [BoltCarapace]@"Carapace", [BoltCharred]@"Charred"
+* Added notes for every bomb: [BombBile]@"Bile", [BombOoze]@"Ooze", [BombSmoke]@"Smoke", [BombLava]@"Basalt", [BombSiege]@"Explosive Payload", [BombBlob_Frost]@"Frost Blob", [BombBlob_Lava]@"Lava Blob", [BombBlob_Poison]@"Poison Blob", [BombBlob_PoisonElite]@"Elite Poison Blob", [BombBlob_Tar]@"Tar Blob"
+
 ## 2026-04-28
 
 * Gear docs: new **Armor Set Bonus Effects** table under Armor (Berserk/Bear, Vilebone Wrath, Endurance/Ask, Fenris Blessing, Ranger/Root, Sneaky/Troll)

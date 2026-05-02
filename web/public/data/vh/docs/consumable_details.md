@@ -17,11 +17,12 @@ You need to buy a [Toadstool](1) from the Bog Witch (post-Moder) for 85 coins.
  
 **Reduces attack, block, and dodge stamina usage by 80%**, but the player takes **1.5x physical damage** from Blunt, Slash, and Pierce.
 
-Pairs well with the Bonemass power to negate the weakness.
+Pairs well with the [TrophyBonemass]* Bonemass power to negate the weakness.
 
 Similar to tasty mead, this mead has **no cooldown** and can be constantly consumed.
 
 Many players choose to bring this to boss and mini-boss battles to help improve their DPS output.
+
 
 
 
@@ -146,6 +147,9 @@ This mead has **no cooldown** so you can consume it constantly.
 
 The stamina regeneration effect will be interrupted if the user performs any action that normally consumes stamina, such as attacking or sprinting. Tasty mead may be useful in boss fights due to its short cooldown period and dramatic restorative effects.
 
+Drink plenty while farming, chopping wood, mining, and other low risk activities.
+
+
 
 ### Draught of Vananidir <!-- MeadSwimmer -->
 
@@ -162,6 +166,15 @@ When combined with Eikthir power, you can swim very far distances.
 This mead provides **+25% Stam regeneration** for 5 minutes. While active, it prevents the consumption of all types of stamina meads.
 
 Many players drink this mead during boss and mini-boss battles.
+
+Combine this mead with [TrophyTheElder]* Elder boss power for quickly chopping forest / mining ore.
+
+
+
+
+
+
+
 
 
 
@@ -188,6 +201,9 @@ Many players prefer this mead over the Lingering variant as it more quickly rest
 ### Medium Stamina Mead <!-- MeadStaminaMedium -->
 
 This mead **restores 160 Stam** over 2 seconds. A 2-min cooldown prevents you from drinking stamina meads back-to-back.
+
+Learning to use this mead can save your life. For example, it can keep you from drowning.
+
 
 ### Minor Stamina Mead <!-- MeadStaminaMinor -->
 

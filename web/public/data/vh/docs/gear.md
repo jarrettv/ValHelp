@@ -19,7 +19,7 @@ The second case means stacking armor has **diminishing returns** — doubling yo
 
 1. **Blocking and Parrying** — a successful parry negates all stamina cost and staggers the attacker for a 2× damage window. Even moderate block power can nullify hits that armor would barely dent
 2. **Good Food** — a higher HP with a lower armor is more effective at reducing damage (see formula above)
-3. **Damage resistances** — items like Root Harnesk (Pierce Resistant) or Crystal Heart trinket (all physical Resistant) halve entire damage types, far outperforming raw armor
+3. **Damage resistances** — boss powers and items like [ArmorRootChest](1) (Pierce Resistant) or [TrinketSilverResist](1) (all physical Resistant) halve entire damage types
 
 | Category                                               |  Armor   | Move Penalty | Best For                   |
 |--------------------------------------------------------|:--------:|:------------:|----------------------------|

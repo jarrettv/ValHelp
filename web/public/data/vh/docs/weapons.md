@@ -104,8 +104,8 @@ Fill the bar by landing attacks, parrying (5 per parry), perfect dodges, and usi
 
 ## Tier Rankings
 
-**OP Tier:** [FistBjornClaw](1), [MaceSilver](1), [StaffShield](1), [SpearCarapace](1), [AtgeirHimminAfl](1)
+**OP Tier:** [FistBjornClaw](1), [MaceSilver](1), [StaffShield](1), [StaffFireball](1), [AtgeirHimminAfl](1)
 
-**A Tier:** [SwordMistwalker](1), [StaffFireball](1), [StaffGreenRoots](1), [AtgeirIron](1), all Spears e.g. [SpearFlint](1), [BowHuntsman](1) and above, [FistFenrirClaw](1), [KnifeChitin](1), 2-handed Clubs for dungeons [SledgeDemolisher](1) max Blunt
+**A Tier:** [SwordMistwalker](1), [StaffGreenRoots](1), [AtgeirIron](1), all Spears e.g. [SpearElderbark](1), [BowHuntsman](1) and above, [FistFenrirClaw](1), [KnifeChitin](1), 2-handed Clubs for dungeons [SledgeDemolisher](1) max Blunt
 
-**Key insights:** [AtgeirIron](1) is so strong you can skip [AtgeirBlackmetal](1) entirely. [MaceSilver](1) stays competitive through Ashlands. [FistBjornClaw](1) when paired with a spear like [SpearFlint](1) works until Mistlands. Bows are A-tier especially with high skills. [StaffShield](1) hybrid is worth eating an Eitr food
+**Key insights:** [AtgeirIron](1) is so strong you can skip [AtgeirBlackmetal](1) entirely. [MaceSilver](1) stays competitive through Ashlands. [FistBjornClaw](1) when paired with a spear like [SpearElderbark](1) works for many biomes. Bows are A-tier especially with high skills. [StaffShield](1) hybrid is worth eating an Eitr food

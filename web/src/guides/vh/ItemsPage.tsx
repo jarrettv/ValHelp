@@ -139,9 +139,12 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
     };
     (window as any).__vhItemClick = handler;
     (window as any).selectPageItem = handler;
+    // Generic path navigator for [Code]@ chip links that target other pages.
+    (window as any).__vhNavigate = (path: string) => navigate(path);
     return () => {
       (window as any).__vhItemClick = undefined;
       (window as any).selectPageItem = undefined;
+      (window as any).__vhNavigate = undefined;
     };
   }, [navigate, config, view]);
 

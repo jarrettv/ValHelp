@@ -10,7 +10,12 @@
       "WebFetch(domain:www.valheim.wiki)",
       "WebFetch(domain:valheim.wiki.gg)",
       "WebFetch(domain:web.archive.org)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//tmp/**)",
+      "Bash(sort -u wc -l /tmp/documented.txt)",
+      "Bash(sort -u wc -l /tmp/documented.txt cat /tmp/documented.txt)",
+      "Bash(PYTHONIOENCODING=utf-8 python3 *)",
+      "Bash(sort -u wc -l documented_codes.txt)"
     ]
   }
 }
