@@ -171,6 +171,15 @@ export default function Profile() {
                 </Link>
               </li>
             )}
+            {isAdmin && (
+              <li>
+                <Link to="/auth/private-events">
+                  <span className="tool-icon" aria-hidden="true">🔒</span>
+                  <span>Private events</span>
+                  <small>See every private event and its password</small>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

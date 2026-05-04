@@ -14,6 +14,7 @@ public static class AdminActivate
         AdminEndpointsScoring.Map(app);
         AdminEndpointsNotes.Map(app);
         AdminEndpointsFeedback.Map(app);
+        AdminEndpointsPrivateEvents.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)

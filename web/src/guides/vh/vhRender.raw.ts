@@ -1438,11 +1438,12 @@ function mdItemChip(name: string, kind: string, value: string) {
     // Build a real /guides/<page>/<subcat>/<code> path so the link works in
     // any markdown context (item details, tips pages, changelog) — fallback
     // to native href navigation if no SPA nav helper is registered.
-    var pageMap: any = { weapons: 'weapons', armor: 'armor', food: 'food', comfort: 'comfort', bestiary: 'enemies' };
+    // Item.page in items.json doesn't always equal the URL pageSlug — armor
+    // items live under /guides/gear/, bestiary under /guides/enemies/, etc.
+    var pageMap: any = { weapons: 'weapons', armor: 'gear', food: 'food', comfort: 'comfort', bestiary: 'enemies' };
     var pageSlug = pageMap[it.page] || it.page || 'weapons';
     var subcatSlug = it.subcategory ? it.subcategory.toLowerCase().replace(/\s+/g, '-') : '';
     var path = '/guides/' + pageSlug + (subcatSlug ? '/' + subcatSlug : '') + '/' + code;
-    var escCode = code.replace(/'/g, "\\'");
     var escPath = path.replace(/'/g, "\\'");
     // Prefer SPA navigation when available; otherwise let the browser follow the href.
     var click = ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + escPath + '\');}"';

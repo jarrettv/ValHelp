@@ -17,6 +17,7 @@ import Events from './Events.tsx'
 import PrivateEvents from './PrivateEvents.tsx'
 import Users from './Users.tsx'
 import AdminFeedback from './AdminFeedback.tsx'
+import AdminPrivateEvents from './AdminPrivateEvents.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
@@ -58,6 +59,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/login" element={<Auth />} />
             <Route path="/auth/users" element={<Users />} />
             <Route path="/auth/feedback" element={<AdminFeedback />} />
+            <Route path="/auth/private-events" element={<AdminPrivateEvents />} />
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/hunt" element={<EventRedirect mode="TrophyHunt" />} />

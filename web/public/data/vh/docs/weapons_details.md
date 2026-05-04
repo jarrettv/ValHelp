@@ -242,9 +242,9 @@ Massive slash damage but not really better than a [SwordMistwalker]* Mistwalker 
 
 **WARNING** Don't upgrade this sword if you plan to "enchant" it with a gem. Any upgrade levels are lost when used to craft another weapon.
 
-[GemstoneRed]* + [SwordNiedhogg]* = [SwordNiedhoggBlood]* [Nidhögg the Bleeding](/guides/weapons/swords/THSwordSlayerBlood)
-[GemstoneGreen]* + [SwordNiedhogg]* = [SwordNiedhoggNature]* [Nidhögg the Primal](/guides/weapons/swords/THSwordSlayerNature)
-[GemstoneBlue]* + [SwordNiedhogg]* = [SwordNiedhoggLightning]* [Nidhögg the Thundering](/guides/weapons/swords/THSwordSlayerLightning)
+[GemstoneRed]* + [SwordNiedhogg]* = [SwordNiedhoggBlood]* [Nidhögg the Bleeding](/guides/weapons/swords/SwordNiedhoggBlood)
+[GemstoneGreen]* + [SwordNiedhogg]* = [SwordNiedhoggNature]* [Nidhögg the Primal](/guides/weapons/swords/SwordNiedhoggNature)
+[GemstoneBlue]* + [SwordNiedhogg]* = [SwordNiedhoggLightning]* [Nidhögg the Thundering](/guides/weapons/swords/SwordNiedhoggLightning)
 
 All 1-handed swords have a primary attack 3-hit combo where the **last hit does double damage**. The secondary attack stab has a longer reach and better stagger.
 
@@ -364,9 +364,9 @@ The first spear that isn't all that useful because only **Askvins are weak to it
 
 **WARNING** Don't upgrade this spear if you plan to "enchant" it with a gem. Any upgrade levels are lost when used to craft another weapon.
 
-[GemstoneRed]* + [SpearSplitner]* = [SpearSplitner_Blood]* [Splitnir the Bleeding](/guides/weapons/swords/THSwordSlayerBlood)
-[GemstoneGreen]* + [SpearSplitner]* = [SpearSplitner_Nature]* [Splitnir the Primal](/guides/weapons/swords/THSwordSlayerNature)
-[GemstoneBlue]* + [SpearSplitner]* = [SpearSplitner_Lightning]* [Splitnir the Storming](/guides/weapons/swords/THSwordSlayerLightning)
+[GemstoneRed]* + [SpearSplitner]* = [SpearSplitner_Blood]* [Splitnir the Bleeding](/guides/weapons/spears/SpearSplitner_Blood)
+[GemstoneGreen]* + [SpearSplitner]* = [SpearSplitner_Nature]* [Splitnir the Primal](/guides/weapons/spears/SpearSplitner_Nature)
+[GemstoneBlue]* + [SpearSplitner]* = [SpearSplitner_Lightning]* [Splitnir the Storming](/guides/weapons/spears/SpearSplitner_Lightning)
 
 Like all spears, the primary attack is a quick stabbing motion dealing Pierce damage. For the secondary attack, you can **throw the spear** for ranged Pierce damage. You must aim above your target but spears always fly true.
 
@@ -653,7 +653,7 @@ Like all atgeirs, the primary attack is a quick jab of Pierce damage without get
 
 ### Iron Atgeir <!-- AtgeirIron -->
 
-The atgeir **most players dominate with** is so strong you can skip [AtgeirBlackmetal]* Black Metal Atgeir entirely. Strong enough to perform into Plains and Mistlands.
+The atgeir **most players dominate with** — so strong you can skip [AtgeirBlackmetal]* Black Metal Atgeir entirely. Strong enough to perform into Plains and Mistlands.
 
 Like all atgeirs, the primary attack is a quick jab of Pierce damage without getting too close. The secondary attack is an **AoE spin attack that hits everything** in a "donut" shape around you and will stagger most enemies.
 
@@ -758,7 +758,7 @@ Useful as a tank in solo play. The troll deals heavy Blunt damage but, like all 
 
 The first summon staff, needs [TrophySkeleton](4) to craft. **Raises skeleton minions that fight for you**. Each upgrade allows you to summon another Skeleton.
 
-Each summon has a change to be a sword skeleton or archer skeleton with **archers being far more effective and deadly**.
+Each summon has a chance to be a sword skeleton or archer skeleton with **archers being far more effective and deadly**.
 
 Cheap to cast and great for solo players who want a meat shield for kiting.
 
@@ -868,7 +868,7 @@ Heavy **-15% movement penalty** though, so plan your swings.
 
 ### Black Metal Battleaxe <!-- BattleaxeBlackmetal -->
 
-The Plains-tier battleaxe at **110 slash + 60 chop**. Made at Forge level 4 and needing only 5 extra [BlackMetal]* than the [AxeBlackmetal](1). It is also **useful for chopping  [YggdrasilWood]* Yggdrasil**, so you might as well craft this axe if you have high Axes skill.
+The Plains-tier battleaxe at **110 slash + 60 chop**. Made at Forge level 4 and needing only 5 extra [BlackMetal]* than the [AxeBlackmetal](1). It is also **useful for chopping [YggdrasilWood]* Yggdrasil**, so you might as well craft this axe if you have high Axes skill.
 
 Slightly higher base damage than [BattleaxeCrystal](1) but no Spirit damage, so against undead you're often better off with Crystal.
 

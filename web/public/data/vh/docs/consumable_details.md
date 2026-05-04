@@ -114,7 +114,7 @@ Upon consumption, it will **increase spawn rate of Trolls** from 5% to 25%. If y
 
 You need to buy [PowderedDragonEgg](5) from the **Bog Witch for 120 coins**.
 
-**WARNING** the trollfish used for crafting must be of the exact same quality.
+**WARNING** the [Fish5]* Trollfish used for crafting must be of the exact same quality.
 
 This mead will increase your carry weight by 250, effectively the same as the [BeltStrength]*.
 
@@ -157,7 +157,7 @@ You must purchase [FreshSeaweed](5) from the Bog Witch for 75 coins.
 
 This mead **reduces Stamina consumption when swimming** by -50% for 5 minutes.
 
-When combined with Eikthir power, you can swim very far distances.
+When combined with Eikthyr power, you can swim very far distances.
 
 
 
