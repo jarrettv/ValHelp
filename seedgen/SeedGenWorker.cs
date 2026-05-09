@@ -66,10 +66,10 @@ public sealed class SeedGenWorker(
             if (!File.Exists(dbPath))
                 throw new InvalidOperationException($"No .db file at {dbPath}");
 
-            var pois = WorldDbParser.Parse(dbPath)
+            int seedHash = ValheimSeedHash.GetStableHashCode(job.Seed);
+            var pois = Vh.World.LocationFinder.ReadFromWorldDb(dbPath, seedHash)
                 ?? throw new InvalidOperationException("No POIs found in .db");
 
-            int seedHash = ValheimSeedHash.GetStableHashCode(job.Seed);
             var outDir = _opts.SeedDir(job.WorldGenVersion, seedHash);
 
             Directory.CreateDirectory(outDir);

@@ -1,0 +1,40 @@
+.world-map {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background: #0a0a14;
+}
+.world-map.dragging {
+  cursor: grabbing;
+}
+.world-map-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.world-map-markers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.world-map-status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  color: #888;
+  font-size: 1rem;
+  font-family: system-ui, sans-serif;
+}
+.world-map-status.error {
+  color: #a66;
+}

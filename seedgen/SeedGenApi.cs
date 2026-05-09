@@ -75,7 +75,7 @@ public static class SeedGenApi
             return Results.NotFound("No .db file — use force=true for full generation");
 
         // Re-parse POIs from .db
-        var pois = WorldDbParser.Parse(dbPath);
+        var pois = Vh.World.LocationFinder.ReadFromWorldDb(dbPath, seedHash);
         var poisCount = pois?.Count ?? 0;
         var poisPath = Path.Combine(dir, "pois");
         if (pois != null && pois.Count > 0)

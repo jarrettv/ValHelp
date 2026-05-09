@@ -5,6 +5,7 @@ using ValHelpApi.ModuleEvents;
 using ValHelpApi.ModuleRuns;
 using ValHelpApi.ModuleSeries;
 using ValHelpApi.ModuleTrack;
+using ValHelpApi.ModuleWorlds;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,7 @@ app.MapEndpointsEvents();
 app.MapEndpointsRuns();
 app.MapEndpointsSeries();
 app.MapEndpointsTrack();
+app.MapEndpointsWorlds();
 app.MapDefaultEndpoints();
 app.MapFallbackToFile("index.html");
 app.Run();

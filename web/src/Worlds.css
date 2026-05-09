@@ -1,0 +1,221 @@
+.worlds-page {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 0 16px;
+  color: #e6edf3;
+}
+.worlds-page h1 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.worlds-page p {
+  color: #a6adb5;
+  margin-bottom: 16px;
+}
+
+.worlds-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.worlds-form input {
+  flex: 1;
+  background: #161b22;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+.worlds-form input:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+.worlds-form button {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.worlds-form button:disabled {
+  background: #30363d;
+  color: #8b949e;
+  cursor: not-allowed;
+}
+
+.worlds-login-btn {
+  display: inline-block;
+  background: #5865f2;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.worlds-recent h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #8b949e;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.worlds-recent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.worlds-recent li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #21262d;
+}
+.worlds-recent li a {
+  color: #58a6ff;
+  font-family: 'SF Mono', monospace;
+  text-decoration: none;
+}
+.worlds-recent li a:hover {
+  text-decoration: underline;
+}
+.worlds-meta {
+  color: #8b949e;
+  font-size: 13px;
+}
+
+/* ── Full-screen world viewer ─────────────────────────── */
+.worlds-view-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0a0a14;
+  color: #e6edf3;
+  overflow: hidden;
+}
+.worlds-fullmap {
+  position: absolute;
+  inset: 0;
+}
+.worlds-view-seed {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  font-family: 'SF Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  padding: 6px 12px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+  user-select: text;
+}
+.worlds-view-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 12;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.worlds-view-close:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+}
+.worlds-view-logo {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 5;
+  height: 72px;
+  opacity: 0.45;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+  transition: opacity 0.15s;
+}
+.worlds-view-logo:hover {
+  opacity: 1;
+}
+
+.worlds-pending-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+.worlds-pending-msg {
+  background: rgba(20, 24, 32, 0.85);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 24px 32px;
+  font-size: 15px;
+  color: #cad3dd;
+}
+.worlds-pending-msg.error {
+  border-color: #5b1d1d;
+  color: #f87171;
+}
+
+/* ── Legend position on the world view (bottom-left) ─── */
+.worlds-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 5;
+  max-width: min(60vw, 520px);
+}
+
+.worlds-poi-card {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  width: 240px;
+  background: rgba(20, 24, 32, 0.95);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  z-index: 10;
+}
+.worlds-poi-card h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.worlds-poi-meta {
+  color: #8b949e;
+  font-size: 12px;
+}
+.worlds-poi-coords {
+  color: #a6adb5;
+  font-family: 'SF Mono', monospace;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.worlds-poi-items {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+.worlds-poi-items li {
+  padding: 2px 0;
+  color: #cad3dd;
+}

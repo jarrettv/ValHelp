@@ -35,6 +35,8 @@ public class UserPrefs
 
     public List<UserPrefsFeedback>? Feedback { get; set; }
 
+    public List<UserPrefsWorld>? Worlds { get; set; }
+
     public string? Blocked { get; set; }
 
 }
@@ -42,6 +44,13 @@ public class UserPrefs
 public record UserPrefsItems(string[] Items, DateTime? At);
 
 public record UserPrefsFeedback(string Page, string Msg, DateTime At);
+
+public class UserPrefsWorld
+{
+    public string Seed { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public List<DateTime> ViewAt { get; set; } = [];
+}
 
 
 public class Avatar

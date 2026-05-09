@@ -148,7 +148,7 @@ var OVERLAY_ALPHA = { mist: 0.6, lava: 0.5 };
 
 // ── Public API ───────────────────────────────────────────────────────
 
-function init(canvasEl, worldName, baseUrl) {
+function init(canvasEl, worldName, baseUrl, forestUrl) {
   canvas = canvasEl;
 
   gl = canvas.getContext('webgl', { stencil: true, antialias: false, alpha: false });
@@ -163,7 +163,9 @@ function init(canvasEl, worldName, baseUrl) {
   var biomesP = fetch(base + '/biomes?v=9')
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); });
 
-  var forestP = loadImage(base + '/forest');
+  // forestUrl override lets callers source the static forest tile from a different endpoint
+  // than the seed-specific biomes/mask (e.g. /api/track/map/_/forest).
+  var forestP = loadImage(forestUrl || (base + '/forest'));
   var maskP = loadImage(base + '/mask');
 
   return Promise.all([biomesP, forestP, maskP])

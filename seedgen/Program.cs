@@ -17,7 +17,7 @@ builder.Services.AddHostedService(sp => sp.GetRequiredService<SeedGenWorker>());
 builder.Services.AddResponseCompression(opts =>
 {
     opts.EnableForHttps = true;
-    opts.MimeTypes = ["application/json", "application/octet-stream"];
+    opts.MimeTypes = ["application/json", "application/octet-stream", "image/png"];
 });
 
 builder.WebHost.UseUrls(builder.Configuration["URLS"] ?? "http://0.0.0.0:5580");

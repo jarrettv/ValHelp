@@ -33,6 +33,7 @@ import PlayerLeaderboard from './PlayerLeaderboard';
 import EventRedirect from './EventRedirect.tsx'
 import EventTrophies from './EventTrophies.tsx'
 import TrophyCalc from './TrophyCalc.tsx'
+import Worlds from './Worlds.tsx'
 import GuidesLayout from './guides/vh/GuidesLayout'
 import GuideArticle from './GuideArticle'
 import {
@@ -76,6 +77,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/players/:userId" element={<PlayerComponent />} />        
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
             <Route path="/trophy/calc" element={<TrophyCalc />} />
+            <Route path="/worlds" element={<Worlds />} />
+            <Route path="/worlds/:seed" element={<Worlds />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
             <Route path="/leaderboard/:category" element={<PlayerLeaderboard />} />
             <Route path="/runs" element={<Runs />} />

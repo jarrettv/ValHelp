@@ -29,6 +29,7 @@ public static class AdminActivate
             b.OwnsOne(p => p.Favs);
             b.OwnsOne(p => p.SpeedRuns);
             b.OwnsMany(p => p.Feedback);
+            b.OwnsMany(p => p.Worlds);
         });
 
         modelBuilder.Entity<Avatar>()
