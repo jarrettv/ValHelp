@@ -246,6 +246,28 @@ public static class LocationFinder
         new LocationConfig("Mistlands_StatueGroup1", "AncientRoot", Biome.Mistlands,
             WorldGenerator.BiomeArea.Everything, 100, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+
+        // CharredFortress — Ashlands fortress (Morgen Hold). Quantity/exterior placeholder —
+        // this entry exists primarily so ReadFromWorldDb maps the prefab to type "CharredFortress".
+        new LocationConfig("CharredFortress", "CharredFortress", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 5, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 64, 0, 40, 2048, ""),
+
+        // PutridHole variants — Ashlands cave entrances. Multiple numeric suffixes are added
+        // so the DB scan catches whichever the game spawned (Valheim uses inconsistent suffix
+        // styles across location families — see ShipWreck01 vs Crypt2).
+        new LocationConfig("PutridHole1", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+        new LocationConfig("PutridHole2", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+        new LocationConfig("PutridHole3", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+        new LocationConfig("PutridHole4", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
     };
 
     static readonly Dictionary<string, string> FriendlyNames = new()
@@ -287,6 +309,11 @@ public static class LocationFinder
         ["Mistlands_DvergrTownEntrance1"] = "Infested Mine",
         ["Mistlands_DvergrTownEntrance2"] = "Infested Mine",
         ["Mistlands_StatueGroup1"] = "Ancient Root",
+        ["CharredFortress"] = "Charred Fortress",
+        ["PutridHole1"] = "Putrid Hole",
+        ["PutridHole2"] = "Putrid Hole",
+        ["PutridHole3"] = "Putrid Hole",
+        ["PutridHole4"] = "Putrid Hole",
         ["WoodHouse1"] = "WoodHouse1",
         ["WoodHouse2"] = "WoodHouse2",
         ["WoodHouse3"] = "WoodHouse3",

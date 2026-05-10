@@ -98,7 +98,8 @@ export function resolvePoiIcon(poi: PoiMarker): IconRule | null {
         : { icon: 'camp',  color: '#6b4226', minor: true };
     }
     case 'InfestedMine':     return { icon: 'infestedmine',   color: '#6a4e8a', minor: true };
-    case 'AncientRoot':      return { icon: 'root',           color: '#8b6d4a', minor: true };
+    case 'CharredFortress':  return { icon: 'fortress',       color: '#cc4040' };
+    case 'PutridHole':       return { icon: 'putridhole',     color: '#a8923a', minor: true };
     default:                 return null;
   }
 }

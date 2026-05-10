@@ -25,13 +25,14 @@ const LEGEND_ORDER: string[] = [
   'mountaincave',
   'totem',
   'camp',
-  'root',
   'infestedmine',
+  'putridhole',
   'shipwreck',
   'haldor',
   'bogwitch',
   'hildir',
   'boss',
+  'fortress',
 ];
 
 function legendRank(icon: string, color: string): number {

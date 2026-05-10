@@ -15,7 +15,9 @@
       "Bash(sort -u wc -l /tmp/documented.txt)",
       "Bash(sort -u wc -l /tmp/documented.txt cat /tmp/documented.txt)",
       "Bash(PYTHONIOENCODING=utf-8 python3 *)",
-      "Bash(sort -u wc -l documented_codes.txt)"
+      "Bash(sort -u wc -l documented_codes.txt)",
+      "Bash(npx tsc *)",
+      "Bash(dotnet build *)"
     ]
   }
 }
