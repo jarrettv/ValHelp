@@ -253,19 +253,42 @@ public static class LocationFinder
             WorldGenerator.BiomeArea.Everything, 5, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 64, 0, 40, 2048, ""),
 
-        // PutridHole variants — Ashlands cave entrances. Multiple numeric suffixes are added
-        // so the DB scan catches whichever the game spawned (Valheim uses inconsistent suffix
-        // styles across location families — see ShipWreck01 vs Crypt2).
-        new LocationConfig("PutridHole1", "PutridHole", Biome.AshLands,
+        // CharredTowerRuins1_dvergr — Ashlands dvergr-occupied tower ruin variant.
+        new LocationConfig("CharredTowerRuins1_dvergr", "DvergrHouse", Biome.AshLands,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
-        new LocationConfig("PutridHole2", "PutridHole", Biome.AshLands,
+
+        // Mistlands_Lighthouse1_new + GuardTower2/3 — Mistlands dvergr towers.
+        new LocationConfig("Mistlands_Lighthouse1_new", "DvergrTower", Biome.Mistlands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 32, 0, 40, 128, ""),
+        new LocationConfig("Mistlands_GuardTower2_new", "DvergrTower", Biome.Mistlands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 32, 0, 40, 128, ""),
+        new LocationConfig("Mistlands_GuardTower3_new", "DvergrTower", Biome.Mistlands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 32, 0, 40, 128, ""),
+
+        // PlaceofMystery{1,2,3} — Ashlands "Place of Mystery" (Torment Elite encounter).
+        new LocationConfig("PlaceofMystery1", "PlaceOfMystery", Biome.AshLands,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
-        new LocationConfig("PutridHole3", "PutridHole", Biome.AshLands,
+        new LocationConfig("PlaceofMystery2", "PlaceOfMystery", Biome.AshLands,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
-        new LocationConfig("PutridHole4", "PutridHole", Biome.AshLands,
+        new LocationConfig("PlaceofMystery3", "PlaceOfMystery", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+
+        // MorgenHole variants — Ashlands "Putrid Hole" cave entrances. The in-game prefab
+        // is MorgenHole{1,2,3}; "Putrid Hole" is only the friendly display name.
+        new LocationConfig("MorgenHole1", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+        new LocationConfig("MorgenHole2", "PutridHole", Biome.AshLands,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+        new LocationConfig("MorgenHole3", "PutridHole", Biome.AshLands,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
     };
@@ -310,10 +333,16 @@ public static class LocationFinder
         ["Mistlands_DvergrTownEntrance2"] = "Infested Mine",
         ["Mistlands_StatueGroup1"] = "Ancient Root",
         ["CharredFortress"] = "Charred Fortress",
-        ["PutridHole1"] = "Putrid Hole",
-        ["PutridHole2"] = "Putrid Hole",
-        ["PutridHole3"] = "Putrid Hole",
-        ["PutridHole4"] = "Putrid Hole",
+        ["CharredTowerRuins1_dvergr"] = "Dvergr House",
+        ["Mistlands_Lighthouse1_new"] = "Dvergr Lighthouse",
+        ["Mistlands_GuardTower2_new"] = "Dvergr Guard Tower",
+        ["Mistlands_GuardTower3_new"] = "Dvergr Guard Tower",
+        ["PlaceofMystery1"] = "Place of Mystery",
+        ["PlaceofMystery2"] = "Place of Mystery",
+        ["PlaceofMystery3"] = "Place of Mystery",
+        ["MorgenHole1"] = "Putrid Hole",
+        ["MorgenHole2"] = "Putrid Hole",
+        ["MorgenHole3"] = "Putrid Hole",
         ["WoodHouse1"] = "WoodHouse1",
         ["WoodHouse2"] = "WoodHouse2",
         ["WoodHouse3"] = "WoodHouse3",

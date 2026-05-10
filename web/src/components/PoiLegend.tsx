@@ -26,13 +26,16 @@ const LEGEND_ORDER: string[] = [
   'totem',
   'camp',
   'infestedmine',
+  'dvergrtower',
+  'dvergrhouse',
   'putridhole',
+  'tormentelite',
+  'fortress',
   'shipwreck',
   'haldor',
   'bogwitch',
   'hildir',
   'boss',
-  'fortress',
 ];
 
 function legendRank(icon: string, color: string): number {
