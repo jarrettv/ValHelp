@@ -47,7 +47,7 @@ export type VhItem = {
   comfort?: number;
   comfortGroup?: string;
 
-  trophyDrop?: { hp: number; creature?: string };
+  trophyDrop?: { hp: number; creature?: string; minStar?: number; maxStar?: number };
   trinket?: { biome?: string };
   meadFinished?: string;
 

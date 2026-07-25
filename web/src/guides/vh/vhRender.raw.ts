@@ -11,6 +11,7 @@ export type VhState = {
   pageMaxStats: any;
   craftFavorites: Record<string, true>;
   craftSpeedrun: Record<string, true>;
+  mobImages: any;
 };
 
 export const state: VhState = {
@@ -20,6 +21,7 @@ export const state: VhState = {
   pageMaxStats: null,
   craftFavorites: {},
   craftSpeedrun: {},
+  mobImages: null,
 };
 
 // Proxy the module-level globals the ported code expects
@@ -29,6 +31,7 @@ let pageSelectedCode: any = null;
 let pageMaxStats: any = null;
 let craftFavorites: any = {};
 let craftSpeedrun: any = {};
+let mobImages: any = null;
 
 export function setState(s: Partial<VhState>) {
   Object.assign(state, s);
@@ -38,6 +41,7 @@ export function setState(s: Partial<VhState>) {
   pageMaxStats = state.pageMaxStats;
   craftFavorites = state.craftFavorites;
   craftSpeedrun = state.craftSpeedrun;
+  mobImages = state.mobImages;
 }
 
 // stubs — React wrapper reroutes these to component callbacks
@@ -598,7 +602,8 @@ function renderBestiaryListItem(it, maxStats) {
     ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var td = it.trophyDrop;
-  var hp = td.hp || '?';
+  var liMinStar = td.minStar || 0;
+  var hp = (liMinStar ? td.hp * (liMinStar + 1) : td.hp) || '?';
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
@@ -608,6 +613,7 @@ function renderBestiaryListItem(it, maxStats) {
   h += '<div class="craft-item-info"><div class="craft-item-name">' + esc(td.creature || it.name || it.code) + '</div>';
   h += '<div style="display:flex;gap:6px;align-items:center;font-size:11px;flex-wrap:wrap">';
   h += '<span style="color:#c55;font-weight:bold">' + hp + ' HP</span>';
+  if (liMinStar) h += '<span style="color:#ca0;font-weight:bold;font-size:10px">' + liMinStar + '★</span>';
   if (td.boss) h += '<span style="color:#ca0;font-weight:bold">BOSS</span>';
   if (td.flying) h += '<span style="color:#8cf;font-size:10px">Flying</span>';
   if (td.tameable) h += '<span style="color:#6c6;font-size:10px">Tame</span>';
@@ -693,22 +699,90 @@ function renderBestiaryDetailFull(code) {
   var td = it.trophyDrop || {};
   var h = '';
 
-  // Header with icon and creature name
-  h += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">';
-  if (it.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" style="width:64px;height:64px;image-rendering:pixelated">';
-  h += '<div>';
-  h += '<div style="font-size:22px;font-weight:bold;color:#fff">' + esc(td.creature || it.name || it.code) + '</div>';
+  // ── Star model ─────────────────────────────────────────────────
+  // Star range comes from the game's spawn config (minStar..maxStar): maxStar 0
+  // means the creature never spawns starred (no selector); minStar==maxStar>0
+  // means it ALWAYS spawns starred (e.g. Lord Reto, locked at 2★); otherwise a
+  // selector spans the range, swaps the render, and auto-rotates every 2.5s.
+  var mob = (typeof mobImages !== 'undefined' && mobImages && mobImages.images) ? mobImages.images[code] : null;
+  var credit = (typeof mobImages !== 'undefined' && mobImages) ? mobImages._credit : null;
+  var maxStar = td.maxStar || 0;
+  var minStar = td.minStar || 0;
+  var canStar = !!td.hp && !td.boss && maxStar > 0;
+  var fixedStar = (canStar && minStar === maxStar) ? maxStar : null;
+  var selStars = [];
+  if (canStar) { for (var ss = minStar; ss <= maxStar; ss++) selStars.push(ss); }
+  var initStar = canStar ? minStar : 0;
+
+  // Resolve an image per star with graceful fallback (per-star → nearest → definitive).
+  function mobImgFor(s) {
+    if (mob && mob.stars && mob.stars[s]) return mob.stars[s];
+    if (mob && mob.stars) {
+      var ks = Object.keys(mob.stars).map(Number).sort(function (a, b) { return a - b; });
+      var pick = null;
+      for (var i = 0; i < ks.length; i++) { if (ks[i] <= s) pick = ks[i]; }
+      if (pick == null && ks.length) pick = ks[0];
+      if (pick != null) return mob.stars[pick];
+    }
+    if (mob && mob.image) return mob.image;
+    return null;
+  }
+  var imgByStar = { 0: mobImgFor(0), 1: mobImgFor(1), 2: mobImgFor(2) };
+  var hasRender = !!(mob && (imgByStar[initStar]));
+
+  // ── Profile: art (or gray placeholder) on the left, info on the right ──
+  // Two columns that collapse gracefully on a phone (flex-wrap).
   var tags = [];
   if (td.biome) tags.push(td.biome);
   if (td.boss) tags.push('Boss');
   if (td.flying) tags.push('Flying');
   if (td.tameable) tags.push('Tameable');
-  h += '<div style="font-size:12px;color:#888">' + tags.join(' · ') + '</div>';
-  h += '</div></div>';
 
-  // Stat cards row
-  h += '<div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap">';
-  if (td.hp) h += '<div class="food-stat hp"><div class="fs-val">' + td.hp + '</div><div class="fs-label">HP</div></div>';
+  h += '<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px">';
+
+  // LEFT: shrunk render or gray box, with attribution + star selector beneath.
+  h += '<div style="flex:0 0 auto;width:132px;max-width:42vw">';
+  if (hasRender) {
+    // Fixed square frame + object-fit:contain so every creature's art occupies
+    // the same box regardless of its native aspect ratio (matches the gray box).
+    h += '<div style="width:100%;aspect-ratio:1/1;background:rgba(0,0,0,0.15);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center">';
+    h += '<img id="vh-mob-img" src="' + esc(imgByStar[initStar]) + '" alt="' + esc(td.creature || it.name) + '" style="width:100%;height:100%;object-fit:contain;display:block">';
+    h += '</div>';
+    if (credit && credit.author) {
+      var creditHref = esc(credit.source || 'https://valheim.fandom.com');
+      h += '<div style="font-size:9px;color:#666;margin-top:3px;line-height:1.3;text-align:center">Art by <a href="' + creditHref + '" target="_blank" rel="noopener noreferrer" style="color:#8a8a8a">' + esc(credit.author) + '</a>' + (credit.license ? ' · ' + esc(credit.license) : '') + '</div>';
+    }
+  } else {
+    h += '<div style="width:100%;aspect-ratio:1/1;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#555;font-size:11px;text-align:center">';
+    if (it.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" style="width:52px;height:52px;image-rendering:pixelated;opacity:0.65">';
+    else h += 'No art';
+    h += '</div>';
+  }
+  if (selStars.length > 1) {
+    h += '<div id="vh-mob-stars" style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:8px">';
+    for (var si = 0; si < selStars.length; si++) {
+      var sv = selStars[si];
+      var on = sv === initStar;
+      h += '<button type="button" data-star="' + sv + '" onclick="window.__vhMobPick(' + sv + ')" ' +
+        'style="cursor:pointer;font-size:12px;font-weight:bold;padding:3px 9px;border-radius:4px;border:1px solid ' +
+        (on ? '#ca0;color:#ca0;background:rgba(204,170,0,0.12)' : '#444;color:#888;background:transparent') + '">' + sv + '★</button>';
+    }
+    h += '</div>';
+  } else if (fixedStar != null) {
+    h += '<div style="text-align:center;font-size:11px;color:#ca0;margin-top:8px">Always spawns at ' + fixedStar + '★</div>';
+  }
+  h += '</div>';
+
+  // RIGHT: name, tags, and the stat cards.
+  h += '<div style="flex:1 1 168px;min-width:150px">';
+  h += '<div style="font-size:20px;font-weight:bold;color:#fff;line-height:1.15">' + esc(td.creature || it.name || it.code) + '</div>';
+  if (tags.length) h += '<div style="font-size:12px;color:#888;margin-top:2px">' + tags.join(' · ') + '</div>';
+
+  h += '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">';
+  if (td.hp) {
+    var cardHp = td.hp * (initStar + 1);
+    h += '<div class="food-stat hp"><div class="fs-val" id="vh-mob-hp">' + cardHp + '</div><div class="fs-label" id="vh-mob-hp-label">' + (canStar || fixedStar != null ? 'HP (' + initStar + '★)' : 'HP') + '</div></div>';
+  }
   if (td.staggerFactor > 0) {
     h += '<div class="food-stat"><div class="fs-val" style="color:#da4">' + Math.round(td.staggerFactor * 100) + '%</div><div class="fs-label">Stagger</div></div>';
   } else if (td.hp) {
@@ -722,14 +796,8 @@ function renderBestiaryDetailFull(code) {
   if (score) h += '<div class="food-stat"><div class="fs-val" style="color:#ca0">' + score + '</div><div class="fs-label">Points</div></div>';
   h += '</div>';
 
-  // Star scaling info
-  if (td.hp && !td.boss) {
-    h += '<div style="display:flex;gap:16px;margin:8px 0;font-size:11px;color:#888">';
-    h += '<span>0★ ' + td.hp + ' HP</span>';
-    h += '<span style="color:#aaa">1★ ' + (td.hp * 2) + ' HP</span>';
-    h += '<span style="color:#ca0">2★ ' + (td.hp * 3) + ' HP</span>';
-    h += '</div>';
-  }
+  h += '</div>';  // right column
+  h += '</div>';  // profile row
 
   // Info grid
   h += '<div style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12px;margin:8px 0">';
@@ -795,7 +863,49 @@ function renderBestiaryDetailFull(code) {
 
   detail.innerHTML = h;
   detail.style.background = '';
+
+  // ── Star selector state + 2.5s auto-rotation ───────────────────
+  vhMobStop();
+  window.__vhMob = { code: code, base: td.hp || 0, cur: initStar, stars: selStars, imgByStar: imgByStar };
+  if (selStars.length > 1) {
+    window.__vhMobTimer = setInterval(function () {
+      var m = window.__vhMob;
+      // Self-clean if the detail was replaced/unmounted.
+      if (!m || !document.getElementById('vh-mob-hp')) { vhMobStop(); return; }
+      var idx = m.stars.indexOf(m.cur);
+      window.__vhMobApply(m.stars[(idx + 1) % m.stars.length]);
+    }, 2500);
+  }
 }
+
+// Apply a star: swap render, update HP readout, highlight the active button.
+function vhMobApply(star) {
+  var m = window.__vhMob;
+  if (!m) return;
+  m.cur = star;
+  var img = document.getElementById('vh-mob-img');
+  if (img && m.imgByStar && m.imgByStar[star]) img.src = m.imgByStar[star];
+  var hp = document.getElementById('vh-mob-hp');
+  if (hp && m.base) hp.textContent = m.base * (star + 1);
+  var lbl = document.getElementById('vh-mob-hp-label');
+  if (lbl && m.base) lbl.textContent = 'HP (' + star + '★)';
+  var wrap = document.getElementById('vh-mob-stars');
+  if (wrap) {
+    var btns = wrap.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) {
+      var on = Number(btns[i].getAttribute('data-star')) === star;
+      btns[i].style.borderColor = on ? '#ca0' : '#444';
+      btns[i].style.color = on ? '#ca0' : '#888';
+      btns[i].style.background = on ? 'rgba(204,170,0,0.12)' : 'transparent';
+    }
+  }
+}
+function vhMobStop() {
+  if (window.__vhMobTimer) { clearInterval(window.__vhMobTimer); window.__vhMobTimer = null; }
+}
+// Manual pick stops auto-rotation.
+window.__vhMobApply = vhMobApply;
+window.__vhMobPick = function (star) { vhMobStop(); vhMobApply(star); };
 
 // ── Per-page detail renderers ──
 
@@ -1730,6 +1840,7 @@ function injectItemDetailMd(detail: HTMLElement, code: string, page: VhPageKey) 
  *  Several ported detail renderers call document.getElementById('items-detail'),
  *  so we shim the element's id during the call. */
 export function renderDetailInto(detail: HTMLElement, code: string, page: VhPageKey) {
+  vhMobStop(); // stop any bestiary star-rotation from a previous selection
   detail.style.background = '';
   if (detail.parentElement) detail.parentElement.style.background = '';
   const prevId = detail.id;

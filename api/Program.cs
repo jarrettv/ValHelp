@@ -4,6 +4,7 @@ using ValHelpApi.ModuleAdmin;
 using ValHelpApi.ModuleEvents;
 using ValHelpApi.ModuleRuns;
 using ValHelpApi.ModuleSeries;
+using ValHelpApi.ModuleStuff;
 using ValHelpApi.ModuleTrack;
 using ValHelpApi.ModuleWorlds;
 
@@ -50,6 +51,7 @@ app.MapEndpointsAdmin();
 app.MapEndpointsEvents();
 app.MapEndpointsRuns();
 app.MapEndpointsSeries();
+app.MapEndpointsStuff();
 app.MapEndpointsTrack();
 app.MapEndpointsWorlds();
 app.MapDefaultEndpoints();

@@ -117,7 +117,7 @@ Like all clubs, the primary attack is a 3 swing combo with the **last hit doing 
 
 You need three unique fragments to craft this sword. These **fragments are found at mysterious locations** in the Ashlands. You can sometimes (25% chance) find a Vegvisir inside Putrid Holes that marks the first location.
 
-The mini-boss [Lord Reto](/guides/enemies/LordReto) protects the third location.
+The mini-boss [Lord Reto](/guides/enemies/ashlands/LordReto) protects the third location.
 
 This sword does **huge Slash damage and +10 Fire damage** which will continue to tick to vulnerable mobs.
 

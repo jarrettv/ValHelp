@@ -136,8 +136,11 @@ export const enemiesConfig: ItemsPageConfig = {
     { id: 'Ashlands', label: 'Ashlands', icon: <BiomeImg name="Ashlands" /> },
   ],
   sort: (a, b) => {
-    const ha = a.trophyDrop?.hp ?? 0;
-    const hb = b.trophyDrop?.hp ?? 0;
+    // Sort by effective HP at the minimum star a creature spawns at (fixed-star
+    // creatures like Lord Reto, 2★, use their scaled value).
+    const eff = (t?: { hp?: number; minStar?: number }) => (t?.hp ?? 0) * ((t?.minStar ?? 0) + 1);
+    const ha = eff(a.trophyDrop);
+    const hb = eff(b.trophyDrop);
     if (ha !== hb) return hb - ha;
     return (a.name || a.code).localeCompare(b.name || b.code);
   },

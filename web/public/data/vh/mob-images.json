@@ -1,0 +1,359 @@
+{
+  "_credit": {
+    "note": "Creature renders captured in-game from Valheim (ValHelp)."
+  },
+  "images": {
+    "Bestiary_Asksvin_hatchling": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Asksvin_hatchling_0.webp"
+      }
+    },
+    "Bestiary_Bat": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Bat_0.webp",
+        "1": "/api/mob/Bestiary_Bat_1.webp"
+      }
+    },
+    "Bestiary_BlobFrost": {
+      "stars": {
+        "0": "/api/mob/Bestiary_BlobFrost_0.webp"
+      }
+    },
+    "Bestiary_BlobLava": {
+      "stars": {
+        "0": "/api/mob/Bestiary_BlobLava_0.webp"
+      }
+    },
+    "Bestiary_Boar_piggy": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Boar_piggy_0.webp"
+      }
+    },
+    "Bestiary_Charred_Twitcher": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Charred_Twitcher_0.webp",
+        "1": "/api/mob/Bestiary_Charred_Twitcher_1.webp",
+        "2": "/api/mob/Bestiary_Charred_Twitcher_2.webp"
+      }
+    },
+    "Bestiary_Chicken": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Chicken_0.webp"
+      }
+    },
+    "Bestiary_Greyling": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Greyling_0.webp"
+      }
+    },
+    "Bestiary_Hen": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Hen_0.webp"
+      }
+    },
+    "Bestiary_Lox_Calf": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Lox_Calf_0.webp"
+      }
+    },
+    "Bestiary_SeekerBrood": {
+      "stars": {
+        "0": "/api/mob/Bestiary_SeekerBrood_0.webp"
+      }
+    },
+    "Bestiary_Wolf_cub": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Wolf_cub_0.webp"
+      }
+    },
+    "LordReto": {
+      "stars": {
+        "0": "/api/mob/LordReto_0.webp",
+        "1": "/api/mob/LordReto_1.webp",
+        "2": "/api/mob/LordReto_2.webp"
+      }
+    },
+    "TrophyAbomination": {
+      "stars": {
+        "0": "/api/mob/TrophyAbomination_0.webp"
+      }
+    },
+    "TrophyAsksvin": {
+      "stars": {
+        "0": "/api/mob/TrophyAsksvin_0.webp",
+        "1": "/api/mob/TrophyAsksvin_1.webp",
+        "2": "/api/mob/TrophyAsksvin_2.webp"
+      }
+    },
+    "TrophyBjorn": {
+      "stars": {
+        "0": "/api/mob/TrophyBjorn_0.webp",
+        "1": "/api/mob/TrophyBjorn_1.webp",
+        "2": "/api/mob/TrophyBjorn_2.webp"
+      }
+    },
+    "TrophyBjornUndead": {
+      "stars": {
+        "0": "/api/mob/TrophyBjornUndead_0.webp"
+      }
+    },
+    "TrophyBlob": {
+      "stars": {
+        "0": "/api/mob/TrophyBlob_0.webp"
+      }
+    },
+    "TrophyBoar": {
+      "stars": {
+        "0": "/api/mob/TrophyBoar_0.webp",
+        "1": "/api/mob/TrophyBoar_1.webp",
+        "2": "/api/mob/TrophyBoar_2.webp"
+      }
+    },
+    "TrophyCharredArcher": {
+      "stars": {
+        "0": "/api/mob/TrophyCharredArcher_0.webp",
+        "1": "/api/mob/TrophyCharredArcher_1.webp",
+        "2": "/api/mob/TrophyCharredArcher_2.webp"
+      }
+    },
+    "TrophyCharredMage": {
+      "stars": {
+        "0": "/api/mob/TrophyCharredMage_0.webp",
+        "1": "/api/mob/TrophyCharredMage_1.webp",
+        "2": "/api/mob/TrophyCharredMage_2.webp"
+      }
+    },
+    "TrophyCharredMelee": {
+      "stars": {
+        "0": "/api/mob/TrophyCharredMelee_0.webp",
+        "1": "/api/mob/TrophyCharredMelee_1.webp",
+        "2": "/api/mob/TrophyCharredMelee_2.webp"
+      }
+    },
+    "TrophyCultist": {
+      "stars": {
+        "0": "/api/mob/TrophyCultist_0.webp"
+      }
+    },
+    "TrophyDeathsquito": {
+      "stars": {
+        "0": "/api/mob/TrophyDeathsquito_0.webp"
+      }
+    },
+    "TrophyDeer": {
+      "stars": {
+        "0": "/api/mob/TrophyDeer_0.webp",
+        "1": "/api/mob/TrophyDeer_1.webp",
+        "2": "/api/mob/TrophyDeer_2.webp"
+      }
+    },
+    "TrophyDraugr": {
+      "stars": {
+        "0": "/api/mob/TrophyDraugr_0.webp",
+        "1": "/api/mob/TrophyDraugr_1.webp",
+        "2": "/api/mob/TrophyDraugr_2.webp"
+      }
+    },
+    "TrophyDraugrElite": {
+      "stars": {
+        "0": "/api/mob/TrophyDraugrElite_0.webp"
+      }
+    },
+    "TrophyDvergr": {
+      "stars": {
+        "0": "/api/mob/TrophyDvergr_0.webp",
+        "1": "/api/mob/TrophyDvergr_1.webp",
+        "2": "/api/mob/TrophyDvergr_2.webp"
+      }
+    },
+    "TrophyFallenValkyrie": {
+      "stars": {
+        "0": "/api/mob/TrophyFallenValkyrie_0.webp",
+        "1": "/api/mob/TrophyFallenValkyrie_1.webp",
+        "2": "/api/mob/TrophyFallenValkyrie_2.webp"
+      }
+    },
+    "TrophyFenring": {
+      "stars": {
+        "0": "/api/mob/TrophyFenring_0.webp",
+        "1": "/api/mob/TrophyFenring_1.webp"
+      }
+    },
+    "TrophyFrostTroll": {
+      "stars": {
+        "0": "/api/mob/TrophyFrostTroll_0.webp",
+        "1": "/api/mob/TrophyFrostTroll_1.webp",
+        "2": "/api/mob/TrophyFrostTroll_2.webp"
+      }
+    },
+    "TrophyGhost": {
+      "stars": {
+        "0": "/api/mob/TrophyGhost_0.webp"
+      }
+    },
+    "TrophyGjall": {
+      "stars": {
+        "0": "/api/mob/TrophyGjall_0.webp",
+        "1": "/api/mob/TrophyGjall_1.webp",
+        "2": "/api/mob/TrophyGjall_2.webp"
+      }
+    },
+    "TrophyGoblin": {
+      "stars": {
+        "0": "/api/mob/TrophyGoblin_0.webp",
+        "1": "/api/mob/TrophyGoblin_1.webp",
+        "2": "/api/mob/TrophyGoblin_2.webp"
+      }
+    },
+    "TrophyGoblinBrute": {
+      "stars": {
+        "0": "/api/mob/TrophyGoblinBrute_0.webp",
+        "1": "/api/mob/TrophyGoblinBrute_1.webp",
+        "2": "/api/mob/TrophyGoblinBrute_2.webp"
+      }
+    },
+    "TrophyGoblinShaman": {
+      "stars": {
+        "0": "/api/mob/TrophyGoblinShaman_0.webp"
+      }
+    },
+    "TrophyGreydwarf": {
+      "stars": {
+        "0": "/api/mob/TrophyGreydwarf_0.webp",
+        "1": "/api/mob/TrophyGreydwarf_1.webp",
+        "2": "/api/mob/TrophyGreydwarf_2.webp"
+      }
+    },
+    "TrophyGreydwarfBrute": {
+      "stars": {
+        "0": "/api/mob/TrophyGreydwarfBrute_0.webp",
+        "1": "/api/mob/TrophyGreydwarfBrute_1.webp",
+        "2": "/api/mob/TrophyGreydwarfBrute_2.webp"
+      }
+    },
+    "TrophyGreydwarfShaman": {
+      "stars": {
+        "0": "/api/mob/TrophyGreydwarfShaman_0.webp",
+        "1": "/api/mob/TrophyGreydwarfShaman_1.webp",
+        "2": "/api/mob/TrophyGreydwarfShaman_2.webp"
+      }
+    },
+    "TrophyGrowth": {
+      "stars": {
+        "0": "/api/mob/TrophyGrowth_0.webp"
+      }
+    },
+    "TrophyHare": {
+      "stars": {
+        "0": "/api/mob/TrophyHare_0.webp",
+        "1": "/api/mob/TrophyHare_1.webp",
+        "2": "/api/mob/TrophyHare_2.webp"
+      }
+    },
+    "TrophyHatchling": {
+      "stars": {
+        "0": "/api/mob/TrophyHatchling_0.webp"
+      }
+    },
+    "TrophyLeech": {
+      "stars": {
+        "0": "/api/mob/TrophyLeech_0.webp",
+        "1": "/api/mob/TrophyLeech_1.webp",
+        "2": "/api/mob/TrophyLeech_2.webp"
+      }
+    },
+    "TrophyLox": {
+      "stars": {
+        "0": "/api/mob/TrophyLox_0.webp"
+      }
+    },
+    "TrophyMorgen": {
+      "stars": {
+        "0": "/api/mob/TrophyMorgen_0.webp",
+        "1": "/api/mob/TrophyMorgen_1.webp",
+        "2": "/api/mob/TrophyMorgen_2.webp"
+      }
+    },
+    "TrophyNeck": {
+      "stars": {
+        "0": "/api/mob/TrophyNeck_0.webp",
+        "1": "/api/mob/TrophyNeck_1.webp",
+        "2": "/api/mob/TrophyNeck_2.webp"
+      }
+    },
+    "TrophySGolem": {
+      "stars": {
+        "0": "/api/mob/TrophySGolem_0.webp"
+      }
+    },
+    "TrophySeeker": {
+      "stars": {
+        "0": "/api/mob/TrophySeeker_0.webp",
+        "1": "/api/mob/TrophySeeker_1.webp",
+        "2": "/api/mob/TrophySeeker_2.webp"
+      }
+    },
+    "TrophySeekerBrute": {
+      "stars": {
+        "0": "/api/mob/TrophySeekerBrute_0.webp",
+        "1": "/api/mob/TrophySeekerBrute_1.webp",
+        "2": "/api/mob/TrophySeekerBrute_2.webp"
+      }
+    },
+    "TrophySerpent": {
+      "stars": {
+        "0": "/api/mob/TrophySerpent_0.webp"
+      }
+    },
+    "TrophySkeleton": {
+      "stars": {
+        "0": "/api/mob/TrophySkeleton_0.webp",
+        "1": "/api/mob/TrophySkeleton_1.webp",
+        "2": "/api/mob/TrophySkeleton_2.webp"
+      }
+    },
+    "TrophySkeletonPoison": {
+      "stars": {
+        "0": "/api/mob/TrophySkeletonPoison_0.webp",
+        "1": "/api/mob/TrophySkeletonPoison_1.webp",
+        "2": "/api/mob/TrophySkeletonPoison_2.webp"
+      }
+    },
+    "TrophySurtling": {
+      "stars": {
+        "0": "/api/mob/TrophySurtling_0.webp",
+        "1": "/api/mob/TrophySurtling_1.webp",
+        "2": "/api/mob/TrophySurtling_2.webp"
+      }
+    },
+    "TrophyTick": {
+      "stars": {
+        "0": "/api/mob/TrophyTick_0.webp",
+        "1": "/api/mob/TrophyTick_1.webp",
+        "2": "/api/mob/TrophyTick_2.webp"
+      }
+    },
+    "TrophyUlv": {
+      "stars": {
+        "0": "/api/mob/TrophyUlv_0.webp"
+      }
+    },
+    "TrophyVolture": {
+      "stars": {
+        "0": "/api/mob/TrophyVolture_0.webp"
+      }
+    },
+    "TrophyWolf": {
+      "stars": {
+        "0": "/api/mob/TrophyWolf_0.webp",
+        "1": "/api/mob/TrophyWolf_1.webp",
+        "2": "/api/mob/TrophyWolf_2.webp"
+      }
+    },
+    "TrophyWraith": {
+      "stars": {
+        "0": "/api/mob/TrophyWraith_0.webp"
+      }
+    }
+  }
+}

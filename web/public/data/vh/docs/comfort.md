@@ -37,7 +37,7 @@ Standalone items all stack — every other category only counts the best piece.
 | Biome | Max | Setup | Rested |
 |-------|:---:|-------|:------:|
 | <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | 5† | [fire_pit]+ + [bed]+ + [rug_deer]+ + Shelter | 12 min |
-| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | 9 | + [piece_chair02]+ + [piece_table]+ | 16 min |
+| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | 9 | + [piece_chair02]+ + [piece_table]+ + [piece_banner01]+ | 16 min |
 | <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | 12 | + [hearth]+ + [piece_throne01]+ + [ArmorStand]+ | 19 min |
 | <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | 13 | + [piece_bed02]+ | 20 min |
 | <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | 16 | + [piece_bathtub]+ + [piece_table_round]+ | 23 min |

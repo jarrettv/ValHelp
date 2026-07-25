@@ -111,6 +111,12 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
     pageSelectedCode: null,
   });
 
+  // Creature renders (0★/1★/2★ art) for the bestiary star selector.
+  fetch('/data/vh/mob-images.json')
+    .then(r => (r.ok ? r.json() : null))
+    .then(m => { if (m) { setState({ mobImages: m }); notify(); } })
+    .catch(() => { /* optional asset; UI falls back to trophy icons */ });
+
   // The ported HTML uses inline onclick="selectPageItem('X')" etc.
   const w = window as any;
   w.selectPageItem = (code: string) => {
