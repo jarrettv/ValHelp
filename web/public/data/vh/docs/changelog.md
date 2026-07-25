@@ -2,6 +2,12 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-07-24
+
+* **Bestiary art**: every non-boss creature now has an in-game render on its detail screen, with a **star selector** (0★/1★/2★) that swaps the render and rescales HP — auto-rotating every 2.5s
+* Enemy **star ranges are now game-accurate** — each creature shows only the stars it can actually spawn with (Deathsquito, Fallen Valkyrie, Morgen, Stone Golem, Draugr Elite and others never star); [Bestiary_Bat]@"Bat" and [TrophyFenring]@"Fenring" can reach 1★ inside Hildir's quest cave
+* Added the missing Ashlands mini-boss [LordReto]@"Lord Reto" — always 2★, guards the third Dyrnwyn fragment
+
 ## 2026-05-02
 
 * Huge update adding notes for crossbows, polearms, staves, arrows, bombs, and tools
