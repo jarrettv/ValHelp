@@ -1,0 +1,11 @@
+# Vegvisir runestones (static props with glowing red runes). Consumed by `vhcapturevegvisirs`.
+# ingest_captures.py maps every "Vegvisir*" prefab to the single code "Vegvisir",
+# so we only need ONE good capture for the example image (/api/mob/Vegvisir_0.webp).
+# If the active one prints "not found" in the console, comment it out and try another.
+Vegvisir_GDKing          # The Elder — the classic Burial Chamber vegvisir
+# Vegvisir_Bonemass      # Swamp
+# Vegvisir_DragonQueen   # Moder  (confirmed prefab name in seedgen)
+# Vegvisir_GoblinKing    # Yagluth
+# Vegvisir_SeekerQueen   # The Queen
+# Vegvisir_Fader         # Fader
+# Vegvisir               # generic fallback

@@ -17,6 +17,14 @@ Format:
 
 ## Mountains
 
+### Ulv <!-- TrophyUlv -->
+
+Only ever spawns with a star inside the **Howling Cavern** (Hildir's Mountain cave). Ulvs in all other caves are always 0★.
+
+### Bat <!-- Bestiary_Bat -->s
+
+Only ever spawns with a star inside the **Howling Cavern** (Hildir's Mountain cave). Bats encountered elsewhere are always 0★.
+
 ## Plains
 
 ## Mistlands

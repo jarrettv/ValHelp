@@ -36,6 +36,7 @@ import TrophyCalc from './TrophyCalc.tsx'
 import Worlds from './Worlds.tsx'
 import GuidesLayout from './guides/vh/GuidesLayout'
 import GuideArticle from './GuideArticle'
+import ArticlesPage from './guides/vh/ArticlesPage'
 import {
   WeaponsPage,
   GearPage,
@@ -84,7 +85,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/runs" element={<Runs />} />
             <Route path="/speedruns" element={<SpeedRuns />} />
             <Route path="/guides" element={<GuidesLayout />}>
-              <Route index element={<Navigate to="/guides/weapons" replace />} />
+              <Route index element={<Navigate to="/guides/articles" replace />} />
+              <Route path="articles" element={<ArticlesPage />} />
+              <Route path="articles/:slug" element={<ArticlesPage />} />
               <Route path="weapons/:category?/:itemCode?" element={<WeaponsPage />} />
               <Route path="gear/:category?/:itemCode?" element={<GearPage />} />
               <Route path="food/:category?/:itemCode?" element={<FoodPage />} />

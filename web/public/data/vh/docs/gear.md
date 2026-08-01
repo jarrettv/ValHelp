@@ -33,12 +33,12 @@ Wearing all pieces of a set grants extra effects on top of each piece's individu
 
 | Set | Pieces & Effects |
 |-----|--------|---------|
-| Sneaky (Troll) | [HelmetTrollLeather](1) [ArmorTrollLeatherChest](1) [ArmorTrollLeatherLegs](1) [CapeTrollHide](1) <br> **+15 Sneak skill** |
-| Berserk (Bear) | [HelmetBerserkerHood](1) [ArmorBerserkerChest](1) [ArmorBerserkerLegs](1) <br> **+30% Health regen, +15% Stamina regen, +10% Slash, +10% Chop**, Slightly weak (+25%) vs Blunt, Slash and Pierce |
-| Ranger (Root) | [HelmetRoot](1) [ArmorRootChest](1) [ArmorRootLegs](1) <br> **+15 Bow skill**, Pierce resistant (chest), Poison resistant (helmet), Weak vs Fire |
-| Fenris Blessing | [HelmetFenring](1) [ArmorFenringChest](1) [ArmorFenringLegs](1) <br> +9% movement speed, Frost resistent (chest), Fire resistant, **+15 Unarmed skill** |
-| Vilebone Wrath | [HelmetBerserkerUndead](1) [ArmorBerserkerUndeadChest](1) [ArmorBerserkerUndeadLegs](1) <br> **+20% Health regen, +40% Stamina regen**, Slightly weak (+25%) vs Blunt, Slash and Pierce, **+20% Blunt, +20% Pierce** |
-| Endurance (Ask) | [HelmetAshlandsMediumHood](1) [ArmorAshlandsMediumChest](1) [ArmorAshlandsMediumlegs](1) <br> **-10% run stamina, -10% jump stamina, -20% attack stamina**, +10% Pierce |
+| Sneaky (Troll) | [HelmetTrollLeather](1) [ArmorTrollLeatherChest](1) [ArmorTrollLeatherLegs](1) [CapeTrollHide](1) <br> **+15 Sneak skill** | {biome:blackforest}
+| Berserk (Bear) | [HelmetBerserkerHood](1) [ArmorBerserkerChest](1) [ArmorBerserkerLegs](1) <br> **+30% Health regen, +15% Stamina regen, +10% Slash, +10% Chop**, Slightly weak (+25%) vs Blunt, Slash and Pierce | {biome:blackforest}
+| Ranger (Root) | [HelmetRoot](1) [ArmorRootChest](1) [ArmorRootLegs](1) <br> **+15 Bow skill**, Pierce resistant (chest), Poison resistant (helmet), Weak vs Fire | {biome:swamp}
+| Fenris Blessing | [HelmetFenring](1) [ArmorFenringChest](1) [ArmorFenringLegs](1) <br> +9% movement speed, Frost resistent (chest), Fire resistant, **+15 Unarmed skill** | {biome:mountain}
+| Vilebone Wrath | [HelmetBerserkerUndead](1) [ArmorBerserkerUndeadChest](1) [ArmorBerserkerUndeadLegs](1) <br> **+20% Health regen, +40% Stamina regen**, Slightly weak (+25%) vs Blunt, Slash and Pierce, **+20% Blunt, +20% Pierce** | {biome:plains}
+| Endurance (Ask) | [HelmetAshlandsMediumHood](1) [ArmorAshlandsMediumChest](1) [ArmorAshlandsMediumlegs](1) <br> **-10% run stamina, -10% jump stamina, -20% attack stamina**, +10% Pierce | {biome:ashlands}
 
 ## Shields
 
@@ -81,10 +81,10 @@ However, a cape is a great way to gain Frost protection. It isn't until the late
 
 | Top Capes                   | Base Armor | +/lvl  | Resistance | Notes                                                   |
 |-----------------------------|:----------:|:------:|------------|---------------------------------------------------------|
-| [CapeLox](1) or [CapeWolf]* |     1      |   +1   | **Frost**  | Requires silver                                         |
-| [CapeFeather](1)            |     1      |   +1   | Frost      | **No fall damage**, very weak to Fire                   |
-| [CapeAsksvin](1)            |     1      |   +1   | Frost      | **-15% dodge stamina**, wind run (faster with tailwind) |
-| [CapeAsh](1)                |   **12**   | **+2** | Frost      | **-10% attack stamina, -20% block stamina**             |
+| [CapeLox](1) or [CapeWolf]* |     1      |   +1   | **Frost**  | Requires silver                                         | {biome:plains}
+| [CapeFeather](1)            |     1      |   +1   | Frost      | **No fall damage**, very weak to Fire                   | {biome:mistlands}
+| [CapeAsksvin](1)            |     1      |   +1   | Frost      | **-15% dodge stamina**, wind run (faster with tailwind) | {biome:ashlands}
+| [CapeAsh](1)                |   **12**   | **+2** | Frost      | **-10% attack stamina, -20% block stamina**             | {biome:ashlands}
 
 ## Trinkets
 
@@ -119,28 +119,35 @@ A single trinket can be equipped at a time. When the adrenaline bar (orange, bel
 
 | Top Trinkets                   | Biome        | {adrenaline} |   Time   | Effect                                                   |
 |--------------------------------|--------------|:------------:|:--------:|----------------------------------------------------------|
-| [TrinketBronzeStamina](1)      | Black Forest |      50      |   60s    | +25% Stamina regen                                       |
-| [TrinketIronStamina](1)        | Swamp        |      60      |   30s    | +15% move speed, +50 instant stamina                     |
-| [TrinketBlackStamina](1)       | Plains       |      60      | **120s** | +50% parry bonus, +20 Blocking skill, -50% block stamina |
-| [TrinketScaleStaminaDamage](1) | Mistlands    |      75      |   60s    | +10% Slash damage, +100 instant stamina                  |
-| [TrinketFlametalEitr](1)       | Ashlands     |      70      |   60s    | +20 Elemental/Blood Magic skill, +100 instant Eitr       |
+| [TrinketBronzeStamina](1)      | Black Forest |      50      |   60s    | +25% Stamina regen                                       | {biome:blackforest}
+| [TrinketIronStamina](1)        | Swamp        |      60      |   30s    | +15% move speed, +50 instant stamina                     | {biome:swamp}
+| [TrinketBlackStamina](1)       | Plains       |      60      | **120s** | +50% parry bonus, +20 Blocking skill, -50% block stamina | {biome:plains}
+| [TrinketScaleStaminaDamage](1) | Mistlands    |      75      |   60s    | +10% Slash damage, +100 instant stamina                  | {biome:mistlands}
+| [TrinketFlametalEitr](1)       | Ashlands     |      70      |   60s    | +20 Elemental/Blood Magic skill, +100 instant Eitr       | {biome:ashlands}
 
 ## Best Gear per Biome
 
-| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | Save your materials. If you have extra deer hide, spend it on the [HelmetLeather]* **Leather Helmet**. No shields yet; focus on dodge rolling and parrying with your weapon. |
-| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | [ArmorBerserkerChest]* **Bear set** — no move penalty, +30% HP regen, +15% stamina regen, +10% Slash/Chop. [ShieldBronzeBuckler]* **Bronze Buckler** for {parry:2.5} parry. [TrinketBronzeStamina]* **Bronze Pendant** trinket — low adrenaline, +25% stamina regen. Prioritize helmet then legs.|
-| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | **Hybrid:** [HelmetIron]* + [ArmorRootChest]* + [ArmorIronLegs]* Root Harnesk's Pierce Resistance is the best single armor piece in the game — stays viable into endgame. [ShieldIronBuckler]* **Iron Buckler** for parry. [TrinketIronStamina]* **Nimble Anklet** trinket — speed and stamina counter the rain debuff. |
-| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | [ArmorFenringChest]* **Fenris set** — only armor that *increases* speed (+9%). Frost Resistant, Fire Resistant, +15 Fist skill synergizes with {parry:6} fist parry. Pairs perfectly with [FistFenrirClaw]* Flesh Rippers. [TrinketSilverDamage]* **Wolf Sight** trinket — +10% Pierce, +20 Bows/Spears skill massively boosts ranged damage. |
-| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | **Hybrid:** [HelmetPadded]* + [ArmorRootChest]* + [ArmorPaddedGreaves]* — protects against deathquito and fueling spears. [ArmorBerserkerUndeadChest]* **Vilebone set** — no move penalty, +40% stamina regen, +20% Blunt/Pierce damage. [TrinketBlackStamina]* **Evasion Mantle** trinket — 120s duration enables chaining with the parry bonus. |
-| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | **Magic:** [ArmorMageChest]* **Eitr-weave** (Hood +20%, Robe/Trousers +40% Eitr regen each). **Melee:** [ArmorCarapaceChest]* + [ArmorRootChest]* hybrid. [CapeFeather]* **Feather Cape** removes fall damage and is Frost resistant. [ShieldCarapaceBuckler]* **Carapace Buckler** for {parry:2.5} parry. |
-| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | [ArmorAshlandsMediumChest]* **Ask set** — no move penalty, -20% attack stamina, +10% Pierce. Pair with [CapeAsh]* **Ashen Cape** (12 armor, -10% attack/-20% block stamina). [ArmorMageChest_Ashlands]* **Embla** for spellcasters (+50% Eitr regen per piece). [TrinketFlametalEitr]* **Jormundling** trinket — +100 instant Eitr on 70 adrenaline, self-sustaining with staves. |
+| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | Save your materials. If you have extra deer hide, spend it on the [HelmetLeather]* **Leather Helmet**. No shields yet; focus on dodge rolling and parrying with your weapon. | {biome:meadows}
+| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | [ArmorBerserkerChest]* **Bear set** — no move penalty, +30% HP regen, +15% stamina regen, +10% Slash/Chop. [ShieldBronzeBuckler]* **Bronze Buckler** for {parry:2.5} parry. [TrinketBronzeStamina]* **Bronze Pendant** trinket — low adrenaline, +25% stamina regen. Prioritize helmet then legs.| {biome:blackforest}
+| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | **Hybrid:** [HelmetIron]* + [ArmorRootChest]* + [ArmorIronLegs]* Root Harnesk's Pierce Resistance is the best single armor piece in the game — stays viable into endgame. [ShieldIronBuckler]* **Iron Buckler** for parry. [TrinketIronStamina]* **Nimble Anklet** trinket — speed and stamina counter the rain debuff. | {biome:swamp}
+| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | [ArmorFenringChest]* **Fenris set** — only armor that *increases* speed (+9%). Frost Resistant, Fire Resistant, +15 Fist skill synergizes with {parry:6} fist parry. Pairs perfectly with [FistFenrirClaw]* Flesh Rippers. [TrinketSilverDamage]* **Wolf Sight** trinket — +10% Pierce, +20 Bows/Spears skill massively boosts ranged damage. | {biome:mountain}
+| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | **Hybrid:** [HelmetPadded]* + [ArmorRootChest]* + [ArmorPaddedGreaves]* — protects against deathquito and fueling spears. [ArmorBerserkerUndeadChest]* **Vilebone set** — no move penalty, +40% stamina regen, +20% Blunt/Pierce damage. [TrinketBlackStamina]* **Evasion Mantle** trinket — 120s duration enables chaining with the parry bonus. | {biome:plains}
+| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | **Magic:** [ArmorMageChest]* **Eitr-weave** (Hood +20%, Robe/Trousers +40% Eitr regen each). **Melee:** [ArmorCarapaceChest]* + [ArmorRootChest]* hybrid. [CapeFeather]* **Feather Cape** removes fall damage and is Frost resistant. [ShieldCarapaceBuckler]* **Carapace Buckler** for {parry:2.5} parry. | {biome:mistlands}
+| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | [ArmorAshlandsMediumChest]* **Ask set** — no move penalty, -20% attack stamina, +10% Pierce. Pair with [CapeAsh]* **Ashen Cape** (12 armor, -10% attack/-20% block stamina). [ArmorMageChest_Ashlands]* **Embla** for spellcasters (+50% Eitr regen per piece). [TrinketFlametalEitr]* **Jormundling** trinket — +100 instant Eitr on 70 adrenaline, self-sustaining with staves. | {biome:ashlands}
 
 ## Tips
 
 **Parry > Armor.** A player in Fenris (+9% speed) with a Buckler who parries every attack takes zero damage. A player in Flametal (-10% speed) who face-tanks hits still takes significant damage despite 114 total armor.
 
+
+:::biome blackforest
 **Lightweight sets are worth it.** Bear and Vilebone trade +25% physical vulnerability for massive stamina regen and damage bonuses — parry consistently and you never take the extra damage.
+:::
 
+:::biome swamp
 **Root Harnesk is forever.** Pierce Resistance from a single Swamp chest piece outperforms entire late-game armor sets against the majority of creatures. Consider it in hybrid builds through endgame.
+:::
 
+:::biome ashlands
 **Ashen Cape is a 5th armor piece.** At 12 base armor (vs 1 for all other capes) plus stamina reduction, it's in a class of its own. Asksvin Cloak is the travel alternative with wind speed and dodge discount.
+:::

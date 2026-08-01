@@ -33,6 +33,10 @@ public class UserPrefs
     public UserPrefsItems? Favs { get; set; }
     public UserPrefsItems? SpeedRuns { get; set; }
 
+    // Spoiler-slider progress (Articles guide). Stored as a single-element Items
+    // array (e.g. ["4.5"]) so it reuses the generic prefs GET/POST endpoints.
+    public UserPrefsItems? Spoiler { get; set; }
+
     public List<UserPrefsFeedback>? Feedback { get; set; }
 
     public List<UserPrefsWorld>? Worlds { get; set; }

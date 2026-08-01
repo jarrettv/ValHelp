@@ -47,12 +47,12 @@ Creatures have a **stagger threshold** shown as a percentage of their HP. Deal t
 
 ## Taming
 
-| Creature | Biome | Food | Time | Notes |
-|----------|-------|------|:----:|-------|
-| Boar | Meadows | Raspberries, Blueberries, Mushrooms, Carrots | 30 min | |
-| Wolf | Mountain | Raw Meat, Sausages, Neck Tail | 30 min | Starred wolves only spawn at night |
-| Lox | Plains | Cloudberries, Barley, Flax | 30 min | Can be ridden with saddle |
-| Asksvin | Ashlands | Fiddleheads, Vineberry Clusters, Smoke Puffs | 30 min | Reproduce via eggs that retain star level |
+| Creature | Food & Notes |
+|----------|--------------|
+| <img src="/api/mob/Bestiary_Boar_piggy_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Boar | [Raspberry](1) [Blueberries](1) [Mushroom](1) [Carrot](1) | {biome:meadows}
+| <img src="/api/mob/Bestiary_Wolf_cub_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Wolf | [RawMeat](1) [Sausages](1) [NeckTail](1) — starred wolves only spawn at night | {biome:mountain}
+| <img src="/api/mob/Bestiary_Lox_Calf_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Lox | [Cloudberry](1) [Barley](1) [Flax](1) — can be ridden with a saddle | {biome:plains}
+| <img src="/api/mob/Bestiary_Asksvin_hatchling_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Asksvin | [Fiddleheadfern](1) [Vineberry](1) [MushroomSmokePuff](1) — reproduce via eggs that retain star level | {biome:ashlands}
 
 **Tips:** Taming requires the creature to be enclosed (build a pen around it). Stay nearby but don't scare it — sneak if needed. Taming progress resets if the creature takes damage. Once tamed, offspring inherit star levels from parents.
 
@@ -68,13 +68,13 @@ Let enemies weaken each other before you engage.
 
 | Biome | Key Threats | Strategy |
 |-------|-----------|----------|
-| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | Greydwarfs and Skeletons at night | Mobs are scared of torches. Bears can pop out of the Black Forest.  |
-| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | Bears, Trolls, Greydwarf swarms | Trolls are weak to Pierce — use a bow. Use Fire on everything. Club the Skeletons. |
-| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | Draugr archers, Leeches, Blobs | Carry Poison Resistance Mead. Blobs are weak to Blunt and Frost. Draugr are weak to Fire and Spirit. Surtlings die instantly in water. |
-| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | Wolves, Stone Golems, Drakes | Wolves come in packs at night — starred wolves are deadly. Stone Golems are immune to most elements — use Blunt. Drakes are weak to Fire. |
-| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | Deathsquitos, Fuling camps | Deathsquitos have only 10 HP but hit hard — one-shot them with a bow. Fulings are numerous, use AoE (Atgeir spin). Growth is weak to Blunt and Fire. |
-| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | Seekers, Gjall, Ticks | Seekers resist all physical damage — use elemental. Gjall are flying and resist Fire. Ticks are weak to Pierce. |
-| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | Charred, Morgen, Fallen Valkyrie | All Charred are immune to Fire and Poison but weak to Spirit. Morgen resist everything but are weakest to Lightning. Fallen Valkyries are flying. |
+| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | Greydwarfs and Skeletons at night | Mobs are scared of torches. Bears can pop out of the Black Forest.  | {biome:meadows}
+| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | Bears, Trolls, Greydwarf swarms | Trolls are weak to Pierce — use a bow. Use Fire on everything. Club the Skeletons. | {biome:blackforest}
+| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | Draugr archers, Leeches, Blobs | Carry Poison Resistance Mead. Blobs are weak to Blunt and Frost. Draugr are weak to Fire and Spirit. Surtlings die instantly in water. | {biome:swamp}
+| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | Wolves, Stone Golems, Drakes | Wolves come in packs at night — starred wolves are deadly. Stone Golems are immune to most elements — use Blunt. Drakes are weak to Fire. | {biome:mountain}
+| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | Deathsquitos, Fuling camps | Deathsquitos have only 10 HP but hit hard — one-shot them with a bow. Fulings are numerous, use AoE (Atgeir spin). Growth is weak to Blunt and Fire. | {biome:plains}
+| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | Seekers, Gjall, Ticks | Seekers resist all physical damage — use elemental. Gjall are flying and resist Fire. Ticks are weak to Pierce. | {biome:mistlands}
+| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | Charred, Morgen, Fallen Valkyrie | All Charred are immune to Fire and Poison but weak to Spirit. Morgen resist everything but are weakest to Lightning. Fallen Valkyries are flying. | {biome:ashlands}
 
 ## General Tips
 

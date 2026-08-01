@@ -377,6 +377,7 @@ public static class TrackEndpoints
 
             foreach (var log in logs)
             {
+                var batchMaxT = -1; // latest timeline-second in this batch, for the score point
                 foreach (var entry in log.Logs)
                 {
                     PathStore.PathPoint[] points;
@@ -402,18 +403,25 @@ public static class TrackEndpoints
                     else continue;
 
                     if (points.Length > 0)
+                    {
                         pathStore.BackfillPaths(seed, log.Id, points, entryStates);
+                        batchMaxT = Math.Max(batchMaxT, points.Max(p => p.T));
+                    }
                 }
+
+                // One authoritative score point per batch, aligned to the path timeline.
+                if (batchMaxT >= 0)
+                    pathStore.BackfillPaths(seed, log.Id, [], null, [new PathStore.ScorePoint(batchMaxT, log.Score)]);
             }
         }
 
         // Subscribe and get current snapshot
-        var (paths, states, viewers, reader, writer) = pathStore.Subscribe(seed);
+        var (paths, states, scores, viewers, reader, writer) = pathStore.Subscribe(seed);
 
         try
         {
-            // Send initial state (paths + player state snapshots + current viewer count)
-            var initData = JsonSerializer.Serialize(new { paths, states, viewers }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            // Send initial state (paths + player state snapshots + score history + current viewer count)
+            var initData = JsonSerializer.Serialize(new { paths, states, scores, viewers }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             await ctx.Response.WriteAsync($"event: init\ndata: {initData}\n\n", ct);
             await ctx.Response.Body.FlushAsync(ct);
 
@@ -456,8 +464,10 @@ public static class TrackEndpoints
 
         var paths = new Dictionary<string, List<PathStore.PathPoint>>();
         var states = new Dictionary<string, List<PathStore.StatePoint>>();
+        var scores = new Dictionary<string, List<PathStore.ScorePoint>>();
         foreach (var log in logs)
         {
+            var batchMaxT = -1; // latest timeline-second in this batch, for the score point
             foreach (var entry in log.Logs)
             {
                 PathStore.PathPoint[] points;
@@ -495,12 +505,25 @@ public static class TrackEndpoints
 
                 if (points.Length == 0) continue;
 
+                batchMaxT = Math.Max(batchMaxT, points.Max(p => p.T));
+
                 if (!paths.TryGetValue(log.Id, out var list))
                 {
                     list = new List<PathStore.PathPoint>();
                     paths[log.Id] = list;
                 }
                 list.AddRange(points);
+            }
+
+            // One authoritative score point per batch, aligned to the path timeline.
+            if (batchMaxT >= 0)
+            {
+                if (!scores.TryGetValue(log.Id, out var scoreList))
+                {
+                    scoreList = new List<PathStore.ScorePoint>();
+                    scores[log.Id] = scoreList;
+                }
+                scoreList.Add(new PathStore.ScorePoint(batchMaxT, log.Score));
             }
         }
 
@@ -517,8 +540,22 @@ public static class TrackEndpoints
             var seen = new HashSet<int>();
             list.RemoveAll(s => !seen.Add(s.T));
         }
+        // Order by time, drop duplicate timestamps, then collapse unchanged
+        // scores so the timeline is just the steps where the score actually moved.
+        foreach (var (id, list) in scores)
+        {
+            list.Sort((a, b) => a.T.CompareTo(b.T));
+            var seen = new HashSet<int>();
+            list.RemoveAll(s => !seen.Add(s.T));
+            var kept = new List<PathStore.ScorePoint>();
+            foreach (var s in list)
+                if (kept.Count == 0 || kept[^1].Score != s.Score)
+                    kept.Add(s);
+            list.Clear();
+            list.AddRange(kept);
+        }
 
-        return JsonSerializer.Serialize(new { paths, states }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        return JsonSerializer.Serialize(new { paths, states, scores }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
     }
 
     private static PathStore.PathPoint[] ParsePathPoints(string code)

@@ -63,6 +63,7 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
         var eventStartAt = liveEvents[0].StartAt;
         
         // Feed path data to PathStore for live SSE streaming
+        var batchMaxT = -1; // latest timeline-second seen in this batch, for the score point
         foreach (var entry in log.Logs)
         {
             if (CompactEventParser.IsCompactFormat(entry.Code))
@@ -73,7 +74,10 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
                     .Select(e => new PathStore.PathPoint(e.Secs, e.X, e.Z, e.Tag == 'J'))
                     .ToArray();
                 if (points.Length > 0)
+                {
                     pathStore.AddPathPoints(log.Seed, log.Id, points);
+                    batchMaxT = Math.Max(batchMaxT, points.Max(p => p.T));
+                }
 
                 // Extract player state snapshots from P tags
                 var states = events
@@ -89,9 +93,16 @@ public class TrackLogTracker(Tracer tracer, ILogger<TrackLogTracker> logger,
             {
                 var points = ParsePathCode(entry.Code);
                 if (points.Length > 0)
+                {
                     pathStore.AddPathPoints(log.Seed, log.Id, points);
+                    batchMaxT = Math.Max(batchMaxT, points.Max(p => p.T));
+                }
             }
         }
+
+        // One authoritative score point per batch, aligned to the path timeline.
+        if (batchMaxT >= 0)
+            pathStore.AddScorePoints(log.Seed, log.Id, [new PathStore.ScorePoint(batchMaxT, log.Score)]);
 
         var player = await db.Players
           .Where(hp => liveEventIds.Contains(hp.EventId))

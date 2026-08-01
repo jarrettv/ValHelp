@@ -2,10 +2,19 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-08-01
+
+* New spoiler-free system. New creature renders. Map fixes.
+* **Spoiler-free guides**: the new Articles guide adds a spoiler slider — set how far you've progressed and everything ahead of you (biome guides, weapon/gear/food/comfort categories, bestiary biomes, and per-biome tables) stays hidden until you reach it. Progress is saved locally and synced to your account when logged in.
+* **Boss stone renders**: in-game renders of all seven Forsaken boss stones, [TrophyEikthyr]@"Eikthyr" through [TrophyFader]@"Fader", with reworked (Call to Arms) Forsaken power effects.
+* **Vegvisir render** added to the Articles overview, with a guide to finding bosses by their red glow.
+* **Taming art**: baby-creature renders — piggy, wolf cub, lox calf, and asksvin hatchling — added to the bestiary taming table, with linked foods.
+* Map fixes: Ashlands POIs, Dvergr markers, and general map updates.
+
 ## 2026-07-24
 
 * **Bestiary art**: every non-boss creature now has an in-game render on its detail screen, with a **star selector** (0★/1★/2★) that swaps the render and rescales HP — auto-rotating every 2.5s
-* Enemy **star ranges are now game-accurate** — each creature shows only the stars it can actually spawn with (Deathsquito, Fallen Valkyrie, Morgen, Stone Golem, Draugr Elite and others never star); [Bestiary_Bat]@"Bat" and [TrophyFenring]@"Fenring" can reach 1★ inside Hildir's quest cave
+* Enemy **star ranges are now game-accurate** — each creature shows only the stars it can actually spawn with (Deathsquito, Fallen Valkyrie, Morgen, Stone Golem, Draugr Elite and others never star); [Bestiary_Bat]@"Bat" and [TrophyUlv]@"Ulv" can reach 1★ inside the Howling Cavern
 * Added the missing Ashlands mini-boss [LordReto]@"Lord Reto" — always 2★, guards the third Dyrnwyn fragment
 
 ## 2026-05-02

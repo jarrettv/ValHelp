@@ -5,6 +5,8 @@ import { useVhItems, useVhDefaults } from './data';
 import { useAuth } from '../../contexts/AuthContext';
 import type { VhItem } from './types';
 import TipsMarkdown from './TipsMarkdown';
+import CompactSpoilerSlider from './CompactSpoilerSlider';
+import { getRevealedCount, subscribeSpoiler, biomeIndex, biomeLabel } from './spoiler';
 import NotesEditor from './NotesEditor';
 import Feedback from '../../components/Feedback';
 import {
@@ -29,6 +31,8 @@ export type CategoryTag = {
   icon: React.ReactNode;
   bgImg?: string;
   separatorAfter?: boolean;
+  /** Biome key/name — the category stays locked until the spoiler slider reveals it. */
+  spoilerBiome?: string;
 };
 
 export type ItemsPageConfig = {
@@ -112,6 +116,24 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
+  // Categories tagged with a `spoilerBiome` stay locked until the spoiler slider
+  // reveals that biome (and their items are hidden from All/search/favorites too).
+  const revealed = useSyncExternalStore(subscribeSpoiler, getRevealedCount, getRevealedCount);
+  const lockedTagIds = useMemo(
+    () => new Set(
+      config.tags
+        .filter(t => t.spoilerBiome != null && revealed <= (biomeIndex(t.spoilerBiome) ?? -1))
+        .map(t => t.id)
+    ),
+    [config, revealed]
+  );
+  // Bounce direct navigation to a locked category back to the category grid.
+  useEffect(() => {
+    if (!categorySlug) return;
+    const tag = slugToTag(categorySlug, config.tags);
+    if (tag && lockedTagIds.has(tag)) navigate(`/guides/${config.pageSlug}`, { replace: true });
+  }, [categorySlug, lockedTagIds, config, navigate]);
+
   const view = deriveView(categorySlug, config);
 
   const tick = useSyncExternalStore(subscribe, getChangeCounter);
@@ -156,8 +178,8 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
   };
 
   const pageItems = useMemo(
-    () => (items ? items.filter(it => !it.hidden && config.filter(it)) : []),
-    [items, config]
+    () => (items ? items.filter(it => !it.hidden && config.filter(it) && !lockedTagIds.has(String(it[config.subField]))) : []),
+    [items, config, lockedTagIds]
   );
 
   const filtered = useMemo(() => {
@@ -289,6 +311,7 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
                   {t.separatorAfter && i > 0 && <div className="vh-cat-sep" />}
                   <CatCard
                     tag={t}
+                    locked={lockedTagIds.has(t.id)}
                     onClick={() => navigateToView({ kind: 'list', tag: t.id })}
                   />
                 </span>
@@ -310,6 +333,7 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
           <button className="vh-detail-back" onClick={() => navigateToView({ kind: 'categories' })}>
             {BACK_ICON} Back
           </button>
+          <CompactSpoilerSlider />
           <TipsMarkdown name={config.tipsDoc} />
           <Feedback />
         </div>
@@ -338,12 +362,19 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
   );
 }
 
-function CatCard({ tag, onClick }: { tag: CategoryTag; onClick: () => void }) {
+function CatCard({ tag, onClick, locked }: { tag: CategoryTag; onClick: () => void; locked?: boolean }) {
   return (
-    <div className="vh-cat-card" onClick={onClick}>
+    <div
+      className={`vh-cat-card${locked ? ' locked' : ''}`}
+      onClick={locked ? undefined : onClick}
+      role="button"
+      aria-disabled={locked || undefined}
+      title={locked && tag.spoilerBiome ? `Unlock in ${biomeLabel(biomeIndex(tag.spoilerBiome) ?? 0)}` : undefined}
+    >
       {tag.bgImg && <img className="vh-cat-bg" src={tag.bgImg} alt="" />}
       {tag.icon}
       <div className="vh-cat-card-label">{tag.label}</div>
+      {locked && <span className="vh-cat-lock" aria-hidden="true">🔒</span>}
     </div>
   );
 }

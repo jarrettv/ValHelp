@@ -38,6 +38,19 @@ CAPTURE_ROOT = Path(r"C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepI
 SIZE = 512
 CREDIT = "ValHelp (in-game capture)"
 
+# Static boss "sacrificial stone" prefabs (captured via `vhcapturestones`) map to
+# the boss's bestiary code, so bosses get a portrait even though we don't render
+# the rigged boss creature itself.
+BOSS_STONE_MAP = {
+    "BossStone_Eikthyr": "TrophyEikthyr",
+    "BossStone_TheElder": "TrophyTheElder",
+    "BossStone_Bonemass": "TrophyBonemass",
+    "BossStone_DragonQueen": "TrophyDragonQueen",
+    "BossStone_Yagluth": "TrophyGoblinKing",
+    "BossStone_TheQueen": "TrophySeekerQueen",
+    "BossStone_Fader": "TrophyFader",
+}
+
 
 def newest_capture_folder() -> Path | None:
     dirs = sorted(CAPTURE_ROOT.glob("creature_capture_*"), key=lambda p: p.name)
@@ -92,7 +105,11 @@ def main() -> None:
         prefab, _, star = png.stem.rpartition("_")
         if not star.isdigit():
             continue
-        code = id_to_code.get(prefab)
+        code = BOSS_STONE_MAP.get(prefab)
+        if not code and prefab.startswith("Vegvisir"):
+            code = "Vegvisir"  # all boss vegvisirs collapse to one example render
+        if not code:
+            code = id_to_code.get(prefab)
         if not code:
             unmapped.add(prefab)
             continue

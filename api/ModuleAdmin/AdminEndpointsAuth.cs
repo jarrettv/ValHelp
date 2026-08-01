@@ -178,6 +178,7 @@ public static class AdminEndpointsAuth
         {
             "favs" => prefs?.Favs,
             "speedruns" => prefs?.SpeedRuns,
+            "spoiler" => prefs?.Spoiler,
             _ => null
         };
 
@@ -257,6 +258,9 @@ public static class AdminEndpointsAuth
                 break;
             case "speedruns":
                 currentUser.Prefs.SpeedRuns = new UserPrefsItems(items, now);
+                break;
+            case "spoiler":
+                currentUser.Prefs.Spoiler = new UserPrefsItems(items, now);
                 break;
             default:
                 return TypedResults.Problem("Invalid prefs code", statusCode: 400);

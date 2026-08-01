@@ -98,6 +98,17 @@
 }
 .vh-cat-card:hover { background: #222; border-color: #555; }
 .vh-cat-card.active { background: #2b3a4e; border-color: #5588cc; }
+.vh-cat-card.locked { opacity: 0.4; cursor: not-allowed; }
+.vh-cat-card.locked:hover { background: #2a2a3e; border-color: #333; }
+.vh-cat-card.locked .cat-icon { filter: grayscale(1); }
+.vh-cat-lock {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.85;
+}
 .vh-cat-card svg, .vh-cat-card img.cat-icon { width: 32px; height: 32px; color: #aaa; }
 .vh-cat-card.active svg { color: #8cf; }
 .vh-cat-card-label { font-size: 10px; color: #888; text-align: center; }
@@ -235,6 +246,250 @@
 .vh-guides .comfort-tag.aos { background: #3a2a2a; color: #b66; }
 .vh-guides .comfort-tag.seasonal { background: #3a3a2a; color: #bb6; }
 .vh-guides .comfort-tag.fire { background: #3a2a1a; color: #c84; }
+
+/* Biome spoiler slider (Articles overview) */
+.biome-spoiler {
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 14px 14px 10px;
+  margin-bottom: 18px;
+}
+.biome-spoiler__header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.biome-spoiler__title {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #eaf0ff;
+}
+.biome-spoiler__title-em { color: #7fb0ff; }
+.biome-spoiler__subtitle {
+  margin: 5px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8c93a8;
+}
+.biome-spoiler__track {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 4px;
+}
+.biome-spoiler__biome {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.biome-spoiler__biome:hover .biome-spoiler__bubble { border-color: #5a86c9; }
+.biome-spoiler__biome:focus-visible { outline: 2px solid #5a86c9; outline-offset: 2px; }
+.biome-spoiler__bubble {
+  width: 100%;
+  max-width: 46px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #15151f;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #cfe0ff;
+  transition: filter 0.12s linear, opacity 0.12s linear, transform 0.12s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.biome-spoiler__bubble img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.biome-spoiler__bubble svg { width: 24px; height: 24px; }
+.biome-spoiler__biome.revealed .biome-spoiler__bubble {
+  border-color: #5a86c9;
+  box-shadow: 0 0 12px rgba(90, 140, 220, 0.55);
+}
+.biome-spoiler__label {
+  font-size: 9px;
+  line-height: 1.15;
+  color: #7c7c8c;
+  text-align: center;
+  white-space: normal;
+  transition: color 0.25s ease;
+}
+.biome-spoiler__biome.revealed .biome-spoiler__label { color: #aac4ff; }
+.biome-spoiler__range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  margin-top: 14px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #5a86c9 var(--pct, 0%), #333 var(--pct, 0%));
+  outline: none;
+  cursor: pointer;
+}
+.biome-spoiler__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #eaf0ff;
+  border: 2px solid #5a86c9;
+  box-shadow: 0 0 8px rgba(90, 140, 220, 0.6);
+  cursor: pointer;
+}
+.biome-spoiler__range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #eaf0ff;
+  border: 2px solid #5a86c9;
+  cursor: pointer;
+}
+.biome-spoiler__disclaimer {
+  margin: 12px 0 2px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #b8975a;
+  text-align: center;
+}
+
+/* Spoiler warning banner (changelog) */
+.vh-spoiler-warn {
+  margin-bottom: 14px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e6c06a;
+  background: rgba(180, 140, 40, 0.12);
+  border: 1px solid rgba(180, 140, 40, 0.4);
+  border-radius: 7px;
+}
+
+/* ── Compact spoiler slider (top of Mechanics & tips pages) ──────── */
+.spoiler-mini {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px;
+  margin-bottom: 14px;
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(16, 18, 26, 0.5);
+}
+.spoiler-mini > svg { width: 15px; height: 15px; color: #8c93a8; flex-shrink: 0; }
+.spoiler-mini__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8c93a8;
+  flex-shrink: 0;
+}
+.spoiler-mini__range {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  min-width: 60px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #5a86c9 var(--pct, 0%), #333 var(--pct, 0%));
+  outline: none;
+  cursor: pointer;
+}
+.spoiler-mini__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #eaf0ff;
+  border: 2px solid #5a86c9;
+  cursor: pointer;
+}
+.spoiler-mini__range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #eaf0ff;
+  border: 2px solid #5a86c9;
+  cursor: pointer;
+}
+.spoiler-mini__current {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #aac4ff;
+  white-space: nowrap;
+}
+.spoiler-mini__current img { width: 16px; height: 16px; }
+
+/* On mobile the "Back" bar is also sticky at the top — sit just below it. */
+@media (max-width: 768px) {
+  .spoiler-mini { top: 40px; }
+}
+
+/* ── Spoiler-gated content ─────────────────────────────────────────
+   Blocks tagged `sp-b<index>` stay locked until GuidesLayout's
+   data-spoiler (revealed biome count) is greater than that index. */
+.spoiler-block { margin: 10px 0; }
+.spoiler-block > .spoiler-lock {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-style: italic;
+  color: #7c7c8c;
+  background: #191922;
+  border: 1px dashed #3d3d50;
+  border-radius: 7px;
+  padding: 9px 12px;
+}
+.spoiler-block > .spoiler-body { display: none; }
+.spoiler-row { display: none; }   /* tagged table rows: hidden until revealed */
+
+/* Reveal — once data-spoiler > a biome's index, show its block body / table row
+   (display:revert → block for <div>, table-row for <tr>) and drop the lock bar. */
+.vh-guides[data-spoiler="1"] :is(.sp-b0) > .spoiler-body,
+.vh-guides[data-spoiler="1"] :is(.sp-b0).spoiler-row,
+.vh-guides[data-spoiler="2"] :is(.sp-b0,.sp-b1) > .spoiler-body,
+.vh-guides[data-spoiler="2"] :is(.sp-b0,.sp-b1).spoiler-row,
+.vh-guides[data-spoiler="3"] :is(.sp-b0,.sp-b1,.sp-b2) > .spoiler-body,
+.vh-guides[data-spoiler="3"] :is(.sp-b0,.sp-b1,.sp-b2).spoiler-row,
+.vh-guides[data-spoiler="4"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3) > .spoiler-body,
+.vh-guides[data-spoiler="4"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3).spoiler-row,
+.vh-guides[data-spoiler="5"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4) > .spoiler-body,
+.vh-guides[data-spoiler="5"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4).spoiler-row,
+.vh-guides[data-spoiler="6"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5) > .spoiler-body,
+.vh-guides[data-spoiler="6"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5).spoiler-row,
+.vh-guides[data-spoiler="7"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6) > .spoiler-body,
+.vh-guides[data-spoiler="7"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6).spoiler-row,
+.vh-guides[data-spoiler="8"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7) > .spoiler-body,
+.vh-guides[data-spoiler="8"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7).spoiler-row,
+.vh-guides[data-spoiler="9"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) > .spoiler-body,
+.vh-guides[data-spoiler="9"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8).spoiler-row {
+  display: revert;
+}
+.vh-guides[data-spoiler="1"] :is(.sp-b0) > .spoiler-lock,
+.vh-guides[data-spoiler="2"] :is(.sp-b0,.sp-b1) > .spoiler-lock,
+.vh-guides[data-spoiler="3"] :is(.sp-b0,.sp-b1,.sp-b2) > .spoiler-lock,
+.vh-guides[data-spoiler="4"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3) > .spoiler-lock,
+.vh-guides[data-spoiler="5"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4) > .spoiler-lock,
+.vh-guides[data-spoiler="6"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5) > .spoiler-lock,
+.vh-guides[data-spoiler="7"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6) > .spoiler-lock,
+.vh-guides[data-spoiler="8"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7) > .spoiler-lock,
+.vh-guides[data-spoiler="9"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) > .spoiler-lock {
+  display: none;
+}
 
 /* Page placeholder */
 .vh-stub { padding: 40px; color: #666; font-size: 14px; text-align: center; }

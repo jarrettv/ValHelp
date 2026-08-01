@@ -3,6 +3,7 @@
 // route through window.__vhItemClick / window.__vhToggleFav / window.__vhToggleSpd.
 /* eslint-disable */
 // @ts-nocheck
+import { biomeIndex, biomeLabel } from './spoiler';
 
 export type VhState = {
   allItems: any[] | null;
@@ -1704,18 +1705,48 @@ export function renderMdToElement(md: string, el: HTMLElement) {
   var h = '';
   var inList = false;
   var inTable = false;
+  var inSpoiler = false;
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     var trimmed = line.trim();
+    // Spoiler fence: `:::biome <name>` … `:::` wraps content that stays hidden
+    // (behind a lock bar) until the spoiler slider has revealed that biome.
+    if (trimmed.match(/^:::biome\b/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      if (inTable) { h += '</table>'; inTable = false; }
+      var _bi = biomeIndex(trimmed.replace(/^:::biome/i, '').trim());
+      if (_bi !== null) {
+        if (inSpoiler) { h += '</div></div>'; }
+        h += '<div class="spoiler-block sp-b' + _bi + '">'
+           + '<div class="spoiler-lock" aria-hidden="true">🔒 ' + esc(biomeLabel(_bi)) + ' &mdash; keep playing to unlock</div>'
+           + '<div class="spoiler-body">';
+        inSpoiler = true;
+      }
+      continue;
+    }
+    if (trimmed === ':::') {
+      if (inList) { h += '</ul>'; inList = false; }
+      if (inTable) { h += '</table>'; inTable = false; }
+      if (inSpoiler) { h += '</div></div>'; inSpoiler = false; }
+      continue;
+    }
     if (trimmed.match(/^\|/)) {
       if (inList) { h += '</ul>'; inList = false; }
       if (trimmed.match(/^\|[\s\-|:]+\|$/)) continue;
       if (!inTable) { h += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0">'; inTable = true; }
+      // Row-level spoiler tag: a trailing `{biome:NAME}` gates just this row.
+      var _rowCls = '';
+      var _rowTag = trimmed.match(/\{biome:\s*([^}]+)\}/i);
+      if (_rowTag) {
+        trimmed = trimmed.replace(/\{biome:\s*[^}]+\}/i, '').trim();
+        var _rbi = biomeIndex(_rowTag[1].trim());
+        if (_rbi !== null) _rowCls = ' class="spoiler-row sp-b' + _rbi + '"';
+      }
       var cells = trimmed.split('|').filter(function(_c, idx, arr) { return idx > 0 && idx < arr.length - 1; });
       var isHeader = i + 1 < lines.length && !!lines[i + 1].trim().match(/^\|[\s\-|:]+\|$/);
       var tag = isHeader ? 'th' : 'td';
       var style = isHeader ? 'color:#8cf;text-align:left;padding:4px 8px;border-bottom:1px solid #444' : 'color:#ccc;padding:3px 8px;border-bottom:1px solid #222';
-      h += '<tr>';
+      h += '<tr' + _rowCls + '>';
       cells.forEach(function(c) { h += '<' + tag + ' style="' + style + '">' + mdInline(c.trim()) + '</' + tag + '>'; });
       h += '</tr>';
       continue;
@@ -1745,6 +1776,7 @@ export function renderMdToElement(md: string, el: HTMLElement) {
   }
   if (inList) h += '</ul>';
   if (inTable) h += '</table>';
+  if (inSpoiler) h += '</div></div>';
   el.innerHTML = h;
 }
 

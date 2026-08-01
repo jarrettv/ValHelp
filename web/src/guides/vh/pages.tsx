@@ -84,6 +84,9 @@ export const ChangelogPage = () => (
       description="Recent updates to ValHelp data, docs, and detail screens."
       path="/guides/changelog"
     />
+    <div className="vh-spoiler-warn" role="alert">
+      ⚠ This page may have spoilers — look away quickly!
+    </div>
     <TipsMarkdown name="changelog" />
     <Feedback />
   </div>

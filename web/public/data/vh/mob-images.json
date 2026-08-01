@@ -109,6 +109,11 @@
         "2": "/api/mob/TrophyBoar_2.webp"
       }
     },
+    "TrophyBonemass": {
+      "stars": {
+        "0": "/api/mob/TrophyBonemass_0.webp"
+      }
+    },
     "TrophyCharredArcher": {
       "stars": {
         "0": "/api/mob/TrophyCharredArcher_0.webp",
@@ -147,6 +152,11 @@
         "2": "/api/mob/TrophyDeer_2.webp"
       }
     },
+    "TrophyDragonQueen": {
+      "stars": {
+        "0": "/api/mob/TrophyDragonQueen_0.webp"
+      }
+    },
     "TrophyDraugr": {
       "stars": {
         "0": "/api/mob/TrophyDraugr_0.webp",
@@ -166,6 +176,16 @@
         "2": "/api/mob/TrophyDvergr_2.webp"
       }
     },
+    "TrophyEikthyr": {
+      "stars": {
+        "0": "/api/mob/TrophyEikthyr_0.webp"
+      }
+    },
+    "TrophyFader": {
+      "stars": {
+        "0": "/api/mob/TrophyFader_0.webp"
+      }
+    },
     "TrophyFallenValkyrie": {
       "stars": {
         "0": "/api/mob/TrophyFallenValkyrie_0.webp",
@@ -175,8 +195,7 @@
     },
     "TrophyFenring": {
       "stars": {
-        "0": "/api/mob/TrophyFenring_0.webp",
-        "1": "/api/mob/TrophyFenring_1.webp"
+        "0": "/api/mob/TrophyFenring_0.webp"
       }
     },
     "TrophyFrostTroll": {
@@ -210,6 +229,11 @@
         "0": "/api/mob/TrophyGoblinBrute_0.webp",
         "1": "/api/mob/TrophyGoblinBrute_1.webp",
         "2": "/api/mob/TrophyGoblinBrute_2.webp"
+      }
+    },
+    "TrophyGoblinKing": {
+      "stars": {
+        "0": "/api/mob/TrophyGoblinKing_0.webp"
       }
     },
     "TrophyGoblinShaman": {
@@ -300,6 +324,11 @@
         "2": "/api/mob/TrophySeekerBrute_2.webp"
       }
     },
+    "TrophySeekerQueen": {
+      "stars": {
+        "0": "/api/mob/TrophySeekerQueen_0.webp"
+      }
+    },
     "TrophySerpent": {
       "stars": {
         "0": "/api/mob/TrophySerpent_0.webp"
@@ -324,6 +353,11 @@
         "0": "/api/mob/TrophySurtling_0.webp",
         "1": "/api/mob/TrophySurtling_1.webp",
         "2": "/api/mob/TrophySurtling_2.webp"
+      }
+    },
+    "TrophyTheElder": {
+      "stars": {
+        "0": "/api/mob/TrophyTheElder_0.webp"
       }
     },
     "TrophyTick": {
@@ -353,6 +387,11 @@
     "TrophyWraith": {
       "stars": {
         "0": "/api/mob/TrophyWraith_0.webp"
+      }
+    },
+    "Vegvisir": {
+      "stars": {
+        "0": "/api/mob/Vegvisir_0.webp"
       }
     }
   }

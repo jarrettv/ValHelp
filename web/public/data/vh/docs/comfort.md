@@ -20,15 +20,15 @@ Only the highest-comfort item in each category counts. Furniture must be within 
 
 | Category   | Best Item                | Comfort | Typical Unlocked         |
 |------------|--------------------------|:-------:|--------------------------|
-| Fire       | [hearth]*  Hearth        |    2    | Swamp (stone-cutter)     |
-| Bed        | [piece_bed02]* Dragon Bed |    2    | Mountain (wolf pelts)    |
-| Seating    | [piece_throne01]* Any Throne |    3    | Swamp (iron-nails)       |
-| Table      | [piece_table_round]* Round / Long Heavy Table |    2    | Plains (tar)             |
-| Banner     | [piece_banner01]* Any Banner |    1    | Black Forest (finewood)  |
-| Carpet     | [rug_deer]* Any Rug      |    1    | Meadows (deer hide)      |
-| Standalone | [ArmorStand]* Armour Stand |    1    | Swamp (iron-nails)       |
-| Standalone | [piece_bathtub]* Hot Tub |    2    | Plains (iron, tar)       |
-| Standalone | [piece_Lavalantern]* Lava Lantern |    1    | Ashlands (flametal)      |
+| Fire       | [hearth]*  Hearth        |    2    | Swamp (stone-cutter)     | {biome:swamp}
+| Bed        | [piece_bed02]* Dragon Bed |    2    | Mountain (wolf pelts)    | {biome:mountain}
+| Seating    | [piece_throne01]* Any Throne |    3    | Swamp (iron-nails)       | {biome:swamp}
+| Table      | [piece_table_round]* Round / Long Heavy Table |    2    | Plains (tar)             | {biome:plains}
+| Banner     | [piece_banner01]* Any Banner |    1    | Black Forest (finewood)  | {biome:blackforest}
+| Carpet     | [rug_deer]* Any Rug      |    1    | Meadows (deer hide)      | {biome:meadows}
+| Standalone | [ArmorStand]* Armour Stand |    1    | Swamp (iron-nails)       | {biome:swamp}
+| Standalone | [piece_bathtub]* Hot Tub |    2    | Plains (iron, tar)       | {biome:plains}
+| Standalone | [piece_Lavalantern]* Lava Lantern |    1    | Ashlands (flametal)      | {biome:ashlands}
 | Standalone | [piece_maypole]* Maypole |    1    | Seasonal / natural spawn |
 | Standalone | [piece_xmastree]* Yule Tree |    1    | Seasonal                 |
 
@@ -36,13 +36,13 @@ Standalone items all stack — every other category only counts the best piece.
 
 | Biome | Max | Setup | Rested |
 |-------|:---:|-------|:------:|
-| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | 5† | [fire_pit]+ + [bed]+ + [rug_deer]+ + Shelter | 12 min |
-| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | 9 | + [piece_chair02]+ + [piece_table]+ + [piece_banner01]+ | 16 min |
-| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | 12 | + [hearth]+ + [piece_throne01]+ + [ArmorStand]+ | 19 min |
-| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | 13 | + [piece_bed02]+ | 20 min |
-| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | 16 | + [piece_bathtub]+ + [piece_table_round]+ | 23 min |
-| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | 16 | No new comfort items | 23 min |
-| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | 17 | + [piece_Lavalantern]+ | 24 min |
+| <img src="/data/vh/BiomeMeadows.png" style="width:32px;height:32px;display:block"> Meadows | 5† | [fire_pit]+ + [bed]+ + [rug_deer]+ + Shelter | 12 min | {biome:meadows}
+| <img src="/data/vh/BiomeBlackForest.png" style="width:32px;height:32px;display:block"> Black Forest | 9 | + [piece_chair02]+ + [piece_table]+ + [piece_banner01]+ | 16 min | {biome:blackforest}
+| <img src="/data/vh/BiomeSwamp.png" style="width:32px;height:32px;display:block"> Swamp | 12 | + [hearth]+ + [piece_throne01]+ + [ArmorStand]+ | 19 min | {biome:swamp}
+| <img src="/data/vh/BiomeMountains.png" style="width:32px;height:32px;display:block"> Mountain | 13 | + [piece_bed02]+ | 20 min | {biome:mountain}
+| <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | 16 | + [piece_bathtub]+ + [piece_table_round]+ | 23 min | {biome:plains}
+| <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | 16 | No new comfort items | 23 min | {biome:mistlands}
+| <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | 17 | + [piece_Lavalantern]+ | 24 min | {biome:ashlands}
 
 †Sitting log is available in Meadows if you find a campsite
 

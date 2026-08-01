@@ -81,6 +81,14 @@ interface StatePoint {
   state: PlayerStateSnapshot;
 }
 
+// Backend sends ScorePoint { t, score } — the authoritative client-reported
+// running score at that point on the timeline (a step function, only the
+// moments the score actually changed).
+interface ScorePoint {
+  t: number;
+  score: number;
+}
+
 type SidebarMode = 'scores' | 'drops' | 'equip' | 'skills';
 
 interface DataItem {
@@ -145,9 +153,8 @@ function buildPlayerMapData(
   players: Player[],
   pathData: Record<string, PathPoint[]>,
   gs: number,
-  eventStartMs: number,
   maxTime: number | null,
-  scoring: Record<string, number>,
+  scoreData: Record<string, ScorePoint[]>,
 ): PlayerMapData[] {
   return players.map((player, i) => {
     const color = PLAYER_COLORS[i % PLAYER_COLORS.length];
@@ -217,20 +224,11 @@ function buildPlayerMapData(
       portals.push({ code: log.code, x: log.x, z: log.z, at: t });
     }
 
-    // Compute score at current scrub time (also aligned to path timeline)
-    let scoreAtTime = 0;
-    for (const log of player.logs) {
-      if (log.x === 0 && log.z === 0) {
-        // Old format without position — use server timestamp fallback
-        const logTimeSec = (new Date(log.at).getTime() - eventStartMs) / 1000;
-        if (maxTime !== null && logTimeSec > maxTime) continue;
-      } else {
-        const t = findPathTime(log.x, log.z);
-        if (maxTime !== null && t > maxTime) continue;
-      }
-      const points = scoring[log.code];
-      if (points !== undefined) scoreAtTime += points;
-    }
+    // Score at scrub time — read straight from the authoritative client-reported
+    // score history (findScoreAtTime), no re-derivation from logs. At the live
+    // edge (maxTime === null) that's the latest reported score.
+    const scoreLookupTime = maxTime ?? Infinity;
+    const scoreAtTime = findScoreAtTime(scoreData[discordId], scoreLookupTime);
 
     return { index: i, id: discordId, name: player.name, avatarUrl: player.avatarUrl, color, path, currentPos, trophies, penalties, portals, scoreAtTime };
   });
@@ -266,6 +264,20 @@ function findStateAtTime(states: StatePoint[] | undefined, t: number): PlayerSta
     else hi = mid - 1;
   }
   return best >= 0 ? states[best].state : null;
+}
+
+// Score at scrub time t: the latest score point at or before t. Returns 0
+// before the first point (start of the hunt). No calculation — this is the
+// client-reported score, replayed.
+function findScoreAtTime(scores: ScorePoint[] | undefined, t: number): number {
+  if (!scores || scores.length === 0) return 0;
+  let lo = 0, hi = scores.length - 1, best = -1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (scores[mid].t <= t) { best = mid; lo = mid + 1; }
+    else hi = mid - 1;
+  }
+  return best >= 0 ? scores[best].score : 0;
 }
 
 function getCachedImage(url: string): HTMLImageElement | null {
@@ -387,6 +399,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     return () => clearInterval(id);
   }, [isLive, eventStartMs, eventDurationSec, pinnedToLive]);
 
+  // Effective scrub position on the timeline (seconds since event start).
+  const currentScrub = scrubTime ?? (isLive ? elapsedNow : eventDurationSec);
+
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>('scores');
   const [sidebarOpen, setSidebarOpen] = useState(typeof window !== 'undefined' && window.innerWidth > 768);
   const [itemDb, setItemDb] = useState<Map<string, DataItem> | null>(null);
@@ -403,6 +418,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     ready: false,
     pathData: {} as Record<string, PathPoint[]>,
     stateData: {} as Record<string, StatePoint[]>,
+    scoreData: {} as Record<string, ScorePoint[]>,
     playerMapData: [] as PlayerMapData[],
   });
 
@@ -656,10 +672,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     if (!stateRef.current.ready) return;
     const gs = window.VectorMap.getGridSize();
     stateRef.current.playerMapData = buildPlayerMapData(
-      activePlayers, stateRef.current.pathData, gs, eventStartMs, scrubTime, event.scoring
+      activePlayers, stateRef.current.pathData, gs, scrubTime, stateRef.current.scoreData
     );
     scheduleUpdate();
-  }, [activePlayers, scheduleUpdate, eventStartMs, scrubTime, event.scoring]);
+  }, [activePlayers, scheduleUpdate, scrubTime]);
 
   // Stable ref so SSE handlers always call the latest rebuildMapData without causing reconnects
   const rebuildRef = useRef(rebuildMapData);
@@ -728,6 +744,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         const payload = JSON.parse(e.data);
         stateRef.current.pathData = payload.paths || {};
         stateRef.current.stateData = payload.states || {};
+        stateRef.current.scoreData = payload.scores || {};
         if (typeof payload.viewers === 'number') setViewers(payload.viewers);
         rebuildRef.current();
       });
@@ -739,6 +756,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         } else if (type === 'state') {
           const existing = stateRef.current.stateData[playerId] || [];
           stateRef.current.stateData[playerId] = [...existing, ...(data as StatePoint[])];
+          rebuildRef.current();
+        } else if (type === 'score') {
+          const existing = stateRef.current.scoreData[playerId] || [];
+          stateRef.current.scoreData[playerId] = [...existing, ...(data as ScorePoint[])];
           rebuildRef.current();
         } else {
           const existing = stateRef.current.pathData[playerId] || [];
@@ -759,6 +780,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
           if (payload.paths) {
             stateRef.current.pathData = payload.paths;
             stateRef.current.stateData = payload.states || {};
+            stateRef.current.scoreData = payload.scores || {};
           } else {
             stateRef.current.pathData = payload;
           }
@@ -928,8 +950,6 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     };
   }, [scheduleUpdate]);
 
-  const currentScrub = scrubTime ?? (isLive ? elapsedNow : eventDurationSec);
-
   // Players not hidden — shown on map and in sidebar
   const visiblePlayers = activePlayers.filter((_, i) => !hiddenPlayers.has(i));
 
@@ -1049,10 +1069,10 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
                     <SidebarScores
                       players={visiblePlayers}
                       allPlayers={activePlayers}
-                      scoring={event.scoring}
                       scrubTime={currentScrub}
                       eventStartMs={eventStartMs}
                       itemDb={itemDb}
+                      scoreData={stateRef.current.scoreData}
                     />
                   ) : sidebarMode === 'drops' ? (
                     <SbDrops
@@ -1103,26 +1123,25 @@ const getPlayerId = (p: Player) => p.discordId || String(p.userId);
 const SidebarScores: React.FC<{
   players: Player[];
   allPlayers: Player[];
-  scoring: Record<string, number>;
   scrubTime: number;
   eventStartMs: number;
   itemDb: Map<string, DataItem> | null;
-}> = ({ players, allPlayers, scoring, scrubTime, eventStartMs }) => {
+  scoreData: Record<string, ScorePoint[]>;
+}> = ({ players, allPlayers, scrubTime, eventStartMs, scoreData }) => {
   const scored = players.map(p => {
     const idx = allPlayers.indexOf(p);
     const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
-    // Filter logs by scrub time, compute score
+    // Filter logs by scrub time (drives the trophy/bonus icon strip below)
     const logs = p.logs
       .filter(l => {
         const timeSec = (new Date(l.at).getTime() - eventStartMs) / 1000;
         return timeSec <= scrubTime;
       })
       .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
-    let score = 0;
-    for (const l of logs) {
-      const pts = scoring[l.code];
-      if (pts !== undefined) score += pts;
-    }
+    // Score read straight from the authoritative client-reported history — no
+    // re-derivation from logs.
+    const pid = getPlayerId(p);
+    const score = findScoreAtTime(scoreData[pid], scrubTime);
     return { player: p, index: idx, color, score, logs };
   }).sort((a, b) => b.score - a.score);
 

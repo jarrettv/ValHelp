@@ -59,7 +59,10 @@ const parseGuideFile = (raw: string): ParsedGuide => {
 
 const toSlug = (href: string | undefined, path: string): string => {
   if (href) {
-    return href.replace(/^\//, "").replace(/^guides\//, "").replace(/\/$/, "");
+    // The article route is `/guides/info/:slug`, so the slug is the final path
+    // segment of the href (e.g. "/guides/info/trophy-saga" -> "trophy-saga").
+    const cleaned = href.replace(/\/$/, "");
+    return cleaned.split("/").pop() ?? "";
   }
   const fileName = path.split("/").pop() ?? "";
   return fileName.replace(/\.md$/i, "");
