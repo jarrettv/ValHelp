@@ -4,8 +4,10 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 
 ## 2026-08-01
 
-* New spoiler-free system. New creature renders. Map fixes.
+* The spoiler-free system now covers every item and creature list, with the slider reachable from any page. New creature renders. Map fixes.
 * **Spoiler-free guides**: the new Articles guide adds a spoiler slider — set how far you've progressed and everything ahead of you (biome guides, weapon/gear/food/comfort categories, bestiary biomes, and per-biome tables) stays hidden until you reach it. Progress is saved locally and synced to your account when logged in.
+* **Every item is biome-tagged**: each weapon, gear piece, food, mead, comfort piece, and creature now knows which biome it belongs to. Anything past your progress stays in the list but is blurred behind a lock showing the biome it's waiting in — so you can see how much is still ahead without being spoiled. Locked entries can't be opened, and they're blurred in the All, Favorites, and Speedrun lists too.
+* **Spoiler slider everywhere**: a new eye button in the top bar opens the slider from any page, and on the Articles overview a compact copy follows you down the page once the big slider scrolls out of view.
 * **Boss stone renders**: in-game renders of all seven Forsaken boss stones, [TrophyEikthyr]@"Eikthyr" through [TrophyFader]@"Fader", with reworked (Call to Arms) Forsaken power effects.
 * **Vegvisir render** added to the Articles overview, with a guide to finding bosses by their red glow.
 * **Taming art**: baby-creature renders — piggy, wolf cub, lox calf, and asksvin hatchling — added to the bestiary taming table, with linked foods.
@@ -13,12 +15,14 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 
 ## 2026-07-24
 
+* Every creature gets an in-game render, and star ratings now match what actually spawns.
 * **Bestiary art**: every non-boss creature now has an in-game render on its detail screen, with a **star selector** (0★/1★/2★) that swaps the render and rescales HP — auto-rotating every 2.5s
 * Enemy **star ranges are now game-accurate** — each creature shows only the stars it can actually spawn with (Deathsquito, Fallen Valkyrie, Morgen, Stone Golem, Draugr Elite and others never star); [Bestiary_Bat]@"Bat" and [TrophyUlv]@"Ulv" can reach 1★ inside the Howling Cavern
 * Added the missing Ashlands mini-boss [LordReto]@"Lord Reto" — always 2★, guards the third Dyrnwyn fragment
 
 ## 2026-05-02
 
+* Notes for every remaining weapon class — crossbows, polearms, staves, axes, spears, and all the ammo and bombs.
 * Huge update adding notes for crossbows, polearms, staves, arrows, bombs, and tools
 * Bows: [BowAshlands]@"Ash Fang", [BowAshlandsBlood]@"Blood Fang", [BowAshlandsRoot]@"Root Fang", [BowAshlandsStorm]@"Storm Fang"
 * Crossbows: [CrossbowArbalest]@"Arbalest", [CrossbowRipper]@"Ripper", [CrossbowRipperBlood]@"Wound Ripper", [CrossbowRipperLightning]@"Storm Ripper", [CrossbowRipperNature]@"Root Ripper", [DvergerArbalest]@"Dverger Arbalest"
@@ -40,12 +44,14 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 
 ## 2026-04-28
 
+* Armor set bonuses documented, and OBS browser sources moved to new secret-code URLs.
 * Gear docs: new **Armor Set Bonus Effects** table under Armor (Berserk/Bear, Vilebone Wrath, Endurance/Ask, Fenris Blessing, Ranger/Root, Sneaky/Troll)
 * Weapon docs: tier rankings now use clickable item chips ([SpearFlint](1) format) for every weapon listed
 * OBS browser sources moved to **`/obs2/<view>/<secret code>`** URLs — generated for you on the [OBS page](/auth/obs). The new URLs work for **both public and private events** you participate in. Old `/obs/<view>/<playerId>` URLs continue to serve public events for backwards compat.
 
 ## 2026-04-26
 
+* Notes for every mead and cape in the game, plus food and mead detail screen polish.
 * Food detail screen: large fork icon now sits to the left of the stat bars; bar tracks darkened for better contrast
 * Mead base detail: shows fermentation result as a hyperlink to the finished mead, with the recipe shown above the effect section and other reordering improvements
 
@@ -62,6 +68,7 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 
 ## 2026-04-25
 
+* Weapon notes across swords, axes, spears, knives, and clubs, with clickable item chips throughout.
 * Added weapon notes for many new items across swords, unarmed, axes, spears, knives, and clubs/maces
 * Swords: [SwordDyrnwyn]* [Dyrnwyn](/guides/weapons/swords/SwordDyrnwyn), [SwordIron]* [Iron Sword](/guides/weapons/swords/SwordIron), [SwordBlackmetal]* [Black Metal Sword](/guides/weapons/swords/SwordBlackmetal), [SwordNiedhogg]* [Nidhögg](/guides/weapons/swords/SwordNiedhogg), [THSwordKrom]* [Krom](/guides/weapons/swords/THSwordKrom), [THSwordSlayer]* [Slayer](/guides/weapons/swords/THSwordSlayer) and its [THSwordSlayerBlood]* [Brutal](/guides/weapons/swords/THSwordSlayerBlood), [THSwordSlayerNature]* [Primal](/guides/weapons/swords/THSwordSlayerNature), [THSwordSlayerLightning]* [Scourging](/guides/weapons/swords/THSwordSlayerLightning) variants
 * Unarmed: [FistFenrirClaw]* [Flesh Rippers](/guides/weapons/unarmed/FistFenrirClaw), [FistBjornUndeadClaw]* [Vilebone Maulclaws](/guides/weapons/unarmed/FistBjornUndeadClaw)
@@ -75,5 +82,6 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 
 ## 2026-04-19
 
+* First weapon notes land, and the event map stops showing unregistered players.
 * Event map no longer renders players that aren't registered for the event
 * Added weapon notes for [SwordMistwalker]* [Mistwalker](/guides/weapons/swords/SwordMistwalker), [MaceSilver]* [Frostner](/guides/weapons/clubs/MaceSilver), [AxeEarly]* [Early Axes](/guides/weapons/axes/AxeEarly), and more
