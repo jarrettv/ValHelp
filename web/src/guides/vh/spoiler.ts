@@ -100,16 +100,20 @@ export function subscribeSpoiler(cb: () => void): () => void {
 }
 
 // ── Server sync (logged-in users) ─────────────────────────────────
-// Progress always lives in localStorage; when a user is logged in it also syncs
-// to their prefs (code "spoiler") so it follows them across devices/browsers.
+// Progress always lives in localStorage; when a user is logged in the *level*
+// (integer revealed count) also syncs to their prefs so it follows them across
+// devices/browsers. Only the integer travels — the fractional part is a local
+// slider-animation detail and doesn't change what's revealed.
 const SAVE_DEBOUNCE_MS = 1000;
 let syncUserId: number | null = null;
 let canSync = false;
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let savedLevel: number | null = null;
 
-// Apply a value received from the server without echoing it back up.
-function applyFromServer(v: number): void {
-  const next = clamp(v);
+// Apply a level received from the server without echoing it back up.
+function applyFromServer(level: number): void {
+  savedLevel = level;
+  const next = clamp(level);
   if (next === progress) return;
   progress = next;
   persist(next);
@@ -121,17 +125,22 @@ function scheduleServerSave(): void {
   if (saveTimer != null) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     saveTimer = null;
-    fetch('/api/auth/prefs', {
+    const level = getRevealedCount();
+    if (level === savedLevel) return; // dragging within a biome — nothing new to store
+    savedLevel = level;
+    fetch('/api/auth/prefs/spoiler', {
       method: 'POST',
       credentials: 'include',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ code: 'spoiler', items: [String(progress)] }),
-    }).catch(() => { /* offline / auth lapsed — localStorage still holds it */ });
+      body: JSON.stringify({ level }),
+    }).catch(() => {
+      savedLevel = null; // offline / auth lapsed — retry on the next change
+    });
   }, SAVE_DEBOUNCE_MS);
 }
 
-/** Call once a logged-in user's id is known. A saved server value wins over
- *  local; if the user has none yet, the current local progress is uploaded. */
+/** Call once a logged-in user's id is known. A saved server level wins over
+ *  local; if the user has none yet, the current local level is uploaded. */
 export async function syncSpoilerWithServer(userId: number): Promise<void> {
   if (syncUserId === userId) return;
   syncUserId = userId;
@@ -140,11 +149,10 @@ export async function syncSpoilerWithServer(userId: number): Promise<void> {
     const res = await fetch('/api/auth/prefs/spoiler', { credentials: 'include' });
     if (res.ok) {
       const data = await res.json();
-      const raw = Array.isArray(data?.items) ? data.items[0] : undefined;
-      const v = raw != null ? parseFloat(String(raw)) : NaN;
-      if (!Number.isNaN(v)) { applyFromServer(v); return; }
+      const level = Number(data?.level);
+      if (Number.isFinite(level)) { applyFromServer(level); return; }
     }
-    // 401 / 404 / empty → no saved value yet: push local up so it's persisted.
+    // 401 / 404 / empty → no saved level yet: push local up so it's persisted.
     scheduleServerSave();
   } catch { /* ignore — keep local */ }
 }
@@ -153,5 +161,6 @@ export async function syncSpoilerWithServer(userId: number): Promise<void> {
 export function clearSpoilerSync(): void {
   syncUserId = null;
   canSync = false;
+  savedLevel = null;
   if (saveTimer != null) { clearTimeout(saveTimer); saveTimer = null; }
 }

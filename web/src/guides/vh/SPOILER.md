@@ -7,7 +7,9 @@ guide "spoiler-free" — you only see what's relevant to your progress.
 ## How it works (30-second version)
 
 1. One global value, **progress** (0–9), lives in `spoiler.ts` (persisted to
-   `localStorage`). The Articles slider writes it.
+   `localStorage`). The Articles slider writes it. For logged-in users the
+   integer level also syncs to their prefs (`GET`/`POST /api/auth/prefs/spoiler`,
+   stored as `UserPrefs.Spoiler` — an `int?`), so it follows them across devices.
 2. `GuidesLayout` stamps **`data-spoiler="<revealedCount>"`** on its root
    `.vh-guides` element, where `revealedCount = floor(progress)` = how many biomes
    are unlocked.

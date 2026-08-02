@@ -7,6 +7,7 @@ import type { VhItem } from './types';
 import TipsMarkdown from './TipsMarkdown';
 import CompactSpoilerSlider from './CompactSpoilerSlider';
 import { getRevealedCount, subscribeSpoiler, biomeIndex, biomeLabel } from './spoiler';
+import { isItemLocked, setItemBiomes } from './itemBiome';
 import NotesEditor from './NotesEditor';
 import Feedback from '../../components/Feedback';
 import {
@@ -153,6 +154,9 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
   useEffect(() => {
     const slug = viewToSlug(view, config);
     const handler = (code: string) => {
+      // CSS already blocks pointer events on locked rows; this covers anything
+      // that reaches the handler another way (keyboard, injected calls).
+      if (isItemLocked(code, revealed)) return;
       const base = `/guides/${config.pageSlug}`;
       // 'tips' is the markdown reader view, not an item-list category — fall back to 'all' so the detail panel renders.
       const navSlug = slug && slug !== 'tips' ? slug : 'all';
@@ -168,7 +172,16 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
       (window as any).selectPageItem = undefined;
       (window as any).__vhNavigate = undefined;
     };
-  }, [navigate, config, view]);
+  }, [navigate, config, view, revealed]);
+
+  // A locked item's detail panel would spoil it outright — bounce direct URLs
+  // (shared links, back button, sliding the spoiler back down while viewing).
+  useEffect(() => {
+    if (!items || !urlItemCode) return;
+    if (isItemLocked(urlItemCode, revealed)) {
+      navigate(`/guides/${config.pageSlug}`, { replace: true });
+    }
+  }, [items, urlItemCode, revealed, config, navigate]);
 
   const navigateToView = (v: View) => {
     setSearch('');
@@ -177,9 +190,16 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
     navigate(slug ? `${base}/${slug}` : base);
   };
 
+  // Prime the biome map during render, not in an effect: the list HTML is built
+  // below in a useMemo, and a map that arrived a tick later would paint one
+  // frame of unblurred rows — a spoiler leak.
+  useMemo(() => { if (items) setItemBiomes(items); }, [items]);
+
+  // Items from locked categories stay in the lists — they render blurred behind
+  // a lock plate (see `sp-item` in GuidesLayout.css) rather than vanishing.
   const pageItems = useMemo(
-    () => (items ? items.filter(it => !it.hidden && config.filter(it) && !lockedTagIds.has(String(it[config.subField]))) : []),
-    [items, config, lockedTagIds]
+    () => (items ? items.filter(it => !it.hidden && config.filter(it)) : []),
+    [items, config]
   );
 
   const filtered = useMemo(() => {

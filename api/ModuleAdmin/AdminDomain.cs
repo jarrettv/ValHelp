@@ -33,9 +33,9 @@ public class UserPrefs
     public UserPrefsItems? Favs { get; set; }
     public UserPrefsItems? SpeedRuns { get; set; }
 
-    // Spoiler-slider progress (Articles guide). Stored as a single-element Items
-    // array (e.g. ["4.5"]) so it reuses the generic prefs GET/POST endpoints.
-    public UserPrefsItems? Spoiler { get; set; }
+    // Spoiler-slider level (Articles guide): how many biomes the reader has
+    // revealed, 1-based (1 = Meadows only). Null until they move the slider.
+    public int? Spoiler { get; set; }
 
     public List<UserPrefsFeedback>? Feedback { get; set; }
 

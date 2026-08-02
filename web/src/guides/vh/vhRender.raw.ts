@@ -4,6 +4,22 @@
 /* eslint-disable */
 // @ts-nocheck
 import { biomeIndex, biomeLabel } from './spoiler';
+import { itemBiomeIndex, itemSpoilerClass } from './itemBiome';
+
+// ── Spoiler gating for list rows ──────────────────────────────────
+// The class drives the blur from CSS (so dragging the slider re-skins the list
+// with no re-render); the veil is the lock plate drawn over the blurred row.
+function spoilerClass(code) {
+  return itemSpoilerClass(code);
+}
+function spoilerVeil(code) {
+  var idx = itemBiomeIndex(code);
+  if (idx == null) return '';
+  return '<div class="sp-veil" aria-hidden="true">'
+    + '<span class="sp-veil-lock">🔒</span>'
+    + '<span class="sp-veil-txt">' + esc(biomeLabel(idx)) + '</span>'
+    + '</div>';
+}
 
 export type VhState = {
   allItems: any[] | null;
@@ -388,7 +404,7 @@ function renderCraftListItem(it, maxStats) {
   var iconHtml = it.hasIcon
     ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;
@@ -452,7 +468,7 @@ function renderFoodListItem(it, maxStats) {
   var iconHtml = it.hasIcon
     ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;
@@ -499,7 +515,7 @@ function renderMeadListItem(it, maxStats) {
     ? '<img src="/data/vh/icons/' + encodeURIComponent(displayIcon) + '.png" alt="" draggable="false" style="width:32px;height:32px;image-rendering:pixelated;flex-shrink:0">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var displayName = paired ? paired.name : it.name;
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;
@@ -516,7 +532,7 @@ function renderArmorListItem(it, maxStats) {
   var iconHtml = it.hasIcon
     ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;
@@ -605,7 +621,9 @@ function renderBestiaryListItem(it, maxStats) {
   var td = it.trophyDrop;
   var liMinStar = td.minStar || 0;
   var hp = (liMinStar ? td.hp * (liMinStar + 1) : td.hp) || '?';
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  // Biome categories are locked outright, but All / Favorites / Speedrun mix
+  // every biome together — those rows blur like any other item.
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;
@@ -637,7 +655,7 @@ function renderComfortListItem(it, maxStats) {
   var iconHtml = it.hasIcon
     ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
-  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">';
+  var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
   if (craftFavorites[it.code]) h += ICON_STAR;
   if (craftSpeedrun[it.code]) h += ICON_RUNNER;

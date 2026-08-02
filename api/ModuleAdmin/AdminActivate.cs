@@ -27,8 +27,9 @@ public static class AdminActivate
         {
             b.ToJson();
             b.OwnsOne(p => p.Favs);
+            b.Navigation(p => p.Favs).IsRequired(false);
             b.OwnsOne(p => p.SpeedRuns);
-            b.OwnsOne(p => p.Spoiler);
+            b.Navigation(p => p.SpeedRuns).IsRequired(false);
             b.OwnsMany(p => p.Feedback);
             b.OwnsMany(p => p.Worlds);
         });

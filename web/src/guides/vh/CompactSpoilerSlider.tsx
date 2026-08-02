@@ -33,7 +33,11 @@ export default function CompactSpoilerSlider() {
         aria-label="Spoiler level"
       />
       <span className="spoiler-mini__current">
-        {current.icon && <img src={biomeIconUrl(current.icon)} alt="" />}
+        {/* Always render the slot — Deep North has no art, and letting the icon
+            vanish would shift the label sideways mid-drag. */}
+        <span className="spoiler-mini__icon">
+          {current.icon && <img src={biomeIconUrl(current.icon)} alt="" />}
+        </span>
         {current.label}
       </span>
     </div>

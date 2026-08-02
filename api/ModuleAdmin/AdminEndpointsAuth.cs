@@ -27,6 +27,11 @@ public static class AdminEndpointsAuth
 
         api.MapGet("prefs/{code}", GetPrefs).RequireAuthorization();
         api.MapPost("prefs", PostPrefs).RequireAuthorization();
+
+        // Spoiler is a scalar level, not an item list — its own pair of routes.
+        // The literal segment wins over prefs/{code} in route matching.
+        api.MapGet("prefs/spoiler", GetSpoiler).RequireAuthorization();
+        api.MapPost("prefs/spoiler", PostSpoiler).RequireAuthorization();
     }
 
     static int UserId(ClaimsPrincipal user) =>
@@ -47,10 +52,20 @@ public static class AdminEndpointsAuth
 
     public static async Task<Ok<List<UserListItem>>> GetUsers(AppDbContext db)
     {
-        var users = await db.Users
-            .Select(x => new UserListItem(
-                x.Id, x.Username, x.Email, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.SteamId, x.AltName, x.IsActive))
+        // Prefs is a JSON column — pull it down and summarise in memory rather than
+        // asking the provider to translate counts out of the document.
+        var rows = await db.Users
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.Username, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.IsActive, x.Prefs })
             .ToListAsync();
+
+        var users = rows.Select(x => new UserListItem(
+            x.Id, x.Username, x.AvatarUrl, x.LastLoginAt, x.DiscordId, x.IsActive,
+            x.Prefs?.Favs?.Items.Length ?? 0,
+            x.Prefs?.SpeedRuns?.Items.Length ?? 0,
+            x.Prefs?.Spoiler,
+            x.Prefs?.Feedback?.Count ?? 0,
+            x.Prefs?.Blocked)).ToList();
         return TypedResults.Ok(users);
     }
 
@@ -178,12 +193,40 @@ public static class AdminEndpointsAuth
         {
             "favs" => prefs?.Favs,
             "speedruns" => prefs?.SpeedRuns,
-            "spoiler" => prefs?.Spoiler,
             _ => null
         };
 
         if (data == null) return TypedResults.Problem("User prefs not found", statusCode: 404);
         return TypedResults.Ok(data);
+    }
+
+    public static async Task<Results<Ok<SpoilerResp>, ProblemHttpResult>> GetSpoiler(
+        ClaimsPrincipal user, AppDbContext db)
+    {
+        var userId = UserId(user);
+        var prefs = await db.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => u.Prefs)
+            .SingleOrDefaultAsync();
+
+        if (prefs?.Spoiler == null) return TypedResults.Problem("Spoiler level not set", statusCode: 404);
+        return TypedResults.Ok(new SpoilerResp(prefs.Spoiler.Value));
+    }
+
+    public static async Task<Results<Ok<SpoilerResp>, ProblemHttpResult>> PostSpoiler(
+        ClaimsPrincipal user, AppDbContext db, SpoilerReq req)
+    {
+        if (req.Level < MinSpoilerLevel || req.Level > MaxSpoilerLevel)
+            return TypedResults.Problem($"Spoiler level must be {MinSpoilerLevel}-{MaxSpoilerLevel}", statusCode: 400);
+
+        var userId = UserId(user);
+        var currentUser = await db.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (currentUser == null) return TypedResults.Problem("User not found", statusCode: 404);
+
+        currentUser.Prefs.Spoiler = req.Level;
+        await db.SaveChangesAsync();
+        return TypedResults.Ok(new SpoilerResp(req.Level));
     }
 
     public static async Task<Results<Ok<ObsCodeResp>, NotFound>> PostObsCode(
@@ -259,9 +302,6 @@ public static class AdminEndpointsAuth
             case "speedruns":
                 currentUser.Prefs.SpeedRuns = new UserPrefsItems(items, now);
                 break;
-            case "spoiler":
-                currentUser.Prefs.Spoiler = new UserPrefsItems(items, now);
-                break;
             default:
                 return TypedResults.Problem("Invalid prefs code", statusCode: 400);
         }
@@ -272,8 +312,9 @@ public static class AdminEndpointsAuth
     public record StatusResp(int Id, string Username, string AvatarUrl, bool IsActive, string Youtube, string Twitch);
 
     public record UserListItem(
-        int Id, string Username, string Email, string AvatarUrl, DateTime LastLoginAt,
-        string DiscordId, string SteamId, string AltName, bool IsActive);
+        int Id, string Username, string AvatarUrl, DateTime LastLoginAt,
+        string DiscordId, bool IsActive,
+        int FavCount, int SpeedRunCount, int? Spoiler, int FeedbackCount, string? Blocked);
 
     public record ProfileReq(string Username, string? Youtube, string? Twitch);
 
@@ -293,7 +334,13 @@ public static class AdminEndpointsAuth
 
     public record PrefsItemsReq(string Code, string[] Items);
 
+    public record SpoilerReq(int Level);
+    public record SpoilerResp(int Level);
+
     const int MaxItemsPerSection = 1000;
     const int MaxItemCodeLen = 64;
     const int MaxFeedbackEntries = 50;
+    // 9 biomes today (web/src/guides/vh/spoiler.ts); the ceiling leaves headroom.
+    const int MinSpoilerLevel = 1;
+    const int MaxSpoilerLevel = 16;
 }

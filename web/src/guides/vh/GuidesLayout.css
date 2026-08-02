@@ -426,16 +426,66 @@
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
+  /* Reserve room for the longest biome name ("Black Forest"). Without this the
+     box resizes as you drag, which resizes the flexed track under the cursor
+     and makes the thumb slide out from under the pointer. */
+  min-width: 96px;
   font-size: 11px;
   font-weight: 700;
   color: #aac4ff;
   white-space: nowrap;
+  overflow: hidden;
 }
-.spoiler-mini__current img { width: 16px; height: 16px; }
+.spoiler-mini__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+.spoiler-mini__current img { width: 16px; height: 16px; display: block; }
+
+/* Very narrow screens: drop the word "Spoilers" (the eye icon still says it)
+   rather than letting the row overflow its container. */
+@media (max-width: 400px) {
+  .spoiler-mini__label { display: none; }
+}
 
 /* On mobile the "Back" bar is also sticky at the top — sit just below it. */
 @media (max-width: 768px) {
   .spoiler-mini { top: 40px; }
+}
+
+/* ── Floating compact slider (Articles overview) ───────────────────
+   Appears once the full-size slider scrolls out of the detail pane. The
+   wrapper is zero-height so revealing it never shifts the doc underneath;
+   the slider inside overflows it and floats above the content. */
+.spoiler-mini-float {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  height: 0;
+  overflow: visible;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+}
+.spoiler-mini-float.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+}
+/* Inside the float the bar is just a plain box — the wrapper does the sticking. */
+.spoiler-mini-float .spoiler-mini {
+  position: static;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .spoiler-mini-float { top: 40px; }
 }
 
 /* ── Spoiler-gated content ─────────────────────────────────────────
@@ -488,6 +538,76 @@
 .vh-guides[data-spoiler="7"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6) > .spoiler-lock,
 .vh-guides[data-spoiler="8"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7) > .spoiler-lock,
 .vh-guides[data-spoiler="9"] :is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) > .spoiler-lock {
+  display: none;
+}
+
+/* ── Spoiler-gated list rows (weapons / gear / food / mead / comfort) ──
+   Rows carry `sp-item sp-b<index>` from itemBiome.ts. Locked is the default so
+   nothing leaks before the CSS applies; the reveal rules below unlock a row
+   once data-spoiler passes its biome. The row keeps its place in the list — it
+   just blurs behind a lock plate and stops taking clicks. */
+.vh-guides .craft-item.sp-item {
+  position: relative;
+  cursor: default;
+  pointer-events: none;   /* kills the inline onclick while locked */
+  user-select: none;
+}
+.vh-guides .craft-item.sp-item > *:not(.sp-veil) {
+  filter: blur(5px);
+  opacity: 0.55;
+}
+.vh-guides .craft-item.sp-item .sp-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(90deg, rgba(25, 25, 34, 0.82), rgba(25, 25, 34, 0.62));
+  border-left: 2px solid #3d3d50;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: #8a8a9c;
+}
+.sp-veil-lock { font-style: normal; opacity: 0.8; }
+.sp-veil-txt { white-space: nowrap; }
+
+/* Reveal: data-spoiler > biome index → back to a normal, clickable row. */
+.vh-guides[data-spoiler="1"] .craft-item.sp-item:is(.sp-b0),
+.vh-guides[data-spoiler="2"] .craft-item.sp-item:is(.sp-b0,.sp-b1),
+.vh-guides[data-spoiler="3"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2),
+.vh-guides[data-spoiler="4"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3),
+.vh-guides[data-spoiler="5"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4),
+.vh-guides[data-spoiler="6"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5),
+.vh-guides[data-spoiler="7"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6),
+.vh-guides[data-spoiler="8"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7),
+.vh-guides[data-spoiler="9"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: auto;
+}
+.vh-guides[data-spoiler="1"] .craft-item.sp-item:is(.sp-b0) > *:not(.sp-veil),
+.vh-guides[data-spoiler="2"] .craft-item.sp-item:is(.sp-b0,.sp-b1) > *:not(.sp-veil),
+.vh-guides[data-spoiler="3"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2) > *:not(.sp-veil),
+.vh-guides[data-spoiler="4"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3) > *:not(.sp-veil),
+.vh-guides[data-spoiler="5"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4) > *:not(.sp-veil),
+.vh-guides[data-spoiler="6"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5) > *:not(.sp-veil),
+.vh-guides[data-spoiler="7"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6) > *:not(.sp-veil),
+.vh-guides[data-spoiler="8"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7) > *:not(.sp-veil),
+.vh-guides[data-spoiler="9"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) > *:not(.sp-veil) {
+  filter: none;
+  opacity: 1;
+}
+.vh-guides[data-spoiler="1"] .craft-item.sp-item:is(.sp-b0) .sp-veil,
+.vh-guides[data-spoiler="2"] .craft-item.sp-item:is(.sp-b0,.sp-b1) .sp-veil,
+.vh-guides[data-spoiler="3"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2) .sp-veil,
+.vh-guides[data-spoiler="4"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3) .sp-veil,
+.vh-guides[data-spoiler="5"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4) .sp-veil,
+.vh-guides[data-spoiler="6"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5) .sp-veil,
+.vh-guides[data-spoiler="7"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6) .sp-veil,
+.vh-guides[data-spoiler="8"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7) .sp-veil,
+.vh-guides[data-spoiler="9"] .craft-item.sp-item:is(.sp-b0,.sp-b1,.sp-b2,.sp-b3,.sp-b4,.sp-b5,.sp-b6,.sp-b7,.sp-b8) .sp-veil {
   display: none;
 }
 

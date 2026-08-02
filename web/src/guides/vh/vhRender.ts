@@ -12,6 +12,7 @@ import {
 import type { VhItem } from './types';
 import type { VhDefaults } from './data';
 import { fetchPrefsSection, saveFavs, saveSpeedRuns } from './data';
+import { setItemBiomes } from './itemBiome';
 
 export type { VhPageKey };
 
@@ -81,6 +82,9 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
   initialized = true;
   const byCode: Record<string, VhItem> = {};
   items.forEach(it => { byCode[it.code] = it; });
+
+  // Resolve every item's biome once — the list renderers tag rows with it.
+  setItemBiomes(items);
 
   // Favorites: use saved localStorage if present, else seed from defaults.json
   let favs = loadMap(FAV_KEY);

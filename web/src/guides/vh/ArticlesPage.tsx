@@ -1,7 +1,8 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { biomeIconUrl } from './data';
 import { getProgress, setProgress, subscribeSpoiler, getRevealedCount, biomeIndex, SPOILER_BIOMES } from './spoiler';
+import CompactSpoilerSlider from './CompactSpoilerSlider';
 import TipsMarkdown from './TipsMarkdown';
 import Feedback from '../../components/Feedback';
 
@@ -15,11 +16,11 @@ const SnowflakeIcon = () => (
   </svg>
 );
 
-function BiomeSpoilerSlider() {
+function BiomeSpoilerSlider({ innerRef }: { innerRef?: React.Ref<HTMLDivElement> }) {
   const n = SPOILER_BIOMES.length;
   const val = useSyncExternalStore(subscribeSpoiler, getProgress, getProgress);
   return (
-    <div className="biome-spoiler">
+    <div className="biome-spoiler" ref={innerRef}>
       <div className="biome-spoiler__header">
         <h1 className="biome-spoiler__title">
           Valheim <span className="biome-spoiler__title-em">&ldquo;spoiler-free&rdquo;</span> Guide
@@ -108,6 +109,12 @@ export default function ArticlesPage() {
   const navigate = useNavigate();
   const revealed = useSyncExternalStore(subscribeSpoiler, getRevealedCount, getRevealedCount);
 
+  // Once the full-size slider scrolls out of the detail pane, float the compact
+  // one at the top so the reader can still adjust spoilers while deep in the doc.
+  const detailRef = useRef<HTMLDivElement>(null);
+  const bigSliderRef = useRef<HTMLDivElement>(null);
+  const [bigSliderOffScreen, setBigSliderOffScreen] = useState(false);
+
   // A biome is unlocked once the spoiler slider has revealed it (revealed > index).
   const isBiomeLocked = (b: Biome) => {
     const idx = biomeIndex(b.slug);
@@ -116,6 +123,21 @@ export default function ArticlesPage() {
 
   const biome = slug ? BIOMES.find(b => b.slug === slug) : undefined;
   const isOverview = slug === OVERVIEW.slug;
+
+  // Watch the full-size slider against the scrolling detail pane. Re-runs on
+  // navigation because the pane is keyed by doc and remounts.
+  useEffect(() => {
+    const target = bigSliderRef.current;
+    const root = detailRef.current;
+    if (!target || !root) { setBigSliderOffScreen(false); return; }
+    const io = new IntersectionObserver(
+      ([entry]) => setBigSliderOffScreen(!entry.isIntersecting),
+      { root, threshold: 0 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [slug]);
+
   if (slug && !biome && !isOverview) return <Navigate to="/guides/articles" replace />;
 
   // Guard: can't open a biome guide that isn't unlocked yet (also catches sliding
@@ -165,13 +187,21 @@ export default function ArticlesPage() {
         </div>
       </div>
 
-      <div className="vh-items-detail" key={selectedKey}>
+      <div className="vh-items-detail" key={selectedKey} ref={detailRef}>
+        {!biome && (
+          <div
+            className={`spoiler-mini-float${bigSliderOffScreen ? ' visible' : ''}`}
+            aria-hidden={!bigSliderOffScreen}
+          >
+            <CompactSpoilerSlider />
+          </div>
+        )}
         {explicit && (
           <button className="vh-detail-back" onClick={() => navigate('/guides/articles')}>
             {BACK_ICON} Guides
           </button>
         )}
-        {!biome && <BiomeSpoilerSlider />}
+        {!biome && <BiomeSpoilerSlider innerRef={bigSliderRef} />}
         <TipsMarkdown name={selectedDoc} />
         <Feedback />
       </div>

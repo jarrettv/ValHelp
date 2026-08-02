@@ -214,6 +214,60 @@ article {
   display: block;
 }
 
+/* Spoiler (eye) menu — beside the user chip on desktop, and kept in the bar
+   next to the hamburger on mobile so it's reachable on every page. */
+.nav-eye {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 1rem;
+}
+.nav-eye-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  color: #c8ccd4;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.nav-eye-btn:hover,
+.nav-eye-btn.open {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.nav-eye-btn svg { width: 18px; height: 18px; display: block; }
+.nav-eye-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0.5rem;
+  z-index: 60;
+  width: 290px;
+  max-width: calc(100vw - 20px);
+  padding: 9px 11px;
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(16, 18, 26, 0.6);
+}
+/* The compact slider is styled for the guides pane — flatten it in the panel. */
+.nav-eye-panel .spoiler-mini {
+  position: static;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 /* Hamburger (mobile only) */
 .nav-hamburger {
   display: none;
@@ -278,6 +332,17 @@ article {
   .nav-user {
     padding: 0.75rem 1.25rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  /* Bar order becomes: brand … [eye][hamburger]. The eye takes over pushing
+     both to the right, so the hamburger drops its own auto margin. */
+  .nav-eye {
+    order: 1;
+    margin-left: auto;
+    padding-right: 0.6rem;
+  }
+  .nav-hamburger {
+    order: 2;
+    margin-left: 0;
   }
 }
 

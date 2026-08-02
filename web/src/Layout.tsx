@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import User from './components/User'
+import SpoilerMenu from './components/SpoilerMenu'
+import { useAuth } from './contexts/AuthContext'
+import { syncSpoilerWithServer, clearSpoilerSync } from './guides/vh/spoiler'
 
 // ── Inline SVG icons (lucide-style outline) ─────────────────────
 const Icon = ({ children, ...rest }: { children: React.ReactNode } & React.SVGProps<SVGSVGElement>) => (
@@ -51,6 +54,16 @@ const NAV_ITEMS: NavItem[] = [
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { status } = useAuth();
+
+  // The spoiler control is in the top bar now, so the server sync has to live
+  // here too — otherwise a change made outside /guides would only reach
+  // localStorage. Safe to double up with GuidesLayout: it no-ops per user id.
+  useEffect(() => {
+    const id = status?.id;
+    if (id && id > 0) syncSpoilerWithServer(id);
+    else clearSpoilerSync();
+  }, [status?.id]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -99,6 +112,9 @@ export default function Layout() {
             <User />
           </div>
         </nav>
+        {/* Outside <nav> on purpose: the nav collapses into the hamburger on
+            mobile, and the spoiler control should stay reachable in the bar. */}
+        <SpoilerMenu />
       </header>
       <article>
         <Outlet />
