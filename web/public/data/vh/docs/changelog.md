@@ -2,6 +2,15 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-08-05
+
+* A brand new **Meadows guide** — the first full biome walkthrough, from your first thirty minutes to hanging Eikthyr's trophy.
+* **Survival first**: a first-thirty-minutes checklist, crafting and workbench mechanics (including why an exposed bench won't craft), how to block, parry, and dodge while the enemies still hit for nothing, and the three-food rule with real Health/Stamina totals.
+* **Points of interest**: the Sacrificial Stones, and abandoned houses worth stopping at for beehives, chests, and free lumber.
+* **The Early Axes**: the two house layouts that hide the [AxeHead1]@"Curious Axe Head" and [AxeHead2]@"Mysterious Axe Head", and why the [AxeEarly]@"Early Axes" matter — tool tier 2, so they fell birch and oak long before you have any bronze.
+* **Eikthyr**: finding his altar, summoning with [TrophyDeer](2), his three attacks, what to bring, and the [PickaxeAntler]@"Antler Pickaxe" waiting on the other side.
+* In-game screenshots throughout, with more landing as they're captured.
+
 ## 2026-08-01
 
 * The spoiler-free system now covers every item and creature list, with the slider reachable from any page. New creature renders. Map fixes.

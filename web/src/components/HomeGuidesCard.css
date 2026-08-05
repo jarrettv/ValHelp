@@ -12,6 +12,11 @@
   margin-bottom: 0.8rem;
 }
 
+.guides-card-lede {
+  color: #e8e8e8;
+  font-weight: 600;
+}
+
 .guides-card-tags {
   display: flex;
   flex-wrap: wrap;

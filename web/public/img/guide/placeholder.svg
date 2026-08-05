@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Screenshot coming soon">
+  <rect width="640" height="360" rx="10" fill="#1a1a2e"/>
+  <rect x="6" y="6" width="628" height="348" rx="7" fill="none" stroke="#3d3d55" stroke-width="2" stroke-dasharray="10 8"/>
+  <g transform="translate(320 158)" fill="none" stroke="#5a5a78" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M-46 -18h22l8-11h32l8 11h22a8 8 0 0 1 8 8v44a8 8 0 0 1-8 8h-92a8 8 0 0 1-8-8v-44a8 8 0 0 1 8-8z"/>
+    <circle cx="0" cy="14" r="17"/>
+  </g>
+  <text x="320" y="248" text-anchor="middle" font-family="system-ui, sans-serif" font-size="19" fill="#6f6f8c">Screenshot coming soon</text>
+</svg>

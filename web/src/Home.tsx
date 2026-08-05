@@ -10,7 +10,7 @@ export default function Home() {
     <div className="home-events">
       <SEO
         title="Valheim Help"
-        description="Ad-free Valheim info and tools. Trophy hunt tracking, speedrun leaderboards, boss guides, and game reference for the Valheim community."
+        description="Ad-free Valheim info and tools. Spoiler-free biome guides, trophy hunt tracking, speedrun leaderboards, and game reference for the Valheim community."
         path="/"
       />
       <section>

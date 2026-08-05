@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useVhDoc } from '../guides/vh/data';
 import {
+  ArticlesIcon,
   WeaponsIcon,
   GearIcon,
   FoodIcon,
@@ -34,12 +35,14 @@ function parseLatestGuideUpdate(md: string): LatestUpdate | null {
     if (/\bcomfort/.test(lower)) return { text: b, route: '/guides/comfort' };
     if (/\b(enem|bestiary|creature|mob)/.test(lower)) return { text: b, route: '/guides/enemies' };
     if (/\b(food|consumable)/.test(lower)) return { text: b, route: '/guides/food' };
+    if (/\bbiome/.test(lower)) return { text: b, route: '/guides/articles' };
   }
   if (bullets.length > 0) return { text: bullets[0], route: '/guides' };
   return null;
 }
 
 const TAGS = [
+  { to: '/guides/articles', label: 'Biome Guides', Icon: ArticlesIcon },
   { to: '/guides/weapons', label: 'Weapons', Icon: WeaponsIcon },
   { to: '/guides/gear', label: 'Gear', Icon: GearIcon },
   { to: '/guides/food', label: 'Food & Meads', Icon: FoodIcon },
@@ -55,7 +58,9 @@ export default function HomeGuidesCard() {
   return (
     <div className="guides-card">
       <div className="guides-card-desc">
-        Weapons, armor, trinkets, food, comfort, and bestiary — find recipes, stats, mechanics, and tips.
+        <strong className="guides-card-lede">Spoiler-free biome guides</strong> — set how far you&rsquo;ve
+        played and everything ahead of you stays hidden. Plus weapons, armor, trinkets, food, comfort,
+        and bestiary — find recipes, stats, mechanics, and tips.
       </div>
       <div className="guides-card-tags">
         {TAGS.map(({ to, label, Icon }) => (
