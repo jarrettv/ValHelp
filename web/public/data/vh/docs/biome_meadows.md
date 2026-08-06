@@ -2,9 +2,13 @@
 
 <img src="/api/mob/TrophyEikthyr_0.webp" style="width:110px;float:right;margin:0 0 8px 16px">
 
-Rolling grass, beech, birch, and oak trees, and the easiest enemies in the game. It is the only biome where you can afford to learn the fight mechanics. A Viking's favorite place to settle down and build a comfortable home.
 
-Nights in the Meadows can get dangerous due to the dark, cold, and [Skeleton]@"Skeleton" spawns.
+Jump to [Food](/#food) · [Comfort](/#comfort) · [Resources](/#resources) · [Mobs](/#mobs) · [Places](/#places) · [Boss](/#boss)
+
+
+Rolling grass, beech, birch, and oak trees, and the easiest enemies in the game. It is the only biome where you can afford to learn the fight mechanics. A Viking's favorite place to settle down and build a cozy home.
+
+Nights in the Meadows can get dangerous due to the dark, cold, and [TrophySkeleton]@"Skeleton" spawns.
 
 <img src="/img/guide/meadows/hero.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="Golden-hour view of open Meadows — grass, birch stand, a boar or deer in frame." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
 
@@ -14,12 +18,15 @@ Nights in the Meadows can get dangerous due to the dark, cold, and [Skeleton]@"S
 
 * Touch the glowing vegvisir to find the first boss
 * Pick loose branches and stones off the ground
+* Forage for [Raspberries]@ and [Mushroom]@ and eat often, hungry = weak
 * Don't punch a tree, use your [Torch]@ and swing it at saplings for quick wood
 * Craft a [Hammer]@ — [Wood](3) [Stone](2) from your inventory, some tools don't need a workbench
-* Build a **Campfire** [Wood](2) and [Stone](5), sit with `X` until you are **Rested**
-* Craft an [AxeStone]@ and/or [Club]@ for defeating enemies
+* Use your hammer to craft a **Campfire** [Wood](2) and [Stone](5), sit with `X` until you are **Rested**
+* Cook meat over fire with a [Cooking Station]@ for better food
+* Craft [AxeStone]@ and/or [Club]@ for defeating enemies
 * To unlock more crafting, you'll need to **Roof the workbench** so it isn't too exposed
-* Use existing wood houses for shelter or deconstruct them for quick wood
+* Use existing wood houses for shelter, deconstruct them for quick wood
+* Chop down a tree and learn how to die and recover your tombstone
 * Then go find [Flint]@ on the nearest shoreline
 
 ### Crafting mechanics
@@ -28,7 +35,7 @@ You need a [Hammer]@ to get started. The game has an incredible build system wit
 
 Don't worry about mistakes as deconstructing will refund the materials.
 
-A workbench in the open is **exposed** and can't be used for complex building. This stops more new players than anything in the biome does. A couple walls and roof pieces is usually enough to enable crafting.
+A workbench in the open is **exposed** and can't be used for complex building. This stops more new players than anything in the biome does. A couple of walls and roof pieces are usually enough to enable crafting.
 
 Hit the hammer icon to repair your tools at **no cost**. The crafting menu will show you recipes you've unlocked. Gather more materials to unlock more recipes.
 
@@ -39,7 +46,7 @@ The workbench, like most workstations, can be upgraded with additional pieces. F
 Every enemy telegraphs its attacks in some way so you need to learn their attack patterns.
 
 * **Block** — hold block, even without a shield. Costs Stamina. Damage can still get through on heavy hits.
-* **Parry** — block in the last instant *before* the hit lands. The attacker staggers, and staggered enemies take bonus damage. Stamina is refunded.
+* **Parry** — block in the last instant **before** the hit lands. The attacker staggers, and staggered enemies take bonus damage. Stamina is refunded.
 * **Dodge** — roll with your dodge key while moving. Brief invulnerability, costs Stamina. Use it for anything you cannot parry: ground slams, charges, area attacks.
 
 Learn more about damage types, backstab, and attack chains in our [Weapons guide](/guides/weapons).
@@ -48,7 +55,7 @@ Practice on Greylings and boars until parries are automatic. They hit for almost
 
 **Watch your Stamina.** Nearly every early death is someone who attacked at an empty bar and could not roll. Stop swinging at a third left.
 
-### Food is your health bar
+### Food
 
 Maximum Health and Stamina come almost entirely from food. Run three different items at all times, from minute one.
 
@@ -57,7 +64,13 @@ Maximum Health and Stamina come almost entirely from food. Run three different i
 | No fire yet | [Raspberry]@ + [Mushroom]@ + [Honey]@ | 30 Health / 70 Stamina |
 | Campfire | [CookedDeerMeat]@ + [CookedMeat]@ + [Honey]@ | 73 Health / 57 Stamina |
 
-### Key resources
+### Comfort
+
+Comfort decides how long **Rested** lasts — 7 minutes base, +1 minute per point. A [fire_pit]@ + [bed]@ + [rug_deer]@ under a roof puts you at 5, which is 12 minutes.
+
+A [piece_maypole]@ spawns naturally out here and is worth +1 by itself, so it is worth building your base around it. See [Comfort guide](/guides/comfort).
+
+### Resources
 
 | Resource | Where | For |
 |----------|-------|-----|
@@ -70,7 +83,7 @@ Maximum Health and Stamina come almost entirely from food. Run three different i
 
 Prioritize flint and leather scraps. Don't pass up "free" wood opportunities.
 
-### The locals
+### Mobs
 
 | Creature | HP | Notes |
 |----------|---:|-------|
@@ -81,7 +94,7 @@ Prioritize flint and leather scraps. Don't pass up "free" wood opportunities.
 
 At night, you may encounter [TrophySkeleton]@"Skeleton" or [TrophyGreydwarf]@"Greydwarfs". Full stats and drops: [Meadows bestiary](/guides/enemies/meadows).
 
-## Points of interest
+## Places
 
 ### Sacrificial Stones
 
@@ -103,31 +116,30 @@ Ruined wooden buildings across the grassland. Always worth checking out:
 
 ### The Early Axes
 
-A couple houses in this biome may hide something worth hunting: the halves of the **Early Axes**.
+Find the [AxeHead1]@ and the extra-rare [AxeHead2]@ to create the **Early Axes**.
 
 {recipe:AxeEarly}
 
-Dual axes, 30 Slash, four-hit chain, and they can chop **birch and oak** long before you have any bronze.
+These dual axes are an amazing early weapon and they can chop **birch and oak** long before you have any bronze.
 
-Look for the following abandoned house structures. Note: You will not find them in multi-house farms or any other structures.
+Only these two standalone houses carry them — never multi-house farms.
 
-| House | Axe head | Chest |
-|-------|----------|-------|
-| **WoodHouse6** | [AxeHead1]@ | 55% chance to spawn |
-| **WoodHouse2** | [AxeHead2]@ | 55% chance to spawn if house has chest (25% chance) |
+:::row
+[AxeHead1]@<br/>inside chest **55%** of the time
+<img src="/img/guide/meadows/woodhouse6.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse6 exterior — the always-present chest house">
+[AxeHead2]@<br/>**25%** chest spawn, then inside chest **55%** of the time
+<img src="/img/guide/meadows/woodhouse2.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse2 exterior — the house whose chest may not spawn">
+:::
 
+## Boss
 
-<img src="/img/guide/meadows/woodhouse6.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse6 exterior left, WoodHouse2 exterior right" style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
-
-## Finding the boss
-
-**Eikthyr is the only boss with a single vegvisir.** And that vegvisir is at the very start next to his standing stone. Every other Forsaken is revealed by multiple runestones throughout the world/dungeons. There are 3 different Eikthyr alters per world and sometimes they are right near each other. However, touching the vegvisir will only mark the nearest location.
+**Eikthyr is the only boss with a single vegvisir.** And that vegvisir is at the very start next to his standing stone. Every other Forsaken is revealed by multiple runestones throughout the world/dungeons. There are 3 different Eikthyr altars per world and sometimes they are right near each other. However, touching the vegvisir will only mark the nearest location.
 
 <img src="/img/guide/meadows/eikthyr-alter.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="The altar from a short distance — standing stones, antler arch, offering bowl." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
 
-## Defeating the boss
+### Defeating the boss
 
-You need **2× [TrophyDeer](2)** and the trophies drop at 50% rate. So expect to kill around 4 Deer. Deer flee on sight, so bring a [SpearFlint]@ or sneak into range. Take the trophies to the altar and offer them to summon the boss.
+You need **[TrophyDeer](2)** and the trophies drop at 50% rate. So expect to kill around 4 Deer. Deer flee on sight, so bring a [SpearFlint]@ or sneak into range. Take the trophies to the altar and offer them to summon the boss.
 
 ### What you are fighting
 
@@ -144,7 +156,7 @@ You need **2× [TrophyDeer](2)** and the trophies drop at 50% rate. So expect to
 * **Lightning stomp** — rears up, slams, hits a ring around him. **Dodge out**, not through.
 * **Lightning beam** — three bolts in a forward spread. It is a straight line: step sideways or put a standing stone between you.
 
-### The fight
+### Boss fight
 
 **Melee:** stay at his flank, never in front. Parry the swipe, back off when he rears. Repeat.
 
@@ -156,13 +168,13 @@ Do not get greedy at low Stamina.
 
 ### Rewards
 
-Drops **3× [HardAntler](3)** and the [TrophyEikthyr]@. The antlers make your first pickaxe:
+Drops **[HardAntler](3)** and the [TrophyEikthyr]@. The antlers make your first pickaxe:
 
 {recipe:PickaxeAntler}
 
-Hang the trophy on Eikthyr's head at the **Sacrificial Stones** to unlock his power:
+Hang the trophy at the **Sacrificial Stones** to unlock his power:
 
-**Eikthyr** — 60% less Stamina drain from running, jumping, and swimming. Press `F`. Five minutes per use.
+{power:Eikthyr}
 
 This is the best traversal power in the game and it remains useful throughout the entire game.
 
@@ -170,7 +182,7 @@ This is the best traversal power in the game and it remains useful throughout th
 
 ### Before you move on
 
-* [SpearFlint](lvl3) is the best weapon at this point in the game.
+* Unless you found [AxeEarly](lvl3), the [SpearFlint](lvl3) is the best weapon so far.
 * Find a good base location near water, oak trees, and the Black Forest.
 * Bank a few [QueenBee]@ hives at base so honey accumulates while you are away.
 * Tame two boars for a self-sustaining meat and leather supply.

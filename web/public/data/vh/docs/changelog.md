@@ -2,6 +2,14 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-08-06
+
+* A first draft of the **Black Forest guide**, and a pass over the **Meadows guide** with real in-game screenshots.
+* **Black Forest (draft)**: the bronze age in order — [SurtlingCore]@"Surtling Cores" out of burial chambers, [CopperOre]@"copper" and [TinOre]@"tin" into [Bronze]@ — plus fire tactics, the food table, and the three Elder altars. Marked as a draft while screenshots are captured.
+* **Places to find**: burial chambers, troll caves, abandoned stone houses and mansions, ore deposits, and the rare rocky circle.
+* **Meadows**: in-game screenshots throughout, side-by-side shots of the two houses that hide the [AxeEarly]@"Early Axes" halves, and a tighter first-thirty-minutes checklist.
+* **Food and Comfort sections** on both guides — best health and best stamina picks with recipes, and what comfort level to expect for your **Rested** timer.
+
 ## 2026-08-05
 
 * A brand new **Meadows guide** — the first full biome walkthrough, from your first thirty minutes to hanging Eikthyr's trophy.

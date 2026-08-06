@@ -359,6 +359,72 @@
 }
 
 /* Spoiler warning banner (changelog) */
+/* ── Forsaken power ────────────────────────────────────────────────
+   Written as `{power:Eikthyr}`. Spans, not divs — the macro renders
+   inside a <p>. The description is deliberately larger than body copy. */
+.vh-guides .vh-power {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(120, 160, 220, 0.10), rgba(120, 160, 220, 0.03));
+  border: 1px solid #33415a;
+  border-radius: 8px;
+}
+.vh-guides .vh-power-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;   /* trophy item icons are 64px pixel art */
+  flex-shrink: 0;
+}
+.vh-guides .vh-power-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.vh-guides .vh-power-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #88bbff;
+}
+.vh-guides .vh-power-desc {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #e8e8e8;
+  margin-top: 2px;
+}
+.vh-guides .vh-power-meta {
+  font-size: 11px;
+  color: #7a869a;
+  margin-top: 5px;
+}
+@media (max-width: 480px) {
+  .vh-guides .vh-power-icon { width: 48px; height: 48px; }
+  .vh-guides .vh-power-desc { font-size: 14px; }
+}
+
+/* Doc callout — written as a `:::warn` … `:::` fence. Same amber palette as
+   .vh-spoiler-warn, but sized for body content rather than a single line. */
+.vh-guides .vh-callout {
+  margin: 12px 0 14px;
+  padding: 9px 12px;
+  background: rgba(180, 140, 40, 0.12);
+  border: 1px solid rgba(180, 140, 40, 0.4);
+  border-radius: 7px;
+}
+.vh-guides .vh-callout > p {
+  margin: 0 !important;
+  color: #e6c06a !important;
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+}
+.vh-guides .vh-callout > p + p { margin-top: 6px !important; }
+.vh-guides .vh-callout strong { color: #ffd98a; }
+
 .vh-spoiler-warn {
   margin-bottom: 14px;
   padding: 9px 12px;
@@ -486,6 +552,44 @@
 
 @media (max-width: 768px) {
   .spoiler-mini-float { top: 40px; }
+}
+
+/* ── Side-by-side image rows ───────────────────────────────────────
+   Written in docs as a `:::row` … `:::` fence around two or more <img>
+   lines. Images share the row evenly and stack on narrow screens. The
+   !important rules override the inline width/margin that doc <img>
+   tags normally carry, so a copy-pasted image line still behaves. */
+.vh-guides .vh-img-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0;
+  max-width: 600px;
+}
+.vh-guides .vh-img-cell {
+  flex: 1 1 0;
+  min-width: 0;
+}
+/* Direct child only — a caption can contain item chips, whose 16px icons
+   must not be caught by the full-width sizing below. */
+.vh-guides .vh-img-cell > img {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto;
+  margin: 0 !important;
+  display: block;
+  border-radius: 6px;
+}
+.vh-guides .vh-img-cap {
+  margin: 0 0 4px !important;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #bbb;
+}
+@media (max-width: 560px) {
+  .vh-guides .vh-img-row { flex-wrap: wrap; }
+  .vh-guides .vh-img-cell { flex-basis: 100%; }
 }
 
 /* ── Spoiler-gated content ─────────────────────────────────────────

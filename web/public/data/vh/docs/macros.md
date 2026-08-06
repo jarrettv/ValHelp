@@ -70,6 +70,16 @@ Item lookup tries: exact code, case-insensitive code, exact display name, then p
 
 {recipe:SwordIron}
 
+## Forsaken Power
+
+`{power:Boss}` -- renders the boss trophy alongside its Forsaken power, with the effect text in a larger font. Accepts the boss name or the trophy code, so `{power:Eikthyr}` and `{power:TrophyEikthyr}` are the same.
+
+{power:Eikthyr}
+
+{power:The Elder}
+
+Valid keys: `Eikthyr`, `The Elder`, `Bonemass`, `Moder`, `Yagluth`, `The Queen`, `Fader`.
+
 ## Damage Modifier Boxes
 
 `{modbox:Type:Level}` -- colored box indicating a creature's resistance or weakness to a damage type.
@@ -145,6 +155,42 @@ Valid damage types: Slash, Blunt, Pierce, Fire, Frost, Lightning, Poison, Spirit
 `{adrenaline}` -- inline adrenaline bar icon.
 
 Example: Hit grants {adrenaline} 2 adrenaline per swing.
+
+## Callout Box
+
+Wrap content in a `:::warn` fence to box it in an amber notice. Body lines render normally, so paragraphs, lists, and item chips all work inside.
+
+```
+:::warn
+⚠ **Draft** — this guide is still being written.
+:::
+```
+
+## Side-by-Side Images
+
+Wrap two or more `<img>` lines in a `:::row` fence to lay them out side by side. They share the row evenly and stack back to full width on narrow screens.
+
+```
+:::row
+<img src="/img/guide/meadows/woodhouse6.webp" alt="WoodHouse6 exterior">
+<img src="/img/guide/meadows/woodhouse2.webp" alt="WoodHouse2 exterior">
+:::
+```
+
+Any non-image line inside the fence becomes a **caption above the next image**, and supports the usual inline macros. Caption and image stay together when the row stacks on mobile — use this instead of a table when the data is per-image.
+
+```
+:::row
+**WoodHouse6** — [AxeHead1]@ in a **55%** chest
+<img src="/img/guide/meadows/woodhouse6.webp" alt="WoodHouse6 exterior">
+**WoodHouse2** — [AxeHead2]@ in a **25%** chest, then **55%**
+<img src="/img/guide/meadows/woodhouse2.webp" alt="WoodHouse2 exterior">
+:::
+```
+
+Leave the `style` attribute off inside a row — the row stylesheet sizes them. Keep `alt` on every image: it is the accessibility text **and** the shot brief that `scripts/ingest_guide_shots.py --todo` reads.
+
+Rows nest inside a `:::biome` spoiler fence; the closing `:::` shuts the innermost fence first.
 
 ## Standard Markdown
 

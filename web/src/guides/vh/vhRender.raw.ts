@@ -1605,6 +1605,45 @@ function mdRecipeBlock(name: string) {
   return renderRecipeCards(it);
 }
 
+// ── Forsaken powers ────────────────────────────────────────────────
+// Hang a boss trophy on its stone at the Sacrificial Stones to unlock the
+// power. Not in items.json (trophies carry no power data), so the text lives
+// here — keep it in sync with the boss table in docs/articles_overview.md.
+var BOSS_POWERS: any = {
+  TrophyEikthyr:     { name: 'Eikthyr',   desc: '60% less Stamina drain from running, jumping, and swimming.' },
+  TrophyTheElder:    { name: 'The Elder', desc: '+60% chopping and mining damage, and +30% Health regeneration.' },
+  TrophyBonemass:    { name: 'Bonemass',  desc: '25% resistance to Pierce, Slash, and Blunt; blocking costs no Stamina and returns +5 Stamina per block.' },
+  TrophyDragonQueen: { name: 'Moder',     desc: 'Permanent tailwind, +300 carry weight, +10% movement speed, and 50% Frost resistance.' },
+  TrophyGoblinKing:  { name: 'Yagluth',   desc: '50% Lightning resistance, +25 Farming skill, and +10% damage.' },
+  TrophySeekerQueen: { name: 'The Queen', desc: '+100% Eitr regeneration, sneaking costs no Stamina, and 50% Poison resistance.' },
+  TrophyFader:       { name: 'Fader',     desc: '+100% Adrenaline generation, 50% reduced stagger, and 50% Fire resistance.' },
+};
+
+/// Accepts either the trophy code (`TrophyEikthyr`) or the boss name (`Eikthyr`).
+function mdFindPower(key: string) {
+  var k = (key || '').trim(), lower = k.toLowerCase();
+  if (BOSS_POWERS[k]) return { code: k, p: BOSS_POWERS[k] };
+  for (var code in BOSS_POWERS) {
+    if (code.toLowerCase() === lower || BOSS_POWERS[code].name.toLowerCase() === lower)
+      return { code: code, p: BOSS_POWERS[code] };
+  }
+  return null;
+}
+
+// Inline elements only — the macro lands inside a <p>, so a <div> would be
+// invalid there. `.vh-power` in GuidesLayout.css makes the spans lay out.
+function mdPowerBlock(key: string) {
+  var hit = mdFindPower(key);
+  if (!hit) return '<span style="color:#666;font-size:12px">[power: ' + esc(key) + ' not found]</span>';
+  return '<span class="vh-power">'
+    + '<img class="vh-power-icon" src="/data/vh/icons/' + encodeURIComponent(hit.code) + '.png" alt="" onerror="this.style.display=\'none\'">'
+    + '<span class="vh-power-body">'
+    + '<span class="vh-power-name">' + esc(hit.p.name) + '</span>'
+    + '<span class="vh-power-desc">' + mdInline(hit.p.desc) + '</span>'
+    + '<span class="vh-power-meta">Activate with <code>F</code> &middot; 5 minutes per use</span>'
+    + '</span></span>';
+}
+
 var MD_DMG_COLORS: any = {
   'Slash':'#d4a050','Blunt':'#e0b868','Pierce':'#c08840',
   'Fire':'#cc4433','Frost':'#a8d8ea','Lightning':'#3388aa',
@@ -1694,6 +1733,10 @@ export function mdInline(text: string): string {
     var s = mdRecipeBlock(name.trim());
     imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
   });
+  safe = safe.replace(/\{power:([^}]+)\}/g, function(_, name) {
+    var s = mdPowerBlock(name.trim());
+    imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
+  });
   return esc(safe)
     .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#fff">$1</strong>')
     .replace(/\[([^\]]+)\]\(\/([^)]+)\)/g, function(_: string, text: string, path: string) {
@@ -1724,9 +1767,30 @@ export function renderMdToElement(md: string, el: HTMLElement) {
   var inList = false;
   var inTable = false;
   var inSpoiler = false;
+  var inRow = false;
+  var inWarn = false;
+  var rowCell = '';
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     var trimmed = line.trim();
+    // Image row fence: `:::row` … `:::` lays the <img> lines inside it out
+    // side by side, stacking again on narrow screens. See `.vh-img-row`
+    // in GuidesLayout.css. Nests inside a `:::biome` block fine — the
+    // closing `:::` shuts the innermost fence first.
+    // Callout fence: `:::warn` … `:::` boxes the content in an amber notice.
+    // Body lines render normally, so paragraphs/lists/chips all work inside.
+    if (trimmed.match(/^:::warn\b/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      if (inTable) { h += '</table>'; inTable = false; }
+      if (!inWarn) { h += '<div class="vh-callout" role="note">'; inWarn = true; }
+      continue;
+    }
+    if (trimmed.match(/^:::row\b/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      if (inTable) { h += '</table>'; inTable = false; }
+      if (!inRow) { h += '<div class="vh-img-row">'; inRow = true; }
+      continue;
+    }
     // Spoiler fence: `:::biome <name>` … `:::` wraps content that stays hidden
     // (behind a lock bar) until the spoiler slider has revealed that biome.
     if (trimmed.match(/^:::biome\b/i)) {
@@ -1745,7 +1809,24 @@ export function renderMdToElement(md: string, el: HTMLElement) {
     if (trimmed === ':::') {
       if (inList) { h += '</ul>'; inList = false; }
       if (inTable) { h += '</table>'; inTable = false; }
-      if (inSpoiler) { h += '</div></div>'; inSpoiler = false; }
+      if (inRow) {
+        if (rowCell) { h += '<div class="vh-img-cell">' + rowCell + '</div>'; rowCell = ''; }
+        h += '</div>'; inRow = false;
+      }
+      else if (inWarn) { h += '</div>'; inWarn = false; }
+      else if (inSpoiler) { h += '</div></div>'; inSpoiler = false; }
+      continue;
+    }
+    // Inside a row, any non-image line becomes a caption above the next image.
+    // Each image plus the captions collected before it is emitted as one cell,
+    // so caption and image travel together when the row stacks on mobile.
+    if (inRow) {
+      if (trimmed.match(/^<img /)) {
+        h += '<div class="vh-img-cell">' + rowCell + trimmed + '</div>';
+        rowCell = '';
+      } else if (trimmed) {
+        rowCell += '<p class="vh-img-cap">' + mdInline(trimmed) + '</p>';
+      }
       continue;
     }
     if (trimmed.match(/^\|/)) {
@@ -1794,6 +1875,11 @@ export function renderMdToElement(md: string, el: HTMLElement) {
   }
   if (inList) h += '</ul>';
   if (inTable) h += '</table>';
+  if (inRow) {
+    if (rowCell) h += '<div class="vh-img-cell">' + rowCell + '</div>';
+    h += '</div>';
+  }
+  if (inWarn) h += '</div>';
   if (inSpoiler) h += '</div></div>';
   el.innerHTML = h;
 }
