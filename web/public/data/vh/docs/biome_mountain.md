@@ -4,6 +4,10 @@
 
 *Mountain guide coming soon.*
 
+## At a glance
+
+{sheet:mountain}
+
 ## Overview
 
 _Coming soon — terrain, weather, and what to prioritise here._

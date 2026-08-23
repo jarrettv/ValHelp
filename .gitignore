@@ -162,3 +162,5 @@ screenshots/raw/*
 screenshots/done/*
 !screenshots/raw/.gitkeep
 !screenshots/done/.gitkeep
+.claude/settings.local.json
+**/.claude/settings.local.json

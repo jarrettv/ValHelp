@@ -146,6 +146,13 @@ export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
   w.__vhItemClick = w.selectPageItem;
   w.__vhToggleFav = w.toggleFavorite;
   w.__vhToggleSpd = w.toggleSpeedrun;
+
+  // Anything already rendered did so without items — markdown chips would have
+  // fallen back to raw codes ("SpearFlint" instead of "Flint Spear"). Tell
+  // subscribers to draw again now that lookups resolve. Until this was here,
+  // the only thing that happened to re-render them was the mob-images fetch
+  // above landing, which is incidental and skipped once state is initialized.
+  notify();
 }
 
 /** Call once a logged-in user's id is known. Sections are independent:

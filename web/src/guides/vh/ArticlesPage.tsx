@@ -3,6 +3,10 @@ import { Navigate, useNavigate, useParams } from 'react-router';
 import { biomeIconUrl } from './data';
 import { getProgress, setProgress, subscribeSpoiler, getRevealedCount, biomeIndex, SPOILER_BIOMES } from './spoiler';
 import CompactSpoilerSlider from './CompactSpoilerSlider';
+// Hidden for now — too many of the picks in biomeSheets.ts are still wrong to
+// put the cycler in front of readers. Restore the import and the render below
+// once they have been checked against the weapons/gear/food guides.
+// import BiomeSheetCycler from './BiomeSheetCycler';
 import TipsMarkdown from './TipsMarkdown';
 import Feedback from '../../components/Feedback';
 
@@ -202,6 +206,7 @@ export default function ArticlesPage() {
           </button>
         )}
         {!biome && <BiomeSpoilerSlider innerRef={bigSliderRef} />}
+        {/* {!biome && <BiomeSheetCycler />} — hidden, see the import above. */}
         <TipsMarkdown name={selectedDoc} />
         <Feedback />
       </div>

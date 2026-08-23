@@ -18,6 +18,10 @@ At night, the encounters are more frequent and visibility is reduced because of 
 
 <img src="/img/guide/black-forest/hero.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="Dark pine forest with moss-covered boulders and a copper deposit in frame." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
 
+## At a glance
+
+{sheet:blackforest}
+
 ## Overview
 
 * Forage for [Blueberries]@ and [CarrotSeeds]@, and collect every [GreydwarfEye]@
@@ -42,9 +46,11 @@ Almost everything takes Fire {modbox:Fire:VeryWeak} damage. Use your torch and c
 
 Mobs will fight each other based on faction. [TrophySkeleton]@"Skeleton" are `undead` and attack `forest` faction.
 
-[ArrowFire]@ costs [Wood](8), [Resin](8), and [Feathers](2) for twenty at an upgraded workbench — and Greydwarfs drop [Resin]@ constantly, so the forest pays for its own ammunition. Keep a stack for anything difficult.
+[ArrowFire]@ costs [Wood](8), [Resin](8), and [Feathers](2) for twenty at an upgraded workbench — and Greydwarfs drop [Resin]@ constantly.
 
 A lit [Torch]@ in hand is enough to make ordinary Greydwarfs think twice.
+
+Brave vikings will quickly kill 2 bears with fire to make the best weapon [FistBjornClaw]@.
 
 ### Food
 

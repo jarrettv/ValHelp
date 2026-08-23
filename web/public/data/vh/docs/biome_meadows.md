@@ -12,6 +12,10 @@ Nights in the Meadows can get dangerous due to the dark, cold, and [TrophySkelet
 
 <img src="/img/guide/meadows/hero.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="Golden-hour view of open Meadows — grass, birch stand, a boar or deer in frame." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
 
+## At a glance
+
+{sheet:meadows}
+
 ## Overview
 
 ### First thirty minutes
@@ -125,9 +129,9 @@ These dual axes are an amazing early weapon and they can chop **birch and oak** 
 Only these two standalone houses carry them — never multi-house farms.
 
 :::row
-[AxeHead1]@<br/>inside chest **55%** of the time
+[AxeHead1]@<br/>**25%** chest spawn, then inside chest **55%** of the time
 <img src="/img/guide/meadows/woodhouse6.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse6 exterior — the always-present chest house">
-[AxeHead2]@<br/>**25%** chest spawn, then inside chest **55%** of the time
+[AxeHead2]@<br/>inside chest **55%** of the time
 <img src="/img/guide/meadows/woodhouse2.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse2 exterior — the house whose chest may not spawn">
 :::
 

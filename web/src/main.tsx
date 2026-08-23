@@ -37,6 +37,7 @@ import Worlds from './Worlds.tsx'
 import GuidesLayout from './guides/vh/GuidesLayout'
 import GuideArticle from './GuideArticle'
 import ArticlesPage from './guides/vh/ArticlesPage'
+import StationsPage from './guides/vh/StationsPage'
 import {
   WeaponsPage,
   GearPage,
@@ -93,6 +94,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="food/:category?/:itemCode?" element={<FoodPage />} />
               <Route path="comfort/:category?/:itemCode?" element={<ComfortPage />} />
               <Route path="enemies/:category?/:itemCode?" element={<EnemiesPage />} />
+              <Route path="stations/:code?" element={<StationsPage />} />
               <Route path="weather" element={<WeatherPage />} />
               <Route path="changelog" element={<ChangelogPage />} />
               <Route path="info/:slug" element={<GuideArticle />} />

@@ -80,6 +80,35 @@ Item lookup tries: exact code, case-insensitive code, exact display name, then p
 
 Valid keys: `Eikthyr`, `The Elder`, `Bonemass`, `Moder`, `Yagluth`, `The Queen`, `Fader`.
 
+## Biome Cheat Sheet
+
+`{sheet:biome}` -- on a line of its own, renders the compact cheat sheet for a biome: the equipped-armour shot, best three foods with their combined totals, best weapon, meads, and the workstation strip with an icon per upgrade.
+
+Every biome offers a **Light** and a **Heavy** build, and from the Mistlands a third, **Magic**. The tabs in the header swap the armour, food and weapon together -- heavy wants the Health to survive a trade, light wants the Stamina to never be there for it, magic wants Eitr. Meads, comfort, workstations and the boss chain are shared, because they answer the biome rather than your build.
+
+The choice is remembered and applies to every card at once, so cycling biomes on the landing page keeps you on the build you actually play. A biome that has no magic build stays on its own when you pick magic elsewhere.
+
+The header reads as the biome's whole arc -- what you offer at the altar, then the boss, then what you take home. Counts are drawn as one icon per unit rather than a ×N; runs longer than five shingle by a quarter of an icon so they stay on one line:
+
+[TrophyDeer]* [TrophyDeer]* &rarr; [TrophyEikthyr]* Eikthyr &rarr; [HardAntler]* [HardAntler]* [HardAntler]*
+
+Comfort is drawn as a fourth workstation: being sheltered by a fire is the base level, and each furniture category (fire, bed, carpet, seating, table, banner, and each stacking standalone piece) is an upgrade slot that levels up as you go -- campfire becomes a hearth, wood chair becomes a throne. The total and the rested duration it buys are derived from those slots, so they always agree with the [Comfort guide](/guides/comfort).
+
+{sheet:meadows}
+
+Valid keys are the biome names/slugs the spoiler system knows: `meadows`, `blackforest`, `ocean`, `swamp`, `mountain`, `plains`, `mistlands`, `ashlands`.
+
+The picks (which foods, which set, which weapon) live in `web/src/guides/vh/biomeSheets.ts` -- one entry per biome. Everything numeric is summed from `items.json` at render time, so armour totals and food stats can't drift from the game data. Two kinds of dimming appear on the card and they mean different things:
+
+* **Grey** -- a whole workstation you can't build yet in this biome. The Meadows card greys the forge and cauldron because you haven't found tin or copper.
+* **Blurred** -- past the reader's spoiler level. It sharpens on its own once the slider passes that biome.
+
+The upgrade pips only show what is unlocked *in that biome* -- the Meadows workbench draws two pips, not four. The level-out-of-cap fraction (`3/5`) is what tells you more is coming.
+
+The same card is what the guides landing page cycles through, so editing `biomeSheets.ts` updates both.
+
+Station icons on the card link through to that station's page under [Workstations](/guides/stations), as does the station name on any `{recipe:...}` card.
+
 ## Damage Modifier Boxes
 
 `{modbox:Type:Level}` -- colored box indicating a creature's resistance or weakness to a damage type.

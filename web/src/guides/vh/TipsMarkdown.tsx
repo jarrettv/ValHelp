@@ -18,16 +18,18 @@ export default function TipsMarkdown({ name }: Props) {
   const tick = useSyncExternalStore(subscribe, getChangeCounter);
 
   useEffect(() => {
-    (window as any).__vhNavigate = (path: string) => navigate(path);
+    window.__vhNavigate = (path: string) => navigate(path);
   }, [navigate]);
 
   useEffect(() => {
     if (items && defaults !== undefined) initVhState(items, defaults);
   }, [items, defaults]);
 
+  // `items` matters: the doc text (a few KB) always beats items.json (450KB),
+  // so the first pass renders chips as raw codes. Re-render when they land.
   useEffect(() => {
     if (data && ref.current) renderMdToElement(data, ref.current);
-  }, [data, tick]);
+  }, [data, tick, items]);
 
   if (isLoading) return <div className="vh-items-detail-empty">Loading…</div>;
   if (error) return <div className="vh-items-detail-empty">Failed to load {name}.md</div>;

@@ -5,6 +5,7 @@ import {
   GearIcon,
   FoodIcon,
   ComfortIcon,
+  StationsIcon,
   EnemiesIcon,
   WeatherIcon,
   ArticlesIcon,
@@ -21,6 +22,7 @@ const SIDE_ITEMS: SideItem[] = [
   { to: '/guides/gear', label: 'Gear', Icon: GearIcon },
   { to: '/guides/food', label: 'Food', Icon: FoodIcon },
   { to: '/guides/comfort', label: 'Comfort', Icon: ComfortIcon },
+  { to: '/guides/stations', label: 'Workstations', Icon: StationsIcon },
   { to: '/guides/enemies', label: 'Enemies', Icon: EnemiesIcon },
   { to: '/guides/weather', label: 'Weather', Icon: WeatherIcon },
 ];

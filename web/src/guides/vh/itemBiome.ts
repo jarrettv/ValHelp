@@ -223,6 +223,10 @@ export function buildItemBiomes(items: VhItem[]): Record<string, number> {
       if (station && STATION_BIOME[station] != null) parts.push(STATION_BIOME[station]);
 
       for (const res of recipe?.resources ?? []) {
+        // `amount: 0` means the material is only spent on *upgrades* — the base
+        // craft doesn't need it. Leather armour asks for 0 bone fragments, so
+        // counting them would push the Meadows starter set into Black Forest.
+        if (res.amount === 0) continue;
         const v = biome[res.item];
         // An ingredient we can't place yet — wait for a later pass rather than
         // guessing shallow, which would leak a late-game item into an early list.

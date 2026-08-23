@@ -52,6 +52,12 @@ DOC_FOR = {b: f"biome_{b.replace('-', '')}.md" for b in BIOMES}
 IMG_RE = re.compile(r'<img\s+src="/img/guide/([a-z-]+)/([^"/]+)\.webp"')
 ALT_RE = re.compile(r'\salt="([^"]*)"')      # doubles as the shot brief for --todo
 
+# The biome cheat sheets ({sheet:<biome>} macro) point at equipped-armour shots
+# from a TS data module rather than from markdown, so --todo scans it too.
+SHEETS = REPO / "web" / "src" / "guides" / "vh" / "biomeSheets.ts"
+SHEET_IMG_RE = re.compile(r"img:\s*'/img/guide/([a-z-]+)/([^'/]+)\.webp'")
+SHEET_SHOT_RE = re.compile(r"shot:\s*'([^']*)'")
+
 try:                                          # captions carry em-dashes and 📷
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 except Exception:
@@ -114,7 +120,30 @@ def shot_slots() -> list[tuple[str, str, str]]:
                 continue
             alt = ALT_RE.search(line)
             slots.append((m.group(1), m.group(2), alt.group(1) if alt else ""))
-    return slots
+    if SHEETS.exists():
+        lines = SHEETS.read_text(encoding="utf-8").splitlines()
+        for i, line in enumerate(lines):
+            m = SHEET_IMG_RE.search(line)
+            if not m:
+                continue
+            brief = ""                        # `shot:` sits just below `img:`
+            for peek in lines[i + 1:i + 4]:
+                s = SHEET_SHOT_RE.search(peek)
+                if s:
+                    brief = s.group(1)
+                    break
+            slots.append((m.group(1), m.group(2), brief))
+    # Builds that share a set (Meadows light and heavy are both Leather) point
+    # at the same file — that's one screenshot, not two.
+    seen: set[tuple[str, str]] = set()
+    unique = []
+    for biome, slug, brief in slots:
+        if (biome, slug) in seen:
+            continue
+        seen.add((biome, slug))
+        unique.append((biome, slug, brief))
+    unique.sort(key=lambda s: (BIOMES.index(s[0]) if s[0] in BIOMES else 99, s[1]))
+    return unique
 
 
 def report_todo() -> None:

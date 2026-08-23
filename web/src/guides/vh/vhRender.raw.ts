@@ -3,8 +3,13 @@
 // route through window.__vhItemClick / window.__vhToggleFav / window.__vhToggleSpd.
 /* eslint-disable */
 // @ts-nocheck
-import { biomeIndex, biomeLabel } from './spoiler';
+import { biomeIndex, biomeLabel, SPOILER_BIOMES } from './spoiler';
 import { itemBiomeIndex, itemSpoilerClass } from './itemBiome';
+import {
+  STATIONS as SHEET_STATIONS, stationLevelAt, stationsFor, sheetFor,
+  COMFORT_SLOTS, COMFORT_BASE, COMFORT_CAP, comfortPick, comfortAt, restedMinutes,
+  buildKeysFor, BUILD_LABELS, stationPage,
+} from './biomeSheets';
 
 // ── Spoiler gating for list rows ──────────────────────────────────
 // The class drives the blur from CSS (so dragging the slider re-skins the list
@@ -1160,7 +1165,12 @@ function renderRecipeCards(item) {
     h += '<div class="recipe-station-star">';
     h += '<svg viewBox="0 0 24 24"><path fill="#b87333" stroke="#da5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.587 8.236l2.598-5.232a.911.911 0 0 1 1.63 0l2.598 5.232l5.808.844a.902.902 0 0 1 .503 1.542l-4.202 4.07l.992 5.75c.127.738-.653 1.3-1.32.952L12 18.678l-5.195 2.716c-.666.349-1.446-.214-1.319-.953l.992-5.75l-4.202-4.07a.902.902 0 0 1 .503-1.54z"/></svg>';
     h += '<span class="lvl-num">' + stLvl + '</span></div>';
-    h += '<div class="recipe-station-name">' + esc(stationItem ? stationItem.name : r.station) + '</div></div>';
+    // Link through to the station's guide page when it has one.
+    var stName = esc(stationItem ? stationItem.name : r.station);
+    var stPath = stationPage(r.station) ? '/guides/stations/' + r.station : '';
+    h += '<div class="recipe-station-name">' + (stPath
+      ? '<a href="' + stPath + '" onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + stPath + '\');}">' + stName + '</a>'
+      : stName) + '</div></div>';
   }
   (r.resources || []).forEach(function(res) {
     var resItem = craftItemsByCode[res.item];
@@ -1644,6 +1654,452 @@ function mdPowerBlock(key: string) {
     + '</span></span>';
 }
 
+// ── Biome cheat sheet ──────────────────────────────────────────────
+// `{sheet:<biome>}` on a line of its own renders the compact per-biome card:
+// the equipped-armour shot on the left, then food / weapon / mead / comfort /
+// boss facts and the workstation strip. The *picks* live in biomeSheets.ts;
+// every number here (armour totals, food stats, station levels) is derived
+// from items.json and the station tables, so the card can't drift from the
+// game data.
+//
+// Two ways a thing can be dimmed, and they mean different things:
+//   `off`     — real but not reachable yet in this biome (grey, still legible)
+//   `sp-fog`  — past the reader's spoiler level (blurred, unreadable). The
+//               `sp-b<index>` class next to it is what CSS unblurs later.
+
+function sheetFog(idx) {
+  return (idx == null || idx < 0) ? '' : ' sp-fog sp-b' + idx;
+}
+
+function sheetIcon(code, size, cls) {
+  return '<img class="' + (cls || '') + '" src="/data/vh/icons/' + encodeURIComponent(code) + '.png"'
+    + ' alt="" style="width:' + size + 'px;height:' + size + 'px"'
+    + ' onerror="this.style.visibility=\'hidden\'">';
+}
+
+/** Item icon + name, tagged with its own biome so late items blur themselves. */
+function sheetChip(code, label, size) {
+  var it = craftItemsByCode[code];
+  var name = label || (it ? (it.name || code) : code);
+  var click = it ? ' onclick="window.__vhItemClick&&window.__vhItemClick(\'' + String(code).replace(/'/g, "\\'") + '\')"' : '';
+  return '<span class="vh-sheet-chip' + sheetFog(itemBiomeIndex(code)) + '" title="' + esc(name) + '"' + click + '>'
+    + sheetIcon(code, size || 18, 'vh-sheet-chip-icon')
+    + '<span class="vh-sheet-chip-name">' + esc(name) + '</span></span>';
+}
+
+/** One icon per unit, so a count reads at a glance without a ×N to parse.
+ *  Past five they shingle by a quarter of their width to stay on one line. */
+function sheetIconRun(code, n, size) {
+  var it = craftItemsByCode[code] || {};
+  var px = size || 20;
+  var overlap = n > 5;
+  var h = '<span class="vh-sheet-run' + (overlap ? ' overlap' : '') + sheetFog(itemBiomeIndex(code)) + '"'
+    + (overlap ? ' style="--ov:' + -Math.round(px * 0.25) + 'px"' : '')
+    + ' title="' + esc((it.name || code) + (n > 1 ? ' ×' + n : '')) + '"'
+    + ' onclick="window.__vhItemClick&&window.__vhItemClick(\'' + String(code).replace(/'/g, "\\'") + '\')">';
+  for (var i = 0; i < n; i++) h += sheetIcon(code, px, '');
+  return h + '</span>';
+}
+
+/** Offer → fight → loot, the one line that says what a biome is *for*. */
+function sheetBossChain(boss) {
+  var arrow = '<span class="vh-sheet-arrow" aria-hidden="true">→</span>';
+  var h = '<span class="vh-sheet-boss">';
+  if (boss.prestep) {
+    h += sheetIconRun(boss.prestep[0], boss.prestep[1], 20);
+    h += arrow;
+  }
+  h += sheetIconRun(boss.offering[0], boss.offering[1], 20);
+  h += arrow;
+  h += '<span class="vh-sheet-bossname">' + sheetIcon(boss.trophy, 22, '')
+    + '<span>' + esc(boss.name) + '</span></span>';
+  if (boss.drops.length) {
+    h += arrow;
+    boss.drops.forEach(function (d) { h += sheetIconRun(d[0], d[1], 20); });
+  }
+  return h + '</span>';
+}
+
+function sheetStar(q) {
+  return '<span class="vh-sheet-star" title="quality ' + q + '">'
+    + '<svg viewBox="0 0 24 24"><path fill="#b87333" stroke="#da5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.587 8.236l2.598-5.232a.911.911 0 0 1 1.63 0l2.598 5.232l5.808.844a.902.902 0 0 1 .503 1.542l-4.202 4.07l.992 5.75c.127.738-.653 1.3-1.32.952L12 18.678l-5.195 2.716c-.666.349-1.446-.214-1.319-.953l.992-5.75l-4.202-4.07a.902.902 0 0 1 .503-1.54z"/></svg>'
+    + '<span class="vh-sheet-star-num">' + q + '</span></span>';
+}
+
+/** Armour a piece contributes at quality q (clamped to what it can reach). */
+function sheetPieceArmor(code, q) {
+  var it = craftItemsByCode[code];
+  if (!it || !it.armor) return 0;
+  var lvl = Math.min(q, it.maxQuality || 1);
+  return (it.armor.base || 0) + (it.armor.perLevel || 0) * (lvl - 1);
+}
+
+function sheetFoodTotals(codes) {
+  var t = { health: 0, stamina: 0, eitr: 0 };
+  codes.forEach(function (c) {
+    var f = (craftItemsByCode[c] || {}).food;
+    if (!f) return;
+    t.health += f.health || 0;
+    t.stamina += f.stamina || 0;
+    t.eitr += f.eitr || 0;
+  });
+  return t;
+}
+
+/** No visible label — the icons say what the row is, and the ~58px the label
+ *  cost is worth more to the content on a phone. It survives as the row's
+ *  accessible name. */
+function sheetRow(label, body, cls) {
+  return '<div class="vh-sheet-row' + (cls ? ' ' + cls : '') + '" aria-label="' + esc(label) + '">'
+    + '<span class="vh-sheet-val">' + body + '</span></div>';
+}
+
+/** One station: base icon, level reached / level cap, then a pip per upgrade
+ *  you can actually build here. Upgrades from later biomes aren't drawn at
+ *  all — the level-out-of-cap fraction is what says more is coming. */
+function sheetStation(stationCode, biomeIdx) {
+  var st = SHEET_STATIONS[stationCode];
+  if (!st) return '';
+  var lvl = stationLevelAt(stationCode, biomeIdx);
+  var cap = 1 + st.upgrades.length;
+  var locked = lvl === 0;
+  var pips = locked ? '' : st.upgrades.filter(function (u) {
+    return u.biome <= biomeIdx;
+  }).map(function (u) {
+    return '<span class="vh-sheet-pip" title="' + esc(u.name + ' — ' + matsText(u.mats)) + '">'
+      + sheetIcon(u.code, 16, '') + '</span>';
+  }).join('');
+  return '<div class="vh-sheet-station' + (locked ? ' off' : '') + sheetFog(st.biome) + '">'
+    + '<a class="vh-sheet-station-icon" href="/guides/stations/' + encodeURIComponent(stationCode) + '"'
+    + ' title="' + esc(st.name) + ' — open the station guide"'
+    + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'/guides/stations/' + stationCode + '\');}">'
+    + sheetIcon(stationCode, 24, '') + '</a>'
+    + '<span class="vh-sheet-station-lvl">' + lvl + '<span class="cap">/' + cap + '</span></span>'
+    + '<span class="vh-sheet-pips">' + pips + '</span>'
+    + '</div>';
+}
+
+// ── Station guide pages ────────────────────────────────────────────
+// One page per station that things are actually crafted at: the station's own
+// recipe, a recipe card per upgrade piece, and the list of everything it
+// makes. Everything on the page is spoiler-gated by the item's own biome, so
+// the page grows as the reader's slider moves — a Meadows player opening the
+// workbench sees the two upgrades they can build and the handful of recipes
+// they have, not the full 82.
+
+function matsText(mats) {
+  return (mats || []).map(function (m) {
+    var it = craftItemsByCode[m[0]];
+    return (it ? (it.name || m[0]) : m[0]) + ' ×' + m[1];
+  }).join(', ');
+}
+
+/** Recipe cards for a [code, count][] cost, matching renderRecipeCards' look. */
+function stationMatCards(mats) {
+  var h = '<div class="recipe-cards">';
+  (mats || []).forEach(function (m) {
+    var it = craftItemsByCode[m[0]];
+    var name = it ? (it.name || m[0]) : m[0];
+    h += '<div class="recipe-card' + sheetFog(itemBiomeIndex(m[0])) + '">';
+    h += '<div class="recipe-card-name" style="font-size:' + scaleFontSize(name, 52) + 'px">' + esc(name) + '</div>';
+    h += it && it.hasIcon
+      ? '<img src="/data/vh/icons/' + encodeURIComponent(m[0]) + '.png" alt="">'
+      : '<div style="width:32px;height:32px;background:#222;border-radius:4px"></div>';
+    h += '<div class="recipe-card-count">' + m[1] + '</div>';
+    h += '</div>';
+  });
+  return h + '</div>';
+}
+
+/** Compact row for one craftable: icon, name, and the station level it needs. */
+function stationCraftRow(it, baseLevel) {
+  var need = (it.recipe && it.recipe.stationLevel) || 1;
+  var code = it.code;
+  return '<a class="vh-st-craft' + itemSpoilerClass(code) + '" href="/guides/' + itemPagePath(it) + '"'
+    + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'/guides/' + itemPagePath(it) + '\');}"'
+    + ' title="' + esc(it.name || code) + '">'
+    + (it.hasIcon ? '<img src="/data/vh/icons/' + encodeURIComponent(code) + '.png" alt="">' : '<span class="vh-st-noicon"></span>')
+    + '<span class="vh-st-craft-name">' + esc(it.name || code) + '</span>'
+    + (need > baseLevel ? '<span class="vh-st-craft-lvl" title="Needs station level ' + need + '">' + need + '</span>' : '')
+    + spoilerVeil(code)
+    + '</a>';
+}
+
+/** Same /guides/<page>/<subcat>/<code> path mdItemChip builds for links. */
+function itemPagePath(it) {
+  var pageMap = { weapons: 'weapons', armor: 'gear', food: 'food', comfort: 'comfort', bestiary: 'enemies' };
+  var pageSlug = pageMap[it.page] || it.page || 'weapons';
+  var subcatSlug = it.subcategory ? it.subcategory.toLowerCase().replace(/\s+/g, '-') : '';
+  return pageSlug + (subcatSlug ? '/' + subcatSlug : '') + '/' + it.code;
+}
+
+export function renderStationPage(code: string): string {
+  var page = stationPage(code);
+  var st = craftItemsByCode[code];
+  if (!page || !st) return '<div class="vh-sheet-missing">[station: ' + esc(code) + ' not found]</div>';
+  var def = SHEET_STATIONS[code];
+
+  var h = '<div class="vh-station">';
+
+  // Header: what it is, and where it becomes buildable.
+  h += '<div class="vh-station-head">';
+  h += '<img class="vh-station-icon" src="/data/vh/icons/' + encodeURIComponent(code) + '.png" alt="">';
+  h += '<div><h2 class="vh-station-title">' + esc(st.name || code) + '</h2>';
+  h += '<div class="vh-station-biome">Unlocks in ' + esc(biomeLabel(page.biome)) + '</div></div>';
+  h += '</div>';
+  h += '<p class="vh-station-blurb">' + mdInline(page.blurb) + '</p>';
+  if (st.description) {
+    h += '<p class="vh-station-desc">' + esc(String(st.description).replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '')) + '</p>';
+  }
+
+  // Build cost for the station itself.
+  h += '<h3>Build cost</h3>';
+  h += st.recipe ? renderRecipeCards(st) : '<p class="vh-station-none">Found in the world rather than built.</p>';
+
+  // Upgrades, each with its own cost. Later ones stay listed but blur.
+  if (def && def.upgrades.length) {
+    h += '<h3>Upgrades <span class="vh-station-sub">level 1 &rarr; ' + (1 + def.upgrades.length) + '</span></h3>';
+    h += '<p class="vh-station-note">Each piece placed near the station raises its level by one, unlocking the recipes below that need it.</p>';
+    def.upgrades.forEach(function (u, i) {
+      h += '<div class="vh-station-up' + sheetFog(u.biome) + '">';
+      h += '<div class="vh-station-up-head">';
+      // Not every upgrade piece has an extracted icon yet — hide rather than
+      // leave a broken image where one is missing.
+      h += '<img src="/data/vh/icons/' + encodeURIComponent(u.code) + '.png" alt=""'
+        + ' onerror="this.style.display=\'none\'">';
+      h += '<span class="vh-station-up-name">' + esc(u.name) + '</span>';
+      h += '<span class="vh-station-up-lvl">level ' + (i + 2) + '</span>';
+      h += '</div>';
+      h += stationMatCards(u.mats);
+      h += '</div>';
+    });
+  }
+
+  // Everything it makes, grouped by the level you need.
+  var craftables = (allItems || []).filter(function (it) {
+    return it.recipe && it.recipe.station === code && !it.hidden;
+  });
+  h += '<h3>Crafted here <span class="vh-station-sub">' + craftables.length + ' item' + (craftables.length === 1 ? '' : 's') + '</span></h3>';
+  var levels = {};
+  craftables.forEach(function (it) {
+    var lv = (it.recipe.stationLevel || 1);
+    (levels[lv] = levels[lv] || []).push(it);
+  });
+  Object.keys(levels).map(Number).sort(function (a, b) { return a - b; }).forEach(function (lv) {
+    var group = levels[lv].sort(function (a, b) {
+      return (itemBiomeIndex(a.code) ?? 0) - (itemBiomeIndex(b.code) ?? 0)
+        || String(a.name || a.code).localeCompare(String(b.name || b.code));
+    });
+    h += '<div class="vh-st-level">Needs level ' + lv + '</div>';
+    h += '<div class="vh-st-crafts">';
+    group.forEach(function (it) { h += stationCraftRow(it, lv); });
+    h += '</div>';
+  });
+
+  return h + '</div>';
+}
+
+/** Comfort drawn as a station: shelter is the base piece, each furniture
+ *  category an upgrade slot showing the best piece unlocked so far — the bed
+ *  pip becomes the Dragon Bed in the Mountain, the table pip becomes the Round
+ *  Table in the Plains. Categories you can't furnish yet aren't drawn. */
+function sheetComfortStation(biomeIdx) {
+  var lvl = comfortAt(biomeIdx);
+  var pips = COMFORT_SLOTS.map(function (slot) {
+    var pick = comfortPick(slot, biomeIdx);
+    if (!pick) return '';
+    var it = craftItemsByCode[pick.code] || {};
+    return '<span class="vh-sheet-pip"'
+      + ' title="' + esc(slot.group + ' — ' + (it.name || pick.code) + ' +' + pick.comfort) + '">'
+      + sheetIcon(pick.code, 16, '') + '</span>';
+  }).join('');
+  return '<div class="vh-sheet-station">'
+    + '<span class="vh-sheet-station-icon" title="Sheltered, by a lit fire — +' + COMFORT_BASE + ' before any furniture">'
+    + '<img src="/data/vh/rested.png" alt="" style="width:24px;height:24px;image-rendering:pixelated">'
+    + '</span>'
+    + '<span class="vh-sheet-station-lvl">' + lvl + '<span class="cap">/' + COMFORT_CAP + '</span></span>'
+    + '<span class="vh-sheet-pips">' + pips + '</span>'
+    + '<span class="vh-sheet-rested">' + restedMinutes(lvl) + ' min rested</span>'
+    + '</div>';
+}
+
+// ── Build switching ────────────────────────────────────────────────
+// Each card carries every build's panes and shows one, picked by `data-build`
+// on the card root. The choice is a reader preference, not per-card state, so
+// clicking a tab restacks every sheet on the page and is remembered — cycling
+// biomes keeps you on the build you actually play.
+var SHEET_BUILD_KEY = 'vh-sheet-build';
+
+function sheetStoredBuild() {
+  try { return localStorage.getItem(SHEET_BUILD_KEY) || ''; } catch (e) { return ''; }
+}
+
+/** The stored preference if this sheet offers it, else its first build. */
+function sheetBuildFor(keys) {
+  var want = sheetStoredBuild();
+  return keys.indexOf(want) >= 0 ? want : keys[0];
+}
+
+window.__vhSheetBuild = function (btn) {
+  var want = btn.getAttribute('data-b');
+  try { localStorage.setItem(SHEET_BUILD_KEY, want); } catch (e) { /* private mode */ }
+  var cards = document.querySelectorAll('.vh-sheet');
+  for (var i = 0; i < cards.length; i++) {
+    var card = cards[i];
+    // A biome without that build (no magic before the Mistlands) keeps its own.
+    var have = (card.getAttribute('data-builds') || '').split(',');
+    var use = have.indexOf(want) >= 0 ? want : have[0];
+    card.setAttribute('data-build', use);
+    var tabs = card.querySelectorAll('.vh-sheet-tab');
+    for (var j = 0; j < tabs.length; j++) {
+      var on = tabs[j].getAttribute('data-b') === use;
+      tabs[j].className = 'vh-sheet-tab' + (on ? ' active' : '');
+      tabs[j].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
+};
+
+/** Armour hero for one build — the equipped shot, then the numbers under it. */
+function sheetArmorPane(a, buildKey) {
+  var armorTotal = a.pieces.reduce(function (sum, c) { return sum + sheetPieceArmor(c, a.quality); }, 0)
+    + (a.cape ? sheetPieceArmor(a.cape, a.quality) : 0);
+  var h = '<div class="vh-sheet-armor" data-build="' + buildKey + '">';
+  h += '<div class="vh-sheet-armor-art">';
+  h += '<img src="' + esc(a.img || '/img/guide/placeholder.svg') + '"'
+    + ' onerror="this.onerror=null;this.src=\'/img/guide/placeholder.svg\'"'
+    + ' alt="' + esc(a.shot || (a.label + ' armour set, equipped')) + '">';
+  h += '<span class="vh-sheet-armor-pieces">';
+  a.pieces.forEach(function (c) { h += sheetIcon(c, 16, ''); });
+  if (a.cape) h += sheetIcon(a.cape, 16, '');
+  h += '</span></div>';
+  h += '<div class="vh-sheet-armor-name">' + esc(a.label) + sheetStar(a.quality) + '</div>';
+  h += '<div class="vh-sheet-armor-stat"><b>' + Math.round(armorTotal) + '</b> armor</div>';
+  if (a.note) h += '<div class="vh-sheet-armor-note">' + mdInline(a.note) + '</div>';
+  return h + '</div>';
+}
+
+/** The rows that change with the build: food and weapon. */
+function sheetBuildFacts(build, buildKey) {
+  var h = '<div class="vh-sheet-buildfacts" data-build="' + buildKey + '">';
+  var ft = sheetFoodTotals(build.foods);
+  var foodBody = '<span class="vh-sheet-icons">'
+    + build.foods.map(function (c) {
+        var it = craftItemsByCode[c] || {};
+        return '<span class="vh-sheet-food' + sheetFog(itemBiomeIndex(c)) + '" title="' + esc(it.name || c) + '"'
+          + ' onclick="window.__vhItemClick&&window.__vhItemClick(\'' + String(c).replace(/'/g, "\\'") + '\')">'
+          + sheetIcon(c, 26, '') + '</span>';
+      }).join('')
+    + '</span>'
+    + '<span class="vh-sheet-nums">'
+    + '<b style="color:#c66">' + Math.round(ft.health) + '</b>'
+    + '<span class="sep">/</span><b style="color:#cc6">' + Math.round(ft.stamina) + '</b>'
+    + (ft.eitr ? '<span class="sep">/</span><b style="color:#6ac">' + Math.round(ft.eitr) + '</b>' : '')
+    + '</span>';
+  h += sheetRow('Food', foodBody, 'is-food');
+  if (build.foodNote) h += '<div class="vh-sheet-note">' + mdInline(build.foodNote) + '</div>';
+  // Off-hand sits in the weapon row rather than its own: the pair is one
+  // decision, and the row wraps on a phone instead of costing a line.
+  var hands = sheetChip(build.weapon.code, null, 20) + sheetStar(build.weapon.quality);
+  if (build.offhand) {
+    hands += sheetChip(build.offhand.code, null, 20) + sheetStar(build.offhand.quality);
+  }
+  h += sheetRow('Weapon', hands);
+  if (build.weapon.note) h += '<div class="vh-sheet-note">' + mdInline(build.weapon.note) + '</div>';
+  return h + '</div>';
+}
+
+// Sheets are hidden site-wide for now — too many of the picks in
+// biomeSheets.ts are still wrong to show readers. The `{sheet:<biome>}` lines
+// stay in the biome docs and the cycler stays in the tree; flip this back to
+// false (and uncomment the cycler in ArticlesPage.tsx) once they are checked.
+var SHEETS_HIDDEN = true;
+
+/** Strip each `## <heading>` whose only content is a (now hidden) sheet macro.
+ *  Temporary, and paired with SHEETS_HIDDEN — delete both together. */
+function dropEmptiedSheetHeadings(lines) {
+  var out = [];
+  for (var i = 0; i < lines.length; i++) {
+    if (/^#{2,3} /.test(lines[i].trim())) {
+      // Look past blanks for what this heading actually introduces.
+      var j = i + 1;
+      while (j < lines.length && lines[j].trim() === '') j++;
+      var k = j + 1;
+      while (k < lines.length && lines[k].trim() === '') k++;
+      // Heading → sheet macro → next heading (or EOF) means the section is
+      // now empty; skip the heading and the macro, keep everything after.
+      if (j < lines.length && /^\{sheet:[^}]+\}$/i.test(lines[j].trim())
+          && (k >= lines.length || /^#{1,3} /.test(lines[k].trim()))) {
+        i = j;
+        continue;
+      }
+    }
+    out.push(lines[i]);
+  }
+  return out;
+}
+
+function renderBiomeSheetHtml(name) {
+  if (SHEETS_HIDDEN) return '';
+  var hit = sheetFor(name);
+  if (!hit) return '<div class="vh-sheet-missing">[sheet: ' + esc(name) + ' not found]</div>';
+  var s = hit.sheet, bi = hit.index;
+  var art = (SPOILER_BIOMES[bi] || {}).icon;
+  var keys = buildKeysFor(s);
+  var active = sheetBuildFor(keys);
+
+  // ── Header: biome, build tabs, then the boss you leave behind ──
+  var h = '<div class="vh-sheet" data-biome="' + esc(s.key) + '"'
+    + ' data-builds="' + keys.join(',') + '" data-build="' + active + '">';
+  h += '<div class="vh-sheet-head">';
+  if (art) h += '<img class="vh-sheet-biome" src="/data/vh/Biome' + art + '.png" alt="">';
+  h += '<span class="vh-sheet-title">' + esc(s.label) + '</span>';
+  h += '<span class="vh-sheet-tabs" role="group" aria-label="Build">';
+  keys.forEach(function (k) {
+    h += '<button type="button" class="vh-sheet-tab' + (k === active ? ' active' : '') + '"'
+      + ' data-b="' + k + '" aria-pressed="' + (k === active ? 'true' : 'false') + '"'
+      + ' onclick="window.__vhSheetBuild(this)">' + esc(BUILD_LABELS[k]) + '</button>';
+  });
+  h += '</span>';
+  if (s.boss) h += sheetBossChain(s.boss);
+  h += '</div>';
+
+  // ── Armour hero, one pane per build ──
+  keys.forEach(function (k) { h += sheetArmorPane(s.builds[k].armor, k); });
+
+  // ── Facts: build-specific rows, then the meads, which every build drinks ──
+  h += '<div class="vh-sheet-facts">';
+  keys.forEach(function (k) { h += sheetBuildFacts(s.builds[k], k); });
+
+  var meadBody = s.meads.length
+    ? s.meads.map(function (c) { return sheetChip(c, null, 18); }).join('')
+    : '<span class="vh-sheet-none">no meads yet</span>';
+  h += sheetRow('Mead', meadBody);
+  if (s.meadNote) h += '<div class="vh-sheet-note">' + mdInline(s.meadNote) + '</div>';
+
+  // One trinket slot, and gear.md picks per biome rather than per build.
+  if (s.trinket) {
+    h += sheetRow('Trinket', sheetChip(s.trinket.code, null, 18));
+    if (s.trinket.note) h += '<div class="vh-sheet-note">' + mdInline(s.trinket.note) + '</div>';
+  }
+
+  h += '</div>';
+
+  // ── Workstations ──
+  // Rested leads: comfort is the thing you set up first and carry everywhere.
+  h += '<div class="vh-sheet-stations">';
+  h += sheetComfortStation(bi);
+  stationsFor(bi).forEach(function (code) { h += sheetStation(code, bi); });
+  h += '</div>';
+
+  h += '</div>';
+  return h;
+}
+
+/** Public entry — the macro and the landing-page cycler both call this. */
+export function renderBiomeSheet(name: string): string {
+  return renderBiomeSheetHtml(name);
+}
+
 var MD_DMG_COLORS: any = {
   'Slash':'#d4a050','Blunt':'#e0b868','Pierce':'#c08840',
   'Fire':'#cc4433','Frost':'#a8d8ea','Lightning':'#3388aa',
@@ -1763,6 +2219,10 @@ function slugify(text: string) {
 
 export function renderMdToElement(md: string, el: HTMLElement) {
   var lines = md.split('\n');
+  // While sheets are hidden, drop the heading that introduces one too —
+  // every biome doc puts `{sheet:<biome>}` alone under `## At a glance`, and
+  // the bare heading would otherwise read as a section that failed to load.
+  if (SHEETS_HIDDEN) lines = dropEmptiedSheetHeadings(lines);
   var h = '';
   var inList = false;
   var inTable = false;
@@ -1851,6 +2311,14 @@ export function renderMdToElement(md: string, el: HTMLElement) {
       continue;
     }
     if (inTable) { h += '</table>'; inTable = false; }
+    // `{sheet:<biome>}` is a block, not an inline chip — it must not land
+    // inside a <p>, so it is handled here rather than in mdInline.
+    var _sheet = trimmed.match(/^\{sheet:([^}]+)\}$/i);
+    if (_sheet) {
+      if (inList) { h += '</ul>'; inList = false; }
+      h += renderBiomeSheetHtml(_sheet[1].trim());
+      continue;
+    }
     if (trimmed.match(/^### /)) {
       if (inList) { h += '</ul>'; inList = false; }
       h += '<h4 id="' + slugify(trimmed.slice(4)) + '">' + esc(trimmed.slice(4)) + '</h4>';
