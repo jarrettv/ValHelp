@@ -3,8 +3,10 @@ import type { VhItem } from './types';
 
 export const VH_DATA_BASE = '/data/vh';
 
+// Item icons come from icons.db via the API, not from static files — see
+// api/ModuleStuff/StuffEndpointsIcon.cs. Biome art below is still static.
 export const iconUrl = (code: string) =>
-  `${VH_DATA_BASE}/icons/${encodeURIComponent(code)}.png`;
+  `/api/icon/${encodeURIComponent(code)}.png`;
 
 export const biomeIconUrl = (name: string) =>
   `${VH_DATA_BASE}/Biome${name}.png`;

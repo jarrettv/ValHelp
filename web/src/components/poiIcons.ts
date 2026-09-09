@@ -103,6 +103,18 @@ export function resolvePoiIcon(poi: PoiMarker): IconRule | null {
     case 'DvergrTower':      return { icon: 'dvergrtower',    color: '#8aa0b0', minor: true };
     case 'PlaceOfMystery':   return { icon: 'tormentelite',   color: '#a070d0', minor: true };
     case 'PutridHole':       return { icon: 'putridhole',     color: '#a8923a', minor: true };
+    // ── Deep North (1.0) ──
+    // No dedicated art yet — these borrow the closest existing SVG and lean on
+    // colour to stay distinguishable. Swap the `icon` values once Deep North
+    // SVGs land in /img/Poi; the types themselves are already stable.
+    case 'Morkhalla':        return { icon: 'fortress',       color: '#7f9bb5', minor: true };
+    case 'WindingTunnels':   return { icon: 'mountaincave',   color: '#7fd0e0', minor: true };
+    case 'AncestralMemorial':return { icon: 'vegvisir',       color: '#b9c6d4', minor: true };
+    case 'NorthVillage':     return { icon: 'camp',           color: '#8a6a45', minor: true };
+    case 'BearCave':         return { icon: 'trollcave',      color: '#8a5a3a', minor: true };
+    case 'FrozenShip':       return { icon: 'shipwreck',      color: '#9fd8e8', minor: true };
+    // 'IcePond' and 'LumberCamp' are generated and searchable but deliberately
+    // unmapped: nothing in the current icon set reads as either one.
     default:                 return null;
   }
 }

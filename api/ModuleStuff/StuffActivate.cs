@@ -7,6 +7,7 @@ public static class StuffActivate
     public static void MapEndpointsStuff(this WebApplication app)
     {
         StuffEndpointsMob.Map(app);
+        StuffEndpointsIcon.Map(app);
     }
 
     public static void OnModelCreating(this ModelBuilder modelBuilder)

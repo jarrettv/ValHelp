@@ -12,7 +12,8 @@ import Feedback from '../../components/Feedback';
 
 // ── Spoiler slider ────────────────────────────────────────────────
 // Biomes (from spoiler.ts, progression order). Drag right to reveal each one
-// from black-and-white to full colour. Deep North has no art (snowflake).
+// from black-and-white to full colour. Every biome has art now; the snowflake
+// stays as the fallback for any future biome added before its icon exists.
 const SnowflakeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9L4.9 19.1" />
@@ -99,6 +100,7 @@ const BIOMES: Biome[] = [
   { slug: 'ocean',        label: 'Ocean',        biome: 'Ocean',       doc: 'biome_ocean' },
   { slug: 'mistlands',    label: 'Mistlands',    biome: 'Mistlands',   doc: 'biome_mistlands' },
   { slug: 'ashlands',     label: 'Ashlands',     biome: 'Ashlands',    doc: 'biome_ashlands' },
+  { slug: 'deep-north',   label: 'Deep North',   biome: 'DeepNorth',   doc: 'biome_deepnorth' },
 ];
 
 const TIPS_ICON = (

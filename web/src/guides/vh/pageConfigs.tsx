@@ -134,6 +134,7 @@ export const enemiesConfig: ItemsPageConfig = {
     { id: 'Ocean', label: 'Ocean', icon: <BiomeImg name="Ocean" />, spoilerBiome: 'ocean' },
     { id: 'Mistlands', label: 'Mistlands', icon: <BiomeImg name="Mistlands" />, spoilerBiome: 'mistlands' },
     { id: 'Ashlands', label: 'Ashlands', icon: <BiomeImg name="Ashlands" />, spoilerBiome: 'ashlands' },
+    { id: 'Deep North', label: 'Deep North', icon: <BiomeImg name="DeepNorth" />, spoilerBiome: 'deepnorth' },
   ],
   sort: (a, b) => {
     // Sort by effective HP at the minimum star a creature spawns at (fixed-star

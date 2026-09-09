@@ -1,5 +1,5 @@
 // Auto-ported from ValHelpTools vhcli/wwwroot/index.html (lines 427-479, 987-2167).
-// Minimal adaptations: icon URLs rewritten to /data/vh/... and onclick handlers
+// Minimal adaptations: icon URLs rewritten to /api/icon/... and onclick handlers
 // route through window.__vhItemClick / window.__vhToggleFav / window.__vhToggleSpd.
 /* eslint-disable */
 // @ts-nocheck
@@ -407,7 +407,7 @@ function trinketSummary(fx) {
 function renderCraftListItem(it, maxStats) {
   var sel = it.code === pageSelectedCode ? ' selected' : '';
   var iconHtml = it.hasIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    ? '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
@@ -449,7 +449,7 @@ function renderTinyRecipeInner(resources) {
   resources.forEach(function(res) {
     var resItem = craftItemsByCode[res.item];
     h += '<span style="display:inline-flex;align-items:center;gap:1px;flex-shrink:0">';
-    if (resItem && resItem.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(res.item) + '.png" style="width:14px;height:14px;image-rendering:pixelated">';
+    if (resItem && resItem.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(res.item) + '.png" style="width:14px;height:14px;image-rendering:pixelated">';
     h += '<span style="font-size:9px;color:#999">' + res.amount + '</span></span>';
   });
   return h;
@@ -471,7 +471,7 @@ function renderFoodListItem(it, maxStats) {
   var sel = it.code === pageSelectedCode ? ' selected' : '';
   var isMeadBase = it.subcategory === 'MeadKetill';
   var iconHtml = it.hasIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    ? '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
@@ -517,7 +517,7 @@ function renderMeadListItem(it, maxStats) {
   var paired = it.meadFinished ? craftItemsByCode[it.meadFinished] : null;
   var displayIcon = paired && paired.hasIcon ? paired.code : (it.hasIcon ? it.code : '');
   var iconHtml = displayIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(displayIcon) + '.png" alt="" draggable="false" style="width:32px;height:32px;image-rendering:pixelated;flex-shrink:0">'
+    ? '<img src="/api/icon/' + encodeURIComponent(displayIcon) + '.png" alt="" draggable="false" style="width:32px;height:32px;image-rendering:pixelated;flex-shrink:0">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var displayName = paired ? paired.name : it.name;
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
@@ -535,7 +535,7 @@ function renderMeadListItem(it, maxStats) {
 function renderArmorListItem(it, maxStats) {
   var sel = it.code === pageSelectedCode ? ' selected' : '';
   var iconHtml = it.hasIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    ? '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
@@ -621,7 +621,7 @@ function bestiaryModBox(dt, mod, size) {
 function renderBestiaryListItem(it, maxStats) {
   var sel = it.code === pageSelectedCode ? ' selected' : '';
   var iconHtml = it.hasIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    ? '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var td = it.trophyDrop;
   var liMinStar = td.minStar || 0;
@@ -658,7 +658,7 @@ function renderBestiaryListItem(it, maxStats) {
 function renderComfortListItem(it, maxStats) {
   var sel = it.code === pageSelectedCode ? ' selected' : '';
   var iconHtml = it.hasIcon
-    ? '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    ? '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
     : '<div class="craft-item-icon-placeholder"></div>';
   var h = '<div class="craft-item' + sel + badgeBgClass(it.code) + spoilerClass(it.code) + '" data-code="' + esc(it.code) + '" onclick="selectPageItem(\'' + esc(it.code) + '\')">' + spoilerVeil(it.code);
   h += '<div class="craft-item-badge">';
@@ -685,7 +685,7 @@ function renderComfortDetailFull(code) {
   h += '<button class="detail-toggle-btn' + (craftFavorites[code] ? ' active' : '') + '" onclick="toggleFavorite(\'' + esc(code) + '\')" title="Favorite">' + ICON_STAR + '</button>';
   h += '<button class="detail-toggle-btn' + (craftSpeedrun[code] ? ' active' : '') + '" onclick="toggleSpeedrun(\'' + esc(code) + '\')" title="Speedrun">' + ICON_RUNNER + '</button>';
   h += '</div>';
-  if (it.hasIcon) h += '<img class="detail-icon" src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="">';
+  if (it.hasIcon) h += '<img class="detail-icon" src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="">';
   h += '<div><div class="detail-title">' + esc(it.name || it.code) + '</div>';
   if (it.description) {
     var desc = it.description.replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '');
@@ -778,7 +778,7 @@ function renderBestiaryDetailFull(code) {
     }
   } else {
     h += '<div style="width:100%;aspect-ratio:1/1;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#555;font-size:11px;text-align:center">';
-    if (it.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" style="width:52px;height:52px;image-rendering:pixelated;opacity:0.65">';
+    if (it.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" style="width:52px;height:52px;image-rendering:pixelated;opacity:0.65">';
     else h += 'No art';
     h += '</div>';
   }
@@ -862,7 +862,7 @@ function renderBestiaryDetailFull(code) {
     h += '<div style="font-size:11px;color:#666;font-weight:bold;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Drops</div>';
     for (var di = 0; di < drops.length; di++) {
       var d = drops[di];
-      var dIcon = d.code ? '<img src="/data/vh/icons/' + encodeURIComponent(d.code) + '.png" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:middle" onerror="this.style.display=\'none\'">' : '';
+      var dIcon = d.code ? '<img src="/api/icon/' + encodeURIComponent(d.code) + '.png" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:middle" onerror="this.style.display=\'none\'">' : '';
       var dChance = d.chance >= 1 ? '' : '<span style="color:#888;font-size:10px">' + Math.round(d.chance * 100) + '%</span>';
       var dAmt = '';
       if (d.min && d.max && (d.min !== 1 || d.max !== 1)) {
@@ -1045,7 +1045,7 @@ function renderFoodDetailFull(code) {
       }
       var hm = '<div class="detail-section">' + esc(stationName) + '</div>';
       hm += '<div class="mead-link" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer" onclick="selectPageItem(\'' + esc(meadBase.code) + '\')">';
-      if (meadBase.hasIcon) hm += '<img src="/data/vh/icons/' + encodeURIComponent(meadBase.code) + '.png" style="width:24px;height:24px;image-rendering:pixelated">';
+      if (meadBase.hasIcon) hm += '<img src="/api/icon/' + encodeURIComponent(meadBase.code) + '.png" style="width:24px;height:24px;image-rendering:pixelated">';
       hm += '<div><div style="color:#8cf;font-size:12px;font-weight:bold;text-decoration:underline">' + esc(meadBase.name || meadBase.code) + '</div>';
       hm += '<div style="color:#888;font-size:11px">Ferments in ~2 days</div></div></div>';
       if (meadBase.recipe && meadBase.recipe.resources) {
@@ -1076,7 +1076,7 @@ function renderFoodDetailFull(code) {
   var h = detail.innerHTML;
   h += '<div style="margin-top:12px;border-top:1px solid #333;padding-top:8px">';
   h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-  if (source.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(sourceCode) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
+  if (source.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(sourceCode) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
   h += '<div><div style="color:#fff;font-size:13px;font-weight:bold">' + esc(source.name || sourceCode) + '</div>';
   var stationLabel = (it.subcategory === 'IronCooking') ? 'Iron Cooking Station' : (it.subcategory === 'CookingStation' ? 'Cooking Station' : 'Prep Table \u2192 Stone Oven');
   h += '<div style="color:#888;font-size:11px">' + esc(stationLabel) + '</div></div></div>';
@@ -1086,7 +1086,7 @@ function renderFoodDetailFull(code) {
     h += '<div class="recipe-cards">';
     h += '<div class="recipe-card">';
     h += '<div class="recipe-card-name" style="font-size:' + scaleFontSize(source.name || sourceCode, 52) + 'px">' + esc(source.name || sourceCode) + '</div>';
-    if (source.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(sourceCode) + '.png" alt="">';
+    if (source.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(sourceCode) + '.png" alt="">';
     else h += '<div style="width:32px;height:32px;background:#222;border-radius:4px"></div>';
     h += '<div class="recipe-card-count">1</div></div></div>';
   }
@@ -1129,7 +1129,7 @@ function renderMeadDetailFull(code) {
     var meadCount = (code === 'MeadBaseBzerker') ? 3 : 6;
     var h = '<div class="mead-ferments-block" style="margin-top:12px;border-top:1px solid #333;padding-top:8px">';
     h += '<div class="mead-link" style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="selectPageItem(\'' + esc(paired.code) + '\')">';
-    if (paired.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(paired.code) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
+    if (paired.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(paired.code) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
     h += '<div><div style="color:#8cf;font-size:13px">Ferments into ' + meadCount + 'x <span style="font-weight:bold;text-decoration:underline">' + esc(paired.name || paired.code) + '</span> in ~2 days</div>';
     if (paired.description) {
       var desc = paired.description.replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '');
@@ -1178,7 +1178,7 @@ function renderRecipeCards(item) {
     var resHasIcon = resItem && resItem.hasIcon;
     h += '<div class="recipe-card">';
     h += '<div class="recipe-card-name" style="font-size:' + scaleFontSize(resName, 52) + 'px">' + esc(resName) + '</div>';
-    if (resHasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(res.item) + '.png" alt="">';
+    if (resHasIcon) h += '<img src="/api/icon/' + encodeURIComponent(res.item) + '.png" alt="">';
     else h += '<div style="width:32px;height:32px;background:#222;border-radius:4px"></div>';
     var showPerLevel = res.perLevel && (item.maxQuality || 1) > 1;
     h += '<div class="recipe-card-count">' + res.amount + (showPerLevel ? '<span style="font-size:9px;color:#888"> +' + res.perLevel + '</span>' : '') + '</div>';
@@ -1217,7 +1217,7 @@ function renderRecipeByQuality(item) {
       var amount = q === 1 ? res.amount : (res.perLevel || 0) * (q - 1);
       var cardOpacity = amount <= 0 ? 'opacity:0.05;' : '';
       h += '<div style="display:flex;align-items:center;background:#1a1a2e;border:1px solid #333;border-radius:4px;padding:2px 4px 2px 2px;gap:2px;' + cardOpacity + '" title="' + esc(resName) + '">';
-      if (resHasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(res.item) + '.png" style="width:24px;height:24px;image-rendering:pixelated">';
+      if (resHasIcon) h += '<img src="/api/icon/' + encodeURIComponent(res.item) + '.png" style="width:24px;height:24px;image-rendering:pixelated">';
       else h += '<div style="width:24px;height:24px;background:#222;border-radius:3px"></div>';
       h += '<span style="font-size:12px;font-weight:bold;color:#fff;min-width:24px;text-align:right">x' + Math.max(amount, 0) + '</span>';
       h += '</div>';
@@ -1231,7 +1231,7 @@ function buildStationInfo(stationCode, desc) {
   var station = craftItemsByCode[stationCode];
   if (!station) return '';
   var h = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-  if (station.hasIcon) h += '<img src="/data/vh/icons/' + encodeURIComponent(stationCode) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
+  if (station.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(stationCode) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
   h += '<div><div style="color:#cda;font-weight:bold">' + esc(station.name || stationCode) + '</div>';
   h += '<div style="color:#666;font-size:11px">' + esc(desc) + '</div></div></div>';
   var r = station.recipe || {};
@@ -1252,7 +1252,7 @@ function renderGenericDetail(code, detail) {
   h += '<button class="detail-toggle-btn' + (isFav ? ' active' : '') + '" onclick="toggleFavorite(\'' + esc(code) + '\')" title="Favorite">' + ICON_STAR + '</button>';
   h += '<button class="detail-toggle-btn' + (isSpeed ? ' active' : '') + '" onclick="toggleSpeedrun(\'' + esc(code) + '\')" title="Speedrun">' + ICON_RUNNER + '</button>';
   h += '</div>';
-  if (it.hasIcon) h += '<img class="detail-icon" src="/data/vh/icons/' + encodeURIComponent(it.code) + '.png" alt="">';
+  if (it.hasIcon) h += '<img class="detail-icon" src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="">';
   h += '<div><div class="detail-title">' + esc(it.name || it.code) + '</div>';
   if (it.description) {
     var desc = it.description.replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '');
@@ -1559,10 +1559,10 @@ function mdItemChip(name: string, kind: string, value: string) {
   var displayName = it ? (it.name || it.code) : name;
   var code = it ? it.code : name;
   var hasIcon = it && it.hasIcon;
-  var iconHtml = hasIcon ? '<img src="/data/vh/icons/' + encodeURIComponent(code) + '.png" style="width:16px;height:16px;image-rendering:pixelated;vertical-align:middle">' : '';
+  var iconHtml = hasIcon ? '<img src="/api/icon/' + encodeURIComponent(code) + '.png" style="width:16px;height:16px;image-rendering:pixelated;vertical-align:middle">' : '';
 
   if (kind === 'icon2x') {
-    var bigIcon = hasIcon ? '<img src="/data/vh/icons/' + encodeURIComponent(code) + '.png" style="width:32px;height:32px;image-rendering:pixelated;vertical-align:middle">' : '';
+    var bigIcon = hasIcon ? '<img src="/api/icon/' + encodeURIComponent(code) + '.png" style="width:32px;height:32px;image-rendering:pixelated;vertical-align:middle">' : '';
     return '<span class="md-item" title="' + esc(displayName) + '" style="display:inline-flex;align-items:center;vertical-align:middle">' + bigIcon + '</span>';
   }
   if (kind === 'icon') {
@@ -1646,7 +1646,7 @@ function mdPowerBlock(key: string) {
   var hit = mdFindPower(key);
   if (!hit) return '<span style="color:#666;font-size:12px">[power: ' + esc(key) + ' not found]</span>';
   return '<span class="vh-power">'
-    + '<img class="vh-power-icon" src="/data/vh/icons/' + encodeURIComponent(hit.code) + '.png" alt="" onerror="this.style.display=\'none\'">'
+    + '<img class="vh-power-icon" src="/api/icon/' + encodeURIComponent(hit.code) + '.png" alt="" onerror="this.style.display=\'none\'">'
     + '<span class="vh-power-body">'
     + '<span class="vh-power-name">' + esc(hit.p.name) + '</span>'
     + '<span class="vh-power-desc">' + mdInline(hit.p.desc) + '</span>'
@@ -1672,7 +1672,7 @@ function sheetFog(idx) {
 }
 
 function sheetIcon(code, size, cls) {
-  return '<img class="' + (cls || '') + '" src="/data/vh/icons/' + encodeURIComponent(code) + '.png"'
+  return '<img class="' + (cls || '') + '" src="/api/icon/' + encodeURIComponent(code) + '.png"'
     + ' alt="" style="width:' + size + 'px;height:' + size + 'px"'
     + ' onerror="this.style.visibility=\'hidden\'">';
 }
@@ -1803,7 +1803,7 @@ function stationMatCards(mats) {
     h += '<div class="recipe-card' + sheetFog(itemBiomeIndex(m[0])) + '">';
     h += '<div class="recipe-card-name" style="font-size:' + scaleFontSize(name, 52) + 'px">' + esc(name) + '</div>';
     h += it && it.hasIcon
-      ? '<img src="/data/vh/icons/' + encodeURIComponent(m[0]) + '.png" alt="">'
+      ? '<img src="/api/icon/' + encodeURIComponent(m[0]) + '.png" alt="">'
       : '<div style="width:32px;height:32px;background:#222;border-radius:4px"></div>';
     h += '<div class="recipe-card-count">' + m[1] + '</div>';
     h += '</div>';
@@ -1818,7 +1818,7 @@ function stationCraftRow(it, baseLevel) {
   return '<a class="vh-st-craft' + itemSpoilerClass(code) + '" href="/guides/' + itemPagePath(it) + '"'
     + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'/guides/' + itemPagePath(it) + '\');}"'
     + ' title="' + esc(it.name || code) + '">'
-    + (it.hasIcon ? '<img src="/data/vh/icons/' + encodeURIComponent(code) + '.png" alt="">' : '<span class="vh-st-noicon"></span>')
+    + (it.hasIcon ? '<img src="/api/icon/' + encodeURIComponent(code) + '.png" alt="">' : '<span class="vh-st-noicon"></span>')
     + '<span class="vh-st-craft-name">' + esc(it.name || code) + '</span>'
     + (need > baseLevel ? '<span class="vh-st-craft-lvl" title="Needs station level ' + need + '">' + need + '</span>' : '')
     + spoilerVeil(code)
@@ -1843,7 +1843,7 @@ export function renderStationPage(code: string): string {
 
   // Header: what it is, and where it becomes buildable.
   h += '<div class="vh-station-head">';
-  h += '<img class="vh-station-icon" src="/data/vh/icons/' + encodeURIComponent(code) + '.png" alt="">';
+  h += '<img class="vh-station-icon" src="/api/icon/' + encodeURIComponent(code) + '.png" alt="">';
   h += '<div><h2 class="vh-station-title">' + esc(st.name || code) + '</h2>';
   h += '<div class="vh-station-biome">Unlocks in ' + esc(biomeLabel(page.biome)) + '</div></div>';
   h += '</div>';
@@ -1865,7 +1865,7 @@ export function renderStationPage(code: string): string {
       h += '<div class="vh-station-up-head">';
       // Not every upgrade piece has an extracted icon yet — hide rather than
       // leave a broken image where one is missing.
-      h += '<img src="/data/vh/icons/' + encodeURIComponent(u.code) + '.png" alt=""'
+      h += '<img src="/api/icon/' + encodeURIComponent(u.code) + '.png" alt=""'
         + ' onerror="this.style.display=\'none\'">';
       h += '<span class="vh-station-up-name">' + esc(u.name) + '</span>';
       h += '<span class="vh-station-up-lvl">level ' + (i + 2) + '</span>';

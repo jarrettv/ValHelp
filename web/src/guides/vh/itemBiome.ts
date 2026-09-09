@@ -12,10 +12,15 @@
 //      it (its materials, its crafting station, or what it was cooked from),
 //      applied repeatedly until nothing changes. Bronze needs Copper + Tin, so
 //      a Bronze Sword lands in Black Forest without being listed anywhere.
+//   3. Anything left over fails CLOSED — see the end of buildItemBiomes. An
+//      item we can't place is treated as maximally spoilery rather than shown
+//      to everyone. Missing one `Upgrader*` idol here once un-gated 483 of 933
+//      items, so this is deliberately the safe direction to be wrong in.
 //
 // So: to fix a wrong biome, first check whether a RAW_BIOME entry is off — that
 // usually corrects a whole branch of recipes at once. Use OVERRIDE only for
-// items whose recipe genuinely doesn't reflect where you get them.
+// items whose recipe genuinely doesn't reflect where you get them. If something
+// is hidden that shouldn't be, it's probably falling through to (3).
 
 import type { VhItem } from './types';
 import { BIOME_COUNT } from './spoiler';
@@ -49,6 +54,8 @@ const STATION_BIOME: Record<string, number> = {
   piece_preptable: SWAMP,
   blackforge: MISTLANDS,
   piece_magetable: MISTLANDS,
+  piece_FrostKiln: DEEPNORTH,
+  piece_FrostFoundry: DEEPNORTH,
 };
 
 /**
@@ -129,7 +136,108 @@ const RAW_BIOME: Record<string, number> = {
 
   // ── Deep North ──
   Fish10: DEEPNORTH,
+  // Ore and the metal it becomes.
+  GoldOre: DEEPNORTH, Gold: DEEPNORTH,
+  // Gathered / mined / chopped.
+  Frostwood: DEEPNORTH, FirConeFrost: DEEPNORTH, Ice: DEEPNORTH,
+  Snowball: DEEPNORTH, FrostCore: DEEPNORTH, FrozenFuel: DEEPNORTH,
+  GlowWorm: DEEPNORTH, SpiceDeepNorth: DEEPNORTH,
+  // Farmed and foraged.
+  Kale: DEEPNORTH, KaleSeeds: DEEPNORTH, Oat: DEEPNORTH, OatSeeds: DEEPNORTH,
+  Poteitr: DEEPNORTH, PoteitrSeeds: DEEPNORTH, Lingonberry: DEEPNORTH,
+  // Creature drops.
+  MooseHide: DEEPNORTH, MooseMeat: DEEPNORTH, MooseSinew: DEEPNORTH,
+  SealHide: DEEPNORTH, SealBlubber: DEEPNORTH, BarkaBranch: DEEPNORTH,
+  ElakingHairBundle: DEEPNORTH, MoleClaws: DEEPNORTH, OozeMork: DEEPNORTH,
+  HatefulBlood: DEEPNORTH, WrithanRoots: DEEPNORTH, Voidplasm: DEEPNORTH,
+  // Krigen, Hexen and the Fallen Warrior.
+  Leatherstraps: DEEPNORTH, MemorialCoal: DEEPNORTH, NornThread: DEEPNORTH,
+  BloodGoldKey: DEEPNORTH, OrbFrostFire: DEEPNORTH, OrbThunderBlood: DEEPNORTH,
+  // Looted from the imprisoned dvergr and the captive fulings.
+  AncientCoin: DEEPNORTH, AncientGemstoneBlack: DEEPNORTH,
+  AncientGemstoneGreen: DEEPNORTH, AncientGemstoneOrange: DEEPNORTH,
+  AncientGemstonePurple: DEEPNORTH, CrownJewel: DEEPNORTH,
+  // Kall Fimbulbringer.
+  FrozenKingDrop: DEEPNORTH,
+  // FaderEmber ("Embers") only ever feeds Deep North recipes and only appears
+  // in localization_deepnorth, but the name points at the Ashlands boss. Filed
+  // deep until someone confirms where it actually drops — over-gating a
+  // material is a smaller sin than leaking one.
+  FaderEmber: DEEPNORTH,
+  Hook: DEEPNORTH, Lantern_DN: DEEPNORTH,
+  // Windmill and foundry output: no Recipe on these, so nothing derives them.
+  OatFlour: DEEPNORTH, FeastDeepNorth: DEEPNORTH, FeastDeepNorth_Material: DEEPNORTH,
+  ArmorDeepNorthHeavyChest: DEEPNORTH, ArmorDeepNorthHeavylegs: DEEPNORTH,
+  ArmorDeepNorthMageChest: DEEPNORTH, ArmorDeepNorthMagelegs: DEEPNORTH,
+  ArmorDeepNorthMediumChest: DEEPNORTH, ArmorDeepNorthMediumlegs: DEEPNORTH,
+  HelmetDNHeavy: DEEPNORTH, HelmetDNMage: DEEPNORTH, HelmetDNMediumHood: DEEPNORTH,
+
+  // ── Ores, scraps and seeds ──
+  // These predate 1.0 and were never listed, so they had always fallen through
+  // as "unplaceable" and shown to everyone. Only visible now because the
+  // fallback below stopped failing open.
+  CopperOre: BLACKFOREST, CopperScrap: BLACKFOREST, TinOre: BLACKFOREST,
+  BronzeScrap: BLACKFOREST, PineCone: BLACKFOREST, CarrotSeeds: BLACKFOREST,
+  Coins: BLACKFOREST, QueenBee: MEADOWS, Acorn: MEADOWS, Amber: MEADOWS,
+  StoneRock: MEADOWS, BeechSeeds: MEADOWS, BirchSeeds: MEADOWS,
+  IronOre: SWAMP, IronScrap: SWAMP, Ectoplasm: SWAMP, TurnipSeeds: SWAMP,
+  VegvisirShard_Bonemass: SWAMP,
+  SilverOre: MOUNTAIN, SilverNecklace: MOUNTAIN, DragonEgg: MOUNTAIN,
+  OnionSeeds: MOUNTAIN, Flametal: MOUNTAIN, FlametalOre: MOUNTAIN,
+  BlackMetalScrap: PLAINS, GoblinTotem: PLAINS, YagluthDrop: PLAINS,
+  QueenDrop: MISTLANDS, VineberrySeeds: MISTLANDS,
+  VineGreenSeeds: MISTLANDS, Larva: MISTLANDS,
+  FlametalOreNew: ASHLANDS, CharredCogwheel: ASHLANDS, FaderDrop: ASHLANDS,
+  BonemawSerpentScale: ASHLANDS, AsksvinEgg: ASHLANDS, Softtissue: ASHLANDS,
+  AsksvinCarrionNeck: ASHLANDS, AsksvinCarrionPelvic: ASHLANDS,
+  AsksvinCarrionRibcage: ASHLANDS, AsksvinCarrionSkull: ASHLANDS,
+  // Hildir's three chests and their keys sit in the biome of the dungeon.
+  HildirKey_forestcrypt: BLACKFOREST, chest_hildir1: BLACKFOREST,
+  HildirKey_mountaincave: MOUNTAIN, chest_hildir2: MOUNTAIN,
+  HildirKey_plainsfortress: PLAINS, chest_hildir3: PLAINS,
+  // Trophy prefabs the extractor doesn't manage to link to a creature, so they
+  // arrive with no biome anchor. TrophyDraugrFem duplicates TrophyDraugr;
+  // TrophyForestTroll is the troll's only trophy but its drop never resolves.
+  TrophyDraugrFem: SWAMP, TrophyForestTroll: BLACKFOREST,
+  // Cosmetic / vendor odds and ends.
+  Sparkler: MEADOWS, Tankard_dvergr: MISTLANDS,
 };
+
+/**
+ * Still unplaced after everything above, and so hidden until the reader has
+ * revealed every biome (see the fallback at the end of buildItemBiomes):
+ * CandleWick, CharcoalResin, FishAnglerRaw, Pot_Shard_Green,
+ * Lantern_hooded, HelmetRootCrown. All are 1.0 additions whose
+ * source nobody has confirmed yet. Move each into RAW_BIOME as it's pinned
+ * down — being over-gated is the safe place for them to sit meanwhile.
+ */
+
+/**
+ * 1.0 put an upgrade "idol" in nearly every recipe — `Upgrader3Armor` and so
+ * on, eight tiers of each. They matter here out of all proportion to their
+ * gameplay weight: an ingredient with no biome makes the whole recipe
+ * unplaceable, and an unplaceable item is never gated, so leaving these out
+ * silently un-gated 483 of 933 items across every biome, not just this one.
+ *
+ * The tier is the progression step, which skips Ocean.
+ */
+const UPGRADER_TIER = [MEADOWS, BLACKFOREST, SWAMP, MOUNTAIN, PLAINS,
+  MISTLANDS, ASHLANDS, DEEPNORTH];
+for (let tier = 0; tier < UPGRADER_TIER.length; tier++) {
+  RAW_BIOME[`Upgrader${tier}Armor`] = UPGRADER_TIER[tier];
+  RAW_BIOME[`Upgrader${tier}Weapon`] = UPGRADER_TIER[tier];
+}
+
+/**
+ * Every `Mold*` is Deep North loot — you find the mould, then cast the Nord
+ * weapon or armour from it at the Frost Foundry. They have no recipe of their
+ * own, so without this the entire Nord tier (every Cast:, every finished piece)
+ * stayed unplaceable and therefore ungated. Matched by prefix because the set
+ * grows with each new mould.
+ */
+export function isMoldCode(code: string): boolean {
+  return /^Mold[A-Z]/.test(code);
+}
 
 /**
  * Items whose recipe doesn't tell the truth about where you get them —
@@ -140,9 +248,14 @@ const OVERRIDE: Record<string, number> = {
   CryptKey: BLACKFOREST,       // The Elder
   Wishbone: SWAMP,             // Bonemass
   // Haldor stocks these once you find him in the Black Forest
+  // (the full list is `vendorPrice` in ValHelpTools/Scripts/item_overrides.json).
   BeltStrength: BLACKFOREST,
   FishingRod: BLACKFOREST,
   HelmetYule: BLACKFOREST,
+  BarrelRings: BLACKFOREST,
+  Thunderstone: BLACKFOREST,
+  DvergrNeedle: BLACKFOREST,
+  DvergrLantern: BLACKFOREST,
   // Dvergr gear you loot rather than craft
   HelmetDverger: MISTLANDS,
   DvergerArbalest: MISTLANDS,
@@ -205,6 +318,7 @@ export function buildItemBiomes(items: VhItem[]): Record<string, number> {
   for (const it of items) {
     const raw = RAW_BIOME[it.code];
     if (raw != null) set(it.code, raw);
+    if (isMoldCode(it.code)) set(it.code, DEEPNORTH);
     const anchor = biomeFromAnchors(it);
     if (anchor != null) set(it.code, anchor);
   }
@@ -254,6 +368,29 @@ export function buildItemBiomes(items: VhItem[]): Record<string, number> {
   }
 
   for (const code in OVERRIDE) biome[code] = OVERRIDE[code];
+
+  // Anything still unplaced used to be left out of the map entirely, and
+  // `itemBiomeIndex` returns null for those — which the callers read as "never
+  // gated". That is the wrong way for a spoiler system to fail: a gap in the
+  // data above should hide too much, never too little. So close it out here.
+  //
+  // Two steps, in order of how much we actually know:
+  //   1. If the recipe has ingredients we *did* place, the item is at least as
+  //      deep as the deepest of them.
+  //   2. Otherwise we know nothing about it — treat it as fully spoilery, so it
+  //      only appears once the reader has revealed everything.
+  const DEEPEST = BIOME_COUNT - 1;
+  for (const it of items) {
+    if (biome[it.code] != null) continue;
+    const known: number[] = [];
+    for (const res of it.recipe?.resources ?? []) {
+      if (res.amount === 0) continue;
+      const v = biome[res.item];
+      if (v != null) known.push(v);
+    }
+    biome[it.code] = known.length ? Math.max(...known) : DEEPEST;
+  }
+
   return biome;
 }
 

@@ -58,6 +58,12 @@ public static class LocationFinder
             WorldGenerator.BiomeArea.Everything, 5, true, false, false,
             0, 0, 1, 1000, false, 0, 1, 4000, 0, 32, 0, 40, 2048, ""),
 
+        // Kall Fimbulbringer — Deep North ("bosslocation" in _LocationList_DeepNorth).
+        // exterior=32, altitude 80+ (it sits high), terrain delta 0-6, 1024 apart.
+        new LocationConfig("bosslocation", "Boss Altar", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 3, true, false, false,
+            0, 0, 80, 5000, false, 0, 0, 0, 0, 32, 0, 6, 1024, "dn_boss"),
+
         // Start temple (exterior=25, centerFirst, unique, altitude 3+, terrain delta 0-3)
         new LocationConfig("StartTemple", "Start", Biome.Meadows,
             WorldGenerator.BiomeArea.Everything, 1, true, true, true,
@@ -291,6 +297,75 @@ public static class LocationFinder
         new LocationConfig("MorgenHole3", "PutridHole", Biome.AshLands,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, false, 0, 1, 0, 0, 15, 0, 10, 128, ""),
+
+        // ── Deep North (1.0) ────────────────────────────────────────────────
+        // Transcribed from _LocationList_DeepNorth via
+        // ValHelpTools/Scripts/extract_locations.py, so these carry the game's
+        // own numbers rather than eyeballed ones. Only the entries with
+        // m_enable set are here — the game ships hotspring{,2,3}, darkesthole,
+        // HalfBurried_ForestCrypt and FimbulLocation01 switched off.
+
+        // Mörkhalla — the fortress the shadow folk hold. Highest thing in the biome.
+        new LocationConfig("morkborg", "Morkhalla", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 40, false, false, false,
+            0, 0, 30, 10000, false, 0, 1, 0, 0, 30, 0, 300, 275, "morkborg"),
+
+        // Northern Village — the most common Deep North structure by far.
+        new LocationConfig("NorthVillage", "NorthVillage", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 135, false, false, false,
+            0, 0, 2, 1000, false, 0, 1, 0, 0, 32, 0, 3, 70, ""),
+        new LocationConfig("hut01", "NorthVillage", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 40, false, false, false,
+            0, 0, 40, 1000, false, 0, 1, 0, 0, 12, 0, 4, 100, "northvillage"),
+
+        // Winding Tunnels — the Deep North dungeon entrance ("thehole").
+        new LocationConfig("thehole01", "WindingTunnels", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 40, false, false, false,
+            0, 0, 2, 1000, false, 0, 1, 0, 0, 28, 0, 3, 256, ""),
+        new LocationConfig("Lumbercamp", "LumberCamp", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 4, 1000, true, 0, 1, 0, 0, 32, 0, 3, 100, "thehole"),
+
+        // Ancestral Memorial — rare, and where the memorial offering happens.
+        new LocationConfig("NorthMemorialPlace", "AncestralMemorial", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 15, false, false, false,
+            0, 0, 2, 1000, false, 0, 1, 0, 0, 25, 0, 3, 400, "memorialplace"),
+
+        // Ice ponds — the only Deep North location gated to inForest.
+        new LocationConfig("icepond", "IcePond", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 40, false, false, false,
+            0, 0, 10, 200, true, 0, 1, 0, 0, 20, 0, 2, 128, "icepond"),
+
+        // Frozen ships — locked to the outer rim (8000-9750 from centre) and
+        // to below sea level, so they ring the far north coast.
+        new LocationConfig("FrozenShip01", "FrozenShip", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            8000, 9750, -15, -5, false, 0, 1, 0, 0, 10, 0, 100, 64, "FrozenShip"),
+        new LocationConfig("FrozenShip02", "FrozenShip", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            8000, 9750, -15, -5, false, 0, 1, 0, 0, 16, 0, 100, 64, "FrozenShip"),
+        new LocationConfig("FrozenShip03", "FrozenShip", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            8000, 9750, -15, -5, false, 0, 1, 0, 0, 10, 0, 100, 64, "FrozenShip"),
+
+        // Shipwrecks on the Deep North shoreline — same marker as the others.
+        new LocationConfig("Shipwreck_DN", "Shipwreck", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 170, false, false, false,
+            0, 0, -0.5f, 0, false, 0, 1, 0, 0, 10, 0, 2, 0, ""),
+        new LocationConfig("Shipwreck02_DN", "Shipwreck", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 120, false, false, false,
+            0, 0, -0.5f, 1, false, 0, 1, 0, 0, 10, 0, 2, 0, ""),
+
+        new LocationConfig("Runestone_DeepNorth", "Runestone", Biome.DeepNorth,
+            WorldGenerator.BiomeArea.Everything, 70, false, false, false,
+            0, 0, 0, 1000, false, 1, 5, 0, 0, 12, 0, 10, 128, "Runestones"),
+
+        // Bear Cave — 1.0 adds this to the *Black Forest*, not the Deep North;
+        // it rides along in the Deep North list. Note the unusual minimum
+        // terrain delta of 5: it needs broken ground, not a flat clearing.
+        new LocationConfig("BearCave", "BearCave", Biome.BlackForest,
+            WorldGenerator.BiomeArea.Everything, 50, false, false, false,
+            0, 0, 5, 1000, false, 1, 5, 0, 0, 12, 5, 10, 256, ""),
     };
 
     static readonly Dictionary<string, string> FriendlyNames = new()
@@ -343,6 +418,21 @@ public static class LocationFinder
         ["MorgenHole1"] = "Putrid Hole",
         ["MorgenHole2"] = "Putrid Hole",
         ["MorgenHole3"] = "Putrid Hole",
+        ["bosslocation"] = "Kall Fimbulbringer",
+        ["morkborg"] = "Mörkhalla",
+        ["NorthVillage"] = "Northern Village",
+        ["hut01"] = "Northern Hut",
+        ["thehole01"] = "Winding Tunnels",
+        ["Lumbercamp"] = "Lumber Camp",
+        ["NorthMemorialPlace"] = "Ancestral Memorial",
+        ["icepond"] = "Ice Pond",
+        ["FrozenShip01"] = "Frozen Ship",
+        ["FrozenShip02"] = "Frozen Ship",
+        ["FrozenShip03"] = "Frozen Ship",
+        ["Shipwreck_DN"] = "Shipwreck",
+        ["Shipwreck02_DN"] = "Shipwreck",
+        ["Runestone_DeepNorth"] = "Deep North Runestone",
+        ["BearCave"] = "Bear Cave",
         ["WoodHouse1"] = "WoodHouse1",
         ["WoodHouse2"] = "WoodHouse2",
         ["WoodHouse3"] = "WoodHouse3",

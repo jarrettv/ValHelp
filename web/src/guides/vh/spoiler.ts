@@ -8,7 +8,7 @@
 // handled in vhRender.raw.ts). Items / gear / weapons / food can reuse the same
 // `sp-b<index>` class + biomeIndex() lookup later.
 
-// `icon` is the biome art name for biomeIconUrl(); Deep North has none yet (null).
+// `icon` is the biome art name for biomeIconUrl() — /data/vh/Biome<icon>.png.
 export const SPOILER_BIOMES: { key: string; label: string; icon: string | null }[] = [
   { key: 'meadows', label: 'Meadows', icon: 'Meadows' },
   { key: 'blackforest', label: 'Black Forest', icon: 'BlackForest' },
@@ -18,7 +18,7 @@ export const SPOILER_BIOMES: { key: string; label: string; icon: string | null }
   { key: 'plains', label: 'Plains', icon: 'Plains' },
   { key: 'mistlands', label: 'Mistlands', icon: 'Mistlands' },
   { key: 'ashlands', label: 'Ashlands', icon: 'Ashlands' },
-  { key: 'deepnorth', label: 'Deep North', icon: null },
+  { key: 'deepnorth', label: 'Deep North', icon: 'DeepNorth' },
 ];
 
 export const BIOME_COUNT = SPOILER_BIOMES.length;

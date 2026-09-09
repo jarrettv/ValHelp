@@ -13,7 +13,7 @@ import { biomeIndex } from './spoiler';
 // Spoiler indexes (see SPOILER_BIOMES). Ocean is index 2 and gates nothing —
 // no station, upgrade or set is locked behind it — so it never appears below.
 const MEADOWS = 0, BLACKFOREST = 1, SWAMP = 3, MOUNTAIN = 4,
-  PLAINS = 5, MISTLANDS = 6, ASHLANDS = 7;
+  PLAINS = 5, MISTLANDS = 6, ASHLANDS = 7, DEEPNORTH = 8;
 
 // ── Workstations ──────────────────────────────────────────────────
 // A station's level is 1 (the base piece) plus one per upgrade you can
@@ -62,6 +62,7 @@ export const STATIONS: Record<string, StationDef> = {
       { code: 'cauldron_ext4_pots',            name: 'Pots and pans',     biome: PLAINS,    mats: [['Iron', 5], ['Copper', 5], ['BlackMetal', 5], ['FineWood', 10]] },
       { code: 'cauldron_ext5_mortarandpestle', name: 'Mortar and pestle', biome: MISTLANDS, mats: [['BlackMarble', 8], ['FineWood', 6], ['RoundLog', 4]] },
       { code: 'cauldron_ext6_rollingpins',     name: 'Rolling pins',      biome: ASHLANDS,  mats: [['Blackwood', 8], ['FineWood', 6], ['FlametalNew', 4]] },
+      { code: 'cauldron_ext7_smoker',          name: 'Smoker',            biome: DEEPNORTH, mats: [['Gold', 5], ['Frostwood', 6]] },
     ],
   },
   blackforge: {
@@ -71,6 +72,7 @@ export const STATIONS: Record<string, StationDef> = {
       { code: 'blackforge_ext2_vise',        name: 'Vice',               biome: MISTLANDS, mats: [['Iron', 5], ['Copper', 8], ['MechanicalSpring', 2]] },
       { code: 'blackforge_ext3_metalcutter', name: 'Metal cutter', biome: ASHLANDS, mats: [['BlackMarble', 5], ['FlametalNew', 5], ['Blackwood', 5], ['CharredBone', 4]] },
       { code: 'blackforge_ext4_gemcutter',   name: 'Gem cutter',         biome: ASHLANDS,  mats: [['FlametalNew', 5], ['Blackwood', 8], ['MorgenSinew', 2], ['GemstoneRed', 1]] },
+      { code: 'blackforge_ext5_apron',       name: "Smith's Aprons",     biome: DEEPNORTH, mats: [['Gold', 5], ['Frostwood', 8], ['MooseHide', 2]] },
     ],
   },
   piece_artisanstation: {
@@ -79,8 +81,10 @@ export const STATIONS: Record<string, StationDef> = {
       // Its one upgrade, and the only route to level 2 — Ceramic Plate and
       // Shield Core both need it. Costs a Majestic Carapace, so it is gated
       // behind the Queen even though the table itself is a Plains build.
-      // No icon extracted for this piece yet; the card degrades to no image.
-      { code: 'piece_artisanstation_ext1', name: 'Artisan press', biome: MISTLANDS, mats: [['BlackMarble', 5], ['Bronze', 5], ['QueenDrop', 1]] },
+      // The prefab is `artisan_ext1`, not the `piece_artisanstation_ext1` the
+      // station's own name suggests — that mismatch is why this card used to
+      // render without an icon.
+      { code: 'artisan_ext1', name: 'Artisan Press', biome: MISTLANDS, mats: [['BlackMarble', 5], ['Bronze', 5], ['QueenDrop', 1]] },
     ],
   },
   piece_magetable: {
@@ -89,6 +93,7 @@ export const STATIONS: Record<string, StationDef> = {
       { code: 'piece_magetable_ext',  name: 'Rune table',       biome: MISTLANDS, mats: [['BlackMarble', 10], ['YggdrasilWood', 5], ['Eitr', 10]] },
       { code: 'piece_magetable_ext2', name: 'Unfading candles', biome: MISTLANDS, mats: [['BlackMarble', 10], ['TrophySkeleton', 3], ['Eitr', 10], ['Resin', 15]] },
       { code: 'piece_magetable_ext3', name: 'Feathery wreath', biome: ASHLANDS, mats: [['CelestialFeather', 8], ['TrophyAsksvin', 1], ['Eitr', 10], ['Blackwood', 3]] },
+      { code: 'piece_magetable_ext4', name: 'Standing Loom',   biome: DEEPNORTH, mats: [['Frostwood', 5], ['NornThread', 10]] },
     ],
   },
 };
