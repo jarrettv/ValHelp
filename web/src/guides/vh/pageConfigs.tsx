@@ -100,14 +100,22 @@ export const comfortConfig: ItemsPageConfig = {
   allBgImg: iconUrl('fire_pit'),
   filter: it => it.category === 'Comfort' && !!it.comfort,
   subField: 'comfortGroup',
+  // One tag per Piece.ComfortGroup, in the order the categories open up.
+  // 1.0 split the old catch-all "Standalone" into Item stand, Ornament,
+  // Garland, Lantern and Bathing, leaving only the two event pieces ungrouped.
   tags: [
     { id: 'Fire', label: 'Fire', icon: <CatImg code="hearth" /> },
     { id: 'Bed', label: 'Bed', icon: <CatImg code="piece_bed02" /> },
     { id: 'Seating', label: 'Seating', icon: <CatImg code="piece_throne01" /> },
     { id: 'Table', label: 'Table', icon: <CatImg code="piece_table_round" /> },
-    { id: 'Carpet', label: 'Carpet', icon: <CatImg code="rug_deer" /> },
-    { id: 'Banner', label: 'Banner', icon: <CatImg code="piece_banner01" /> },
-    { id: 'Standalone', label: 'Standalone', icon: <CatImg code="piece_bathtub" /> },
+    { id: 'Carpet', label: 'Carpet', icon: <CatImg code="rug_wolf" /> },
+    { id: 'Banner', label: 'Banner', icon: <CatImg code="piece_cloth_hanging_door" /> },
+    { id: 'ItemStand', label: 'Item stand', icon: <CatImg code="ArmorStand" /> },
+    { id: 'Garland', label: 'Garland', icon: <CatImg code="piece_CelebrationGarland" /> },
+    { id: 'Bathing', label: 'Bathing', icon: <CatImg code="piece_bathtub" /> },
+    { id: 'Lantern', label: 'Lantern', icon: <CatImg code="piece_Lavalantern" /> },
+    { id: 'Ornament', label: 'Ornament', icon: <CatImg code="piece_pot2" /> },
+    { id: 'Standalone', label: 'Standalone', icon: <CatImg code="piece_maypole" /> },
   ],
   sort: (a, b) => {
     const ca = a.comfort ?? 0;

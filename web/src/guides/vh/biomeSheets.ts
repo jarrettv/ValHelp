@@ -140,11 +140,21 @@ export function stationPage(code: string): StationPage | undefined {
 
 // ── Comfort ───────────────────────────────────────────────────────
 // Comfort upgrades exactly like a workstation, so the card draws it as one.
-// Shelter + a fire is the base level; each furniture category is a slot you
-// upgrade once (campfire → hearth, wood chair → throne). Only the best piece
-// in a category counts, *except* Standalone, where every piece stacks — so
-// those get a slot each. The totals this produces match the per-biome table
-// in docs/comfort.md; keep the two in step.
+// Shelter is the base level; each furniture category is a slot you upgrade as
+// better pieces unlock (campfire → hearth, wood chair → throne). Only the best
+// piece in a category counts, so a room with three banners is a room with one.
+//
+// The categories are the game's own `Piece.ComfortGroup`, which 1.0 grew from
+// seven to eleven — Item stand, Ornament, Garland, Lantern and Bathing used to
+// be lumped together as "Standalone", which is why the old totals ran low.
+// Group 0 (no group at all) is the only one that really does stack per piece,
+// and after 1.0 the only two pieces left in it are the Maypole and the Yule
+// Tree — both event-only, so neither is part of a total you can build today.
+//
+// Every code and value below comes from items.json (`comfortGroup`,
+// `comfort`); the biome is where the piece's rarest material or its crafting
+// station unlocks, matching itemBiome.ts. The totals this produces are the
+// per-biome table in docs/comfort.md; keep the two in step.
 
 export const COMFORT_BASE = 2;      // being sheltered, before any furniture
 
@@ -152,19 +162,38 @@ export type ComfortPick = { code: string; comfort: number; biome: number };
 export type ComfortSlot = { group: string; picks: ComfortPick[] };
 
 export const COMFORT_SLOTS: ComfortSlot[] = [
+  // The hearth is only 15 stone, but it needs the stonecutter — so it is Swamp.
   { group: 'Fire',    picks: [{ code: 'fire_pit', comfort: 1, biome: MEADOWS }, { code: 'hearth', comfort: 2, biome: SWAMP }] },
   { group: 'Bed',     picks: [{ code: 'bed', comfort: 1, biome: MEADOWS }, { code: 'piece_bed02', comfort: 2, biome: MOUNTAIN }] },
-  { group: 'Carpet',  picks: [{ code: 'rug_deer', comfort: 1, biome: MEADOWS }] },
+  // 1.0 put bears in the Black Forest, and their rug is a +2 — the first
+  // category that goes past +1 without leaving the second biome.
+  { group: 'Carpet',  picks: [{ code: 'rug_deer', comfort: 1, biome: MEADOWS }, { code: 'rug_Bjorn', comfort: 2, biome: BLACKFOREST }] },
   // A sitting log found at a Meadows camp counts too, but nothing in the
   // Meadows is craftable — the first seat you can build is the wood chair.
   { group: 'Seating', picks: [{ code: 'piece_chair02', comfort: 2, biome: BLACKFOREST }, { code: 'piece_throne01', comfort: 3, biome: SWAMP }] },
   { group: 'Table',   picks: [{ code: 'piece_table', comfort: 1, biome: BLACKFOREST }, { code: 'piece_table_round', comfort: 2, biome: PLAINS }] },
-  { group: 'Banner',  picks: [{ code: 'piece_banner01', comfort: 1, biome: BLACKFOREST }] },
-  // Standalone pieces stack with each other — one slot apiece.
-  { group: 'Armour stand', picks: [{ code: 'ArmorStand', comfort: 1, biome: SWAMP }] },
-  { group: 'Hot tub',      picks: [{ code: 'piece_bathtub', comfort: 2, biome: PLAINS }] },
-  { group: 'Lava lantern', picks: [{ code: 'piece_Lavalantern', comfort: 1, biome: ASHLANDS }] },
+  // Jute curtains are banners as far as the game is concerned, and they are
+  // the only +2 in the category.
+  { group: 'Banner',  picks: [{ code: 'piece_banner01', comfort: 1, biome: BLACKFOREST }, { code: 'piece_cloth_hanging_door', comfort: 2, biome: PLAINS }] },
+  // The item stand is bronze nails, so the category opens a whole biome
+  // earlier than the armour stand most guides name.
+  { group: 'Item stand', picks: [{ code: 'itemstand', comfort: 1, biome: BLACKFOREST }] },
+  { group: 'Garland',    picks: [{ code: 'piece_CelebrationGarland', comfort: 1, biome: BLACKFOREST }] },
+  // The barber station is a Bathing piece; the hot tub replaces it at +2.
+  { group: 'Bathing',    picks: [{ code: 'piece_barber', comfort: 1, biome: BLACKFOREST }, { code: 'piece_bathtub', comfort: 2, biome: PLAINS }] },
+  // Mistlands is no longer a dead biome for comfort — the dvergr lantern is
+  // the category's first piece, and the lava lantern doubles it.
+  { group: 'Lantern',    picks: [{ code: 'piece_dvergr_lantern', comfort: 1, biome: MISTLANDS }, { code: 'piece_Lavalantern', comfort: 2, biome: ASHLANDS }] },
+  // Green pots are the other Ornament, but nobody has pinned down where the
+  // shards drop, so the asksvin skeleton is the one we can date.
+  { group: 'Ornament',   picks: [{ code: 'piece_asksvinskeleton', comfort: 1, biome: ASHLANDS }] },
 ];
+
+// Excluded from every total above: the Maypole (Midsummer) and Yule Tree
+// (Yule) are +1 each and stack, but they are buildable for a few weeks a year,
+// so a "max comfort" that counts them is not a number you can go and reach.
+// The other event pieces — Jack-o-turnip, and the three Yule garlands — fill a
+// category that is already full by the time you can build them.
 
 /** Best piece in a slot once you have cleared `biome`, or null if still empty. */
 export function comfortPick(slot: ComfortSlot, biome: number): ComfortPick | null {
@@ -183,9 +212,10 @@ export function comfortAt(biome: number): number {
   );
 }
 
-export const COMFORT_CAP = comfortAt(ASHLANDS);
+export const COMFORT_CAP = comfortAt(DEEPNORTH);
 
-/** Rested lasts 7 minutes plus one per point of comfort. */
+/** Rested lasts 7 minutes plus one per point of comfort: comfort 1 is 8
+ *  minutes, and shelter alone (+2) makes it 10. */
 export function restedMinutes(comfort: number): number {
   return 7 + comfort;
 }

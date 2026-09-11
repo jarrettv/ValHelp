@@ -92,7 +92,7 @@ The header reads as the biome's whole arc -- what you offer at the altar, then t
 
 [TrophyDeer]* [TrophyDeer]* &rarr; [TrophyEikthyr]* Eikthyr &rarr; [HardAntler]* [HardAntler]* [HardAntler]*
 
-Comfort is drawn as a fourth workstation: being sheltered by a fire is the base level, and each furniture category (fire, bed, carpet, seating, table, banner, and each stacking standalone piece) is an upgrade slot that levels up as you go -- campfire becomes a hearth, wood chair becomes a throne. The total and the rested duration it buys are derived from those slots, so they always agree with the [Comfort guide](/guides/comfort).
+Comfort is drawn as a fourth workstation: being sheltered is the base level, and each of the game's eleven furniture categories (fire, bed, carpet, seating, table, banner, item stand, garland, bathing, lantern, ornament) is an upgrade slot that levels up as you go -- campfire becomes a hearth, wood chair becomes a throne. Only the best piece in a category ever counts, so a slot is one pip no matter how much furniture is in the room. The total and the rested duration it buys are derived from those slots, so they always agree with the [Comfort guide](/guides/comfort).
 
 {sheet:meadows}
 

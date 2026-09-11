@@ -80,18 +80,22 @@ function esc(s: any) { return String(s == null ? "" : s).replace(/&/g,"&amp;").r
 const ICON_STAR = '<svg viewBox="0 0 24 24"><path fill="#ca0" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>';
 const ICON_RUNNER = '<svg viewBox="0 0 24 24"><path fill="#4af" d="M13.5 5.5c1.09 0 2-.92 2-2a2 2 0 0 0-2-2c-1.11 0-2 .88-2 2c0 1.08.89 2 2 2M9.89 19.38l1-4.38L13 17v6h2v-7.5l-2.11-2l.61-3A7.3 7.3 0 0 0 19 13v-2c-1.91 0-3.5-1-4.31-2.42l-1-1.58c-.4-.62-1-1-1.69-1c-.31 0-.5.08-.81.08L6 8.28V13h2V9.58l1.79-.7L8.19 17l-4.9-1l-.4 2z"/></svg>';
 
-const COMFORT_GROUP_ORDER = ['Fire', 'Bed', 'Seating', 'Table', 'Carpet', 'Banner', 'Standalone'];
+// One line per Piece.ComfortGroup. Every group but Standalone counts its best
+// piece only, so the line says what "best" turns on where that isn't obvious.
 const COMFORT_GROUP_DESC = {
-  Fire: 'Must be lit for comfort bonus.',
-  Bed: 'Sets spawn point when you sleep.',
-  Seating: 'Only the highest comfort chair counts.',
-  Table: 'Only the highest comfort table counts.',
-  Carpet: 'All rugs give the same comfort. Only one counts.',
-  Banner: 'All banners give the same comfort. Only one counts.',
-  Standalone: 'All standalone items stack with each other.',
+  Fire: 'Must be lit to count. Only the highest counts.',
+  Bed: 'Sets your spawn point, and sleeping grants rested outright.',
+  Seating: 'Only the highest counts — a throne beats any number of benches.',
+  Table: 'Only the highest counts.',
+  Carpet: 'Only the highest counts. Fur rugs are +2, woven and hide rugs +1.',
+  Banner: 'Only the highest counts. Jute curtains are the +2 in this group.',
+  ItemStand: 'Only the highest counts, and every stand in the group is +1.',
+  Ornament: 'Only the highest counts — three pots are still +1.',
+  Garland: 'Only the highest counts.',
+  Lantern: 'Only the highest counts.',
+  Bathing: 'Only the highest counts.',
+  Standalone: 'No group, so these stack with each other and with everything else.',
 };
-const COMFORT_SEASONAL = { 'piece_maypole': 'Midsommar', 'piece_xmastree': 'Yule' };
-const COMFORT_HIDDEN = { 'piece_barber': true, 'piece_blackwood_bench': true };
 
 // ── Ported rendering code (lines 987-2167) ─────────────────────────
 var NON_COMBAT_DMG = { chop: 1, pickaxe: 1, damage: 1 };
@@ -670,7 +674,7 @@ function renderComfortListItem(it, maxStats) {
   h += '<div style="display:flex;align-items:center;gap:4px">';
   h += '<span style="color:#8cf;font-weight:bold;font-size:12px">+' + it.comfort + '</span>';
   h += '<span class="craft-item-cat" style="margin:0">' + esc(it.comfortGroup || '') + '</span>';
-  if (COMFORT_SEASONAL[it.code]) h += '<span class="comfort-tag seasonal">' + COMFORT_SEASONAL[it.code] + '</span>';
+  if (it.seasonal) h += '<span class="comfort-tag seasonal">' + esc(it.seasonal) + '</span>';
   if (it.comfortGroup === 'Fire') h += '<span class="comfort-tag fire">Lit</span>';
   h += '</div></div></div>';
   return h;
@@ -701,7 +705,7 @@ function renderComfortDetailFull(code) {
   if (COMFORT_GROUP_DESC[it.comfortGroup]) {
     h += '<div class="detail-stat-row"><span class="label" style="color:#888;font-size:11px">' + esc(COMFORT_GROUP_DESC[it.comfortGroup]) + '</span></div>';
   }
-  if (COMFORT_SEASONAL[it.code]) h += '<div class="detail-stat-row"><span class="label">Availability</span><span class="val"><span class="comfort-tag seasonal">' + COMFORT_SEASONAL[it.code] + '</span></span></div>';
+  if (it.seasonal) h += '<div class="detail-stat-row"><span class="label">Availability</span><span class="val"><span class="comfort-tag seasonal">' + esc(it.seasonal) + ' event only</span></span></div>';
   if (it.playerBase) h += '<div class="detail-stat-row"><span class="label">Player base</span><span class="val"><span class="comfort-tag pb">Base</span></span></div>';
   if (it.attackedOnSight) h += '<div class="detail-stat-row"><span class="label">Mob target</span><span class="val"><span class="comfort-tag aos">Targeted</span></span></div>';
   if (it.comfortGroup === 'Fire') h += '<div class="detail-stat-row"><span class="label">Requires</span><span class="val"><span class="comfort-tag fire">Lit</span></span></div>';

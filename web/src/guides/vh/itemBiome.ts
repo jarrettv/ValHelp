@@ -52,6 +52,9 @@ const STATION_BIOME: Record<string, number> = {
   piece_MeadCauldron: BLACKFOREST,
   piece_artisanstation: PLAINS,
   piece_preptable: SWAMP,
+  // Comfort pieces name a station too: the hearth is 15 stone, but the
+  // stonecutter it needs is iron, so it is a Swamp piece.
+  piece_stonecutter: SWAMP,
   blackforge: MISTLANDS,
   piece_magetable: MISTLANDS,
   piece_FrostKiln: DEEPNORTH,
@@ -267,7 +270,6 @@ const OVERRIDE: Record<string, number> = {
   HelmetStrawHat: MEADOWS,
   HelmetFishingHat: MEADOWS,
   HelmetCelebration: MEADOWS,
-  ArmorStand: MEADOWS,
   // Legendary Ashlands weapon assembled from fragments
   SwordIronFire: ASHLANDS,
   // Mead with no listed base recipe — trolls put it in the Black Forest

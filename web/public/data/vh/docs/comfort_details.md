@@ -9,14 +9,29 @@ Format:
 
 `##` category headers are for author organization — they are not rendered on the detail screen. Only `### Title <!-- Code -->` sections are extracted.
 
-## Beds
+The `##` headers below are the game's eleven `Piece.ComfortGroup` categories,
+in the order the comfort page lists them.
 
-## Chairs
+## Fire
 
-## Tables
+## Bed
 
-## Rugs and Banners
+## Seating
 
-## Lights and Fire
+## Table
 
-## Plants
+## Carpet
+
+## Banner
+
+## Item stand
+
+## Garland
+
+## Bathing
+
+## Lantern
+
+## Ornament
+
+## Standalone

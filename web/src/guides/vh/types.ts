@@ -46,6 +46,10 @@ export type VhItem = {
 
   comfort?: number;
   comfortGroup?: string;
+  comfortGroupId?: number;
+  /** Set on event-only pieces (Midsummer, Halloween, Yule) — the game keeps
+   *  them out of the build menu outside their window. */
+  seasonal?: string;
 
   trophyDrop?: { hp: number; creature?: string; minStar?: number; maxStar?: number };
   trinket?: { biome?: string };

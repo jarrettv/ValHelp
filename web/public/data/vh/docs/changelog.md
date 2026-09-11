@@ -2,6 +2,32 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-09-09
+
+* **Valheim 1.0 and the Deep North are on the site.** Everything re-extracted against the 1.0 game files: 917 items, 93 creatures, 20 workstations and 26 station upgrades.
+* **The whole Nord tier**, cast from moulds at the [piece_FrostFoundry]@"Frost Foundry" — fifteen [Gold]@"Bloodgold" weapons, each in plain, Frostfire and Thunderblood variants, plus four new staves and the Voidcaller.
+* **Three armour sets** — Protector (heavy), Vanguard (medium) and Caller (mage) — with the [CapeDeepNorthMage]@"Cape of the Caller" and [CapeDeepNorth]@"Moose Hide Cape", and two new trinkets.
+* **New food**: [Kale]@, [Oat]@"Oats", [Poteitr]@, [Lingonberry]@"Lingonberries", [MooseMeat]@"Moose Meat", [SealBlubber]@"Seal Blubber" and the Northern Morning Fare feast, with the [cauldron_ext7_smoker]@"Smoker" to make them.
+* **21 new creatures** in the bestiary under a **Deep North** tag, from the Barka and the Frysling up to **Kall Fimbulbringer**. The Aspects aren't listed separately — they're phases of his fight, not standalone creatures.
+* **Deep North on the map**: 18 point-of-interest types in the seed finder, including Mörkhalla, the Northern Village, Winding Tunnels, the Ancestral Memorial and the frozen ships. Worth knowing that **Bear Caves are a Black Forest location** that 1.0 ships inside the Deep North list.
+* **Three new station upgrades** on the workstation pages — [cauldron_ext7_smoker]@"Smoker", [blackforge_ext5_apron]@"Smith's Aprons" and [piece_magetable_ext4]@"Standing Loom" — and every upgrade in the game now has its icon, up from 7 of 26. The [artisan_ext1]@"Artisan Press" had the wrong code all along, which is why its card was blank.
+* **A serious spoiler leak is fixed.** 483 of 933 items were showing regardless of where you'd set the slider — the Bronze Plate Tunic and the Wolf Fur Cape among them. The cause was 1.0 putting an upgrade idol into nearly every recipe, which made those items unplaceable, and unplaceable meant ungated. The spoiler system now fails the safe way: anything it can't place is hidden rather than shown.
+* **Duplicate and misfiled entries cleaned out**: 53 copies of ordinary player gear the Fallen Warrior and the Shadow carry, two summoning staves that were sitting on the armour page, and Krigen listed twice. Kall Fimbulbringer is flagged as a boss like the rest.
+* **Item icons are one file now** instead of a thousand. Nothing changes on the page — but a game patch re-compresses Unity's sprite atlas, so re-extracting used to rewrite 527 visually identical images and bury the real additions.
+* A **Deep North guide** placeholder and its biome art, so the biome shows up in the spoiler slider, the biome cards and the guide list rather than a fallback snowflake.
+
+## 2026-09-11
+
+* A full **comfort** rebuild against the 1.0 game data — every number on the page and in the guide is re-derived, and most of them went up.
+* **Eleven categories, not seven.** 1.0 split the old catch-all "Standalone" pile into **Item stand**, **Ornament**, **Garland**, **Lantern** and **Bathing**. Each one caps at its best piece rather than stacking, and each is now its own category on the comfort page. Only the [piece_maypole]@"Maypole" and [piece_xmastree]@"Yule Tree" are still ungrouped, so they are the only two pieces that stack.
+* **Max comfort per biome, recalculated**: Meadows 5, Black Forest **13**, Swamp 15, Mountain 16, Plains **19**, Mistlands **20**, Ashlands **22** — up to **29 minutes rested**. The Mistlands is no longer a dead biome for comfort: [piece_dvergr_lantern]@"Dvergr Wall Lantern" opens the Lantern category there.
+* **Black Forest is the big jump.** The item stand, [piece_CelebrationGarland]@"Flower Garland" and [piece_barber]@"Barber Station" all open on finewood and bronze nails, and the [rug_Bjorn]@"Bearskin Rug" is a **+2** carpet — the first category to pass +1 without leaving the second biome.
+* **New +2 pieces found**: jute curtains are banners (not decoration), fur rugs are +2 where woven rugs are +1, and [piece_Lavalantern]@"Lava Lantern" is +2 rather than the +1 the page used to show.
+* **Deep North** is on the per-biome table, and adds nothing: its Timberwood hall — [piece_moose_throne]@"Antler Throne", [piece_table_runed]@"Long Carved Table", [rug_moose]@"Moose Hide Carpet", [piece_snowlantern]@"Snow Lantern" — matches the ceiling instead of raising it.
+* **Every comfort piece has its icon**, 77 of 77. The Deep North furniture, jute curtains, garlands, snow lantern, jack-o-turnip, asksvin skeleton and barber station were all drawing blank.
+* **Seasonal pieces are marked from the game itself** rather than a hand-kept list, so each one says which event it belongs to — Midsummer, Halloween or Yule.
+* The hearth is filed in the **Swamp** now, not the Meadows: it is only 15 stone, but it needs the stonecutter, and comfort pieces finally carry their crafting station.
+
 ## 2026-08-06
 
 * A first draft of the **Black Forest guide**, and a pass over the **Meadows guide** with real in-game screenshots.
