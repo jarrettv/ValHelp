@@ -8,7 +8,7 @@ Comfort is the sum of three things:
 
 1. **Shelter — +2.** A roof of your own making, or a natural one: a cave mouth, an overhang, a dungeon ceiling.
 2. **The best piece in each furniture category — one per category.** Furniture is grouped, and inside a group only the highest-comfort piece counts. Three banners are one banner. A throne next to a bench is a throne.
-3. **Every piece with no category at all.** After 1.0 that is just the Maypole and the Yule Tree, and both stack with each other and with everything else.
+3. **Every piece with no category at all.** After 1.0 that is just the [piece_maypole]* Maypole and the [piece_xmastree]* Yule Tree, and both stack with each other and with everything else.
 
 Furniture must be within **10 metres** of you, measured in 3D — furniture above or below counts, so multi-floor designs work. Fire sources only count while **lit**.
 
@@ -32,11 +32,17 @@ Sleeping in a [bed]* skips the wait entirely — you wake rested at the room's c
 
 You can place a [fire_pit]* anywhere dry and sit `X` to rest, which is also the cheapest way to stop a dungeon room spawning mobs. [piece_logbench01]* Sitting logs can go down inside dungeons too.
 
-Hildir, Haldor and the Bog Witch all sit by a fire that counts as yours. In the mountain caves, the [piece_brazierfloor01]* Standing Brazier does the same job.
+:::biome blackforest
+A trader's camp doubles as a rest stop — Hildir, Haldor and the Bog Witch all sit by a fire that counts as yours.
+:::
+
+:::biome mountain
+In the mountain caves, the [piece_brazierfloor01]* Standing Brazier does the same job. Worth knowing on a long silver run.
+:::
 
 ## Furniture categories
 
-Eleven categories, each contributing its single best piece. **Best** is the highest comfort the category ever reaches and where that piece unlocks; **Opens at** is the first piece of any kind in the category.
+Eleven categories, each contributing its single best piece. Rows unlock as you reach the biome that unlocks the piece, so the table fills in as you play.
 
 | Category | Best piece | Comfort | Best unlocks | Opens at |
 |----------|------------|:-------:|--------------|----------|
@@ -55,7 +61,7 @@ Eleven categories, each contributing its single best piece. **Best** is the high
 Pieces with **no** category stack instead of competing, and both of them are event-only: [piece_maypole]* Maypole (+1, Midsummer — or found already standing in the Meadows) and [piece_xmastree]* Yule Tree (+1, Yule).
 
 :::warn
-**If you remember different numbers, they were the old ones.** Before 1.0 there were seven categories and everything else went into a stacking "Standalone" pile. 1.0 split that pile into Item stand, Ornament, Garland, Lantern and Bathing — five categories that each cap at one piece. It also added a +2 carpet in the Black Forest, jute curtains as a +2 banner, and a lantern in the Mistlands, which used to be a dead biome for comfort.
+**If you remember different numbers, they were the old ones.** Before 1.0 there were seven categories and everything else went into a stacking "Standalone" pile. 1.0 split that pile into Item stand, Ornament, Garland, Lantern and Bathing — five categories that each cap at one piece, and most of them are furniture no comfort guide counted at all.
 :::
 
 ## Max comfort per biome
@@ -73,20 +79,40 @@ Seasonal pieces excluded — these are totals you can go and build on any day of
 | <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | 22 | 29 min | [piece_Lavalantern]+ and [piece_asksvinskeleton]+ | {biome:ashlands}
 | <img src="/data/vh/BiomeDeepNorth.png" style="width:32px;height:32px;display:block"> Deep North | 22 | 29 min | Nothing new — the ceiling is already met | {biome:deepnorth}
 
-The Black Forest jump is the big one, and most of it is furniture nobody counted before 1.0: the item stand, a garland and the barber station are three categories that all open on finewood and bronze nails. The [rug_Bjorn]* Bearskin Rug needs a bear trophy, so it is the one Black Forest piece that can make you wait on a drop.
+:::biome blackforest
+**The Black Forest jump is the big one**, and most of it is furniture nobody counted before 1.0: the [itemstand]* Item Stand, a [piece_CelebrationGarland]* garland and the [piece_barber]* Barber Station are three whole categories that open on finewood and bronze nails. The [rug_Bjorn]* Bearskin Rug needs a bear trophy, so it is the one piece here that can leave you waiting on a drop.
+:::
 
-**The Deep North adds no comfort.** Its furniture is a full Timberwood set that *matches* the ceiling rather than raising it: [piece_moose_throne]* Antler Throne is +3 like any throne, [piece_table_runed]* Long Carved Table is +2 like the round table, [rug_moose]* Moose Hide Carpet is +2 like any fur rug, and [piece_snowlantern]* Snow Lantern is +2 like the Lava Lantern. Build it because you want a hall that looks like the north, not for the timer.
+:::biome mistlands
+**The Mistlands is no longer a dead biome for comfort.** It used to add nothing at all; the [piece_dvergr_lantern]* Dvergr Wall Lantern now opens the Lantern category for +1, and the [piece_blackmarble_throne]* Black Marble Throne and [rug_hare]* Hare Rug match pieces you already have.
+:::
 
-The full 22 is shelter plus [hearth]* [piece_bed02]* [piece_throne01]* [rug_Bjorn]* [piece_table_round]* [piece_cloth_hanging_door]* [piece_bathtub]* [piece_Lavalantern]* [itemstand]* [piece_CelebrationGarland]* [piece_asksvinskeleton]*.
+:::biome ashlands
+**The full 22** is shelter plus [hearth]* [piece_bed02]* [piece_throne01]* [rug_Bjorn]* [piece_table_round]* [piece_cloth_hanging_door]* [piece_bathtub]* [piece_Lavalantern]* [itemstand]* [piece_CelebrationGarland]* [piece_asksvinskeleton]*.
 
 With both stacking seasonal pieces up the ceiling is **24 comfort = 31 minutes rested** — though [piece_maypole]* Midsummer and [piece_xmastree]* Yule never overlap, so 23 is the most you will hold on any given day.
+:::
+
+:::biome deepnorth
+**The Deep North adds no comfort.** Its furniture is a full Timberwood set that *matches* the ceiling rather than raising it: [piece_moose_throne]* Antler Throne is +3 like any throne, [piece_table_runed]* Long Carved Table is +2 like the round table, [rug_moose]* Moose Hide Carpet is +2 like any fur rug, and [piece_snowlantern]* Snow Lantern is +2 like the Lava Lantern. Build the hall because you want a room that looks like the north, not for the timer.
+:::
 
 ## Tips
 
 * **Never leave base unrested.** The buff is worth more than most gear upgrades and it costs you twenty seconds
 * Build one comfort room and put the portal hub in it — every category has to be within 10 m of where you actually stand
 * Nearby mobs interrupt resting: kill them, or sneak until they lose you
-* The [piece_bathtub]* Hot Tub is unique — it grants rested even while wet
-* [piece_maypole]* Maypoles spawn naturally in the Meadows; a base built beside one is +1 all year. Otherwise they are craftable at Midsummer (1 June – 6 July)
-* The other seasonal pieces fill categories you have already filled, so they cost you nothing to skip: [piece_jackoturnip]* Jack-o-turnip is a Lantern (Halloween, 20 October – 10 November), and [piece_xmasgarland]* Yule Garland, [piece_xmascrown]* Yule Wreath and [piece_mistletoe]* Mistletoe are all Garlands (1 December – 6 January)
 * A [fire_pit]* placed the moment you enter a dungeon both rests you and blocks spawns in that room
+* [piece_maypole]* Maypoles spawn naturally in the Meadows; a base built beside one is +1 all year. Otherwise they are craftable at Midsummer (1 June – 6 July)
+
+:::biome swamp
+* The [piece_jackoturnip]* Jack-o-turnip is the seasonal piece worth chasing. It is a **+2** Lantern and the Lantern category stays empty for a long while yet, so for most of a playthrough it is two free comfort every Halloween (20 October – 10 November)
+:::
+
+:::biome plains
+* The [piece_bathtub]* Hot Tub is unique — it grants rested even while wet, which is the one thing that otherwise ends a rest outright
+:::
+
+:::biome mistlands
+* Once a lantern is up, the Yule pieces are the seasonal ones that do nothing for you: [piece_xmasgarland]* Yule Garland, [piece_xmascrown]* Yule Wreath and [piece_mistletoe]* Mistletoe are all Garlands, and your [piece_CelebrationGarland]* Flower Garland already fills that slot
+:::
