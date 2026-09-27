@@ -263,6 +263,9 @@ const OVERRIDE: Record<string, number> = {
   HelmetDverger: MISTLANDS,
   DvergerArbalest: MISTLANDS,
   Demister: MISTLANDS,
+  // items.json files the Dverger themselves under Ashlands; you meet them in
+  // the Mistlands, which is where the trophy should gate and group.
+  TrophyDvergr: MISTLANDS,
   // Cosmetic / event items — never a spoiler
   HelmetSweatBand: MEADOWS,
   HelmetMidsummerCrown: MEADOWS,
@@ -274,6 +277,14 @@ const OVERRIDE: Record<string, number> = {
   SwordIronFire: ASHLANDS,
   // Mead with no listed base recipe — trolls put it in the Black Forest
   MeadTrollPheromones: BLACKFOREST,
+
+  // Skeletons spawn in the Meadows at night as well as the Black Forest, so
+  // they gate and group from the earlier biome.
+  TrophySkeleton: MEADOWS,
+
+  // items.json files Writhan under Deep North, but it is a Swamp creature —
+  // without this it would stay fogged until the very end of the game.
+  TrophyWrithan: SWAMP,
 
   // Tame creatures: items.json files these under the 'Tame' subcategory rather
   // than a biome, so they'd never gate. Use where the wild animal lives.

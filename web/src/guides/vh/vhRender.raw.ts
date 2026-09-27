@@ -3,7 +3,7 @@
 // route through window.__vhItemClick / window.__vhToggleFav / window.__vhToggleSpd.
 /* eslint-disable */
 // @ts-nocheck
-import { biomeIndex, biomeLabel, SPOILER_BIOMES } from './spoiler';
+import { biomeIndex, biomeLabel, SPOILER_BIOMES, getRevealedCount } from './spoiler';
 import { itemBiomeIndex, itemSpoilerClass } from './itemBiome';
 import {
   STATIONS as SHEET_STATIONS, stationLevelAt, stationsFor, sheetFor,
@@ -2221,6 +2221,478 @@ function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+// ── Creature type index ───────────────────────────────────────────
+// `{creaturetypes}` renders every creature that drops a trophy as a grid of
+// trophy tiles, grouped and linked to the creature's page.
+//
+// Grouping follows what the data actually marks. `faction: 'Boss'` is the seven
+// altar bosses; `boss: true` without that faction is the miniboss set. Tameable
+// is its own flag. Everything else falls back to biome, which is the axis the
+// bestiary itself is organised by — and it keeps every group under the 9-tile
+// cap without truncating anything today.
+//
+// There is no "passive" marker in the game data (Deer is filed under
+// ForestMonsters, Hare under AnimalsVeg, and both carry damage values), so no
+// passive group is invented here.
+
+var CREATURE_GROUP_CAP = 9;
+
+// Small groups that ride along in another group's row rather than taking a row
+// of their own. The passenger gets a label cell inside the host's tile grid, so
+// tiles stay exactly the width they are on every other row.
+var ROW_PASSENGER = { Meadows: 'Ocean' };
+
+// Corrections to what items.json marks. The extractor flags these three with
+// `boss: true`, but they are ordinary Deep North creatures, not Hildir-style
+// minibosses.
+var NOT_MINIBOSS = {
+  TrophyJotunWarrior: 1, TrophyJotunWitch: 1, TrophyElaking: 1, TrophyBonemawSerpent: 1,
+};
+// Frost Blob only exists because a player spawned it, so it is not part of the
+// bestiary a reader can go and find.
+var SKIP_CREATURE = { TrophyBlob_Frost: 1 };
+// Lord Reto is a miniboss the extractor does not flag.
+var EXTRA_MINIBOSS = { LordReto: 1 };
+// Creatures the game gives no trophy at all, but which we have drawn art for so
+// they are not missing from the index. Kall Fimbulbringer genuinely drops
+// nothing — his CharacterDrop list is empty in the game files — so his tile
+// uses the FrozenKingDrop relic art.
+var SUPPLIED_TROPHY = { LordReto: 1, Bestiary_FrozenKing: 1 };
+// Animals that flee rather than fight. The game data has no passive flag —
+// Deer is filed under ForestMonsters and Hare under AnimalsVeg, and both carry
+// damage values — so the set is explicit.
+var PASSIVE = { TrophyDeer: 1, TrophyHare: 1, TrophySeal: 1 };
+
+/** ` sp-fog sp-b<n>` — blurs and mutes until the reader reaches that biome.
+ *  Unlike `sp-item` there is no lock plate; the fog is the whole message, and
+ *  it also kills pointer events so a locked tile is not a working link. */
+function itemSpoilerFog(code) {
+  var idx = itemBiomeIndex(code);
+  return idx == null ? '' : ' sp-fog sp-b' + idx;
+}
+
+/** Biome label a creature's tile is filed under, honouring itemBiome overrides. */
+function creatureBiome(it) {
+  var bi = itemBiomeIndex(it.code);
+  return bi == null ? (it.subcategory || 'Unknown') : biomeLabel(bi);
+}
+
+function creatureTypeGroups() {
+  if (!allItems) return [];
+  var mobs = [];
+  for (var i = 0; i < allItems.length; i++) {
+    var it = allItems[i], td = it.trophyDrop;
+    if (it.page !== 'bestiary' || !td || SKIP_CREATURE[it.code]) continue;
+    // noTrophy creatures have no trophy art to show, so they are not tiles —
+    // unless we have supplied art for one.
+    if (td.noTrophy && !SUPPLIED_TROPHY[it.code]) continue;
+    mobs.push(it);
+  }
+  var groups = [
+    { label: 'Bosses', items: [] },
+    { label: 'Minibosses', items: [] },
+  ];
+  var byBiome = {};
+  for (var m = 0; m < mobs.length; m++) {
+    var mob = mobs[m], d = mob.trophyDrop;
+    if (d.faction === 'Boss') groups[0].items.push(mob);
+    else if (EXTRA_MINIBOSS[mob.code] || (d.boss && !NOT_MINIBOSS[mob.code])) groups[1].items.push(mob);
+    else {
+      // Group on the resolved biome index, not the raw subcategory, so the
+      // itemBiome overrides move a creature's tile and its fog together.
+      (byBiome[creatureBiome(mob)] = byBiome[creatureBiome(mob)] || []).push(mob);
+    }
+  }
+  // Biome groups in progression order so the grid reads as a run through the game.
+  var order = [];
+  for (var k in byBiome) order.push(k);
+  order.sort(function (a, b) {
+    var ai = biomeIndex(a), bi = biomeIndex(b);
+    return (ai == null ? 99 : ai) - (bi == null ? 99 : bi);
+  });
+  for (var o = 0; o < order.length; o++) {
+    groups.push({ label: order[o], items: byBiome[order[o]] });
+  }
+  // Within a group: earliest biome first, then the tougher creature first, so
+  // the eye lands on the headline monster of each tier.
+  for (var g = 0; g < groups.length; g++) {
+    groups[g].items.sort(function (a, b) {
+      var ai = itemBiomeIndex(a.code), bi2 = itemBiomeIndex(b.code);
+      ai = ai == null ? 99 : ai; bi2 = bi2 == null ? 99 : bi2;
+      return ai - bi2 || (b.trophyDrop.hp || 0) - (a.trophyDrop.hp || 0);
+    });
+    groups[g].items = groups[g].items.slice(0, CREATURE_GROUP_CAP);
+  }
+  groups = groups.filter(function (x) { return x.items.length; });
+
+  // Fold each passenger into its host row when the combined tiles plus the
+  // label cell still fit the column budget; otherwise leave it as its own row.
+  var byLabel = {};
+  for (var b = 0; b < groups.length; b++) byLabel[groups[b].label] = groups[b];
+  var dropped = {};
+  for (var host in ROW_PASSENGER) {
+    var h = byLabel[host], pLabel = ROW_PASSENGER[host], pg = byLabel[pLabel];
+    if (!h || !pg) continue;
+    if (h.items.length + 1 + pg.items.length > CREATURE_GROUP_CAP) continue;
+    h.extra = pg;
+    dropped[pLabel] = 1;
+  }
+  return groups.filter(function (x) { return !dropped[x.label]; });
+}
+
+function creatureTile(it) {
+  var td = it.trophyDrop || {};
+  var name = td.creature || it.name;
+  var path = '/guides/' + itemPagePath(it);
+  var escPath = path.replace(/'/g, "\\'");
+  // One badge slot, top-right: a heart if you can tame it, a peace sign if it
+  // flees rather than fights. Nothing is both, and sharing the slot stops a
+  // badge sitting beside its neighbour's and reading as a pair.
+  var badge = td.tameable
+    ? '<span class="vh-ct-badge is-tame" aria-hidden="true">♥</span>'
+    : PASSIVE[it.code]
+      ? '<span class="vh-ct-badge is-passive" aria-hidden="true">☮</span>' : '';
+  return '<a class="vh-ct-tile' + itemSpoilerFog(it.code) + '" href="' + path + '"'
+    + ' title="' + esc(name) + (td.tameable ? ' (tameable)' : '')
+    + (PASSIVE[it.code] ? ' (passive)' : '') + '"'
+    + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\''
+    + escPath + '\');}">'
+    + '<img src="/api/icon/' + encodeURIComponent(it.code) + '.png" alt="" draggable="false">'
+    + badge
+    + '<span class="vh-ct-name">' + esc(name) + '</span></a>';
+}
+
+function renderCreatureTypesHtml() {
+  var groups = creatureTypeGroups();
+  if (!groups.length) return '';
+  var h = '<div class="vh-ct">';
+  for (var g = 0; g < groups.length; g++) {
+    h += '<div class="vh-ct-row">'
+      + '<div class="vh-ct-label">' + esc(groups[g].label) + '</div>'
+      + '<div class="vh-ct-tiles">';
+    for (var i = 0; i < groups[g].items.length; i++) h += creatureTile(groups[g].items[i]);
+    var ex = groups[g].extra;
+    if (ex) {
+      h += '<div class="vh-ct-sublabel">' + esc(ex.label) + '</div>';
+      for (var e = 0; e < ex.items.length; e++) h += creatureTile(ex.items[e]);
+    }
+    h += '</div></div>';
+  }
+  return h + '</div>';
+}
+
+// ── Trophy pity chart ─────────────────────────────────────────────
+// `{trophypity}` renders a trophy picker plus the bad-luck-protection chart
+// from docs/bestiary.md. Both curves are a pure function of the drop chance,
+// so switching trophies is just a redraw — no data fetch.
+//
+// Only drops at PITY_MAX_RATE or below get a countdown from the game; above it
+// every kill is an independent roll, so those trophies have no chart to show.
+
+var PITY_MAX_RATE = 0.30;
+var PITY_PICKS = 10;
+
+/** The rare trophies the most recipes ask for — the ones players farm on
+ *  purpose. Recipe count is the primary sort. Many trophies tie at one recipe,
+ *  so ties break toward the earlier biome (keeps the list on creatures the
+ *  reader has likely met), then the rarer drop, then the name. */
+function trophyPityList() {
+  if (!allItems) return [];
+  var uses = {};
+  for (var i = 0; i < allItems.length; i++) {
+    var rec = allItems[i].recipe;
+    var res = rec && rec.resources;
+    if (!res) continue;
+    for (var r = 0; r < res.length; r++) {
+      if (res[r].item) uses[res[r].item] = (uses[res[r].item] || 0) + 1;
+    }
+  }
+  var out = [];
+  for (var j = 0; j < allItems.length; j++) {
+    var it = allItems[j], td = it.trophyDrop;
+    if (!td || typeof td.rate !== 'number') continue;
+    if (!(td.rate > 0 && td.rate <= PITY_MAX_RATE)) continue;
+    var bi = itemBiomeIndex(it.code);
+    out.push({
+      code: it.code, creature: td.creature || it.name, rate: td.rate,
+      biome: td.biome || '', bi: (bi == null ? 99 : bi), uses: (uses[it.code] || 0),
+    });
+  }
+  out.sort(function (a, b) {
+    return (b.uses - a.uses) || (a.bi - b.bi) || (a.rate - b.rate)
+      || (a.creature < b.creature ? -1 : a.creature > b.creature ? 1 : 0);
+  });
+  return out.slice(0, PITY_PICKS);
+}
+
+/** Kills the countdown is guaranteed to fire within, for drop chance p.
+ *  The game draws 1..(int)(2/p), so this floors — matching the 5/10/15/30%
+ *  guarantees of 40/20/13/6 kills in the docs table. */
+function pityCap(p) { return Math.floor(2 / p); }
+
+/** A tick step that divides the guarantee (so it lands on a label) and keeps
+ *  the axis under ~10 ticks. Falls back to the guarantee itself. */
+function pityTickStep(cap, xmax) {
+  var nice = [1, 2, 5, 10, 20, 25, 50, 100];
+  for (var i = 0; i < nice.length; i++) {
+    if (xmax / nice[i] <= 10 && cap % nice[i] === 0) return nice[i];
+  }
+  return cap;
+}
+
+/** The chart. `pick` may be null, which draws a generic 10% example with no
+ *  creature named — used when the reader's spoiler level reveals none of the
+ *  trophies in the list.
+ *
+ *  Annotation geometry is deliberately rate-independent: the axis always spans
+ *  2x the guarantee, so X(0.7 * cap) lands on the same pixel for every drop
+ *  chance and the hazard callouts never need per-rate nudging. */
+function pityChartSvg(pick) {
+  var p = pick ? pick.rate : 0.10;
+  var who = pick ? pick.creature : null;
+  var cap = pityCap(p), xmax = cap * 2;
+  var X0 = 64, X1 = 616, YTOP = 78, YBOT = 316;
+  var sx = (X1 - X0) / xmax;
+  function X(k) { return X0 + k * sx; }
+  function Y(v) { return YBOT - v * (YBOT - YTOP); }
+  function n1(v) { return Math.round(v * 10) / 10; }
+
+  var luck = [], pity = [];
+  for (var k = 0; k <= xmax; k++) {
+    luck.push([n1(X(k)), n1(Y(Math.pow(1 - p, k)))]);
+    pity.push([n1(X(k)), n1(Y(Math.max(0, (cap - k) / cap)))]);
+  }
+  var pts = function (a) { return a.map(function (q) { return q[0] + ',' + q[1]; }).join(' '); };
+  var atCap = Math.pow(1 - p, cap), atEnd = Math.pow(1 - p, xmax);
+  var yCap = Y(atCap), yEnd = Y(atEnd);
+
+  // Shaded areas. Under the countdown line (0..cap) is the window where it is
+  // still pending; under pure luck past the guarantee is the dry-streak tail
+  // the countdown deletes outright.
+  var pendArea = pts(pity.slice(0, cap + 1)) + ' ' + n1(X(cap)) + ',' + YBOT + ' ' + X0 + ',' + YBOT;
+  var tailArea = pts(luck.slice(cap)) + ' ' + n1(X(xmax)) + ',' + YBOT + ' ' + n1(X(cap)) + ',' + YBOT;
+
+  var grid = '';
+  [0, 0.25, 0.5, 0.75, 1].forEach(function (v) {
+    grid += '<line x1="64" x2="616" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="'
+      + (v === 0 ? '#55556a' : '#31314a') + '" stroke-width="1"/>'
+      + '<text x="56" y="' + (Y(v) + 4) + '" text-anchor="end" fill="#6f6f80" font-size="11">'
+      + (v * 100) + '%</text>';
+  });
+  var step = pityTickStep(cap, xmax), xlab = '';
+  for (var t = 0; t <= xmax; t += step) {
+    xlab += '<text x="' + n1(X(t)) + '" y="334" text-anchor="middle" fill="#6f6f80" font-size="11">' + t + '</text>';
+  }
+
+  // ── Hazard stamps ──
+  // Both hazards do the same thing — throw the countdown away and roll a new
+  // one — so they share a single reset arrow and sit as two stamps beside it.
+  var DANGER = '#ff5d6c';
+  // Each badge is sized to its own text rather than sharing one width, both hung
+  // off the same right edge so they stay aligned while the left edges step.
+  // SPAD is the text inset: 1rem at the chart's natural size, where one user
+  // unit is one pixel. It eats into the room the text has, so the widths below
+  // are what clear the longest line in each (128.9px and 187.7px, measured) —
+  // sequence-break is the tight one, ~4% headroom for platforms whose system
+  // font runs wider than Segoe UI.
+  // tx/sx override the default inset when a badge wants its two lines nudged
+  // independently; omit them and both sit at SPAD.
+  var SH = 34, SRIGHT = 610, SPAD = 28;
+  function stamp(y, w, title, sub, tx, sx) {
+    var x = SRIGHT - w;
+    if (tx == null) tx = x + SPAD;
+    if (sx == null) sx = x + SPAD;
+    return '<g transform="rotate(-5 ' + (x + w / 2) + ' ' + (y + SH / 2) + ')">'
+      + '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + SH + '" rx="6"'
+      + ' fill="rgba(255,93,108,0.12)" stroke="rgba(255,93,108,0.55)" stroke-width="1.2"/>'
+      + '<text x="' + tx + '" y="' + (y + 15) + '" fill="' + DANGER + '" font-size="12"'
+      + ' font-weight="700" letter-spacing="0.09em">' + title + '</text>'
+      + '<text x="' + sx + '" y="' + (y + 28) + '" fill="#c99aa2" font-size="10.5">' + sub + '</text>'
+      + '</g>';
+  }
+  var stamps = stamp(86, 170, '⚠ DON’T LOG OUT', 'countdowns live in memory', 458, 460)
+    + stamp(134, 224, '⚠ DON’T SEQUENCE BREAK', 'a different ★ level rerolls the countdown', 406, 406);
+
+  // The reset arrow: land it on the 100% line, because that is literally where
+  // a reset puts you — no progress, a fresh 1..cap draw.
+  var ax = n1(X(cap * 0.7));
+  var reset = '<line x1="' + ax + '" x2="' + ax + '" y1="242" y2="88" stroke="' + DANGER + '"'
+    + ' stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#pity-arrow)" opacity="0.85"/>'
+    + '<circle cx="' + ax + '" cy="242" r="3.5" fill="' + DANGER + '"/>'
+    + '<text x="' + (ax + 10) + '" y="203" fill="' + DANGER + '" font-size="10.5"'
+    + ' opacity="0.95">resets to a fresh 1–' + cap + ' roll</text>';
+
+  var axis = who ? esc(who) + ' kills' : 'Kills';
+  var alt = 'Chart: with pure luck, ' + Math.round(atCap * 100) + '% of players still have no '
+    + (who ? esc(who) + ' trophy' : 'trophy') + ' after ' + cap + ' kills and ' + n1(atEnd * 100)
+    + '% after ' + xmax + '. With the pity countdown, everyone has one by kill ' + cap
+    + '. Two warnings are marked on the chart: logging out and switching star level both'
+    + ' throw the countdown away and start a fresh one.';
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 68 640 302" width="640" height="302"'
+    + ' font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif"'
+    + ' role="img" aria-label="' + alt + '" style="width:100%;max-width:640px;height:auto;display:block">'
+    + '<defs>'
+    + '<filter id="pity-glow" x="-20%" y="-20%" width="140%" height="140%">'
+    + '<feGaussianBlur stdDeviation="2.6" result="b"/>'
+    + '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    + '<marker id="pity-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5.5"'
+    + ' markerHeight="5.5" orient="auto-start-reverse">'
+    + '<path d="M 0 1 L 8 5 L 0 9 z" fill="' + DANGER + '"/></marker>'
+    + '</defs>'
+    + grid + xlab
+    + '<text x="340" y="362" text-anchor="middle" fill="#a9a9b8" font-size="12">' + axis + '</text>'
+    + '<polygon points="' + pendArea + '" fill="#3987e5" fill-opacity="0.13"/>'
+    + '<polygon points="' + tailArea + '" fill="#d95926" fill-opacity="0.20"/>'
+    + '<g filter="url(#pity-glow)">'
+    + '<polyline points="' + pts(luck) + '" fill="none" stroke="#d95926" stroke-width="2.5"'
+    + ' stroke-dasharray="6 4" stroke-linejoin="round" stroke-linecap="round"/>'
+    + '<polyline points="' + pts(pity) + '" fill="none" stroke="#3987e5" stroke-width="2.6"'
+    + ' stroke-linejoin="round" stroke-linecap="round"/></g>'
+    + stamps + reset
+    + '<line x1="' + n1(X(cap)) + '" x2="' + n1(X(cap)) + '" y1="' + n1(yCap) + '" y2="316"'
+    + ' stroke="#8a8a9e" stroke-dasharray="2 3"/>'
+    + '<circle cx="' + n1(X(cap)) + '" cy="316" r="5" fill="#3987e5" stroke="#1e1e2e" stroke-width="2"/>'
+    + '<text x="' + n1(X(cap)) + '" y="304" text-anchor="middle" fill="#eef" font-size="12"'
+    + ' font-weight="600">Guaranteed by kill ' + cap + '</text>'
+    + '<circle cx="' + n1(X(cap)) + '" cy="' + n1(yCap) + '" r="5" fill="#d95926" stroke="#1e1e2e" stroke-width="2"/>'
+    + '<text x="' + n1(X(cap) + 10) + '" y="' + n1(yCap - 8) + '" fill="#e8e8ee" font-size="12">'
+    + 'Pure luck: ' + Math.round(atCap * 100) + '% still waiting</text>'
+    + '<circle cx="' + n1(X(xmax)) + '" cy="' + n1(yEnd) + '" r="5" fill="#d95926" stroke="#1e1e2e" stroke-width="2"/>'
+    + '<text x="' + n1(X(xmax)) + '" y="' + n1(yEnd - 12) + '" text-anchor="end" fill="#a9a9b8"'
+    + ' font-size="12">' + n1(atEnd * 100) + '% still waiting at ' + xmax + '</text>'
+    + '</svg>';
+}
+
+function pityOptionHtml(pick, selCode) {
+  var on = pick.code === selCode;
+  return '<div class="vh-pity-optwrap spoiler-row sp-b' + pick.bi + '">'
+    + '<div class="vh-pity-opt" role="option"'
+    + ' aria-selected="' + (on ? 'true' : 'false') + '" tabindex="0"'
+    + ' data-code="' + esc(pick.code) + '"'
+    + ' onclick="window.__vhPityPick(&quot;' + esc(pick.code) + '&quot;)"'
+    + ' onkeydown="window.__vhPityKey(event,&quot;' + esc(pick.code) + '&quot;)">'
+    + '<img src="/api/icon/' + encodeURIComponent(pick.code) + '.png" alt="" draggable="false">'
+    + '<span class="vh-pity-opt-name">' + esc(pick.creature) + '</span>'
+    + '<span class="vh-pity-opt-meta">' + Math.round(pick.rate * 100) + '% · ' + esc(pick.biome)
+    + ' · ' + pick.uses + (pick.uses === 1 ? ' recipe' : ' recipes') + '</span>'
+    + '</div></div>';
+}
+
+function renderTrophyPityHtml() {
+  var list = trophyPityList();
+  if (!list.length) return '';
+  // Gating mirrors the CSS: `data-spoiler="N"` reveals sp-b0 .. sp-b(N-1).
+  // Default to the highest-ranked trophy the reader has actually reached, so
+  // the button never names a creature the menu is hiding from them.
+  var revealed = getRevealedCount();
+  var sel = null;
+  for (var i = 0; i < list.length; i++) {
+    if (list[i].bi < revealed) { sel = list[i]; break; }
+  }
+  var opts = '';
+  for (var j = 0; j < list.length; j++) opts += pityOptionHtml(list[j], sel ? sel.code : '');
+
+  var legend = '<div class="vh-pity-legend">'
+    + '<span class="vh-pity-key"><svg width="22" height="8" aria-hidden="true">'
+    + '<line x1="0" y1="4" x2="22" y2="4" stroke="#d95926" stroke-width="2.5"'
+    + ' stroke-dasharray="5 4"/></svg>Pure luck (no pity)</span>'
+    + '<span class="vh-pity-key"><svg width="22" height="8" aria-hidden="true">'
+    + '<line x1="0" y1="4" x2="22" y2="4" stroke="#3987e5" stroke-width="2.5"/></svg>'
+    + 'Pity countdown (now)</span></div>';
+
+  // The picker doubles as the chart's title and the legend sits opposite it, so
+  // the whole thing reads as one panel: the svg draws no frame, heading or key.
+  var head, note = '';
+  if (sel) {
+    head = '<div class="vh-pity-pick">'
+      + '<button type="button" class="vh-pity-btn" id="vh-pity-btn" aria-haspopup="listbox"'
+      + ' aria-expanded="false" title="Pick a different trophy" onclick="window.__vhPityToggle()">'
+      + '<img src="/api/icon/' + encodeURIComponent(sel.code) + '.png" alt=""'
+      + ' id="vh-pity-btn-img" class="vh-pity-trophy" draggable="false">'
+      + '<span class="vh-pity-heading"><span id="vh-pity-btn-name">' + esc(sel.creature)
+      + '</span> trophy</span>'
+      + '<span class="vh-pity-btn-rate" id="vh-pity-btn-rate">'
+      + Math.round(sel.rate * 100) + '% drop chance</span>'
+      + '<span class="vh-pity-caret" aria-hidden="true">▾</span>'
+      + '</button>'
+      + '<div class="vh-pity-menu" id="vh-pity-menu" role="listbox" aria-label="Rare trophy" hidden>'
+      + opts + '</div></div>' + legend;
+  } else {
+    // No trophy art here either — the icon alone would give the creature away.
+    head = '<div class="vh-pity-pick">'
+      + '<span class="vh-pity-heading vh-pity-heading-plain">Rare trophy</span>'
+      + '<span class="vh-pity-btn-rate">10% drop chance</span></div>' + legend;
+    // Outside the header row — it is a full-width notice, not a header item.
+    note = '<div class="vh-pity-locked">🔒 Reach the Black Forest to pick a specific trophy.</div>';
+  }
+
+  return '<div class="vh-pity" id="vh-pity"><div class="vh-pity-head">' + head + '</div>' + note
+    + '<div class="vh-pity-chart" id="vh-pity-chart">' + pityChartSvg(sel) + '</div>'
+    + '</div>';
+}
+
+window.__vhPityToggle = function () {
+  var menu = document.getElementById('vh-pity-menu');
+  var btn = document.getElementById('vh-pity-btn');
+  if (!menu || !btn) return;
+  var open = menu.hidden;
+  menu.hidden = !open;
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+};
+
+window.__vhPityPick = function (code) {
+  var list = trophyPityList(), pick = null;
+  for (var i = 0; i < list.length; i++) if (list[i].code === code) pick = list[i];
+  if (!pick) return;
+  var chart = document.getElementById('vh-pity-chart');
+  if (chart) chart.innerHTML = pityChartSvg(pick);
+  var img = document.getElementById('vh-pity-btn-img');
+  var nm = document.getElementById('vh-pity-btn-name');
+  var rt = document.getElementById('vh-pity-btn-rate');
+  if (img) img.src = '/api/icon/' + encodeURIComponent(pick.code) + '.png';
+  if (nm) nm.textContent = pick.creature;
+  if (rt) rt.textContent = Math.round(pick.rate * 100) + '% drop chance';
+  var menu = document.getElementById('vh-pity-menu');
+  if (menu) {
+    var rows = menu.querySelectorAll('.vh-pity-opt');
+    for (var r = 0; r < rows.length; r++) {
+      rows[r].setAttribute('aria-selected', rows[r].getAttribute('data-code') === code ? 'true' : 'false');
+    }
+  }
+  window.__vhPityToggle();
+  var btn = document.getElementById('vh-pity-btn');
+  if (btn) btn.focus();
+};
+
+window.__vhPityKey = function (e, code) {
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+    e.preventDefault();
+    window.__vhPityPick(code);
+  } else if (e.key === 'Escape') {
+    window.__vhPityToggle();
+    var btn = document.getElementById('vh-pity-btn');
+    if (btn) btn.focus();
+  }
+};
+
+// One document-level listener, not one per render: close the menu on an
+// outside click or Escape.
+if (typeof document !== 'undefined' && !window.__vhPityBound) {
+  window.__vhPityBound = true;
+  document.addEventListener('click', function (e) {
+    var menu = document.getElementById('vh-pity-menu');
+    if (!menu || menu.hidden) return;
+    var wrap = document.getElementById('vh-pity');
+    if (wrap && !wrap.contains(e.target)) window.__vhPityToggle();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var menu = document.getElementById('vh-pity-menu');
+    if (menu && !menu.hidden) window.__vhPityToggle();
+  });
+}
+
 export function renderMdToElement(md: string, el: HTMLElement) {
   var lines = md.split('\n');
   // While sheets are hidden, drop the heading that introduces one too —
@@ -2321,6 +2793,18 @@ export function renderMdToElement(md: string, el: HTMLElement) {
     if (_sheet) {
       if (inList) { h += '</ul>'; inList = false; }
       h += renderBiomeSheetHtml(_sheet[1].trim());
+      continue;
+    }
+    // `{trophypity}` is a block too: trophy picker + bad-luck-protection chart.
+    if (trimmed.match(/^\{trophypity\}$/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      h += renderTrophyPityHtml();
+      continue;
+    }
+    // `{creaturetypes}` is a block too: the grouped trophy index.
+    if (trimmed.match(/^\{creaturetypes\}$/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      h += renderCreatureTypesHtml();
       continue;
     }
     if (trimmed.match(/^### /)) {

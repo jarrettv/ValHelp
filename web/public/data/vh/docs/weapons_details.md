@@ -105,6 +105,12 @@ Like all clubs, the primary attack is a 3 swing combo with the **last hit doing 
 
 ## Knives
 
+### Voidcaller <!-- KnifeVoid -->
+
+**Not obtainable in normal play.** An internal item left in the game files, listed here only for completeness.
+
+Its sole source is [Bestiary_Ghost_Void]@"The Void", which is itself internal, and the recipe cannot be completed anyway — it calls for one Voidplasm, and **nothing in the game drops Voidplasm**. (The 8 Ectoplasm it also wants are ordinary [TrophyGhost]@"Ghost" drops; the Voidplasm is the wall.)
+
 ## Bows and Crossbows
 
 ## Magic

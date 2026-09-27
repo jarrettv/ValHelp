@@ -1,16 +1,6 @@
 # Bestiary
 
-## Creature Types
-
-**Bosses** — powerful creatures summoned at sacrificial altars. Killing them unlocks Forsaken powers, increases world difficulty, and drops key progression items. Bosses are immune to stagger.
-
-**Minibosses** — Hildir's dungeons (Brenna, Geirrhafa, Thungr, Zil) quests.
-
-**Aggressive** — hostile creatures that attack on sight or when alerted. They drop loot, trophies, and resources when killed.
-
-**Passive** — animals like Deer, Hare, and Chicken that flee from players and never attack. Provide resources when killed.
-
-**Tameable** — Boar, Wolf, Lox, and Asksvin can be tamed by feeding them. Once tamed they can breed, and some can be ridden.
+{creaturetypes}
 
 ## Star Levels
 
@@ -23,6 +13,27 @@ Non-boss creatures can spawn with star levels that increase their power and loot
 | 2-★★ | {bar:100:#c55} ×3 | {bar:66:#da4} ×2 | ×4 on starred mobs |
 
 Wolves and other creatures with stars are more likely to spawn at **night** and will despawn at dawn if not engaged.
+
+## Trophy Drops & Bad-Luck Protection
+
+Rare creature drops (**30% chance or less**) no longer roll the dice on every kill. Instead the game secretly picks a **kill countdown** for each item, and the item drops when the countdown hits zero.
+
+{trophypity}
+
+The countdown is a random number from 1 to **2 ÷ p** kills. At 10% that's 1 to 20.
+
+:::warn
+⚠ **Don't break your own countdown.** It only pays off if you keep killing the *same* creature at the *same* star level in one sitting.
+
+* **Logging out or restarting.** Countdowns live in memory and are never saved. Finish a trophy grind before you log off.
+* **Mixing star levels.** The countdown is item and rate specific, so a 1★ Bear does not continue a 0★ Bear's countdown — it discards it and rolls a new one. Avoid 1★ and 2★★ until you finish.
+:::
+
+**Fine print:**
+
+* **In multiplayer, each player's game keeps its own countdowns.** The roll happens on whichever player's game controls the creature when it dies.
+* **Only creature drops.** Chests, plants and breakable objects work the same as before.
+* The world global key `NoPseudoDrops` turns the system off.
 
 ## Damage Modifier Boxes
 
@@ -53,6 +64,9 @@ Creatures have a **stagger threshold** shown as a percentage of their HP. Deal t
 | <img src="/api/mob/Bestiary_Wolf_cub_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Wolf | [RawMeat](1) [Sausages](1) [NeckTail](1) — starred wolves only spawn at night | {biome:mountain}
 | <img src="/api/mob/Bestiary_Lox_Calf_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Lox | [Cloudberry](1) [Barley](1) [Flax](1) — can be ridden with a saddle | {biome:plains}
 | <img src="/api/mob/Bestiary_Asksvin_hatchling_0.webp" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Asksvin | [Fiddleheadfern](1) [Vineberry](1) [MushroomSmokePuff](1) — reproduce via eggs that retain star level | {biome:ashlands}
+| <img src="/api/icon/TrophyMoose.png" style="width:40px;height:40px;display:inline-block;vertical-align:middle"> Moose | [Lingonberry](1) — can be ridden with a [SaddleMoose]@"Moose Saddle" | {biome:deepnorth}
+
+**Brew it first.** [MeadTamer]@"Brew of Animal Whispers" is the taming aid — one drink runs **10 minutes**, fermented from [MeadBaseTamer]@"Mead Base: Animal Whispers" (5 [Onion](1), 10 [Carrot](1), 1 [PungentPebbles]@"Pungent Pebbles").
 
 **Tips:** Taming requires the creature to be enclosed (build a pen around it). Stay nearby but don't scare it — sneak if needed. Taming progress resets if the creature takes damage. Once tamed, offspring inherit star levels from parents.
 
@@ -75,6 +89,7 @@ Let enemies weaken each other before you engage.
 | <img src="/data/vh/BiomePlains.png" style="width:32px;height:32px;display:block"> Plains | Deathsquitos, Fuling camps | Deathsquitos have only 10 HP but hit hard — one-shot them with a bow. Fulings are numerous, use AoE (Atgeir spin). Growth is weak to Blunt and Fire. | {biome:plains}
 | <img src="/data/vh/BiomeMistlands.png" style="width:32px;height:32px;display:block"> Mistlands | Seekers, Gjall, Ticks | Seekers resist all physical damage — use elemental. Gjall are flying and resist Fire. Ticks are weak to Pierce. | {biome:mistlands}
 | <img src="/data/vh/BiomeAshlands.png" style="width:32px;height:32px;display:block"> Ashlands | Charred, Morgen, Fallen Valkyrie | All Charred are immune to Fire and Poison but weak to Spirit. Morgen resist everything but are weakest to Lightning. Fallen Valkyries are flying. | {biome:ashlands}
+| <img src="/data/vh/BiomeDeepNorth.png" style="width:32px;height:32px;display:block"> Deep North | Gammeltroll, Barka | **The biome steps up once you use an [BloodGoldKey]@"Intricate Key" on a Mörkhalla dungeon** — expect heavier patrols afterwards. | {biome:deepnorth}
 
 ## General Tips
 

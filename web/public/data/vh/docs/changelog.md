@@ -2,6 +2,14 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-09-26
+
+* **The [bestiary guide](/guides/enemies) now opens with every trophy in the game** — 70 creatures as linked tiles, grouped into bosses, minibosses and biomes, each one blurred until your spoiler level reaches it. A heart marks what you can tame, a peace sign what runs rather than fights.
+* **Rare trophy drops have bad-luck protection, and there is a chart for it.** Pick any of the ten rare trophies the most recipes ask for and compare the kill countdown against pure luck. The countdown lives in memory only, so logging out or switching star level throws the progress away — both are called out on the chart.
+* **Kall Fimbulbringer is written up**, straight from the game files: three phases, the seven aspects he fights you with instead of his own moveset, and the Jotun Invasion chain you need to summon him at all.
+* **Creature filing corrected.** Writhan is a Swamp creature, Dverger belong with the Mistlands, and Skeletons sit under Meadows where they also spawn. Krigen, Hexen, Elaking and Bonemaw are not minibosses; Lord Reto is. Frost Blob is gone, since only a player can spawn one. Lord Reto and Kall Fimbulbringer both got trophy art they never had.
+* **Taming** gained the Moose and its Lingonberries, plus a nudge to ferment [MeadTamer]@"Brew of Animal Whispers" before you start, and the Deep North finally has a row in the biome threat table.
+
 ## 2026-09-09
 
 * **Valheim 1.0 and the Deep North are on the site.** Everything re-extracted against the 1.0 game files: 917 items, 93 creatures, 20 workstations and 26 station upgrades.

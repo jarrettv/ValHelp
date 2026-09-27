@@ -77,9 +77,21 @@ function scheduleServerSave() {
   }, SAVE_DEBOUNCE_MS);
 }
 
+/** Codes whose icon we added to icons.db by hand; see docs/macros.md. */
+const SUPPLIED_ICONS: Record<string, true> = { LordReto: true, Bestiary_FrozenKing: true };
+
 export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
   if (initialized) return;
   initialized = true;
+
+  // Art we supply ourselves for creatures the extractor ships without a trophy.
+  // items.json reports hasIcon:false for these, which blanks the list row, the
+  // detail header and every inline chip — flipping the flag once here covers
+  // all of them, since the icon is already in icons.db under the same code.
+  items.forEach(it => {
+    if (SUPPLIED_ICONS[it.code]) (it as unknown as { hasIcon: boolean }).hasIcon = true;
+  });
+
   const byCode: Record<string, VhItem> = {};
   items.forEach(it => { byCode[it.code] = it; });
 

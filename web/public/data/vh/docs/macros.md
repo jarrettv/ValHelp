@@ -221,6 +221,62 @@ Leave the `style` attribute off inside a row — the row stylesheet sizes them. 
 
 Rows nest inside a `:::biome` spoiler fence; the closing `:::` shuts the innermost fence first.
 
+## Creature Type Index
+
+`{creaturetypes}` on its own line renders every creature that drops a trophy as
+a grid of trophy tiles, each linking to that creature's page. Takes no
+arguments — it reads items.json.
+
+```
+{creaturetypes}
+```
+
+Grouping follows what the game data actually marks: `faction: 'Boss'` is the
+seven altar bosses and `boss: true` without that faction is the miniboss set.
+Everything else falls back to its biome, which is how the bestiary is organised
+anyway. Creatures flagged `noTrophy` have no trophy art and are left out.
+Tameable creatures sit in their biome group like any other and carry a yellow
+heart on the tile.
+
+A few corrections to the extractor's output are kept as small maps next to the
+renderer — creatures wrongly flagged `boss`, one miniboss it misses, and
+creatures that only exist when a player spawns them.
+
+There is no "passive" marker in the data — Deer is filed under ForestMonsters,
+Hare under AnimalsVeg, and both carry damage values — so there is no passive
+group.
+
+Each group shows at most nine tiles, and the tile strip is a nine-column grid,
+so a full group is exactly one row at any panel width. Tiles carry
+`sp-fog sp-b<index>`, which greys and blurs them until the reader reaches that
+biome and drops pointer events so a locked tile is not a working link.
+
+## Trophy Pity Chart
+
+`{trophypity}` on its own line renders the bad-luck-protection block: a trophy
+picker plus the chart of "chance you still have no trophy after N kills". Takes
+no arguments — everything comes from items.json.
+
+```
+{trophypity}
+```
+
+The picker lists the **ten rare trophies (30% drop or less) that the most
+recipes ask for**, since those are the ones players farm on purpose. Recipe
+count is the primary sort; ties — and most of the list ties at one recipe —
+break toward the earlier biome, then the rarer drop, then the name.
+
+Option rows are spoiler-gated by the creature's biome, so the list shortens to
+whatever the reader has unlocked. The default selection is the highest-ranked
+trophy they can actually see, which keeps the button from naming a creature the
+menu is hiding. If their progress reveals none of the ten, the block falls back
+to a locked note and a generic 10% chart with no creature named.
+
+Both curves are a pure function of the drop chance, so switching trophies is a
+redraw with no fetch. The chart carries two hazard stamps — **don't log out**
+and **don't sequence break** — because both discard the countdown and start a
+fresh one.
+
 ## Standard Markdown
 
 These standard markdown features are also supported:
