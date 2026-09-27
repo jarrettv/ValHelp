@@ -2124,6 +2124,9 @@ export function mdInline(text: string): string {
   var imgs: string[] = [];
   safe = safe.replace(/<img [^>]+>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
   safe = safe.replace(/<br\s*\/?>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
+  // `<span style="...">` passes through like <img>/<br>, so a doc can size or
+  // colour a run of text. The text inside still gets the usual inline passes.
+  safe = safe.replace(/<\/?span[^>]*>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
   safe = safe.replace(/\{modbox:([^}]+)\}/g, function(_, spec) {
     var parts = spec.split('|');
     var s = '<span style="display:inline-flex;gap:2px;vertical-align:middle">';
@@ -2219,6 +2222,217 @@ export function mdInline(text: string): string {
 
 function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── Comfort calculator ────────────────────────────────────────────
+// `{comfortcalc}` renders a pick-one-per-category comfort calculator as a grid
+// of icon cells — one cell per category, showing the piece currently counted.
+// Tapping a cell opens an inline picker of that category's art; tapping the
+// piece that is already chosen clears the category.
+//
+// Defaults come from COMFORT_SLOTS, the curated progression in biomeSheets.ts,
+// because that is what the guide's max-per-biome table is derived from — so an
+// untouched calculator always agrees with the table. The pieces offered in the
+// picker come from items.json instead, so every comfort piece is selectable.
+//
+// The whole widget renders from state, so every interaction is a re-render and
+// there is no DOM patching to keep in sync.
+
+// items.json spells one group differently from COMFORT_SLOTS.
+var CC_GROUP_KEY = { 'Item stand': 'ItemStand' };
+// Category art, matching the sidebar tags in pageConfigs.tsx.
+var CC_CAT_ICON = {
+  Fire: 'hearth', Bed: 'piece_bed02', Seating: 'piece_throne01',
+  Table: 'piece_table_round', Carpet: 'rug_wolf', Banner: 'piece_cloth_hanging_door',
+  'Item stand': 'ArmorStand', Garland: 'piece_CelebrationGarland',
+  Bathing: 'piece_bathtub', Lantern: 'piece_Lavalantern', Ornament: 'piece_pot2',
+};
+
+function ccPieces(group) {
+  if (!allItems) return [];
+  var key = CC_GROUP_KEY[group] || group, out = [];
+  for (var i = 0; i < allItems.length; i++) {
+    var it = allItems[i];
+    if (!it.comfort || it.comfortGroup !== key) continue;
+    var bi = itemBiomeIndex(it.code);
+    out.push({
+      code: it.code, name: it.name || it.code, comfort: it.comfort,
+      bi: bi == null ? 0 : bi, seasonal: it.seasonal || '',
+    });
+  }
+  out.sort(function (a, b) {
+    return b.comfort - a.comfort || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+  });
+  return out;
+}
+
+function ccState() {
+  if (!window.__vhCC) window.__vhCC = { picks: {}, auto: {}, shelter: true, stack: {}, open: '' };
+  return window.__vhCC;
+}
+
+/** The default for a category: the curated progression pick, not the best row in
+ *  items.json, so an untouched calculator matches the guide's table exactly. */
+function ccBest(group, revealed) {
+  for (var s = 0; s < COMFORT_SLOTS.length; s++) {
+    if (COMFORT_SLOTS[s].group === group) return comfortPick(COMFORT_SLOTS[s], revealed - 1);
+  }
+  return null;
+}
+
+function ccUnlocked(group, revealed) {
+  var list = ccPieces(group), out = [];
+  for (var i = 0; i < list.length; i++) if (list[i].bi < revealed) out.push(list[i]);
+  return out;
+}
+
+function ccFind(group, code) {
+  if (!code) return null;
+  var list = ccPieces(group);
+  for (var i = 0; i < list.length; i++) if (list[i].code === code) return list[i];
+  return null;
+}
+
+function ccIcon(code, cls) {
+  return '<img class="' + (cls || '') + '" src="/api/icon/' + encodeURIComponent(code)
+    + '.png" alt="" draggable="false">';
+}
+
+function ccCell(group, revealed, st) {
+  var sel = ccFind(group, st.picks[group]);
+  var on = !!sel;
+  return '<button type="button" class="vh-cc-cell' + (on ? ' is-on' : '')
+    + (st.open === group ? ' is-open' : '') + '"'
+    + ' aria-pressed="' + (on ? 'true' : 'false') + '"'
+    + ' title="' + esc(group) + (sel ? ': ' + esc(sel.name) : '') + '"'
+    + ' onclick="window.__vhCCOpen(\'' + esc(group) + '\')">'
+    + ccIcon(sel ? sel.code : (CC_CAT_ICON[group] || 'hearth'), on ? '' : 'is-empty')
+    + '<span class="vh-cc-name">' + esc(sel ? sel.name : group) + '</span>'
+    + '<span class="vh-cc-plus">' + (on ? '+' + sel.comfort : '—') + '</span>'
+    + '</button>';
+}
+
+function ccToggleCell(key, code, label, value, active) {
+  return '<button type="button" class="vh-cc-cell' + (active ? ' is-on' : '') + '"'
+    + ' aria-pressed="' + (active ? 'true' : 'false') + '" title="' + esc(label) + '"'
+    + ' onclick="window.__vhCCToggle(\'' + key + '\',\'' + esc(code) + '\')">'
+    + ccIcon(code, active ? '' : 'is-empty')
+    + '<span class="vh-cc-name">' + esc(label) + '</span>'
+    + '<span class="vh-cc-plus">' + (active ? '+' + value : '—') + '</span>'
+    + '</button>';
+}
+
+function ccPicker(group, revealed, st) {
+  var list = ccUnlocked(group, revealed);
+  if (!list.length) return '';
+  var h = '<div class="vh-cc-picker"><div class="vh-cc-picker-top">'
+    + '<span class="vh-cc-picker-cat">' + esc(group) + '</span>'
+    + '<button type="button" class="vh-cc-x" onclick="window.__vhCCOpen(\'\')">Close</button>'
+    + '</div><div class="vh-cc-picker-grid">';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i], on = st.picks[group] === p.code;
+    h += '<button type="button" class="vh-cc-opt' + (on ? ' is-on' : '') + '"'
+      + ' title="' + esc(p.name) + (p.seasonal ? ' (' + esc(p.seasonal) + ')' : '') + '"'
+      + ' onclick="window.__vhCCChoose(\'' + esc(group) + '\',\'' + esc(p.code) + '\')">'
+      + ccIcon(p.code) + '<span class="vh-cc-opt-name">' + esc(p.name) + '</span>'
+      + '<span class="vh-cc-opt-plus">+' + p.comfort + '</span></button>';
+  }
+  return h + '</div><div class="vh-cc-hint">Tap the chosen piece again to clear this category.</div></div>';
+}
+
+function renderComfortCalcHtml() {
+  if (!allItems) return '';
+  var revealed = getRevealedCount(), st = ccState();
+  var total = st.shelter ? COMFORT_BASE : 0;
+  var cells = '';
+
+  if (st.shelter || true) {
+    cells += ccToggleCell('shelter', 'se_shelter', 'Shelter', COMFORT_BASE, st.shelter);
+  }
+  for (var s = 0; s < COMFORT_SLOTS.length; s++) {
+    var group = COMFORT_SLOTS[s].group;
+    if (!ccUnlocked(group, revealed).length) continue;   // nothing unlocked here yet
+    if (st.auto[group] !== false) {
+      var b = ccBest(group, revealed);
+      st.picks[group] = b ? b.code : '';
+    }
+    var sel = ccFind(group, st.picks[group]);
+    if (sel) total += sel.comfort;
+    cells += ccCell(group, revealed, st);
+  }
+  var stack = ccPieces('Standalone');
+  for (var k = 0; k < stack.length; k++) {
+    var sp = stack[k];
+    if (sp.bi >= revealed) continue;
+    if (st.stack[sp.code]) total += sp.comfort;
+    cells += ccToggleCell('stack', sp.code, sp.name, sp.comfort, !!st.stack[sp.code]);
+  }
+
+  return '<div class="vh-cc" id="vh-cc" data-revealed="' + revealed + '">'
+    + '<div class="vh-cc-top">'
+    + '<span class="vh-cc-stat"><strong>' + total + '</strong>'
+    + '<span class="vh-cc-unit">comfort</span></span>'
+    + '<span class="vh-cc-stat">'
+    + '<img class="vh-cc-rested-icon" src="/data/vh/rested.png" alt="">'
+    + '<strong>' + restedMinutes(total) + '</strong>'
+    + '<span class="vh-cc-unit">min rested</span></span>'
+    + '<button type="button" class="vh-cc-reset" onclick="window.__vhCCReset()">Reset</button>'
+    + '</div><div class="vh-cc-grid">' + cells + '</div>'
+    + (st.open ? ccPicker(st.open, revealed, st) : '')
+    + '</div>';
+}
+
+window.__vhCCRefresh = function () {
+  var root = document.getElementById('vh-cc');
+  if (!root) return;
+  var holder = document.createElement('div');
+  holder.innerHTML = renderComfortCalcHtml();
+  if (holder.firstChild) root.parentNode.replaceChild(holder.firstChild, root);
+};
+
+window.__vhCCOpen = function (group) {
+  var st = ccState();
+  st.open = (st.open === group) ? '' : group;
+  window.__vhCCRefresh();
+};
+
+window.__vhCCChoose = function (group, code) {
+  var st = ccState();
+  st.auto[group] = false;                       // stops following the default
+  st.picks[group] = (st.picks[group] === code) ? '' : code;   // same piece = clear
+  st.open = '';
+  window.__vhCCRefresh();
+};
+
+window.__vhCCToggle = function (kind, code) {
+  var st = ccState();
+  if (kind === 'shelter') st.shelter = !st.shelter;
+  else st.stack[code] = !st.stack[code];
+  window.__vhCCRefresh();
+};
+
+window.__vhCCReset = function () {
+  window.__vhCC = { picks: {}, auto: {}, shelter: true, stack: {}, open: '' };
+  window.__vhCCRefresh();
+};
+
+// The slider only stamps `data-spoiler` on the guides root, so watch that
+// attribute rather than subscribing — no import cycle, and it works wherever
+// the calculator is rendered.
+if (typeof document !== 'undefined' && !window.__vhCCBound) {
+  window.__vhCCBound = true;
+  var ccObserve = function () {
+    var host = document.querySelector('.vh-guides[data-spoiler]');
+    if (!host || host.__vhCCWatched) return;
+    host.__vhCCWatched = true;
+    new MutationObserver(function () {
+      var root = document.getElementById('vh-cc');
+      if (!root || String(getRevealedCount()) === root.getAttribute('data-revealed')) return;
+      window.__vhCCRefresh();   // hand-picked categories survive; auto ones re-pick
+    }).observe(host, { attributes: true, attributeFilter: ['data-spoiler'] });
+  };
+  setInterval(ccObserve, 1000);
+  ccObserve();
 }
 
 // ── Creature type index ───────────────────────────────────────────
@@ -2805,6 +3019,12 @@ export function renderMdToElement(md: string, el: HTMLElement) {
     if (trimmed.match(/^\{creaturetypes\}$/i)) {
       if (inList) { h += '</ul>'; inList = false; }
       h += renderCreatureTypesHtml();
+      continue;
+    }
+    // `{comfortcalc}` is a block too: the pick-per-category comfort calculator.
+    if (trimmed.match(/^\{comfortcalc\}$/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      h += renderComfortCalcHtml();
       continue;
     }
     if (trimmed.match(/^### /)) {

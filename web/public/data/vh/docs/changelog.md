@@ -2,6 +2,11 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-09-27
+
+* **The [comfort guide](/guides/comfort) has a calculator.** Pick a piece per category and it totals the comfort and the rested minutes as you go. It starts on the best you can actually build at your spoiler level and follows the slider, so what it shows always matches the max-per-biome table below it — change a category by hand and that choice sticks.
+* **The guide itself is back to its old shape**, with the 1.0 numbers kept: eleven categories, the new per-biome maxima, and the Deep North row.
+
 ## 2026-09-26
 
 * **The [bestiary guide](/guides/enemies) now opens with every trophy in the game** — 70 creatures as linked tiles, grouped into bosses, minibosses and biomes, each one blurred until your spoiler level reaches it. A heart marks what you can tame, a peace sign what runs rather than fights.

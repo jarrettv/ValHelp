@@ -174,7 +174,9 @@ export const COMFORT_SLOTS: ComfortSlot[] = [
   { group: 'Table',   picks: [{ code: 'piece_table', comfort: 1, biome: BLACKFOREST }, { code: 'piece_table_round', comfort: 2, biome: PLAINS }] },
   // Jute curtains are banners as far as the game is concerned, and they are
   // the only +2 in the category.
-  { group: 'Banner',  picks: [{ code: 'piece_banner01', comfort: 1, biome: BLACKFOREST }, { code: 'piece_cloth_hanging_door', comfort: 2, biome: PLAINS }] },
+  // Red jute drops from Cultists, which are a Mountain creature — the curtain
+  // opens a biome earlier than the tar-and-iron pieces it used to sit beside.
+  { group: 'Banner',  picks: [{ code: 'piece_banner01', comfort: 1, biome: BLACKFOREST }, { code: 'piece_cloth_hanging_door', comfort: 2, biome: MOUNTAIN }] },
   // The item stand is bronze nails, so the category opens a whole biome
   // earlier than the armour stand most guides name.
   { group: 'Item stand', picks: [{ code: 'itemstand', comfort: 1, biome: BLACKFOREST }] },

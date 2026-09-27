@@ -1436,3 +1436,163 @@
   .vh-guides .vh-ct-tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .vh-guides .vh-ct-tile img { max-width: 40px; }
 }
+
+/* ── Comfort calculator — the `{comfortcalc}` block ─────────────────
+   A responsive grid of icon cells, one per category, showing the piece being
+   counted. auto-fill means it reflows from three across on a phone to eight on
+   a wide panel with no breakpoints. Tapping a cell opens the picker below. */
+.vh-guides .vh-cc {
+  margin: 12px 0 16px;
+  background: linear-gradient(180deg, #1e1e2e 0%, #252536 100%);
+  border: 1px solid #33334a;
+  border-radius: 10px;
+}
+.vh-guides .vh-cc-top {
+  display: flex;
+  align-items: center;
+  /* wider than the 5px inside a stat, so the rested icon clearly belongs to
+     the readout on its right rather than floating between the two */
+  gap: 18px;
+  padding: 9px 12px;
+  border-bottom: 1px solid #33334a;
+  flex-wrap: wrap;
+}
+/* Both readouts share one shape: big tabular number, small unit, baseline
+   aligned inside the stat so the differing font sizes still sit on one line.
+   The row itself centres, so the rested icon and the Reset button line up. */
+.vh-guides .vh-cc-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.vh-guides .vh-cc-stat strong {
+  color: #8cf;
+  font-size: 20px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.vh-guides .vh-cc-stat + .vh-cc-stat strong { color: #e8e8ee; }
+.vh-guides .vh-cc-unit { color: #a9a9b8; font-size: 13px; line-height: 1; }
+.vh-guides .vh-cc-rested-icon {
+  align-self: center;
+  width: 22px;
+  height: 22px;
+  image-rendering: pixelated;
+}
+.vh-guides .vh-cc-reset {
+  margin-left: auto;
+  padding: 3px 10px;
+  background: transparent;
+  border: 1px solid #44445e;
+  border-radius: 5px;
+  color: #a9a9b8;
+  font-family: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.vh-guides .vh-cc-reset:hover { border-color: #666; color: #ddd; }
+
+.vh-guides .vh-cc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 4px;
+  padding: 8px;
+}
+.vh-guides .vh-cc-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px 2px 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #bbb;
+  font-family: inherit;
+  cursor: pointer;
+}
+.vh-guides .vh-cc-cell:hover { background: rgba(255, 255, 255, 0.05); }
+.vh-guides .vh-cc-cell:focus-visible { outline: 2px solid #8cf; outline-offset: -2px; }
+.vh-guides .vh-cc-cell.is-on { background: rgba(120, 170, 255, 0.12); border-color: #3d5680; }
+.vh-guides .vh-cc-cell.is-open { border-color: #8cf; }
+.vh-guides .vh-cc-cell img {
+  width: 34px;
+  height: 34px;
+  image-rendering: pixelated;
+}
+.vh-guides .vh-cc-cell img.is-empty { opacity: 0.3; filter: grayscale(1); }
+.vh-guides .vh-cc-name {
+  font-size: 9.5px;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.vh-guides .vh-cc-cell.is-on .vh-cc-name { color: #e0e0e0; }
+.vh-guides .vh-cc-plus {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: #8cf;
+}
+.vh-guides .vh-cc-cell:not(.is-on) .vh-cc-plus { color: #666; }
+
+.vh-guides .vh-cc-picker {
+  margin: 0 8px 8px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid #44445e;
+  border-radius: 7px;
+}
+.vh-guides .vh-cc-picker-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px 5px;
+}
+.vh-guides .vh-cc-picker-cat { color: #8cf; font-size: 11.5px; font-weight: 600; }
+.vh-guides .vh-cc-x {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid #44445e;
+  border-radius: 4px;
+  color: #a9a9b8;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.vh-guides .vh-cc-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 3px;
+}
+.vh-guides .vh-cc-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 5px 2px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #bbb;
+  font-family: inherit;
+  cursor: pointer;
+}
+.vh-guides .vh-cc-opt:hover { background: #33334a; }
+.vh-guides .vh-cc-opt.is-on { background: rgba(120, 170, 255, 0.18); border-color: #3d5680; }
+.vh-guides .vh-cc-opt img { width: 28px; height: 28px; image-rendering: pixelated; }
+.vh-guides .vh-cc-opt-name {
+  font-size: 9px;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.vh-guides .vh-cc-opt-plus { font-size: 9.5px; color: #8cf; font-variant-numeric: tabular-nums; }
+.vh-guides .vh-cc-hint { padding: 5px 2px 0; color: #6f6f80; font-size: 10px; }
+
+@media (max-width: 480px) {
+  .vh-guides .vh-cc-grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); }
+  .vh-guides .vh-cc-cell img { width: 30px; height: 30px; }
+}

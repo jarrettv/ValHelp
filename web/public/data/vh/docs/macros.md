@@ -221,6 +221,28 @@ Leave the `style` attribute off inside a row — the row stylesheet sizes them. 
 
 Rows nest inside a `:::biome` spoiler fence; the closing `:::` shuts the innermost fence first.
 
+## Comfort Calculator
+
+`{comfortcalc}` on its own line renders a pick-one-per-category comfort
+calculator. Takes no arguments.
+
+```
+{comfortcalc}
+```
+
+Each category is a native `<select>` (so phones get the OS picker) listing every
+comfort piece of that group in items.json that the reader has unlocked; the
+empty `—` option clears the category. Shelter is a checkbox, and the two
+uncategorised pieces that stack get one each.
+
+Defaults come from `COMFORT_SLOTS` in biomeSheets.ts — the same curated
+progression the max-per-biome table is derived from — so an untouched
+calculator always agrees with that table. Categories with nothing unlocked yet
+are omitted entirely.
+
+It re-derives when the spoiler slider moves. A category the reader has picked by
+hand keeps that choice; untouched ones follow the best available.
+
 ## Creature Type Index
 
 `{creaturetypes}` on its own line renders every creature that drops a trophy as
