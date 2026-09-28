@@ -221,6 +221,30 @@ Leave the `style` attribute off inside a row — the row stylesheet sizes them. 
 
 Rows nest inside a `:::biome` spoiler fence; the closing `:::` shuts the innermost fence first.
 
+## Armour Set Link
+
+`{set:<name>}` renders the game's set-bonus name with the icon the game shows
+for it — always the set's helmet — linking to that set's own page.
+
+```
+{set:lox}
+```
+
+The name is the set name from items.json (`troll`, `lox`, `DeepNorthMediumArmor`
+and so on). Set labels and helmets are listed next to the renderer, since the
+display names live in the game's localisation rather than items.json.
+
+The link goes to `/guides/gear/set-<name>`, which filters the left-hand list to
+that set's pieces and shows a breakdown in the detail pane: every material, what
+a craft costs, what the upgrades add, and roughly how many kills that is against
+the creature that drops the most per kill. Selecting a piece from the list opens
+its normal item page with the list still filtered, so you can move between the
+pieces. Materials nothing drops (ores, wood) are marked as gathered.
+
+Upgrade cost scales with level — going 1→2 costs `perLevel`, 2→3 costs twice
+that, 3→4 three times — so the max column is the triangular total, not a flat
+multiple.
+
 ## Comfort Calculator
 
 `{comfortcalc}` on its own line renders a pick-one-per-category comfort

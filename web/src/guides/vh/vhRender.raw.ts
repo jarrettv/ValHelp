@@ -2127,6 +2127,18 @@ export function mdInline(text: string): string {
   // `<span style="...">` passes through like <img>/<br>, so a doc can size or
   // colour a run of text. The text inside still gets the usual inline passes.
   safe = safe.replace(/<\/?span[^>]*>/g, function(m) { imgs.push(m); return '\x00IMG' + (imgs.length - 1) + '\x00'; });
+  safe = safe.replace(/\{set:([A-Za-z0-9_]+)\}/g, function(_, nm) {
+    var key = setBySlug(nm);
+    if (!key) return nm;                       // escaped with the rest of the line
+    var meta = VH_SETS[key], path = '/guides/gear/set-' + setSlug(key);
+    // Stash the markup like the other macros do — everything still in `safe`
+    // gets esc()'d at the end, so raw HTML returned here would show as text.
+    var s = '<a class="vh-set-chip" href="' + path + '"'
+      + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + path + '\');}">'
+      + '<img src="/api/icon/' + encodeURIComponent(meta.helmet) + '.png" alt="" draggable="false">'
+      + '<span>' + esc(meta.label) + '</span></a>';
+    imgs.push(s); return '\x00IMG' + (imgs.length - 1) + '\x00';
+  });
   safe = safe.replace(/\{modbox:([^}]+)\}/g, function(_, spec) {
     var parts = spec.split('|');
     var s = '<span style="display:inline-flex;gap:2px;vertical-align:middle">';
@@ -2222,6 +2234,252 @@ export function mdInline(text: string): string {
 
 function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── Armour set pages ──────────────────────────────────────────────
+// `{set:<name>}` links to a set's own page, and renderSetPageHtml builds it:
+// every piece, what it costs, and roughly how many kills that is.
+//
+// The set's display name is the game's own set-effect name, and the icon is the
+// one the game shows for that effect — always the set's helmet. Neither is in
+// items.json (the names live in the game's localisation), so they are listed
+// here.
+var VH_SETS = {
+  troll:                  { label: 'Sneaky',            helmet: 'HelmetTrollLeather' },
+  berserker_armor:        { label: 'Berserk',           helmet: 'HelmetBerserkerHood' },
+  root_armor:             { label: 'Improved archery',  helmet: 'HelmetRoot' },
+  fenring_armor:          { label: 'Fenris blessing',   helmet: 'HelmetFenring' },
+  lox:                    { label: 'Boon of the Lox',   helmet: 'HelmetLox' },
+  berserker_armor_undead: { label: 'Vilebone Wrath',    helmet: 'HelmetBerserkerUndead' },
+  AshlandsMediumArmor:    { label: "Ask's Endurance",   helmet: 'HelmetAshlandsMediumHood' },
+  DeepNorthMediumArmor:   { label: 'Vanguard',          helmet: 'HelmetDNMediumHood' },
+  harvester:              { label: 'Harvester',         helmet: 'HelmetStrawHat' },
+};
+
+function setBySlug(slug) {
+  var s = String(slug || '').toLowerCase();
+  for (var k in VH_SETS) if (k.toLowerCase() === s) return k;
+  return null;
+}
+function setSlug(name) { return String(name).toLowerCase(); }
+
+/** Pieces of a set, helmet first then chest, legs, cape. */
+function setPieces(name) {
+  if (!allItems) return [];
+  var order = { Helmets: 0, Chest: 1, Legs: 2, Capes: 3 };
+  var out = allItems.filter(function (it) { return it.set && it.set.name === name; });
+  out.sort(function (a, b) {
+    var ao = order[a.subcategory], bo = order[b.subcategory];
+    ao = ao == null ? 9 : ao; bo = bo == null ? 9 : bo;
+    return ao - bo || (a.name < b.name ? -1 : 1);
+  });
+  return out;
+}
+
+/** Where a material comes from, and how much of it one kill yields.
+ *  Two shapes to cover: ordinary materials sit in a creature's `drops`, while a
+ *  trophy is its own bestiary entry carrying the drop `rate` — it never appears
+ *  in anyone's drop list, so looking only at `drops` misses every trophy. */
+function bestDropSource(code) {
+  if (!allItems) return null;
+  var best = null;
+  for (var i = 0; i < allItems.length; i++) {
+    var it = allItems[i], td = it.trophyDrop;
+    if (!td) continue;
+    // the trophy itself
+    if (it.code === code && !td.noTrophy && td.rate > 0) {
+      var t = { creature: td.creature || it.name, per: td.rate, biome: td.biome || '' };
+      if (!best || t.per > best.per) best = t;
+    }
+    for (var d = 0; d < (td.drops || []).length; d++) {
+      var dr = td.drops[d];
+      if (dr.code !== code) continue;
+      var mn = dr.min == null ? 1 : dr.min, mx = dr.max == null ? mn : dr.max;
+      var per = (dr.chance == null ? 1 : dr.chance) * ((mn + mx) / 2);
+      if (per > 0 && (!best || per > best.per)) {
+        best = { creature: td.creature || it.name, per: per, biome: td.biome || '' };
+      }
+    }
+  }
+  return best;
+}
+
+function itemByCode(code) {
+  if (!allItems) return null;
+  for (var i = 0; i < allItems.length; i++) if (allItems[i].code === code) return allItems[i];
+  return null;
+}
+
+/** What a piece costs at each step: the craft, then one entry per upgrade.
+ *  Upgrading away from level N costs N x perLevel, so the steps climb. */
+function setPieceLevels(it) {
+  var res = (it.recipe || {}).resources || [];
+  var maxQ = it.maxQuality || 1;
+  var mats = [];
+  for (var i = 0; i < res.length; i++) {
+    if (!res[i].item || /^Upgrader/.test(res[i].item)) continue;
+    mats.push(res[i]);
+  }
+  var levels = [];
+  for (var lv = 1; lv <= maxQ; lv++) {
+    var row = [];
+    for (var m = 0; m < mats.length; m++) {
+      var qty = lv === 1 ? (mats[m].amount || 0) : (mats[m].perLevel || 0) * (lv - 1);
+      if (qty > 0) row.push({ code: mats[m].item, qty: qty });
+    }
+    levels.push({ level: lv, mats: row });
+  }
+  return { levels: levels, maxQuality: maxQ };
+}
+
+/** Every material the whole set needs, and the kills behind each. */
+function setMaterialTotals(pieces) {
+  var need = {}, order = [];
+  for (var p = 0; p < pieces.length; p++) {
+    var lv = setPieceLevels(pieces[p]).levels;
+    for (var l = 0; l < lv.length; l++) {
+      for (var m = 0; m < lv[l].mats.length; m++) {
+        var c = lv[l].mats[m].code;
+        if (need[c] == null) { need[c] = 0; order.push(c); }
+        need[c] += lv[l].mats[m].qty;
+      }
+    }
+  }
+  var rows = [];
+  for (var i = 0; i < order.length; i++) {
+    var code = order[i], src = bestDropSource(code), item = itemByCode(code);
+    rows.push({
+      code: code, name: (item && item.name) || code, hasIcon: !!(item && item.hasIcon),
+      total: need[code], src: src,
+      kills: src ? Math.ceil(need[code] / src.per) : null,
+    });
+  }
+  rows.sort(function (a, b) { return (b.kills || 0) - (a.kills || 0); });
+  return rows;
+}
+
+/** The creature to actually go and farm: whoever drops the material the set
+ *  needs most of, ties going to the bigger grind.
+ *
+ *  Picking by raw kill count instead would name the wrong creature — the Fenris
+ *  set needs 68 Leather Scraps off Boar against 72 Wolf Pelt off Wolf, so a
+ *  kill-count rule calls a Mountain set a Meadows farm. Quantity tracks what the
+ *  set is actually made of. */
+function setMainFarm(rows) {
+  var best = null;
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (!r.src) continue;
+    if (!best || r.total > best.total || (r.total === best.total && r.kills > best.kills)) {
+      best = { creature: r.src.creature, kills: r.kills, total: r.total, material: r.name };
+    }
+  }
+  return best;
+}
+
+function matChip(code, qty) {
+  var it = itemByCode(code);
+  var icon = it && it.hasIcon
+    ? '<img src="/api/icon/' + encodeURIComponent(code) + '.png" alt="" draggable="false">' : '';
+  return '<span class="vh-set-chip2" title="' + esc((it && it.name) || code) + '">'
+    + icon + '<span>' + qty + '</span></span>';
+}
+
+function renderSetPageHtml(slug) {
+  var name = setBySlug(slug);
+  if (!name) return '<div class="vh-items-detail-empty">Unknown set.</div>';
+  var meta = VH_SETS[name], pieces = setPieces(name);
+  if (!pieces.length) return '<div class="vh-items-detail-empty">No pieces found for this set.</div>';
+
+  var rows = setMaterialTotals(pieces);
+  var farm = setMainFarm(rows);
+  var totalKills = 0;
+  for (var r = 0; r < rows.length; r++) totalKills += rows[r].kills || 0;
+
+  var maxQ = 1;
+  var lvs = [];
+  for (var p = 0; p < pieces.length; p++) {
+    var pl = setPieceLevels(pieces[p]);
+    lvs.push(pl);
+    if (pl.maxQuality > maxQ) maxQ = pl.maxQuality;
+  }
+
+  var h = '<div class="vh-set">'
+    + '<div class="vh-set-head">'
+    + '<img class="vh-set-icon" src="/api/icon/' + encodeURIComponent(meta.helmet) + '.png" alt="">'
+    + '<div><div class="vh-set-name">' + esc(meta.label) + '</div>'
+    + '<div class="vh-set-sub">' + pieces.length + ' pieces · bonus applies with all of them equipped</div></div>'
+    + '</div>';
+
+  if (farm) {
+    var fsrc = null;
+    for (var q = 0; q < rows.length; q++) if (rows[q].src && rows[q].src.creature === farm.creature) { fsrc = rows[q]; break; }
+    h += '<div class="vh-set-farm">'
+      + '<span class="vh-set-farm-lbl">Mainly farm</span>'
+      + '<strong>' + esc(farm.creature) + '</strong>'
+      + '<span class="vh-set-farm-kills">~' + farm.kills + ' kills</span>'
+      + '<span class="vh-set-farm-for">for ' + farm.total + ' ' + esc(farm.material) + '</span>'
+      + '<span class="vh-set-farm-all">' + totalKills + ' kills across every material</span>'
+      + '</div>';
+    void fsrc;
+  }
+
+  // levels down the side, pieces across the top
+  h += '<table class="vh-set-grid"><thead><tr><th>Level</th>';
+  for (var c = 0; c < pieces.length; c++) {
+    h += '<th>' + (pieces[c].hasIcon
+      ? '<img src="/api/icon/' + encodeURIComponent(pieces[c].code) + '.png" alt="">' : '')
+      + '<span>' + esc(pieces[c].name || pieces[c].code) + '</span></th>';
+  }
+  h += '</tr></thead><tbody>';
+  for (var lv = 1; lv <= maxQ; lv++) {
+    h += '<tr><td class="vh-set-lv">' + (lv === 1 ? 'Craft' : '→ ' + lv) + '</td>';
+    for (var pc = 0; pc < pieces.length; pc++) {
+      var row = lvs[pc].levels[lv - 1];
+      var cell = '';
+      if (!row) cell = '<span class="vh-set-na">—</span>';
+      else for (var mm = 0; mm < row.mats.length; mm++) cell += matChip(row.mats[mm].code, row.mats[mm].qty);
+      h += '<td>' + (cell || '<span class="vh-set-na">—</span>') + '</td>';
+    }
+    h += '</tr>';
+  }
+  // totals per piece, across every level
+  h += '<tr class="vh-set-total"><td class="vh-set-lv">Total</td>';
+  for (var pt = 0; pt < pieces.length; pt++) {
+    var sum = {}, ord = [];
+    for (var L = 0; L < lvs[pt].levels.length; L++) {
+      var ms = lvs[pt].levels[L].mats;
+      for (var x = 0; x < ms.length; x++) {
+        if (sum[ms[x].code] == null) { sum[ms[x].code] = 0; ord.push(ms[x].code); }
+        sum[ms[x].code] += ms[x].qty;
+      }
+    }
+    var cellT = '';
+    for (var o = 0; o < ord.length; o++) cellT += matChip(ord[o], sum[ord[o]]);
+    h += '<td>' + cellT + '</td>';
+  }
+  h += '</tr></tbody></table>';
+
+  // what those totals cost in kills
+  h += '<table class="vh-set-kills2"><thead><tr>'
+    + '<th>Material</th><th>Need</th><th>Drops from</th><th>Kills</th></tr></thead><tbody>';
+  for (var k = 0; k < rows.length; k++) {
+    var m2 = rows[k];
+    var icon = m2.hasIcon
+      ? '<img src="/api/icon/' + encodeURIComponent(m2.code) + '.png" alt="" draggable="false">' : '';
+    h += '<tr' + (farm && m2.src && m2.src.creature === farm.creature ? ' class="is-farm"' : '') + '>'
+      + '<td class="vh-set-mat">' + icon + '<span>' + esc(m2.name) + '</span></td>'
+      + '<td>' + m2.total + '</td>'
+      + '<td>' + (m2.src
+        ? esc(m2.src.creature) + ' <span class="vh-set-rate">(' + (Math.round(m2.src.per * 100) / 100) + '/kill)</span>'
+        : '<span class="vh-set-gather">gathered, not a drop</span>') + '</td>'
+      + '<td class="vh-set-kills">' + (m2.kills == null ? '—' : m2.kills) + '</td></tr>';
+  }
+  h += '</tbody></table>';
+
+  return h + '<p class="vh-set-note">Totals are a full set at max quality. Upgrade cost climbs with '
+    + 'level, so going 3→4 costs three times the per-level amount. Kills assume the creature that '
+    + 'drops the most per kill, at 0★ and an average roll — starred creatures drop more.</p></div>';
 }
 
 // ── Comfort calculator ────────────────────────────────────────────
@@ -2905,6 +3163,10 @@ if (typeof document !== 'undefined' && !window.__vhPityBound) {
     var menu = document.getElementById('vh-pity-menu');
     if (menu && !menu.hidden) window.__vhPityToggle();
   });
+}
+
+export function renderSetInto(el: HTMLElement, slug: string) {
+  el.innerHTML = renderSetPageHtml(slug);
 }
 
 export function renderMdToElement(md: string, el: HTMLElement) {

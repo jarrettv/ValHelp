@@ -31,14 +31,16 @@ The second case means stacking armor has **diminishing returns** — doubling yo
 
 Wearing all pieces of a set grants extra effects on top of each piece's individual bonuses.
 
-| Set | Pieces & Effects |
-|-----|--------|---------|
-| Sneaky (Troll) | [HelmetTrollLeather](1) [ArmorTrollLeatherChest](1) [ArmorTrollLeatherLegs](1) [CapeTrollHide](1) <br> **+15 Sneak skill** | {biome:blackforest}
-| Berserk (Bear) | [HelmetBerserkerHood](1) [ArmorBerserkerChest](1) [ArmorBerserkerLegs](1) <br> **+30% Health regen, +15% Stamina regen, +10% Slash, +10% Chop**, Slightly weak (+25%) vs Blunt, Slash and Pierce | {biome:blackforest}
-| Ranger (Root) | [HelmetRoot](1) [ArmorRootChest](1) [ArmorRootLegs](1) <br> **+15 Bow skill**, Pierce resistant (chest), Poison resistant (helmet), Weak vs Fire | {biome:swamp}
-| Fenris Blessing | [HelmetFenring](1) [ArmorFenringChest](1) [ArmorFenringLegs](1) <br> +9% movement speed, Frost resistent (chest), Fire resistant, **+15 Unarmed skill** | {biome:mountain}
-| Vilebone Wrath | [HelmetBerserkerUndead](1) [ArmorBerserkerUndeadChest](1) [ArmorBerserkerUndeadLegs](1) <br> **+20% Health regen, +40% Stamina regen**, Slightly weak (+25%) vs Blunt, Slash and Pierce, **+20% Blunt, +20% Pierce** | {biome:plains}
-| Endurance (Ask) | [HelmetAshlandsMediumHood](1) [ArmorAshlandsMediumChest](1) [ArmorAshlandsMediumlegs](1) <br> **-10% run stamina, -10% jump stamina, -20% attack stamina**, +10% Pierce | {biome:ashlands}
+| Set bonus | Pieces & Effects |
+|-----------|------------------|
+| {set:troll} | [HelmetTrollLeather](1) [ArmorTrollLeatherChest](1) [ArmorTrollLeatherLegs](1) [CapeTrollHide](1) <br> **+15 Sneak skill** | {biome:blackforest}
+| {set:berserker_armor} | [HelmetBerserkerHood](1) [ArmorBerserkerChest](1) [ArmorBerserkerLegs](1) <br> **+30% Health regen, +15% Stamina regen, +10% Slash, +10% Chop**, Slightly weak (+25%) vs Blunt, Slash and Pierce | {biome:blackforest}
+| {set:root_armor} | [HelmetRoot](1) [ArmorRootChest](1) [ArmorRootLegs](1) <br> **+15 Bows skill**, Pierce resistant (chest), Poison resistant (helmet), Weak vs Fire | {biome:swamp}
+| {set:fenring_armor} | [HelmetFenring](1) [ArmorFenringChest](1) [ArmorFenringLegs](1) <br> +9% movement speed, Frost resistent (chest), Fire resistant, **+15 Fists skill** | {biome:mountain}
+| {set:lox} | [HelmetLox](1) [ArmorLoxChest](1) [ArmorLoxLegs](1) <br> **+30 Sneak skill, +15 Bows skill** | {biome:plains}
+| {set:berserker_armor_undead} | [HelmetBerserkerUndead](1) [ArmorBerserkerUndeadChest](1) [ArmorBerserkerUndeadLegs](1) <br> **+20% Health regen, +40% Stamina regen**, Slightly weak (+25%) vs Blunt, Slash and Pierce, **+20% Blunt, +20% Pierce** | {biome:plains}
+| {set:AshlandsMediumArmor} | [HelmetAshlandsMediumHood](1) [ArmorAshlandsMediumChest](1) [ArmorAshlandsMediumlegs](1) <br> **-10% run stamina, -10% jump stamina, -20% attack stamina**, +10% Pierce | {biome:ashlands}
+| {set:DeepNorthMediumArmor} | [HelmetDNMediumHood](1) [ArmorDeepNorthMediumChest](1) [ArmorDeepNorthMediumlegs](1) <br> **+10% Health regen, +10% Stamina regen, -10% run stamina, -20% dodge stamina, +10% Pierce** | {biome:deepnorth}
 
 ## Shields
 

@@ -55,7 +55,7 @@ Only the [piece_maypole]* Maypole and [piece_xmastree]* Yule Tree have no catego
 
 †Sitting log is available in Meadows if you find a campsite
 
-With both seasonal items ([piece_maypole]* + [piece_xmastree]*): **max 24 comfort = 31 min rested**. Midsummer and Yule never overlap, so 23 is the most you can hold on any given day.
+With both seasonal items ([piece_maypole]* + [piece_xmastree]*): **max 24 comfort = 31 min rested**.
 
 ## Tips
 

@@ -13,6 +13,7 @@ import Feedback from '../../components/Feedback';
 import {
   initVhState,
   renderListItemHTML,
+  renderSetInto,
   renderDetailInto,
   setSelectedCode,
   getSelectedCode,
@@ -91,6 +92,8 @@ function deriveView(
     return { kind: 'tips' };
   }
   if (categorySlug === 'tips') return { kind: 'tips' };
+  // `set-<name>` filters the list to one armour set and shows the set page.
+  if (categorySlug.startsWith('set-')) return { kind: 'list', tag: `_set:${categorySlug.slice(4)}` };
   if (categorySlug === 'all') return { kind: 'list', tag: '_all' };
   if (categorySlug === 'favorites') return { kind: 'list', tag: '_fav' };
   if (categorySlug === 'speedrun') return { kind: 'list', tag: '_speed' };
@@ -106,6 +109,7 @@ function viewToSlug(view: View, config: ItemsPageConfig): string | null {
   if (tag === '_all') return 'all';
   if (tag === '_fav') return 'favorites';
   if (tag === '_speed') return 'speedrun';
+  if (tag.startsWith('_set:')) return `set-${tag.slice(5)}`;
   return tagToSlug(tag);
 }
 
@@ -216,6 +220,12 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
         list = list.filter(it => !!vhState.craftFavorites[it.code]);
       } else if (tag === '_speed') {
         list = list.filter(it => !!vhState.craftSpeedrun[it.code]);
+      } else if (tag.startsWith('_set:')) {
+        const want = tag.slice(5).toLowerCase();
+        list = list.filter(it => {
+          const n = (it.set as { name?: string } | undefined)?.name;
+          return !!n && n.toLowerCase() === want;
+        });
       } else if (tag !== '_all') {
         list = list.filter(it => (it[config.subField] as unknown) === tag);
       }
@@ -252,10 +262,20 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
 
   const detailRef = useRef<HTMLDivElement>(null);
   const [editorAnchor, setEditorAnchor] = useState<HTMLDivElement | null>(null);
+  // `view.kind` is 'list' for every category, so the detail effect needs the tag
+  // too — otherwise moving between two sets would not re-render the set page.
+  const viewKey = view.kind === 'list' ? view.tag : view.kind;
+  const detailSetSlug =
+    view.kind === 'list' && view.tag.startsWith('_set:') ? view.tag.slice(5) : null;
   useLayoutEffect(() => {
     const el = detailRef.current;
     if (!el) return;
-    if (view.kind === 'tips' || !selectedCode) { setEditorAnchor(null); return; }
+    if (viewKey === 'tips') { setEditorAnchor(null); return; }
+    if (!selectedCode) {
+      setEditorAnchor(null);
+      if (detailSetSlug) renderSetInto(el, detailSetSlug);
+      return;
+    }
     renderDetailInto(el, selectedCode, config.page);
     const notes = el.querySelector('.detail-item-md');
     const anchor = document.createElement('div');
@@ -267,7 +287,7 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
     }
     setEditorAnchor(anchor);
     return () => { anchor.remove(); };
-  }, [selectedCode, view.kind, config.page, tick]);
+  }, [selectedCode, viewKey, detailSetSlug, config.page, tick]);
 
   const containerClass = `vh-items-container${selectedCode ? ' has-selection' : ''}${tipsActive ? ' show-tips' : ''}`;
 
@@ -359,9 +379,15 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
         </div>
       ) : !selectedCode ? (
         <div className="vh-items-detail">
-          <div className="vh-items-detail-empty">
-            Select an item to view its details.
-          </div>
+          {/* A set view with nothing selected shows the set breakdown rather
+              than the generic empty state. */}
+          {detailSetSlug ? (
+            <div ref={detailRef} />
+          ) : (
+            <div className="vh-items-detail-empty">
+              Select an item to view its details.
+            </div>
+          )}
         </div>
       ) : (
         <div className="vh-items-detail" key={selectedCode}>

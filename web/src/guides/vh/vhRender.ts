@@ -6,7 +6,7 @@ import {
   setState,
   computeMaxStatsExt,
   renderListItemHTML,
-  renderDetailInto,
+  renderDetailInto, renderSetInto,
   type VhPageKey,
 } from './vhRender.raw';
 import type { VhItem } from './types';
@@ -222,4 +222,4 @@ export function setPageMaxStats(maxStats: any) {
 
 export function getMaxStats() { return cachedMaxStats; }
 export function getSelectedCode() { return state.pageSelectedCode; }
-export { renderListItemHTML, renderDetailInto };
+export { renderListItemHTML, renderDetailInto, renderSetInto };
