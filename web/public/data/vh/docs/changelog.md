@@ -2,6 +2,10 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-09-28
+
+* **Armor [set bonuses](/guides/gear) are complete and clickable.** The Lox and Vanguard sets were missing, the names now match the game, and each one opens a page with every piece, its cost per level, and roughly how many kills that is.
+
 ## 2026-09-27
 
 * **The [comfort guide](/guides/comfort) has a calculator.** Pick a piece per category and it totals the comfort and the rested minutes as you go. It starts on the best you can actually build at your spoiler level and follows the slider, so what it shows always matches the max-per-biome table below it — change a category by hand and that choice sticks.
