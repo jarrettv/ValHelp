@@ -40,16 +40,16 @@ export default function EventEdit() {
   useEffect(() => {
     switch (mode) {
       case "TrophyHunt":
-        setScoringCode("hunt-2025-09");
+        setScoringCode("hunt-2026-09");
         break;
       case "TrophySaga":
-        setScoringCode("saga-2025-10");
+        setScoringCode("saga-2026-09");
         break;
       case "TrophyRush":
-        setScoringCode("rush-2025-10");
+        setScoringCode("rush-2026-09");
         break;
       case "TrophyTrailblazer":
-        setScoringCode("blaze-2025-10");
+        setScoringCode("blaze-2026-09");
         break;
     }
   }, [mode]);

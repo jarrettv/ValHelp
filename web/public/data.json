@@ -5072,6 +5072,18 @@
     "biome": "Ashlands"
   },
   {
+    "code": "TrophyBarka",
+    "type": "Trophy",
+    "name": "Barka Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBarka.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+  },
+  {
     "code": "TrophyBjorn",
     "type": "Trophy",
     "name": "Bear Trophy",
@@ -5106,6 +5118,42 @@
     "weight": 2.0,
     "stack": 20,
     "biome": "Swamp"
+  },
+  {
+    "code": "TrophyBlob_Frost",
+    "type": "Trophy",
+    "name": "Frost Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Frost.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Mountain"
+  },
+  {
+    "code": "TrophyBlob_Lava",
+    "type": "Trophy",
+    "name": "Lava Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Lava.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Ashlands"
+  },
+  {
+    "code": "TrophyBlob_Morkhalla",
+    "type": "Trophy",
+    "name": "Pulp Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Morkhalla.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Deep North"
   },
   {
     "code": "TrophyBoar",
@@ -5287,6 +5335,18 @@
     "weight": 2.0,
     "stack": 20,
     "biome": "Meadows"
+  },
+  {
+    "code": "TrophyElaking",
+    "type": "Trophy",
+    "name": "Elaking Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyElaking.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
   },
   {
     "code": "TrophyFader",
@@ -5506,6 +5566,30 @@
     "biome": "Mountain"
   },
   {
+    "code": "TrophyJotunWarrior",
+    "type": "Trophy",
+    "name": "Krigen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyJotunWarrior.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+  },
+  {
+    "code": "TrophyJotunWitch",
+    "type": "Trophy",
+    "name": "Hexen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyJotunWitch.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+  },
+  {
     "code": "TrophyKvastur",
     "type": "Trophy",
     "name": "Kvastur Trophy",
@@ -5542,6 +5626,30 @@
     "biome": "Plains"
   },
   {
+    "code": "TrophyMole",
+    "type": "Trophy",
+    "name": "Eyeless One Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyMole.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.5,
+    "stack": 20,
+    "biome": "Deep North"
+  },
+  {
+    "code": "TrophyMoose",
+    "type": "Trophy",
+    "name": "Moose Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyMoose.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+  },
+  {
     "code": "TrophyMorgen",
     "type": "Trophy",
     "name": "Morgen Trophy",
@@ -5576,6 +5684,18 @@
     "weight": 2.0,
     "stack": 20,
     "biome": "Mountain"
+  },
+  {
+    "code": "TrophySeal",
+    "type": "Trophy",
+    "name": "Seal Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeal.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
   },
   {
     "code": "TrophySeeker",
@@ -5752,6 +5872,18 @@
     "name": "Wraith Trophy",
     "desc": "",
     "image": "/img/Trophy/TrophyWraith.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+  },
+  {
+    "code": "TrophyWrithan",
+    "type": "Trophy",
+    "name": "Writhan Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWrithan.png",
     "drop": "",
     "usage": "",
     "weight": 2.0,

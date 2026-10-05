@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBlob_Morkhalla",
+    "type": "Trophy",
+    "name": "Pulp Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Morkhalla.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Deep North"
+}

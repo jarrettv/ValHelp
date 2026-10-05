@@ -1,0 +1,12 @@
+{
+    "code": "TrophyElaking",
+    "type": "Trophy",
+    "name": "Elaking Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyElaking.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+}

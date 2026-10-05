@@ -1,0 +1,12 @@
+{
+    "code": "TrophyJotunWarrior",
+    "type": "Trophy",
+    "name": "Krigen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyJotunWarrior.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+}

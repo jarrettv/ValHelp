@@ -1,0 +1,12 @@
+{
+    "code": "TrophyWrithan",
+    "type": "Trophy",
+    "name": "Writhan Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyWrithan.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Swamp"
+}

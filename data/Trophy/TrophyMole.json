@@ -1,0 +1,12 @@
+{
+    "code": "TrophyMole",
+    "type": "Trophy",
+    "name": "Eyeless One Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyMole.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.5,
+    "stack": 20,
+    "biome": "Deep North"
+}

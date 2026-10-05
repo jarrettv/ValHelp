@@ -105,6 +105,11 @@ const trophies = [
     code: "TrophyWraith"
   },
   {
+    name: "Writhan",
+    biome: "Swamp",
+    code: "TrophyWrithan"
+  },
+  {
     name: "Kvastur",
     biome: "Swamp",
     code: "TrophyKvastur"
@@ -128,6 +133,11 @@ const trophies = [
     name: "Fenring",
     biome: "Mountain",
     code: "TrophyFenring"
+  },
+  {
+    name: "Frost Blob",
+    biome: "Mountain",
+    code: "TrophyBlob_Frost"
   },
   {
     name: "Stone Golem",
@@ -255,6 +265,11 @@ const trophies = [
     code: "TrophyFallenValkyrie"
   },
   {
+    name: "Lava Blob",
+    biome: "Ashlands",
+    code: "TrophyBlob_Lava"
+  },
+  {
     name: "Marksman",
     biome: "Ashlands",
     code: "TrophyCharredArcher"
@@ -272,6 +287,13 @@ const trophies = [
   {
     name: "Warlock",
     biome: "Ashlands",
+    code: "TrophyCharredMage"
+  },
+  // TrophyWarlock is not a game prefab — the mod reports the Warlock as
+  // TrophyCharredMage. Kept so scoring records seeded before 1.0 still render.
+  {
+    name: "Warlock",
+    biome: "Ashlands",
     code: "TrophyWarlock"
   },
   {
@@ -283,6 +305,46 @@ const trophies = [
     name: "Fader",
     biome: "Ashlands",
     code: "TrophyFader"
+  },
+  {
+    name: "Barka",
+    biome: "Deep North",
+    code: "TrophyBarka"
+  },
+  {
+    name: "Elaking",
+    biome: "Deep North",
+    code: "TrophyElaking"
+  },
+  {
+    name: "Eyeless One",
+    biome: "Deep North",
+    code: "TrophyMole"
+  },
+  {
+    name: "Hexen",
+    biome: "Deep North",
+    code: "TrophyJotunWitch"
+  },
+  {
+    name: "Krigen",
+    biome: "Deep North",
+    code: "TrophyJotunWarrior"
+  },
+  {
+    name: "Moose",
+    biome: "Deep North",
+    code: "TrophyMoose"
+  },
+  {
+    name: "Seal",
+    biome: "Deep North",
+    code: "TrophySeal"
+  },
+  {
+    name: "Shapeless Pulp",
+    biome: "Deep North",
+    code: "TrophyBlob_Morkhalla"
   },
   {
     name: "Serpent",

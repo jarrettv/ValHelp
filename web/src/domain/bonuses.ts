@@ -35,6 +35,11 @@ const bonuses = [
     code: "BonusAshlands"
   },
   {
+    name: "Biome Bonus",
+    biome: "Deep North",
+    code: "BonusDeepNorth"
+  },
+  {
     name: "All Trophies",
     biome: "All",
     code: "BonusAll"

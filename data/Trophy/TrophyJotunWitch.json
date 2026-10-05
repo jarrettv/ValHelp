@@ -1,0 +1,12 @@
+{
+    "code": "TrophyJotunWitch",
+    "type": "Trophy",
+    "name": "Hexen Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyJotunWitch.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+}

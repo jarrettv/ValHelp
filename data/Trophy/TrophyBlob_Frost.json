@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBlob_Frost",
+    "type": "Trophy",
+    "name": "Frost Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Frost.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Mountain"
+}

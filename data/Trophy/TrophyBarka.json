@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBarka",
+    "type": "Trophy",
+    "name": "Barka Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBarka.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+}

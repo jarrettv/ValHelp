@@ -1,0 +1,12 @@
+{
+    "code": "TrophyBlob_Lava",
+    "type": "Trophy",
+    "name": "Lava Blob Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophyBlob_Lava.png",
+    "drop": "",
+    "usage": "",
+    "weight": 1.0,
+    "stack": 20,
+    "biome": "Ashlands"
+}

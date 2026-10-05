@@ -1,0 +1,12 @@
+{
+    "code": "TrophySeal",
+    "type": "Trophy",
+    "name": "Seal Trophy",
+    "desc": "",
+    "image": "/img/Trophy/TrophySeal.png",
+    "drop": "",
+    "usage": "",
+    "weight": 2.0,
+    "stack": 20,
+    "biome": "Deep North"
+}
