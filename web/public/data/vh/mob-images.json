@@ -1,6 +1,6 @@
 {
   "_credit": {
-    "note": "Creature renders captured in-game from Valheim (ValHelp)."
+    "note": "Creature art from Valheim (ValHelp) — in-game captures and headless renders from the game's asset bundles."
   },
   "images": {
     "Bestiary_Asksvin_hatchling": {
@@ -24,6 +24,11 @@
         "0": "/api/mob/Bestiary_BlobLava_0.webp"
       }
     },
+    "Bestiary_BlobMorkMini": {
+      "stars": {
+        "0": "/api/mob/Bestiary_BlobMorkMini_0.webp"
+      }
+    },
     "Bestiary_Boar_piggy": {
       "stars": {
         "0": "/api/mob/Bestiary_Boar_piggy_0.webp"
@@ -41,6 +46,40 @@
         "0": "/api/mob/Bestiary_Chicken_0.webp"
       }
     },
+    "Bestiary_DvergerDeepNorth": {
+      "stars": {
+        "0": "/api/mob/Bestiary_DvergerDeepNorth_0.webp",
+        "1": "/api/mob/Bestiary_DvergerDeepNorth_1.webp",
+        "2": "/api/mob/Bestiary_DvergerDeepNorth_2.webp"
+      }
+    },
+    "Bestiary_FallenWarrior": {
+      "stars": {
+        "0": "/api/mob/Bestiary_FallenWarrior_0.webp"
+      }
+    },
+    "Bestiary_FrozenKing": {
+      "stars": {
+        "0": "/api/mob/Bestiary_FrozenKing_0.webp"
+      }
+    },
+    "Bestiary_Frysling": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Frysling_0.webp"
+      }
+    },
+    "Bestiary_Ghost_Void": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Ghost_Void_0.webp"
+      }
+    },
+    "Bestiary_GoblinDeepNorth": {
+      "stars": {
+        "0": "/api/mob/Bestiary_GoblinDeepNorth_0.webp",
+        "1": "/api/mob/Bestiary_GoblinDeepNorth_1.webp",
+        "2": "/api/mob/Bestiary_GoblinDeepNorth_2.webp"
+      }
+    },
     "Bestiary_Greyling": {
       "stars": {
         "0": "/api/mob/Bestiary_Greyling_0.webp"
@@ -56,9 +95,31 @@
         "0": "/api/mob/Bestiary_Lox_Calf_0.webp"
       }
     },
+    "Bestiary_Moose_calf": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Moose_calf_0.webp"
+      }
+    },
+    "Bestiary_Seal_Pup": {
+      "stars": {
+        "0": "/api/mob/Bestiary_Seal_Pup_0.webp"
+      }
+    },
     "Bestiary_SeekerBrood": {
       "stars": {
         "0": "/api/mob/Bestiary_SeekerBrood_0.webp"
+      }
+    },
+    "Bestiary_ShadowPerson": {
+      "stars": {
+        "0": "/api/mob/Bestiary_ShadowPerson_0.webp",
+        "1": "/api/mob/Bestiary_ShadowPerson_1.webp",
+        "2": "/api/mob/Bestiary_ShadowPerson_2.webp"
+      }
+    },
+    "Bestiary_TrollFrost": {
+      "stars": {
+        "0": "/api/mob/Bestiary_TrollFrost_0.webp"
       }
     },
     "Bestiary_Wolf_cub": {
@@ -85,6 +146,11 @@
         "2": "/api/mob/TrophyAsksvin_2.webp"
       }
     },
+    "TrophyBarka": {
+      "stars": {
+        "0": "/api/mob/TrophyBarka_0.webp"
+      }
+    },
     "TrophyBjorn": {
       "stars": {
         "0": "/api/mob/TrophyBjorn_0.webp",
@@ -100,6 +166,11 @@
     "TrophyBlob": {
       "stars": {
         "0": "/api/mob/TrophyBlob_0.webp"
+      }
+    },
+    "TrophyBlob_Morkhalla": {
+      "stars": {
+        "0": "/api/mob/TrophyBlob_Morkhalla_0.webp"
       }
     },
     "TrophyBoar": {
@@ -179,6 +250,11 @@
     "TrophyEikthyr": {
       "stars": {
         "0": "/api/mob/TrophyEikthyr_0.webp"
+      }
+    },
+    "TrophyElaking": {
+      "stars": {
+        "0": "/api/mob/TrophyElaking_0.webp"
       }
     },
     "TrophyFader": {
@@ -279,6 +355,16 @@
         "0": "/api/mob/TrophyHatchling_0.webp"
       }
     },
+    "TrophyJotunWarrior": {
+      "stars": {
+        "0": "/api/mob/TrophyJotunWarrior_0.webp"
+      }
+    },
+    "TrophyJotunWitch": {
+      "stars": {
+        "0": "/api/mob/TrophyJotunWitch_0.webp"
+      }
+    },
     "TrophyLeech": {
       "stars": {
         "0": "/api/mob/TrophyLeech_0.webp",
@@ -289,6 +375,20 @@
     "TrophyLox": {
       "stars": {
         "0": "/api/mob/TrophyLox_0.webp"
+      }
+    },
+    "TrophyMole": {
+      "stars": {
+        "0": "/api/mob/TrophyMole_0.webp",
+        "1": "/api/mob/TrophyMole_1.webp",
+        "2": "/api/mob/TrophyMole_2.webp"
+      }
+    },
+    "TrophyMoose": {
+      "stars": {
+        "0": "/api/mob/TrophyMoose_0.webp",
+        "1": "/api/mob/TrophyMoose_1.webp",
+        "2": "/api/mob/TrophyMoose_2.webp"
       }
     },
     "TrophyMorgen": {
@@ -308,6 +408,13 @@
     "TrophySGolem": {
       "stars": {
         "0": "/api/mob/TrophySGolem_0.webp"
+      }
+    },
+    "TrophySeal": {
+      "stars": {
+        "0": "/api/mob/TrophySeal_0.webp",
+        "1": "/api/mob/TrophySeal_1.webp",
+        "2": "/api/mob/TrophySeal_2.webp"
       }
     },
     "TrophySeeker": {
@@ -387,6 +494,13 @@
     "TrophyWraith": {
       "stars": {
         "0": "/api/mob/TrophyWraith_0.webp"
+      }
+    },
+    "TrophyWrithan": {
+      "stars": {
+        "0": "/api/mob/TrophyWrithan_0.webp",
+        "1": "/api/mob/TrophyWrithan_1.webp",
+        "2": "/api/mob/TrophyWrithan_2.webp"
       }
     },
     "Vegvisir": {

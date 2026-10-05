@@ -37,6 +37,9 @@ CAPTURE_ROOT = Path(r"C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepI
 
 SIZE = 512
 CREDIT = "ValHelp (in-game capture)"
+# Headless renders from the asset bundles are a different provenance and must
+# not claim to be captures — scripts/render_creatures.py passes this through.
+CREDIT_RENDER = "ValHelp (headless render)"
 
 # Static boss "sacrificial stone" prefabs (captured via `vhcapturestones`) map to
 # the boss's bestiary code, so bosses get a portrait even though we don't render
@@ -78,6 +81,9 @@ def main() -> None:
     ap.add_argument("--folder", type=Path, default=None)
     ap.add_argument("--bits", type=int, default=4, help="posterize bits/channel (1-8, default 4)")
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
+    ap.add_argument("--credit", default=None,
+                    help=f"provenance string stored with each frame "
+                         f"(default {CREDIT!r}; use {CREDIT_RENDER!r} for headless renders)")
     args = ap.parse_args()
 
     folder = args.folder or newest_capture_folder()
@@ -116,7 +122,7 @@ def main() -> None:
         webp, w, h = to_webp(png, args.bits)
         conn.execute(
             "INSERT OR REPLACE INTO renders (code, star, webp, width, height, credit) VALUES (?,?,?,?,?,?)",
-            (code, int(star), webp, w, h, CREDIT),
+            (code, int(star), webp, w, h, args.credit or CREDIT),
         )
         written += 1
 
@@ -129,7 +135,8 @@ def main() -> None:
     for code, star in conn.execute("SELECT code, star FROM renders ORDER BY code, star"):
         images.setdefault(code, {}).setdefault("stars", {})[str(star)] = f"/api/mob/{code}_{star}.webp"
     manifest = {
-        "_credit": {"note": "Creature renders captured in-game from Valheim (ValHelp)."},
+        "_credit": {"note": "Creature art from Valheim (ValHelp) — in-game captures "
+                            "and headless renders from the game's asset bundles."},
         "images": images,
     }
     (VH / "mob-images.json").write_text(
