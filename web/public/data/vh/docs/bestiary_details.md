@@ -98,7 +98,7 @@ His chains reach **10m** and sweep **90°**, so the ring that looks safe is insi
 | Dragon Mother | chain 2 · 2 | 1500 | Fire | Frost, Spirit |
 | Crawling Matriarch | chain 2 · 3 | 1700 | — | Pierce, Spirit |
 
-**After.** The [CrownJewel]@"Crown Jewel" plus five [Gold]@"Bloodgold" at a level 4 black forge makes the [HelmetCrownofValheim]@"Crown of Valheim" — 50 armour, +5% movement, −20% attack/run/swim/sneak stamina, and everything that sees you flees. The fear check skips the Boss faction, so Kall and the other seven ignore it entirely.
+**After.** The [CrownJewel]@"Crown Jewel" plus five [Gold]@"Bloodgold" at a level 4 black forge makes the [HelmetCrownofValheim]@"Crown of Valheim" — 50 armour, +5% movement, −20% attack/run/swim/sneak stamina, and everything that sees you flees. **All enemies (except bosses) are passive while wearing the crown.**
 
 ### Lord Reto <!-- LordReto -->
 

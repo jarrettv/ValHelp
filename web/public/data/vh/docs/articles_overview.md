@@ -17,6 +17,7 @@ When you defeat a boss, the boss will drop some useful item(s) and a trophy. Han
 | <img src="/api/mob/TrophyGoblinKing_0.webp" style="width:64px;display:block"> | **5. Yagluth** — Plains. 50% Lightning resistance, +25 Farming skill, and +10% damage. | {biome:plains}
 | <img src="/api/mob/TrophySeekerQueen_0.webp" style="width:64px;display:block"> | **6. The Queen** — Mistlands. +100% Eitr regeneration, sneaking costs no Stamina, and 50% Poison resistance. | {biome:mistlands}
 | <img src="/api/mob/TrophyFader_0.webp" style="width:64px;display:block"> | **7. Fader** — Ashlands. +100% Adrenaline generation, 50% reduced stagger, and 50% Fire resistance. | {biome:ashlands}
+| <img src="/img/guide/startstone.png" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="The empty boss stone at the Sacrificial Stones, vegvisir carved into its face." style="width:64px;display:block"> | **8. Kall Fimbulbringer** — Deep North. **No Forsaken power** so this boss allows the end credits to roll | {biome:deepnorth}
 
 ## Finding bosses
 
@@ -25,8 +26,6 @@ You don't start out knowing where a boss is — you have to find its **vegvisir*
 <img src="/api/mob/Vegvisir_0.webp" style="width:120px;float:right;margin:4px 0 8px 16px">
 
 The trick is to watch for the **red glow**. Vegvisir runes shine bright red, so they stand out against grey stone and dark interiors — train your eye to catch that glow as you explore. They turn up both **out in the world** (the Sacrificial Stones at spawn, ruined towers, Stonehenge formations) and, more often, **inside dungeons** — Burial Chambers, Sunken Crypts, Frost Caves, Infested Mines, and Charred Fortresses.
-
-You only need to reach the vegvisir for the nearest of each boss; one activation pins it on the map for good.
 
 ## Reference & tools
 

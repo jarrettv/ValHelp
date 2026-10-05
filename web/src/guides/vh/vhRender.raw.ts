@@ -109,9 +109,18 @@ function combatDamage(damages) {
   return total;
 }
 
+// A prefab can carry m_food values and still be inedible — raw meat, eggs and
+// every uncooked/unbaked intermediate do (raw Boar Meat lists 20 hp but can't
+// be eaten). Only m_itemType Consumable is edible, so read food stats through
+// this rather than touching it.food directly.
+function edibleFood(it) {
+  return (it && it.type === 'Consumable') ? it.food : null;
+}
+
 function itemSortValue(it) {
   if (it.armor) return it.armor.base || 0;
-  if (it.food) return (it.food.health || 0) + (it.food.stamina || 0) + (it.food.eitr || 0);
+  var sortFood = edibleFood(it);
+  if (sortFood) return (sortFood.health || 0) + (sortFood.stamina || 0) + (sortFood.eitr || 0);
   if (it.damages) return combatDamage(it.damages);
   if (it.block && it.block.power && it.category === 'Shield') return it.block.power;
   return 0;
@@ -421,8 +430,8 @@ function renderCraftListItem(it, maxStats) {
   h += iconHtml;
   h += '<div class="craft-item-info"><div class="craft-item-name">' + esc(it.name || it.code) + '</div>';
   var sub = it.subcategory || '';
-  if (it.food) {
-    var f = it.food;
+  var f = edibleFood(it);
+  if (f) {
     h += '<div class="craft-item-food">';
     h += forkSvg(foodForkType(f), 12);
     if (f.health) h += '<span class="fhp">' + f.health + ' hp</span>';
@@ -489,8 +498,8 @@ function renderFoodListItem(it, maxStats) {
     h += '<span style="font-size:11px;font-weight:bold;color:#ca0;margin-right:4px">' + (r.stationLevel || 1) + '</span>';
   }
   h += esc(it.name || it.code) + '</div>';
-  if (it.food) {
-    var f = it.food;
+  var f = edibleFood(it);
+  if (f) {
     h += '<div class="craft-item-bars" style="gap:3px">';
     h += forkSvg(foodForkType(f), 14);
     h += foodMiniBar(maxStats.maxHp ? (f.health||0) / maxStats.maxHp : 0, f.health||0, '#c55', 'HP');
@@ -1031,8 +1040,9 @@ function statusEffectSummary(se, code) {
 function renderFoodDetailFull(code) {
   var it = craftItemsByCode[code];
   if (!it) return;
-  // Mead bases → use mead detail renderer
-  if (it.subcategory === 'MeadKetill') {
+  // Mead bases → use mead detail renderer. Oat Milk is brewed at the ketill
+  // too but is actual food, so it keeps the normal food detail.
+  if (it.subcategory === 'MeadKetill' && !edibleFood(it)) {
     renderMeadDetailFull(code);
     return;
   }
@@ -1082,7 +1092,11 @@ function renderFoodDetailFull(code) {
   h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
   if (source.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(sourceCode) + '.png" style="width:32px;height:32px;image-rendering:pixelated">';
   h += '<div><div style="color:#fff;font-size:13px;font-weight:bold">' + esc(source.name || sourceCode) + '</div>';
-  var stationLabel = (it.subcategory === 'IronCooking') ? 'Iron Cooking Station' : (it.subcategory === 'CookingStation' ? 'Cooking Station' : 'Prep Table \u2192 Stone Oven');
+  // Oven food is normally assembled at the Prep Table first, but a few items
+  // (Cooked Seal Blubber) go on the oven straight from the raw drop.
+  var stationLabel = (it.subcategory === 'IronCooking') ? 'Iron Cooking Station'
+    : (it.subcategory === 'CookingStation') ? 'Cooking Station'
+    : (source.recipe ? 'Prep Table \u2192 Stone Oven' : 'Stone Oven');
   h += '<div style="color:#888;font-size:11px">' + esc(stationLabel) + '</div></div></div>';
   if (source.recipe && source.recipe.resources) {
     h += renderRecipeCards(source);
@@ -1285,8 +1299,8 @@ function renderGenericDetail(code, detail) {
     h += '<span style="color:#888;font-size:12px">' + (vp.qty ? 'for ' + vp.qty + 'x ' : '') + 'from ' + esc(vp.vendor) + '</span>';
     h += '</div>';
   }
-  if (it.food) {
-    var f = it.food;
+  var f = edibleFood(it);
+  if (f) {
     var _fMax = pageMaxStats || { maxHp: f.health||1, maxSta: f.stamina||1, maxEitr: f.eitr||1, maxRegen: f.regen||1 };
     h += '<div class="detail-section">Stats</div>';
     h += '<div style="display:flex;align-items:center;gap:12px">';
@@ -1507,11 +1521,12 @@ function computeMaxStatsImpl(items: any[]) {
   let maxHp = 0, maxSta = 0, maxEitr = 0, maxRegen = 0, maxArmor = 0, maxBlock = 0;
   const skillMaxDmg: any = {}, skillMaxBlock: any = {}, skillMaxArmor: any = {};
   items.forEach(function(it: any) {
-    if (it.food) {
-      if (it.food.health > maxHp) maxHp = it.food.health;
-      if (it.food.stamina > maxSta) maxSta = it.food.stamina;
-      if ((it.food.eitr||0) > maxEitr) maxEitr = it.food.eitr;
-      if ((it.food.regen||0) > maxRegen) maxRegen = it.food.regen;
+    const mf = edibleFood(it);
+    if (mf) {
+      if (mf.health > maxHp) maxHp = mf.health;
+      if (mf.stamina > maxSta) maxSta = mf.stamina;
+      if ((mf.eitr||0) > maxEitr) maxEitr = mf.eitr;
+      if ((mf.regen||0) > maxRegen) maxRegen = mf.regen;
     }
     if (it.armor && it.armor.base) {
       const full = it.armor.base + (it.armor.perLevel||0) * ((it.maxQuality||1) - 1);
@@ -1741,7 +1756,7 @@ function sheetPieceArmor(code, q) {
 function sheetFoodTotals(codes) {
   var t = { health: 0, stamina: 0, eitr: 0 };
   codes.forEach(function (c) {
-    var f = (craftItemsByCode[c] || {}).food;
+    var f = edibleFood(craftItemsByCode[c]);
     if (!f) return;
     t.health += f.health || 0;
     t.stamina += f.stamina || 0;

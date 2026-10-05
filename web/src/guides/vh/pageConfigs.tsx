@@ -1,4 +1,5 @@
 import type { ItemsPageConfig } from './ItemsPage';
+import type { VhItem } from './types';
 import { iconUrl, biomeIconUrl } from './data';
 
 const CatImg = ({ code }: { code: string }) => (
@@ -85,8 +86,12 @@ export const foodConfig: ItemsPageConfig = {
     { id: 'Fermenter', label: 'Fermenter', icon: <CatImg code="fermenter" />, spoilerBiome: 'blackforest' },
   ],
   sort: (a, b) => {
-    const va = a.food ? (a.food.health || 0) + (a.food.stamina || 0) + (a.food.eitr || 0) : 0;
-    const vb = b.food ? (b.food.health || 0) + (b.food.stamina || 0) + (b.food.eitr || 0) : 0;
+    // Uncooked intermediates carry m_food values they can never apply, so they
+    // rank on 0 and settle at the bottom alphabetically.
+    const stats = (it: VhItem) => (it.type === 'Consumable' ? it.food : null);
+    const fa = stats(a), fb = stats(b);
+    const va = fa ? (fa.health || 0) + (fa.stamina || 0) + (fa.eitr || 0) : 0;
+    const vb = fb ? (fb.health || 0) + (fb.stamina || 0) + (fb.eitr || 0) : 0;
     if (va !== vb) return vb - va;
     return (a.name || a.code).localeCompare(b.name || b.code);
   },

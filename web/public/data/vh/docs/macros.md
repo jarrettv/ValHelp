@@ -96,7 +96,7 @@ Comfort is drawn as a fourth workstation: being sheltered is the base level, and
 
 {sheet:meadows}
 
-Valid keys are the biome names/slugs the spoiler system knows: `meadows`, `blackforest`, `ocean`, `swamp`, `mountain`, `plains`, `mistlands`, `ashlands`.
+Valid keys are the biome names/slugs the spoiler system knows: `meadows`, `blackforest`, `ocean`, `swamp`, `mountain`, `plains`, `mistlands`, `ashlands`, `deepnorth`.
 
 The picks (which foods, which set, which weapon) live in `web/src/guides/vh/biomeSheets.ts` -- one entry per biome. Everything numeric is summed from `items.json` at render time, so armour totals and food stats can't drift from the game data. Two kinds of dimming appear on the card and they mean different things:
 
