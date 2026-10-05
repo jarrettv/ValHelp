@@ -1,0 +1,31 @@
+# Line endings
+#
+# core.autocrlf is false here, so without these rules git stores whatever bytes
+# the editor wrote. A tool that rewrites a file as CRLF then shows every single
+# line as modified — a 2-line edit to articles_overview.md arrived as a 67-line
+# diff. Normalizing on add means those rewrites become no-ops.
+#
+# Note: ~431 files were committed with CRLF before this file existed. They are
+# not rewritten retroactively; each gets a one-time whole-file diff the next
+# time it is staged. Run `git add --renormalize .` as its own commit to do them
+# all at once instead.
+* text=auto eol=lf
+
+# Shell scripts must keep LF or they break in containers.
+*.sh text eol=lf
+
+# Binary assets — never normalize or diff these as text.
+*.png  binary
+*.webp binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.db   binary
+*.dll  binary
+*.pdf  binary
+*.zip  binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
