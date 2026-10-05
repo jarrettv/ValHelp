@@ -96,6 +96,14 @@ export const STATIONS: Record<string, StationDef> = {
       { code: 'piece_magetable_ext4', name: 'Standing Loom',   biome: DEEPNORTH, mats: [['Frostwood', 5], ['NornThread', 10]] },
     ],
   },
+  piece_FrostFoundry: {
+    // Hardens the casts poured at the Black Forge into finished Nord gear, so
+    // it is the station the base Nord weapons and shields are crafted at. No
+    // upgrades ship with it, so it stays level 1 and its recipes carry no
+    // stationLevel.
+    code: 'piece_FrostFoundry', name: 'Frost Foundry', biome: DEEPNORTH,
+    upgrades: [],
+  },
 };
 
 /** Max level of a station once you have cleared everything up to `biome`. 0 = not buildable yet. */
@@ -132,6 +140,7 @@ export const STATION_PAGES: StationPage[] = [
   { code: 'piece_artisanstation', biome: PLAINS, blurb: 'A short but essential list — the windmill, spinning wheel and blast furnace all come from here.' },
   { code: 'blackforge', biome: MISTLANDS, blurb: 'The forge, replaced. Everything from the Mistlands on is made here.' },
   { code: 'piece_magetable', biome: MISTLANDS, blurb: 'Magic: staves, eitr-weave robes, and the refined eitr they all need.' },
+  { code: 'piece_FrostFoundry', biome: DEEPNORTH, blurb: 'Hardens the casts poured at the Black Forge into finished Nord weapons and shields.' },
 ];
 
 export function stationPage(code: string): StationPage | undefined {
