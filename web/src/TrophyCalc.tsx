@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import trophies from "./domain/trophies";
 import { useScorings, ScoringRecord } from "./hooks/useScorings.ts";
 import "./TrophyCalc.css";
@@ -56,6 +56,8 @@ const TrophyCalc: React.FC = () => {
         return scorings.find((s) => s.code === activeScoringCode) ?? undefined;
     }, [scorings, activeScoringCode]);
 
+    const warnedScorings = useRef<Set<string>>(new Set());
+
     const displayTrophies = useMemo(() => {
         if (!activeScoring) {
             return [] as DisplayTrophy[];
@@ -69,6 +71,24 @@ const TrophyCalc: React.FC = () => {
                 score: activeScoring.scores[trophy.code] ?? 0,
                 dropChance: activeScoring.rates?.[trophy.code] ?? null,
             }));
+
+        // A scored trophy with no entry in domain/trophies.ts is dropped by the
+        // filter above silently — no gap, no error, it just isn't on the grid.
+        // That almost always means the deployed trophy table is older than the
+        // scoring record, which is how the 1.0 Deep North trophies went missing.
+        if (!warnedScorings.current.has(activeScoring.code)) {
+            warnedScorings.current.add(activeScoring.code);
+            const known = new Set(trophies.map((t) => t.code));
+            const unknown = Object.keys(activeScoring.scores).filter(
+                (code) => code.startsWith("Trophy") && !known.has(code),
+            );
+            if (unknown.length) {
+                console.warn(
+                    `[TrophyCalc] scoring "${activeScoring.code}" scores ${unknown.length} trophy code(s) ` +
+                        `absent from domain/trophies.ts, so they will not render: ${unknown.join(", ")}`,
+                );
+            }
+        }
 
         return result;
     }, [activeScoring]);
