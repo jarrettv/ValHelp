@@ -6,6 +6,7 @@ import { Link, useParams, useNavigate } from "react-router";
 import TimeAgo from "./components/TimeAgo";
 import { useAuth } from "./contexts/AuthContext";
 import { useEditEvent } from "./hooks/useEvent";
+import { useScorings } from "./hooks/useScorings";
 import Trophy from "./components/Trophy";
 import Lock from "./components/Lock";
 
@@ -17,7 +18,7 @@ export default function EventEdit() {
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [mode, setMode] = useState("TrophyHunt");
-  const [scoringCode, setScoringCode] = useState("hunt-2025-09");
+  const [scoringCode, setScoringCode] = useState("");
 
   const [hours, setHours] = useState(4);
   const [startAt, setStartAt] = useState('');
@@ -37,22 +38,20 @@ export default function EventEdit() {
     }
   }, [data]);
   
-  useEffect(() => {
-    switch (mode) {
-      case "TrophyHunt":
-        setScoringCode("hunt-2026-09");
-        break;
-      case "TrophySaga":
-        setScoringCode("saga-2026-09");
-        break;
-      case "TrophyRush":
-        setScoringCode("rush-2026-09");
-        break;
-      case "TrophyTrailblazer":
-        setScoringCode("blaze-2026-09");
-        break;
+  const { data: scoringData } = useScorings();
+  const scorings = scoringData?.data ?? [];
+
+  // Pick the scoring on mode change only, never on load: an existing event keeps
+  // whatever ruleset it was scored under, which for a finished event is usually
+  // a retired one. Driving this off the scoring's own `modes` means a new season
+  // needs no code change here.
+  const chooseMode = (next: string) => {
+    setMode(next);
+    const match = scorings.find((s) => s.modes.includes(next));
+    if (match) {
+      setScoringCode(match.code);
     }
-  }, [mode]);
+  };
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -129,22 +128,22 @@ export default function EventEdit() {
         )}
 
         <fieldset className="event-type-selector horizontal">
-          <div className={`event-type-option ${mode === 'TrophyHunt' ? 'selected' : ''}`} onClick={() => setMode('TrophyHunt')}>
+          <div className={`event-type-option ${mode === 'TrophyHunt' ? 'selected' : ''}`} onClick={() => chooseMode('TrophyHunt')}>
             <Trophy private={isPrivate} />
             <b>Hunt</b>
             <small>Vanilla drops</small>
           </div>
-          <div className={`event-type-option ${mode === 'TrophySaga' ? 'selected' : ''}`} onClick={() => setMode('TrophySaga')}>
+          <div className={`event-type-option ${mode === 'TrophySaga' ? 'selected' : ''}`} onClick={() => chooseMode('TrophySaga')}>
             <Trophy mode="Saga" private={isPrivate} />
             <b>Saga</b>
             <small>Modded w/ 100%</small>
           </div>
-          <div className={`event-type-option ${mode === 'TrophyRush' ? 'selected' : ''}`} onClick={() => setMode('TrophyRush')}>
+          <div className={`event-type-option ${mode === 'TrophyRush' ? 'selected' : ''}`} onClick={() => chooseMode('TrophyRush')}>
             <Trophy mode="Rush" private={isPrivate} />
             <b>Rush</b>
             <small>Very-hard w/ 100%</small>
           </div>
-          <div className={`event-type-option ${mode === 'TrophyTrailblazer' ? 'selected' : ''}`} onClick={() => setMode('TrophyTrailblazer')}>
+          <div className={`event-type-option ${mode === 'TrophyTrailblazer' ? 'selected' : ''}`} onClick={() => chooseMode('TrophyTrailblazer')}>
             <Trophy />
             <b>Trailblazer</b>
             <small>No Cost Mod w/ 100%</small>
