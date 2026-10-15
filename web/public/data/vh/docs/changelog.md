@@ -2,6 +2,11 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-10-15
+
+* **The [bestiary guide](/guides/enemies) has 1.0.20's trophy rules**, checked against the game files. Each star now doubles the trophy chance, rare-drop countdowns are saved when you log out, and each star level keeps its own countdown, so neither logging off nor a starred kill throws your progress away any more.
+* **The bad-luck chart is redrawn to match.** One chart now compares a 0★, 1★ and 2★★ Bear with a Stone Golem, each line labelled with its trophy. The countdowns run out by kill 10, 20 and 40. A 2★★ Bear's 40% is above the 30% cutoff, so it gets pure dice and no guarantee.
+
 ## 2026-09-28
 
 * **Armor [set bonuses](/guides/gear) are complete and clickable.** The Lox and Vanguard sets were missing, the names now match the game, and each one opens a page with every piece, its cost per level, and roughly how many kills that is.

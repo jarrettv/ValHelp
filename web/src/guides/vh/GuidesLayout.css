@@ -1192,12 +1192,9 @@
 }
 
 /* ── Trophy pity panel — the `{trophypity}` block ───────────────────
-   One card: the trophy picker is the chart's title, the svg sits directly
-   under it with no frame of its own, and the stats line closes it out.
-   A custom listbox rather than a <select>, because the options carry trophy
-   icons and a native <option> cannot. Option rows sit inside a wrapper tagged
-   `spoiler-row sp-b<index>` so the spoiler slider gates them through the same
-   CSS as everything else — see the reveal rules further up. */
+   One card: a title and the legend share the top row, the svg sits directly
+   under them with no frame of its own. The legend's trophy icons carry
+   `sp-fog sp-b<index>`, the same as the trophy beads on the chart. */
 .vh-guides .vh-pity {
   margin: 14px 0 16px;
   padding: 12px 14px 10px;
@@ -1209,122 +1206,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 16px;
+  gap: 6px 16px;
   flex-wrap: wrap;
 }
-.vh-guides .vh-pity-pick { position: relative; }
 .vh-guides .vh-pity-legend {
   display: flex;
   align-items: center;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 4px 14px;
   color: #a9a9b8;
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 .vh-guides .vh-pity-key {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   white-space: nowrap;
 }
-.vh-guides .vh-pity-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  max-width: 100%;
-  margin: -4px 0 0 -6px;
-  padding: 4px 8px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: #f0f0f6;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-.vh-guides .vh-pity-btn:hover { background: rgba(255, 255, 255, 0.05); border-color: #44445e; }
-.vh-guides .vh-pity-btn:focus-visible { outline: 2px solid #8cf; outline-offset: 1px; }
-.vh-guides .vh-pity-btn[aria-expanded="true"] { background: rgba(255, 255, 255, 0.06); border-color: #55557a; }
-
-/* 44px — the trophy is the panel's anchor, so it outweighs the 16px title. */
-.vh-guides .vh-pity-trophy {
-  width: 44px;
-  height: 44px;
+.vh-guides .vh-pity-key-img {
+  width: 22px;
+  height: 22px;
   image-rendering: pixelated;
-  flex-shrink: 0;
 }
+.vh-guides .vh-pity-stars { color: #f2c14e; font-size: 10px; letter-spacing: -1px; }
 .vh-guides .vh-pity-heading {
   font-size: 16px;
   font-weight: 600;
   color: #f0f0f6;
   white-space: nowrap;
 }
-.vh-guides .vh-pity-heading-plain { padding-left: 2px; }
-.vh-guides .vh-pity-btn-rate {
-  color: #8cf;
-  font-size: 12.5px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.vh-guides .vh-pity-caret { color: #8a8a9e; font-size: 10px; }
 .vh-guides .vh-pity-chart { margin-top: 4px; }
-
-.vh-guides .vh-pity-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 20;
-  min-width: 305px;
-  max-height: 400px;
-  overflow-y: auto;
-  margin-top: 2px;
-  padding: 4px;
-  background: #242434;
-  border: 1px solid #55557a;
-  border-radius: 7px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
-}
-.vh-guides .vh-pity-opt {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.vh-guides .vh-pity-opt:hover { background: #33334a; }
-.vh-guides .vh-pity-opt:focus-visible { outline: 2px solid #8cf; outline-offset: -2px; }
-.vh-guides .vh-pity-opt[aria-selected="true"] { background: rgba(120, 170, 255, 0.16); }
-.vh-guides .vh-pity-opt img {
-  width: 26px;
-  height: 26px;
-  image-rendering: pixelated;
-  flex-shrink: 0;
-}
-.vh-guides .vh-pity-opt-name { color: #e0e0e0; font-size: 13px; }
-.vh-guides .vh-pity-opt-meta {
-  margin-left: auto;
-  color: #888;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-.vh-guides .vh-pity-locked {
-  margin: 6px 0 2px;
-  padding: 7px 10px;
-  background: rgba(180, 140, 40, 0.12);
-  border: 1px solid rgba(180, 140, 40, 0.4);
-  border-radius: 6px;
-  color: #e6c06a;
-  font-size: 12px;
-}
 
 @media (max-width: 560px) {
   .vh-guides .vh-pity { padding: 10px 10px 8px; }
-  .vh-guides .vh-pity-btn { gap: 8px; }
   .vh-guides .vh-pity-heading { font-size: 14.5px; }
-  .vh-guides .vh-pity-legend { font-size: 11px; gap: 10px; }
-  .vh-guides .vh-pity-menu { min-width: 0; width: calc(100vw - 56px); }
-  .vh-guides .vh-pity-opt-meta { font-size: 10px; }
+  .vh-guides .vh-pity-legend { font-size: 11px; gap: 4px 10px; }
 }
 
 /* A list inside a `:::warn` callout — the `.vh-callout > p` rules don't reach it. */
@@ -1335,11 +1252,6 @@
   line-height: 1.5 !important;
 }
 .vh-guides .vh-callout > ul strong { color: #ffd98a; }
-
-@media (max-width: 560px) {
-  .vh-guides .vh-pity-menu { min-width: 0; width: calc(100vw - 48px); }
-  .vh-guides .vh-pity-opt-meta { font-size: 10px; }
-}
 
 /* ── Creature type index — the `{creaturetypes}` block ──────────────
    Group label sits in a left column rather than on its own heading row, so a

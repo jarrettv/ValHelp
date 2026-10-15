@@ -299,29 +299,25 @@ biome and drops pointer events so a locked tile is not a working link.
 
 ## Trophy Pity Chart
 
-`{trophypity}` on its own line renders the bad-luck-protection block: a trophy
-picker plus the chart of "chance you still have no trophy after N kills". Takes
-no arguments — everything comes from items.json.
+`{trophypity}` on its own line renders the bad-luck-protection block: one chart
+of "chance you still have no trophy N kills after your last one" with four
+lines — a 0★, 1★ and 2★★ Bear and a Stone Golem. Takes no arguments; the two
+base rates come from items.json and the star levels double them.
 
 ```
 {trophypity}
 ```
 
-The picker lists the **ten rare trophies (30% drop or less) that the most
-recipes ask for**, since those are the ones players farm on purpose. Recipe
-count is the primary sort; ties — and most of the list ties at one recipe —
-break toward the earlier biome, then the rarer drop, then the name.
+The countdown lines follow the game's maths exactly (1.0.20): after a trophy
+the next one comes within 1 to `(int)(2 / p) + 1` kills, so they fall straight
+to zero at kill 10, 20 and 40, and those ticks are bolded. The 2★★ line is
+above the 30% cutoff, so it is the dashed pure-dice curve with no cap.
 
-Option rows are spoiler-gated by the creature's biome, so the list shortens to
-whatever the reader has unlocked. The default selection is the highest-ranked
-trophy they can actually see, which keeps the button from naming a creature the
-menu is hiding. If their progress reveals none of the ten, the block falls back
-to a locked note and a generic 10% chart with no creature named.
-
-Both curves are a pure function of the drop chance, so switching trophies is a
-redraw with no fetch. The chart carries two hazard stamps — **don't log out**
-and **don't sequence break** — because both discard the countdown and start a
-fresh one.
+Each line is labelled by its trophy icon threaded on the line, with gold stars
+for the star level, and the legend repeats the icons with the rate. No creature
+is named in text; the icons carry `sp-fog sp-b<index>`, so they blur until the
+reader reaches that biome. Two stamps call out what 1.0.20 changed: countdowns
+are saved on logout, and each star level keeps its own.
 
 ## Standard Markdown
 

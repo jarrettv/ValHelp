@@ -6,33 +6,35 @@
 
 Non-boss creatures can spawn with star levels that increase their power and loot:
 
-| Level | HP | Damage | Drops |
-|-------|:--:|:------:|-------|
-| 0 | {bar:33:#c55} Base | {bar:33:#da4} Base | Base amount |
-| 1-★ | {bar:66:#c55} ×2 | {bar:50:#da4} ×1.5 | ×2 on starred mobs |
-| 2-★★ | {bar:100:#c55} ×3 | {bar:66:#da4} ×2 | ×4 on starred mobs |
+| Level | HP | Damage | Drops | Trophy chance |
+|-------|:--:|:------:|-------|:-------------:|
+| 0 | {bar:33:#c55} Base | {bar:33:#da4} Base | Base amount | Base |
+| 1-★ | {bar:66:#c55} ×2 | {bar:50:#da4} ×1.5 | ×2 on starred mobs | ×2 |
+| 2-★★ | {bar:100:#c55} ×3 | {bar:66:#da4} ×2 | ×4 on starred mobs | ×4 |
 
 Wolves and other creatures with stars are more likely to spawn at **night** and will despawn at dawn if not engaged.
 
 ## Trophy Drops & Bad-Luck Protection
 
-Rare creature drops (**30% chance or less**) no longer roll the dice on every kill. Instead the game secretly picks a **kill countdown** for each item, and the item drops when the countdown hits zero.
+**Each star doubles the trophy chance.** A Bear drops its trophy 10% of the time, a 1★ Bear 20% and a 2★★ Bear 40%. You still get one trophy, not two or four.
+
+Rare drops (**30% chance or less**) don't roll the dice on every kill. The game keeps a hidden **kill countdown** for each one, and the item drops when it hits zero. Anything above 30%, like that 2★★ Bear, is a fresh roll every kill with no protection.
 
 {trophypity}
 
-The countdown is a random number from 1 to **2 ÷ p** kills. At 10% that's 1 to 20.
+After a trophy, the next countdown is a random 1 to **2 ÷ p** kills: never more than 20 at 10%, 10 at 20% and 40 at 5%. Your very first countdown runs one kill shorter.
 
-:::warn
-⚠ **Don't break your own countdown.** It only pays off if you keep killing the *same* creature at the *same* star level in one sitting.
+**What changed in 1.0.20:**
 
-* **Logging out or restarting.** Countdowns live in memory and are never saved. Finish a trophy grind before you log off.
-* **Mixing star levels.** The countdown is item and rate specific, so a 1★ Bear does not continue a 0★ Bear's countdown — it discards it and rolls a new one. Avoid 1★ and 2★★ until you finish.
-:::
+* **Countdowns are saved with your character.** Log out mid-grind and you pick up where you left off. Before, every session started a new countdown, so short sessions paid worse than the listed rate.
+* **Each star level has its own countdown.** A 1★ Bear runs a separate 20% countdown and leaves your 0★ one alone, so killing whatever shows up never costs you progress.
 
 **Fine print:**
 
 * **In multiplayer, each player's game keeps its own countdowns.** The roll happens on whichever player's game controls the creature when it dies.
 * **Only creature drops.** Chests, plants and breakable objects work the same as before.
+* **A few trophies ignore stars**, the Fuling Shaman among them, and keep their base chance at any level.
+* Countdowns load with a character but are never cleared, so switching characters without restarting the game can carry them over.
 * The world global key `NoPseudoDrops` turns the system off.
 
 ## Damage Modifier Boxes

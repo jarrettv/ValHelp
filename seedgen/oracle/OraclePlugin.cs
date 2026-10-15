@@ -139,6 +139,11 @@ public class OraclePlugin : BaseUnityPlugin
             yield break;
         }
 
+        // Cheap and read-only, so every job gets it; a failure here must not cost
+        // the job its loot.
+        try { DumpDrops(Path.Combine(dir, "oracle.drops.json")); }
+        catch (Exception ex) { Log($"{Tag} drops failed: {ex}"); }
+
         var sw = Stopwatch.StartNew();
         // Dungeons (frost caves, infested mines, winding tunnels) cost minutes per
         // seed to generate, so normal jobs skip them; oracle jobs, or
@@ -357,6 +362,129 @@ public class OraclePlugin : BaseUnityPlugin
         sb.Append("\n]\n");
         File.WriteAllText(path, sb.ToString());
         Log($"{Tag} loot: {count} locations" + (checkRotation ? $", {rotDiffs} changed under rotation" : ""));
+    }
+
+    /// <summary>
+    /// Ground truth for drop-rate maths: every creature's <c>CharacterDrop</c> table
+    /// plus everything that decides its star level — world spawns
+    /// (<c>SpawnSystem</c>), alt-biome spawns and level-up multipliers, spawner
+    /// prefabs (<c>SpawnArea</c>) and the <c>CreatureSpawner</c>s baked into
+    /// locations along with each location's level overrides. Values are the raw
+    /// serialized fields; the formulas that combine them live in the game
+    /// (<c>CharacterDrop.GenerateDropList</c>, <c>SpawnSystem.GetLevelUpChance</c>).
+    /// </summary>
+    static void DumpDrops(string path)
+    {
+        string B(bool b) => b ? "true" : "false";
+        string Name(GameObject go) => go ? Escape(go.name) : "";
+        var sb = new StringBuilder("{\n");
+        sb.Append($"\"version\":\"{Version.CurrentVersion}\",\"worldLevel\":{Game.m_worldLevel},")
+          .Append($"\"enemyLevelUpRate\":{F(Game.m_enemyLevelUpRate)},")
+          .Append($"\"worldLevelEnemyLevelUpExponent\":{F(Game.instance ? Game.instance.m_worldLevelEnemyLevelUpExponent : 0f)},\n");
+
+        var prefabs = ZNetScene.instance.m_prefabs.Where(p => p).ToList();
+
+        sb.Append("\"creatures\":[\n");
+        int n = 0;
+        foreach (var p in prefabs.OrderBy(p => p.name, StringComparer.Ordinal))
+        {
+            var cd = p.GetComponent<CharacterDrop>();
+            var ch = p.GetComponent<Character>();
+            if (!cd || !ch) continue;
+            var drops = cd.m_drops.Where(d => d.m_prefab).Select(d =>
+                $"{{\"item\":\"{Name(d.m_prefab)}\",\"min\":{d.m_amountMin},\"max\":{d.m_amountMax},\"chance\":{F(d.m_chance)}," +
+                $"\"onePerPlayer\":{B(d.m_onePerPlayer)},\"levelMultiplier\":{B(d.m_levelMultiplier)}," +
+                $"\"levelMultiplierNotAmount\":{B(d.m_levelMultiplierNotAmount)},\"dontScale\":{B(d.m_dontScale)}," +
+                $"\"levels\":[{string.Join(",", Enumerable.Range(1, 3).Select(l => PseudoParams(d, l)))}]}}");
+            sb.Append(n++ == 0 ? "" : ",\n")
+              .Append($"{{\"prefab\":\"{Escape(p.name)}\",\"name\":\"{Escape(ch.m_name)}\",\"health\":{F(ch.m_health)},")
+              .Append($"\"boss\":{B(ch.IsBoss())},\"drops\":[{string.Join(",", drops)}]}}");
+        }
+        sb.Append("\n],\n");
+
+        string Spawn(SpawnSystem.SpawnData s, string source) =>
+            $"{{\"source\":\"{Escape(source)}\",\"name\":\"{Escape(s.m_name)}\",\"prefab\":\"{Name(s.m_prefab)}\",\"enabled\":{B(s.m_enabled && !s.m_devDisabled)}," +
+            $"\"biome\":\"{s.m_biome}\",\"biomeArea\":\"{s.m_biomeArea}\",\"minLevel\":{s.m_minLevel},\"maxLevel\":{s.m_maxLevel}," +
+            $"\"levelUpMinCenterDistance\":{F(s.m_levelUpMinCenterDistance)},\"overrideLevelupChance\":{F(s.m_overrideLevelupChance)}," +
+            $"\"maxSpawned\":{s.m_maxSpawned},\"spawnInterval\":{F(s.m_spawnInterval)},\"spawnChance\":{F(s.m_spawnChance)}," +
+            $"\"groupSizeMin\":{s.m_groupSizeMin},\"groupSizeMax\":{s.m_groupSizeMax},\"requiredGlobalKey\":\"{Escape(s.m_requiredGlobalKey)}\"," +
+            $"\"requiredEnvironments\":[{string.Join(",", s.m_requiredEnvironments.Select(e => $"\"{Escape(e)}\""))}]," +
+            $"\"spawnAtDay\":{B(s.m_spawnAtDay)},\"spawnAtNight\":{B(s.m_spawnAtNight)},\"huntPlayer\":{B(s.m_huntPlayer)}," +
+            $"\"minDistanceFromCenter\":{F(s.m_minDistanceFromCenter)},\"maxDistanceFromCenter\":{F(s.m_maxDistanceFromCenter)}}}";
+
+        var ss = ZoneSystem.instance.m_zoneCtrlPrefab.GetComponent<SpawnSystem>();
+        var spawns = ss.m_spawnLists.Where(l => l).SelectMany(l => l.m_spawners.Select(s => Spawn(s, l.name)))
+            .Concat(AltBiomeList.m_altBiomes.SelectMany(a => a.m_spawn.Select(s => Spawn(s, "alt:" + a.m_name))));
+        sb.Append("\"spawnSystem\":[\n").Append(string.Join(",\n", spawns)).Append("\n],\n");
+
+        sb.Append("\"altBiomes\":[").Append(string.Join(",", AltBiomeList.m_altBiomes.Select(a =>
+            $"{{\"name\":\"{Escape(a.m_name)}\",\"enabled\":{B(a.m_enabled)},\"biome\":\"{a.m_biome}\"," +
+            $"\"levelUpChanceMultiplier\":{F(a.m_levelUpChanceMultiplier)}," +
+            $"\"blockSpawnNames\":[{string.Join(",", a.m_blockSpawnNames.Select(x => $"\"{Escape(x)}\""))}]}}"))).Append("],\n");
+
+        string Area(SpawnArea sa, string source) =>
+            $"{{\"source\":\"{Escape(source)}\",\"levelupChance\":{F(sa.m_levelupChance)},\"maxNear\":{sa.m_maxNear},\"maxTotal\":{sa.m_maxTotal}," +
+            $"\"spawnIntervalSec\":{F(sa.m_spawnIntervalSec)},\"prefabs\":[{string.Join(",", sa.m_prefabs.Where(d => d.m_prefab).Select(d =>
+                $"{{\"prefab\":\"{Name(d.m_prefab)}\",\"weight\":{F(d.m_weight)},\"minLevel\":{d.m_minLevel},\"maxLevel\":{d.m_maxLevel}}}"))}]}}";
+        sb.Append("\"spawnAreas\":[\n").Append(string.Join(",\n", prefabs
+            .Select(p => (p, sa: p.GetComponent<SpawnArea>())).Where(t => t.sa)
+            .OrderBy(t => t.p.name, StringComparer.Ordinal).Select(t => Area(t.sa, t.p.name)))).Append("\n],\n");
+
+        // Location prefabs aren't in ZNetScene; load each just long enough to read
+        // its spawners. Overrides on the Location root apply to every CreatureSpawner
+        // whose m_spawnGroupID isn't excluded (CreatureSpawner.Spawn).
+        sb.Append("\"locations\":[\n");
+        n = 0;
+        var seen = new HashSet<string>();
+        foreach (var zl in ZoneSystem.instance.m_locations)
+        {
+            if (zl == null || !zl.m_prefab.IsValid || !seen.Add(zl.m_prefab.Name ?? zl.m_prefabName)) continue;
+            zl.m_prefab.Load();
+            try
+            {
+                var go = zl.m_prefab.Asset;
+                if (!go) continue;
+                var spawners = go.GetComponentsInChildren<CreatureSpawner>(true).Where(c => c.m_creaturePrefab).ToList();
+                var areas = go.GetComponentsInChildren<SpawnArea>(true).ToList();
+                if (spawners.Count == 0 && areas.Count == 0) continue;
+                var loc = go.GetComponent<Location>();
+                var cs = spawners.GroupBy(c => (Name(c.m_creaturePrefab), c.m_minLevel, c.m_maxLevel, c.m_levelupChance, c.m_spawnGroupID))
+                    .OrderBy(g => g.Key.Item1, StringComparer.Ordinal).Select(g =>
+                        $"{{\"prefab\":\"{g.Key.Item1}\",\"count\":{g.Count()},\"minLevel\":{g.Key.m_minLevel},\"maxLevel\":{g.Key.m_maxLevel}," +
+                        $"\"levelupChance\":{F(g.Key.m_levelupChance)},\"spawnGroupID\":{g.Key.m_spawnGroupID}}}");
+                sb.Append(n++ == 0 ? "" : ",\n")
+                  .Append($"{{\"location\":\"{Escape(zl.m_prefab.Name ?? zl.m_prefabName)}\",\"enabled\":{B(zl.m_enable)},\"biome\":\"{zl.m_biome}\",\"quantity\":{zl.m_quantity},");
+                if (loc)
+                    sb.Append($"\"enemyMinLevelOverride\":{loc.m_enemyMinLevelOverride},\"enemyMaxLevelOverride\":{loc.m_enemyMaxLevelOverride}," +
+                              $"\"enemyLevelUpOverride\":{F(loc.m_enemyLevelUpOverride)}," +
+                              $"\"excludeEnemyLevelOverrideGroups\":[{string.Join(",", loc.m_excludeEnemyLevelOverrideGroups)}],");
+                sb.Append($"\"creatureSpawners\":[{string.Join(",", cs)}],")
+                  .Append($"\"spawnAreas\":[{string.Join(",", areas.Select(a => Area(a, a.name)))}]}}");
+            }
+            finally { zl.m_prefab.Release(); }
+        }
+        sb.Append("\n]\n}\n");
+        File.WriteAllText(path, sb.ToString());
+        Log($"{Tag} drops: {prefabs.Count(p => p.GetComponent<CharacterDrop>())} creatures, {n} locations with spawners");
+    }
+
+    /// <summary>
+    /// The per-level numbers <c>CharacterDrop.GenerateDropList</c> derives from a
+    /// drop, using the same float expressions so the runtime's own rounding
+    /// decides them (e.g. whether <c>(int)(1f / 0.1f * 2f)</c> is 19 or 20).
+    /// <c>key</c> is the <c>s_pseudoCounter</c> key; the first roll on a fresh key
+    /// is <c>Range(0, firstRange)</c>, every reset after a drop <c>Range(0, firstRange + 2)</c>.
+    /// </summary>
+    static string PseudoParams(CharacterDrop.Drop drop, int level)
+    {
+        int mult = Mathf.Max(1, (int)Mathf.Pow(2f, level - 1));
+        float num2 = drop.m_chance;
+        if (drop.m_levelMultiplier) num2 *= (float)mult;
+        bool pseudo = num2 <= 0.3f;
+        int key = drop.m_prefab.name.GetStableHashCode() + (int)(num2 * 1000f);
+        int firstRange = (int)(1f / num2 * 2f);
+        return $"{{\"level\":{level},\"chance\":{F(num2)},\"pseudo\":{(pseudo ? "true" : "false")}," +
+               $"\"key\":{key},\"firstRange\":{(pseudo ? firstRange : 0)}}}";
     }
 
     /// <summary>Locations whose contents seedgen reports, besides every WoodHouse.</summary>
