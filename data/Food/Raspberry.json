@@ -1,9 +1,0 @@
-{
-    "code": "Raspberry",
-    "name": "Raspberries",
-    "desc": "Sweet and delicious.",
-    "type": "Food",
-    "image": "/data/Food/Raspberry.png",
-    "usage": "Building, Crafting, Eating, Taming",
-    "source_url": "https://valheim.fandom.com/wiki/Raspberries"
-}

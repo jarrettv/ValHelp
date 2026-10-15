@@ -7,14 +7,15 @@ namespace SeedGen;
 /// </summary>
 public sealed class ArtifactGenerator(ILogger<ArtifactGenerator> logger)
 {
-    public void GenerateAll(string seedName, int seedHash, int worldGen, string outDir)
+    public void GenerateAll(string seedName, int seedHash, int worldGen, string outDir,
+        Vh.World.WorldGenerator? worldGenerator = null)
     {
         Directory.CreateDirectory(outDir);
         var sw = Stopwatch.StartNew();
 
         logger.LogInformation("Generating textures: seed={Seed} hash={Hash} worldGen={WorldGen}", seedName, seedHash, worldGen);
 
-        var wg = new Vh.World.WorldGenerator(seedHash, worldGen);
+        var wg = worldGenerator ?? new Vh.World.WorldGenerator(seedHash, worldGen);
         int size = Vh.Rendering.MinimapGenerator.TextureSize;
         float pixelSize = Vh.Rendering.MinimapGenerator.PixelSize;
         int center = size / 2;

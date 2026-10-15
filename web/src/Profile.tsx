@@ -180,6 +180,15 @@ export default function Profile() {
                 </Link>
               </li>
             )}
+            {isAdmin && (
+              <li>
+                <Link to="/auth/pois">
+                  <span className="tool-icon" aria-hidden="true">📍</span>
+                  <span>POI icons</span>
+                  <small>Which map POIs are shown and which have their own icon</small>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

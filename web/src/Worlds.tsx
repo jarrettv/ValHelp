@@ -4,6 +4,7 @@ import { useNavigate, useParams, Link } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
 import WorldMap, { PoiMarker } from './components/WorldMap';
 import PoiLegend from './components/PoiLegend';
+import { useVhItems } from './guides/vh/data';
 import './Worlds.css';
 
 interface WorldListItem {
@@ -233,10 +234,87 @@ function WorldView({ seed }: { seed: string }) {
               {poi.items.map((it, i) => <li key={i}>{it}</li>)}
             </ul>
           )}
+          {poi.vegvisirs && poi.vegvisirs.length > 0 && (
+            <div className="worlds-poi-vegvisir">
+              Vegvisir → {poi.vegvisirs.map(v => VEGVISIR_TARGETS[v] ?? v).join(', ')}
+            </div>
+          )}
+          {poi.creatures && Object.keys(poi.creatures).length > 0 && <PoiCreatures creatures={poi.creatures} />}
+          {poi.chests?.map((chest, i) => (
+            <PoiChest key={i} chest={chest}
+                      title={poi.chests!.length > 1 ? `Chest ${i + 1} of ${poi.chests!.length}` : 'Chest'} />
+          ))}
         </aside>
       )}
 
       <img src="/valheim-logo.webp" alt="Valheim Help" className="worlds-view-logo" onClick={close} />
+    </div>
+  );
+}
+
+/// Vegvisir location names (as the game stores them) → who they reveal.
+const VEGVISIR_TARGETS: Record<string, string> = {
+  Eikthyrnir: 'Eikthyr', GDKing: 'The Elder', Bonemass: 'Bonemass', Dragonqueen: 'Moder',
+  GoblinKing: 'Yagluth', Mistlands_DvergrBossEntrance1: 'The Queen', FaderLocation: 'Fader',
+};
+
+/// Creatures the trophy data doesn't name (no trophy), plus spawner objects.
+const CREATURE_NAMES: Record<string, string> = {
+  Fish4_cave: 'Tetra', GoblinArcher: 'Fuling Archer', Spawner_Hole: 'Hole',
+};
+
+function prettify(code: string): string {
+  return code.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
+/// Enemy spawners the game placed for this location — each spawns one creature.
+function PoiCreatures({ creatures }: { creatures: Record<string, number> }) {
+  // Trophy data maps creature ids to their in-game names (ElakingMole → Eyeless One).
+  const { data: items } = useVhItems();
+  const trophyNames = useMemo(() => new Map(
+    (items ?? []).flatMap(i => (i.trophyDrop?.id && i.trophyDrop.creature ? [[i.trophyDrop.id, i.trophyDrop.creature]] : []) as [string, string][]),
+  ), [items]);
+  const creatureName = (code: string): string => {
+    if (code.startsWith('spawner:')) {
+      const id = code.slice(8);
+      return `${CREATURE_NAMES[id] ?? prettify(id.replace(/^Spawner_/, ''))} spawner`;
+    }
+    return trophyNames.get(code) ?? CREATURE_NAMES[code] ?? prettify(code);
+  };
+  const rows = Object.entries(creatures).sort((a, b) => b[1] - a[1]);
+  return (
+    <div className="worlds-poi-chest">
+      <div className="worlds-poi-chest-title">Enemies</div>
+      <ul>
+        {rows.map(([code, n]) => (
+          <li key={code}>
+            <span>{creatureName(code)}</span>
+            <span className="worlds-poi-chest-count">×{n}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/// One of a location's chests, exactly as the game rolls it for this seed
+/// (seedgen spawns the location in a real server and reads the chest back).
+function PoiChest({ chest, title }: { chest: { item: string; count: number }[]; title: string }) {
+  const { data: items } = useVhItems();
+  const names = useMemo(() => new Map((items ?? []).map(i => [i.code, i.name])), [items]);
+  return (
+    <div className="worlds-poi-chest">
+      <div className="worlds-poi-chest-title">{title}</div>
+      <ul>
+        {chest.map((c, i) => (
+          <li key={i}>
+            <img src={`/api/icon/${encodeURIComponent(c.item)}.png`} alt="" loading="lazy"
+                 onError={e => { e.currentTarget.style.visibility = 'hidden'; }} />
+            <span>{names.get(c.item) ?? c.item}</span>
+            {c.count > 1 && <span className="worlds-poi-chest-count">×{c.count}</span>}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

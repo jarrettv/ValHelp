@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import '../lib/vector-map.js';
 import './WorldMap.css';
 import {
-  PoiMarker, resolvePoiIcon, getColoredIcon, subscribeIconRedraw,
-  MINOR_ZOOM_THRESHOLD, MIN_MINOR_SCREEN_PX, MINOR_SIZE_FACTOR,
+  PoiMarker, resolvePoiIcon, subscribeIconRedraw,
+  markerFor, drawMarker, type IconRule, type MarkerDraw,
 } from './poiIcons';
 
 declare global {
@@ -93,55 +93,35 @@ const WorldMap: React.FC<WorldMapProps> = ({
     const gs = window.VectorMap.getGridSize();
     const mScale = imgW / gs;
 
-    // vhcli sizing: marker shrinks with zoom-out (m.s * scale, capped at maxScreenPx).
-    // World-pixel base size matches vhcli's MarkerDataBuilder iconSize for outSize=2048.
-    const baseWorldSize = 24;
-    const maxScreenPx = 32;
-    const minorAllowed = scale >= MINOR_ZOOM_THRESHOLD;
+    // Level of detail: each POI is an icon or a dot depending on its LOD and the
+    // zoom (markerFor). Dots go down first so detailed icons always sit on top.
     const hidden = hiddenIconsRef.current;
+    const icons: [IconRule, MarkerDraw, number, number][] = [];
     for (const poi of poisRef.current) {
       const rule = resolvePoiIcon(poi);
       if (!rule) continue;
       if (hidden && hidden.has(rule.icon)) continue;
-      // Two-stage minor gate: require the global zoom threshold AND a per-marker
-      // minimum screen size. Together they keep the reveal smooth instead of cliffed.
-      if (rule.minor && !minorAllowed) continue;
-      // Cap first, then halve for minors — so they stay visibly smaller at full zoom
-      // (where majors hit the 32-px cap and minors hit cap × MINOR_SIZE_FACTOR).
-      const cappedMajor = Math.min(maxScreenPx, baseWorldSize * scale * (rule.sizeScale ?? 1));
-      const screenSize = rule.minor ? cappedMajor * MINOR_SIZE_FACTOR : cappedMajor;
-      if (rule.minor && screenSize < MIN_MINOR_SCREEN_PX) continue;
-
       const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
       const sx = ppx * mScale * scale + panX;
       const sy = ppy * mScale * scale + panY;
       if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
-
-      const sz = screenSize;
-      const icon = getColoredIcon(rule.icon, rule.color);
-      // `complete` is true once the data-URL Image has rasterized (or errored).
-      // We don't gate on naturalWidth — some browsers report 0 for SVGs that draw fine.
-      if (icon && icon.complete) {
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.9)';
-        ctx.shadowBlur = 6;
-        ctx.shadowOffsetY = 1;
-        ctx.globalAlpha = rule.opacity ?? 1;
-        try {
-          ctx.drawImage(icon, sx - sz / 2, sy - sz / 2, sz, sz);
-        } catch { /* ignore broken icon, marker just skips */ }
-        ctx.restore();
-      }
+      const m = markerFor(rule, scale);
+      if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
+      else icons.push([rule, m, sx, sy]);
     }
+    for (const [rule, m, sx, sy] of icons) drawMarker(ctx, rule, m, sx, sy);
   }, []);
 
   const applyTransform = useCallback(() => {
+    // Clear the pending frame first: a frame that lands before the map is ready
+    // (e.g. the POI config fetch beating the map data) must not leave rafId set,
+    // or scheduleUpdate would never schedule again and the map stays black.
+    stateRef.current.rafId = 0;
     const area = mapAreaRef.current;
     if (!area || !stateRef.current.ready) return;
     const { scale, panX, panY } = stateRef.current;
     window.VectorMap.render(scale, panX, panY, area.clientWidth, area.clientHeight);
     drawMarkers();
-    stateRef.current.rafId = 0;
   }, [drawMarkers]);
 
   const scheduleUpdate = useCallback(() => {
@@ -282,7 +262,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
       if (imgW === 0) return null;
       const gs = window.VectorMap.getGridSize();
       const mScale = imgW / gs;
-      const minorAllowed = scale >= MINOR_ZOOM_THRESHOLD;
       const hidden = hiddenIconsRef.current;
       // Iterate in reverse so the topmost-drawn marker wins on overlap.
       for (let i = poisRef.current.length - 1; i >= 0; i--) {
@@ -290,11 +269,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
         const rule = resolvePoiIcon(poi);
         if (!rule) continue;
         if (hidden && hidden.has(rule.icon)) continue;
-        if (rule.minor && !minorAllowed) continue;
-        const cappedMajor = Math.min(32, 24 * scale * (rule.sizeScale ?? 1));
-        const screenSize = rule.minor ? cappedMajor * MINOR_SIZE_FACTOR : cappedMajor;
-        if (rule.minor && screenSize < MIN_MINOR_SCREEN_PX) continue;
-        const r = screenSize / 2;
+        const m = markerFor(rule, scale);
+        // Dots are tiny; give them a finger-sized target.
+        const r = m.kind === 'dot' ? 6 : m.size / 2;
         const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
         const sx = ppx * mScale * scale + panX;
         const sy = ppy * mScale * scale + panY;

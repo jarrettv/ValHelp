@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>ValHelpOracle</AssemblyName>
+    <RootNamespace>ValHelp.Oracle</RootNamespace>
+    <Nullable>disable</Nullable>
+    <!-- BepInEx loads the assembly; no deps.json / ref assemblies wanted. -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugType>none</DebugType>
+    <!-- Valheim ships its own copies of these; referencing them is not a redistribution. -->
+    <AssemblySearchPaths>$(AssemblySearchPaths);$(ValheimManaged);$(BepInExCore)</AssemblySearchPaths>
+  </PropertyGroup>
+
+  <!--
+    Point these at any Valheim install with BepInEx (client or dedicated server).
+    Override on the command line for CI / Docker:
+      dotnet build seedgen/oracle -c Release \
+        -p:ValheimDir=/valheim
+  -->
+  <PropertyGroup>
+    <ValheimDir Condition="'$(ValheimDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim</ValheimDir>
+    <ValheimManaged Condition="'$(ValheimManaged)' == ''">$(ValheimDir)\valheim_Data\Managed</ValheimManaged>
+    <BepInExCore Condition="'$(BepInExCore)' == ''">$(ValheimDir)\BepInEx\core</BepInExCore>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExCore)\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(BepInExCore)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="assembly_valheim">
+      <HintPath>$(ValheimManaged)\assembly_valheim.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SoftReferenceableAssets">
+      <HintPath>$(ValheimManaged)\SoftReferenceableAssets.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>$(ValheimManaged)\assembly_utils.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ValheimManaged)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ValheimManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -136,7 +136,7 @@ This is an analysis of the <strike>current</strike> WR speedrun by Rattlery veri
 
 
 
-* Gather [Flint]* [Leather]* and other resources as you go
+* Gather [Flint]* [LeatherScraps]* and other resources as you go
 *   Listen closely for [Queen bee]* and lookout for shipwrecks
 * Explore southward for good black forest (15m)
 * Start base near the following resources (30m)
@@ -160,7 +160,7 @@ This is an analysis of the <strike>current</strike> WR speedrun by Rattlery veri
 
 ### Gather
 * [Flint](25)
-* [Leather](30)
+* [LeatherScraps](30)
 * [Queen bee](4)
 * [Wood](300)
 * [Corewood](30)
@@ -170,7 +170,7 @@ This is an analysis of the <strike>current</strike> WR speedrun by Rattlery veri
 * [Copper](100)
 * [Tin](50)
 * [Deer Hide](20)
-* [Leather](30)
+* [LeatherScraps](30)
 * [Surtling core](19)
 * [Carrot seeds](12)
 

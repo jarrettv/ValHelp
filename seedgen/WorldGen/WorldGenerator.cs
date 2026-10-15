@@ -99,7 +99,12 @@ public class WorldGenerator
     {
         FindLakes();
         m_rivers = PlaceRivers();
-        m_streams = PlaceStreams();
+        // 1.0: streams are placed twice from the same seed — once with the
+        // normal pregeneration heights (rendered everywhere except the Deep
+        // North), once with the Deep North's raised pregeneration height
+        // (rendered only inside it). Only the first list is kept.
+        m_streams = PlaceStreams(isDN: false);
+        PlaceStreams(isDN: true);
     }
 
     // === GetBiome ===
@@ -116,12 +121,9 @@ public class WorldGenerator
         if (baseHeight <= 0.02f)
             return Biome.Ocean;
 
+        // 1.0: the Deep North has no mountains of its own any more.
         if (IsDeepnorth(wx, wy))
-        {
-            if (baseHeight > 0.4f)
-                return Biome.Mountain;
             return Biome.DeepNorth;
-        }
 
         if (baseHeight > 0.4f)
             return Biome.Mountain;
@@ -285,7 +287,7 @@ public class WorldGenerator
 
     // === GetBiomeHeight (needed for heightTexCache) ===
 
-    public float GetBiomeHeight(Biome biome, float wx, float wy, out float maskR, out float maskG, out float maskB, out float maskA, bool preGeneration = false)
+    public float GetBiomeHeight(Biome biome, float wx, float wy, out float maskR, out float maskG, out float maskB, out float maskA, bool preGeneration = false, bool riverPreDN = true)
     {
         maskR = 0; maskG = 0; maskB = 0; maskA = 0;
         float num = preGeneration
@@ -298,7 +300,7 @@ public class WorldGenerator
         switch (biome)
         {
             case Biome.Swamp: return GetMarshHeight(wx, wy) * num;
-            case Biome.DeepNorth: return GetDeepNorthHeight(wx, wy) * num;
+            case Biome.DeepNorth: return (preGeneration ? GetDeepNorthHeightPregenerate(wx, wy, riverPreDN) : GetDeepNorthHeight(wx, wy)) * num;
             case Biome.Mountain: return GetSnowMountainHeight(wx, wy) * num;
             case Biome.BlackForest: return GetForestHeight(wx, wy) * num;
             case Biome.Ocean: return GetOceanHeight(wx, wy) * num;
@@ -402,10 +404,38 @@ public class WorldGenerator
         return (float)((double)baseHeight + (double)DUtils.PerlinNoise(num2 * 0.20000000298023224, num3 * 0.20000000298023224) * 2.0 * (double)tilt);
     }
 
+    // 1.0 rewrote the Deep North: a meadows-like shape lifted by 0.1, instead
+    // of the old mountain-like one. The game also returns a mask (G channel,
+    // an Fbm-driven tint) that nothing in the minimap reads, so it is skipped.
     private float GetDeepNorthHeight(float wx, float wy)
     {
         float wx2 = wx, wy2 = wy;
+        float num = GetBaseHeight(wx, wy, menuTerrain: false) + 0.1f;
+        wx = (float)((double)wx + 100000.0 + (double)m_offset3);
+        wy = (float)((double)wy + 100000.0 + (double)m_offset3);
+        double num2 = wx, num3 = wy;
+        float num4 = (float)((double)DUtils.PerlinNoise(num2 * 0.009999999776482582, num3 * 0.009999999776482582) * (double)DUtils.PerlinNoise(num2 * 0.019999999552965164, num3 * 0.019999999552965164));
+        num4 = (float)((double)num4 + (double)DUtils.PerlinNoise(num2 * 0.05000000074505806, num3 * 0.05000000074505806) * (double)DUtils.PerlinNoise(num2 * 0.10000000149011612, num3 * 0.10000000149011612) * (double)num4 * 0.5);
+        float num5 = num;
+        num5 = (float)((double)num5 + (double)num4 * 0.10000000149011612);
+        float num6 = 0.15f;
+        float num7 = (float)((double)num5 - (double)num6);
+        float num8 = (float)DUtils.Clamp01((double)num / 0.4000000059604645);
+        if (num7 > 0f)
+            num5 = (float)((double)num5 - (double)num7 * ((1.0 - (double)num8) * 0.75));
+        num5 = AddRivers(wx2, wy2, num5);
+        num5 = (float)((double)num5 + (double)DUtils.PerlinNoise(num2 * 0.10000000149011612, num3 * 0.10000000149011612) * 0.009999999776482582);
+        return (float)((double)num5 + (double)DUtils.PerlinNoise(num2 * 0.4000000059604645, num3 * 0.4000000059604645) * 0.003000000026077032);
+    }
+
+    // The pre-1.0 Deep North shape survives only here, for river/stream placement.
+    // riverPregen=false (the Deep North stream pass) adds the same 0.1 lift.
+    private float GetDeepNorthHeightPregenerate(float wx, float wy, bool riverPregen)
+    {
+        float wx2 = wx, wy2 = wy;
         float baseHeight = GetBaseHeight(wx, wy, menuTerrain: false);
+        if (!riverPregen)
+            baseHeight += 0.1f;
         wx = (float)((double)wx + 100000.0 + (double)m_offset3);
         wy = (float)((double)wy + 100000.0 + (double)m_offset3);
         double num = wx, num2 = wy;
@@ -637,10 +667,10 @@ public class WorldGenerator
         if (num2 > 0f) width = num / num2;
     }
 
-    private float GetPregenerationHeight(float wx, float wy)
+    private float GetPregenerationHeight(float wx, float wy, bool riverPreGen)
     {
         Biome biome = GetBiome(wx, wy);
-        return GetBiomeHeight(biome, wx, wy, out _, out _, out _, out _, preGeneration: true);
+        return GetBiomeHeight(biome, wx, wy, out _, out _, out _, out _, preGeneration: true, riverPreGen);
     }
 
     // === Lake/River generation ===
@@ -729,18 +759,18 @@ public class WorldGenerator
         return list;
     }
 
-    private List<River> PlaceStreams()
+    private List<River> PlaceStreams(bool isDN)
     {
         var savedState = UnityRandom.GetState();
         UnityRandom.InitState(m_streamSeed);
         List<River> list = new();
         for (int i = 0; i < 3000; i++)
         {
-            if (FindStreamStartPoint(100, 26f, 31f, out var p, out var _)
-                && FindStreamEndPoint(100, 36f, 44f, p, 80f, 200f, out var end))
+            if (FindStreamStartPoint(100, 26f, 31f, out var p, out var _, !isDN)
+                && FindStreamEndPoint(100, 36f, 44f, p, 80f, 200f, out var end, !isDN))
             {
                 Vector2 center = (p + end) * 0.5f;
-                float h = GetPregenerationHeight(center.x, center.y);
+                float h = GetPregenerationHeight(center.x, center.y, !isDN);
                 if (!(h < 26f) && !(h > 44f))
                 {
                     River river = new();
@@ -756,18 +786,18 @@ public class WorldGenerator
                 }
             }
         }
-        RenderRivers(list);
+        RenderRivers(list, isDN ? RiverAdd.OnlyDeepNorth : RiverAdd.SkipDeepNorth);
         UnityRandom.SetState(savedState.Item1, savedState.Item2, savedState.Item3, savedState.Item4);
         return list;
     }
 
-    private bool FindStreamStartPoint(int iterations, float minHeight, float maxHeight, out Vector2 p, out float starth)
+    private bool FindStreamStartPoint(int iterations, float minHeight, float maxHeight, out Vector2 p, out float starth, bool riverPreGen)
     {
         for (int i = 0; i < iterations; i++)
         {
             float x = UnityRandom.Range(-10000f, 10000f);
             float y = UnityRandom.Range(-10000f, 10000f);
-            float h = GetPregenerationHeight(x, y);
+            float h = GetPregenerationHeight(x, y, riverPreGen);
             if (h > minHeight && h < maxHeight)
             {
                 p = new Vector2(x, y);
@@ -780,7 +810,7 @@ public class WorldGenerator
         return false;
     }
 
-    private bool FindStreamEndPoint(int iterations, float minHeight, float maxHeight, Vector2 start, float minLength, float maxLength, out Vector2 end)
+    private bool FindStreamEndPoint(int iterations, float minHeight, float maxHeight, Vector2 start, float minLength, float maxLength, out Vector2 end, bool riverPreGen)
     {
         float step = (maxLength - minLength) / iterations;
         float len = maxLength;
@@ -789,7 +819,7 @@ public class WorldGenerator
             len -= step;
             float angle = UnityRandom.Range(0f, MathF.PI * 2f);
             Vector2 point = start + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * len;
-            float h = GetPregenerationHeight(point.x, point.y);
+            float h = GetPregenerationHeight(point.x, point.y, riverPreGen);
             if (h > minHeight && h < maxHeight)
             {
                 end = point;
@@ -843,11 +873,20 @@ public class WorldGenerator
         return !flag;
     }
 
-    private void RenderRivers(List<River> rivers)
+    private enum RiverAdd { All, SkipDeepNorth, OnlyDeepNorth }
+
+    private void RenderRivers(List<River> rivers, RiverAdd addRule = RiverAdd.All)
     {
         Dictionary<Vector2i, List<RiverPoint>> dictionary = new();
         foreach (var river in rivers)
         {
+            // Filtered before any RNG draw, so skipped rivers consume nothing.
+            if (addRule != RiverAdd.All)
+            {
+                bool dn = IsDeepnorth(river.p0.x, river.p0.y);
+                if ((dn && addRule == RiverAdd.SkipDeepNorth) || (!dn && addRule == RiverAdd.OnlyDeepNorth))
+                    continue;
+            }
             float step = river.widthMin / 8f;
             Vector2 dir = (river.p1 - river.p0).normalized;
             Vector2 perp = new(-dir.y, dir.x);

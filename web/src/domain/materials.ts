@@ -1,13 +1,7 @@
+/// An item a guide can mention as [Name](amount) — see utils/markedMaterials.ts.
 export interface Mat {
   code: string;
-  type: string;
   name: string;
-  desc: string;
   image: string;
-  drop?: string;
-  usage?: string;
-  weight?: number;
-  stack?: number;
-  biome?: string;
   aliases?: string[];
 }

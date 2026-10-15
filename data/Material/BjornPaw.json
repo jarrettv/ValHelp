@@ -1,9 +1,0 @@
-{
-    "code": "BjornPaw",
-    "name": "Bear paw",
-    "desc": "Sharp claws suitable for picking berries – or for dismembering.",
-    "type": "Material",
-    "image": "/data/Material/BjornPaw.png",
-    "usage": "Building, Crafting",
-    "source_url": "https://valheim.fandom.com/wiki/Bear_paw"
-}

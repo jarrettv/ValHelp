@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { PoiMarker, resolvePoiIcon, getColoredIconDataUrl } from './poiIcons';
+import { PoiMarker, resolvePoiIcon, getColoredIconDataUrl, usePoiConfigVersion } from './poiIcons';
 import './PoiLegend.css';
 
 interface LegendEntry {
@@ -86,7 +86,9 @@ interface PoiLegendProps {
 }
 
 export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: PoiLegendProps) {
-  const legend = useMemo(() => buildLegend(pois), [pois]);
+  const configVersion = usePoiConfigVersion();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- configVersion invalidates resolvePoiIcon's overrides
+  const legend = useMemo(() => buildLegend(pois), [pois, configVersion]);
   if (legend.length === 0) return null;
   return (
     <div className={`poi-legend ${className ?? ''}`} aria-label="Marker filters">

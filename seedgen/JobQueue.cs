@@ -10,6 +10,16 @@ public sealed record Job
     public required int Id { get; init; }
     public required string Seed { get; init; }
     public int WorldGenVersion { get; init; } = 2;
+
+    /// <summary>
+    /// Run the worldgen oracle (<c>seedgen/oracle</c>) alongside this job: boots the
+    /// server under BepInEx and dumps the game's own GetBiome / GetBiomeHeight /
+    /// GetForestFactor over the 2048² minimap grid, plus a Mathf.PerlinNoise
+    /// fixture. Off by default — it loads a mod layer and adds a full-grid sweep,
+    /// neither of which belongs in routine POI generation.
+    /// </summary>
+    public bool Oracle { get; init; }
+
     public JobStatus Status { get; set; } = JobStatus.Queued;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime? StartedAt { get; set; }
@@ -34,12 +44,14 @@ public sealed class JobQueue
     /// <summary>
     /// Enqueue a seed. Returns existing job if one is already queued/processing for this seed.
     /// </summary>
-    public Job Enqueue(string seed, int worldGenVersion)
+    public Job Enqueue(string seed, int worldGenVersion, bool oracle = false)
     {
-        // Dedup: return existing in-flight job for this seed
+        // Dedup: return existing in-flight job for this seed. An oracle request is
+        // not satisfied by a plain in-flight job, so don't collapse onto one.
         if (_seedIndex.TryGetValue(seed, out var existingId) &&
             _jobs.TryGetValue(existingId, out var existing) &&
-            existing.Status is JobStatus.Queued or JobStatus.Processing)
+            existing.Status is JobStatus.Queued or JobStatus.Processing &&
+            (!oracle || existing.Oracle))
         {
             return existing;
         }
@@ -49,6 +61,7 @@ public sealed class JobQueue
             Id = Interlocked.Increment(ref _nextId),
             Seed = seed,
             WorldGenVersion = worldGenVersion,
+            Oracle = oracle,
         };
 
         _jobs[job.Id] = job;

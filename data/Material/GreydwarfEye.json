@@ -1,9 +1,0 @@
-{
-    "code": "GreydwarfEye",
-    "name": "Greydwarf eye",
-    "desc": "The milky eyeball of a Greydwarf.",
-    "type": "Material",
-    "image": "/data/Material/GreydwarfEye.png",
-    "usage": "Building, Crafting",
-    "source_url": "https://valheim.fandom.com/wiki/Greydwarf_eye"
-}

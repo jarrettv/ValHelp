@@ -1,6 +1,7 @@
 import trophies from "../domain/trophies";
 import bonuses from "../domain/bonuses";
 import "./Scoring.css";
+import { iconUrl } from "../guides/vh/data";
 
 export const Scoring = (props: { scoring: { [key: string]: number }}) => {
   const { scoring } = props;
@@ -33,7 +34,7 @@ const TrophyScore = (props: { code: string, name: string, score: number }) => {
   const { code, name, score } = props;
   return (
     <div className="item">
-      <img src={`/img/Trophy/${code}.png`} alt={name} />
+      <img src={iconUrl(code)} alt={name} />
       <div className="score-val">{score}</div>
     </div>
   );

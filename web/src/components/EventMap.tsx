@@ -6,13 +6,14 @@ import TimelineSlider from './TimelineSlider';
 import {
   PoiMarker as SharedPoiMarker,
   resolvePoiIcon,
-  getColoredIcon,
   subscribeIconRedraw,
-  MINOR_ZOOM_THRESHOLD,
-  MIN_MINOR_SCREEN_PX,
-  MINOR_SIZE_FACTOR,
+  markerFor,
+  drawMarker,
+  type IconRule,
+  type MarkerDraw,
 } from './poiIcons';
 import PoiLegend from './PoiLegend';
+import { EXTRA_ITEMS, fetchVhItems, iconUrl } from '../guides/vh/data';
 
 declare global {
   interface Window {
@@ -239,17 +240,16 @@ function buildPlayerMapData(
 const imageCache = new Map<string, HTMLImageElement>();
 let scheduleRedraw: (() => void) | null = null;
 
-// Item database (loaded lazily from /data.json)
+// Item names and icons by code, from the guides' item data (loaded lazily)
 let itemDbPromise: Promise<Map<string, DataItem>> | null = null;
 function getItemDb(): Promise<Map<string, DataItem>> {
   if (!itemDbPromise) {
-    itemDbPromise = fetch('/data.json')
-      .then(r => r.json())
-      .then((items: DataItem[]) => {
-        const map = new Map<string, DataItem>();
-        for (const item of items) map.set(item.code, item);
-        return map;
-      });
+    itemDbPromise = fetchVhItems().then(items => {
+      const map = new Map<string, DataItem>();
+      for (const i of [...items, ...EXTRA_ITEMS])
+        map.set(i.code, { code: i.code, name: i.name ?? i.code, type: i.category ?? '', image: iconUrl(i.code) });
+      return map;
+    });
   }
   return itemDbPromise;
 }
@@ -541,7 +541,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         if (sx < -30 || sx > w + 30 || sy < -30 || sy > h + 30) continue;
 
         const r = Math.max(8, Math.min(14, 10 * scale));
-        drawIconCircle(ctx, sx, sy, r, player.color, `/img/Trophy/${trophy.code}.png`);
+        drawIconCircle(ctx, sx, sy, r, player.color, iconUrl(trophy.code));
 
         // Bonus badge on edge of circle
         if (trophy.bonus) {
@@ -609,45 +609,35 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
 
     // ── Draw POI markers on top of everything ──
     {
-      // vhcli sizing: marker shrinks with zoom-out (m.s * scale, capped at maxScreenPx).
-      const baseWorldSize = 24;
-      const maxScreenPx = 32;
-      const minorAllowed = scale >= MINOR_ZOOM_THRESHOLD;
+      // Level of detail: icon or dot per POI (markerFor); dots first, icons on top.
       const hidden = hiddenIconsRef.current;
+      const icons: [IconRule, MarkerDraw, number, number][] = [];
       for (const poi of poisRef.current) {
         const rule = resolvePoiIcon(poi);
         if (!rule) continue;
         if (hidden.has(rule.icon)) continue;
-        if (rule.minor && !minorAllowed) continue;
-        const cappedMajor = Math.min(maxScreenPx, baseWorldSize * scale * (rule.sizeScale ?? 1));
-        const sz = rule.minor ? cappedMajor * MINOR_SIZE_FACTOR : cappedMajor;
-        if (rule.minor && sz < MIN_MINOR_SCREEN_PX) continue;
         const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
         const [sx, sy] = toScreen(ppx, ppy);
         if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
-        const icon = getColoredIcon(rule.icon, rule.color);
-        if (icon && icon.complete) {
-          ctx.save();
-          ctx.shadowColor = 'rgba(0,0,0,0.9)';
-          ctx.shadowBlur = 6;
-          ctx.shadowOffsetY = 1;
-          ctx.globalAlpha = rule.opacity ?? 1;
-          try { ctx.drawImage(icon, sx - sz / 2, sy - sz / 2, sz, sz); }
-          catch { /* ignore broken icon */ }
-          ctx.restore();
-        }
+        const m = markerFor(rule, scale);
+        if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
+        else icons.push([rule, m, sx, sy]);
       }
+      for (const [rule, m, sx, sy] of icons) drawMarker(ctx, rule, m, sx, sy);
     }
 
   }, []);
 
   const applyTransform = useCallback(() => {
+    // Clear the pending frame first: a frame that lands before the map is ready
+    // (e.g. the POI config fetch beating the map data) must not leave rafId set,
+    // or scheduleUpdate would never schedule again and the map stays black.
+    stateRef.current.rafId = 0;
     const area = mapAreaRef.current;
     if (!area || !stateRef.current.ready) return;
     const { scale, panX, panY } = stateRef.current;
     window.VectorMap.render(scale, panX, panY, area.clientWidth, area.clientHeight);
     drawMarkers();
-    stateRef.current.rafId = 0;
   }, [drawMarkers]);
 
   const scheduleUpdate = useCallback(() => {
@@ -1155,7 +1145,7 @@ const SidebarScores: React.FC<{
           <div className="sb-score-icons">
             {logs.map((log, i) =>
               log.code.startsWith('Trophy') ? (
-                <img key={i} src={`/img/Trophy/${log.code}.png`} alt="" className="sb-score-icon" style={{ outlineColor: color }} />
+                <img key={i} src={iconUrl(log.code)} alt="" className="sb-score-icon" style={{ outlineColor: color }} />
               ) : log.code.startsWith('Penalty') ? (
                 <img key={i} src={`/img/Penalty/${log.code}.webp`} alt="" className="sb-score-icon penalty" style={{ outlineColor: color }} />
               ) : log.code.startsWith('Bonus') ? (
@@ -1211,7 +1201,7 @@ const SbDrops: React.FC<{
       {enemies.map(({ name, dropRate, entries }) => (
         <div key={name} className="sb-drop-enemy">
           <div className="sb-drop-icon-wrap">
-            <img src={`/img/Trophy/Trophy${name}.png`} alt={name} className="sb-drop-icon" title={name} />
+            <img src={iconUrl(`Trophy${name}`)} alt={name} className="sb-drop-icon" title={name} />
             <span className="sb-drop-rate">{dropRate}%</span>
           </div>
           <div className="sb-drop-boxes">

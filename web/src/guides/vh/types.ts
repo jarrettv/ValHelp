@@ -51,7 +51,7 @@ export type VhItem = {
    *  them out of the build menu outside their window. */
   seasonal?: string;
 
-  trophyDrop?: { hp: number; creature?: string; minStar?: number; maxStar?: number };
+  trophyDrop?: { hp: number; creature?: string; id?: string; minStar?: number; maxStar?: number };
   trinket?: { biome?: string };
   meadFinished?: string;
 

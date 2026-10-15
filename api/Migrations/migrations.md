@@ -1,0 +1,1 @@
+I don't care about EF migrations now that i can have migration code generated. Also the migrations table doesn't exist anyway in production. Don't use EF migrations.

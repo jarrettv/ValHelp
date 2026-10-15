@@ -52,7 +52,7 @@ DEFAULT_BUNDLES = (
     r"C:\Program Files (x86)\Steam\steamapps\common\Valheim\Valheim_Data\StreamingAssets\SoftRef"
 )
 SUPERSAMPLE = 3          # rendered at N x then downsampled; cheap antialiasing
-LIGHT_DIR = np.array([-0.45, 0.80, -0.40])
+LIGHT_DIR = np.array([0.55, 0.75, -0.35])  # camera space: right, up, toward the viewer
 AMBIENT = 0.34
 
 
@@ -153,14 +153,33 @@ def _tangent_frame(p, uv):
     return tan, -bit
 
 
+_INDEX: dict[tuple[str, int], object] | None = None
+_TEXTURES: dict[int, object] = {}
+
+
+def _lookup(env, type_name, pid):
+    """First object of `type_name` with this path_id. Walking env.objects is
+    ~800k objects per call, so it is indexed once; first match wins, as the
+    linear scan it replaces did."""
+    global _INDEX
+    if _INDEX is None:
+        _INDEX = {}
+        for o in env.objects:
+            tn = o.type.name
+            if tn in ("Texture2D", "Material"):
+                _INDEX.setdefault((tn, o.path_id), o)
+    return _INDEX.get((type_name, pid))
+
+
 def _texture(env, pid):
-    for t in env.objects:
-        if t.path_id == pid and t.type.name == "Texture2D":
-            try:
-                return t.read().image.convert("RGBA")
-            except Exception:
-                return None
-    return None
+    # Decoding is the other big cost, and locations reuse the same atlases.
+    if pid not in _TEXTURES:
+        t = _lookup(env, "Texture2D", pid)
+        try:
+            _TEXTURES[pid] = t.read().image.convert("RGBA") if t is not None else None
+        except Exception:
+            _TEXTURES[pid] = None
+    return _TEXTURES[pid]
 
 
 def _scale_offset(texenv):
@@ -171,8 +190,39 @@ def _scale_offset(texenv):
             (float(of.get("x", 0.0)), float(of.get("y", 0.0))))
 
 
+_SHADER_NAMES: dict[int, str] = {}
+
+# Shaders whose _MainTex_ST the game never reads: they sample the mesh UVs
+# directly, and the material's tiling values are leftovers that skew the planks.
+IGNORE_ST_SHADERS = ("Custom/Piece",)
+
+
+def _shader_name(material_obj) -> str:
+    try:
+        ref = material_obj.read().m_Shader
+        pid = ref.m_PathID
+    except Exception:
+        return ""
+    if pid not in _SHADER_NAMES:
+        name = ""
+        try:
+            sh = ref.read()
+            name = getattr(getattr(sh, "m_ParsedForm", None), "m_Name", "") or getattr(sh, "m_Name", "")
+        except Exception:
+            pass
+        _SHADER_NAMES[pid] = name
+    return _SHADER_NAMES[pid]
+
+
 def materials_of(renderer_reader):
-    """[{base, moss, emissive}] — one entry per material slot on the renderer."""
+    """[{base, moss, emissive, ...}] — one entry per material slot on the renderer.
+
+    Besides textures each slot carries what the game's shader does with them:
+    `color` (the _Color tint — Valheim's foliage ships grey leaves and tints
+    them green here), `cutout` (alpha-test threshold, or None for opaque
+    materials, whose alpha channel holds something else), `two_sided`
+    (_Cull 0: leaf cards, thatch) and `skip` (overlays the game hides, like
+    the snow layer on Meadows roofs)."""
     out = []
     try:
         tt = renderer_reader.read_typetree()
@@ -180,25 +230,37 @@ def materials_of(renderer_reader):
         for mref in (tt.get("m_Materials") or []):
             pid = mref.get("m_PathID")
             slot = {"base": None, "moss": None, "emissive": None,
-                    "st": {}, "moss_alpha": 1.0, "moss_edge": 0.4}
-            for o in env.objects:
-                if o.path_id != pid or o.type.name != "Material":
-                    continue
+                    "st": {}, "moss_alpha": 1.0, "moss_edge": 0.4,
+                    "color": (1.0, 1.0, 1.0), "cutout": 0.5, "two_sided": False, "skip": False}
+            for o in filter(None, [_lookup(env, "Material", pid)]):
                 mt = o.read_typetree()
                 props = mt.get("m_SavedProperties", {})
                 envs = dict(props.get("m_TexEnvs") or [])
+                shader = _shader_name(o)
+                floats = dict(props.get("m_Floats") or [])
+                colors = dict(props.get("m_Colors") or [])
+                c = colors.get("_Color")
+                if c:
+                    slot["color"] = (float(c["r"]), float(c["g"]), float(c["b"]))
+                # Only cutout materials alpha-test; opaque ones (thatch, planks)
+                # often keep gloss or noise in alpha and would be cut to nothing.
+                cutout_mode = float(floats.get("_Mode", 0.0)) == 1.0 or "Vegetation" in shader
+                slot["cutout"] = float(floats.get("_Cutoff", 0.5)) if cutout_mode else None
+                slot["two_sided"] = float(floats.get("_Cull", 2.0)) == 0.0
+                slot["skip"] = "Snow" in shader
+                ignore_st = any(shader.startswith(x) for x in IGNORE_ST_SHADERS)
                 for key, names in _TEX_SLOTS.items():
                     for n in names:
                         v = envs.get(n)
                         tex_pid = (v or {}).get("m_Texture", {}).get("m_PathID")
                         if tex_pid:
                             slot[key] = _texture(env, tex_pid)
-                            slot["st"][key] = _scale_offset(v)
+                            if not ignore_st:
+                                slot["st"][key] = _scale_offset(v)
                             break
                 # How far the moss creeps down the sides is the material's
                 # business, not the renderer's — a mossy rock and a bare one
                 # differ only by these.
-                floats = dict(props.get("m_Floats") or [])
                 slot["moss_alpha"] = float(floats.get("_MossAlpha", 1.0))
                 slot["moss_edge"] = float(floats.get("_MossTransition", 0.4))
                 break
@@ -297,6 +359,10 @@ def collect_meshes(root_go, want_texture=True, max_depth=8, enable=()):
     that is how a star variant gets its extra visual."""
     found = []
     enable = set(enable or ())
+    # Renderers in LOD1+ of a LODGroup: the game shows one level at a time, so
+    # drawing them all stacks a coarse copy over the detailed one (z-fighting,
+    # dark seams, doubled planks).
+    lower_lods: set[int] = set()
 
     def visit(go, parent: np.ndarray, depth: int, path: str):
         tr = _first(go, "Transform")
@@ -304,10 +370,23 @@ def collect_meshes(root_go, want_texture=True, max_depth=8, enable=()):
             return
         if not getattr(go, "m_IsActive", True) and getattr(go, "path_id", None) not in enable:
             return
+        lod = _first(go, "LODGroup")
+        if lod is not None:
+            try:
+                for level in (lod.read_typetree().get("m_LODs") or [])[1:]:
+                    for r in level.get("renderers") or level.get("m_Renderers") or []:
+                        pid = (r.get("renderer") or r).get("m_PathID")
+                        if pid:
+                            lower_lods.add(pid)
+            except Exception:
+                pass
         world = parent @ trs(tr.read_typetree())
         here = f"{path}/{getattr(go, 'm_Name', '?')}" if path else (getattr(go, "m_Name", "?") or "?")
 
         mf = _first(go, "MeshFilter")
+        mr_skip = _first(go, "MeshRenderer")
+        if mr_skip is not None and mr_skip.path_id in lower_lods:
+            mf = None
         if mf is not None:
             try:
                 mesh = mf.read().m_Mesh.read()
@@ -318,7 +397,7 @@ def collect_meshes(root_go, want_texture=True, max_depth=8, enable=()):
             except Exception:
                 pass
         smr = _first(go, "SkinnedMeshRenderer")
-        if smr is not None:
+        if smr is not None and smr.path_id not in lower_lods:
             try:
                 mesh = smr.read().m_Mesh.read()
                 if mesh is not None and getattr(mesh, "m_Name", ""):
@@ -329,10 +408,19 @@ def collect_meshes(root_go, want_texture=True, max_depth=8, enable=()):
 
         if depth >= max_depth:
             return
+        children = []
         for ch in (tr.read().m_Children or []):
             try:
-                child_go = ch.read().m_GameObject.read()
+                children.append(ch.read().m_GameObject.read())
             except Exception:
+                continue
+        # Building pieces (WearNTear) carry New / Worn / Broken copies of
+        # themselves, all switched on in the prefab; the game shows one by
+        # health. Drawing all three stacks them into seams and doubled planks.
+        names = {getattr(c, "m_Name", "") for c in children}
+        damage_states = "New" in names and ({"Worn", "Broken"} & names)
+        for child_go in children:
+            if damage_states and getattr(child_go, "m_Name", "") in ("Worn", "Broken"):
                 continue
             visit(child_go, world, depth + 1, here)
 
@@ -404,8 +492,30 @@ def build_scene(parts, want_texture=True):
             continue
         if not len(v) or not groups:
             continue
-        vw = (world[:3, :3] @ v.T).T + world[:3, 3]
-        nw = (world[:3, :3] @ vn.T).T if len(vn) else np.zeros((0, 3))
+        # UnityPy's OBJ export converts to right-handed space: it negates X and
+        # reverses each triangle's winding. The transforms we apply are Unity's
+        # (left-handed), so undo the X flip, or every child is mirrored about its
+        # own pivot — pieces land in the wrong place and normals point the wrong way.
+        v[:, 0] *= -1
+        if len(vn):
+            vn[:, 0] *= -1
+        m3 = world[:3, :3]
+        # A mirrored (negative-scale) transform flips handedness, so winding
+        # flips with it; keep front faces front for back-face culling.
+        mirrored = np.linalg.det(m3) < 0
+        # Negating X already flips each triangle's facing back to Unity's, so
+        # UnityPy's reversed order is what front-facing looks like to our
+        # rasteriser; only a mirrored transform needs it reversed again.
+        if mirrored:
+            groups = [[(c, b, a) for a, b, c in faces] for faces in groups]
+        vw = (m3 @ v.T).T + world[:3, 3]
+        # Normals transform by the inverse-transpose; plain M skews them under
+        # non-uniform scale (stretched planks, flattened rocks).
+        try:
+            nmat = np.linalg.inv(m3).T
+        except np.linalg.LinAlgError:
+            nmat = m3
+        nw = (nmat @ vn.T).T if len(vn) else np.zeros((0, 3))
         for gi, faces in enumerate(groups):
             # one material slot per submesh; fall back to the first
             mat = None
@@ -438,7 +548,9 @@ def build_scene(parts, want_texture=True):
 
 def look_at(yaw_deg, pitch_deg):
     y, p = math.radians(yaw_deg), math.radians(pitch_deg)
-    fwd = np.array([math.cos(p) * math.sin(y), math.sin(p), math.cos(p) * math.cos(y)])
+    # The camera sits at -fwd looking along +fwd, so a positive pitch has to
+    # point fwd downward to look at the subject from above.
+    fwd = np.array([math.cos(p) * math.sin(y), -math.sin(p), math.cos(p) * math.cos(y)])
     fwd /= np.linalg.norm(fwd)
     up = np.array([0.0, 1.0, 0.0])
     right = np.cross(up, fwd)
@@ -451,14 +563,23 @@ def look_at(yaw_deg, pitch_deg):
 
 def render(P, N, UV, MAT, size, yaw, pitch, bg, scale_hint, alpha_cutoff=0.5,
            moss=None, ambient=AMBIENT, exposure=1.0, emissive=0.0,
-           tint="#ffffff", bump=1.0):
+           tint="#ffffff", bump=1.0, frame_pct=0.0, cull=True):
+    """frame_pct > 0 frames the [pct, 100-pct] percentile of vertex positions
+    instead of the full extent, so a few far-flung markers (spawners, loose
+    debris) don't shrink a location's main structure to a speck. cull=False
+    draws back faces too, for interiors (caves, dungeon rooms) whose faces all
+    point inward and would otherwise render as nothing from outside."""
     S = size * SUPERSAMPLE
     if len(P) == 0:
         sys.exit("nothing to render — no triangles were collected")
 
     basis = look_at(yaw, pitch)
     cam = P.reshape(-1, 3) @ basis.T
-    lo, hi = cam.min(axis=0), cam.max(axis=0)
+    if frame_pct > 0:
+        lo = np.percentile(cam, frame_pct, axis=0)
+        hi = np.percentile(cam, 100 - frame_pct, axis=0)
+    else:
+        lo, hi = cam.min(axis=0), cam.max(axis=0)
     centre = (lo + hi) / 2
     extent = max((hi - lo)[:2].max(), 1e-6) / max(scale_hint, 1e-3)
     ppu = (S * 0.92) / extent
@@ -472,7 +593,13 @@ def render(P, N, UV, MAT, size, yaw, pitch, bg, scale_hint, alpha_cutoff=0.5,
     alpha = np.zeros((S, S), dtype=np.float32)
     zbuf = np.full((S, S), np.inf, dtype=np.float64)
 
-    light = LIGHT_DIR / np.linalg.norm(LIGHT_DIR)
+    # Key light fixed relative to the camera — above, to the right and a little in
+    # front of the subject — so whatever the yaw/pitch, faces turned different
+    # ways shade differently. A world-fixed light ends up level with the
+    # camera for some angles and lights every visible face the same.
+    right_v, up_v, fwd_v = basis
+    light = LIGHT_DIR[0] * right_v + LIGHT_DIR[1] * up_v + LIGHT_DIR[2] * fwd_v
+    light = light / np.linalg.norm(light)
     # Valheim's biomes light everything through a heavy colour cast — the
     # Meadows spawn reads green on grass, dirt and stone alike. Tinting the
     # light reproduces that; it is not the material's moss.
@@ -480,13 +607,24 @@ def render(P, N, UV, MAT, size, yaw, pitch, bg, scale_hint, alpha_cutoff=0.5,
     tint_rgb = np.array([tr, tg, tb], dtype=np.float32)
     tex_cache: dict[int, np.ndarray] = {}
 
-    order = np.argsort(zs.mean(axis=1))          # near to far helps the z-test
+    # Cull in bulk before the per-triangle loop: back faces, degenerate and
+    # fully off-canvas triangles would all be skipped inside it anyway, and the
+    # Python overhead per triangle dominates on large prefabs (locations).
+    areas = (xs[:, 1] - xs[:, 0]) * (ys[:, 2] - ys[:, 0]) - (xs[:, 2] - xs[:, 0]) * (ys[:, 1] - ys[:, 0])
+    onscreen = ((xs.max(axis=1) >= 0) & (xs.min(axis=1) <= S - 1)
+                & (ys.max(axis=1) >= 0) & (ys.min(axis=1) <= S - 1))
+    skip = np.array([bool(m and m.get("skip")) for m in MAT], dtype=bool)
+    two_sided = np.array([bool(m and m.get("two_sided")) for m in MAT], dtype=bool)
+    facing = (areas < 0) | ((areas > 0) & (two_sided | (not cull)))
+    live = np.nonzero(facing & onscreen & ~skip)[0]
+    order = live[np.argsort(zs[live].mean(axis=1))]   # near to far helps the z-test
     for ti in order:
         x0, x1, x2 = xs[ti]; y0, y1, y2 = ys[ti]; z0, z1, z2 = zs[ti]
         area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
         if area == 0:
             continue
-        if area > 0:                              # backface
+        backface = area > 0
+        if backface and cull and not two_sided[ti]:
             continue
         minx = max(int(math.floor(min(x0, x1, x2))), 0)
         maxx = min(int(math.ceil(max(x0, x1, x2))), S - 1)
@@ -524,6 +662,9 @@ def render(P, N, UV, MAT, size, yaw, pitch, bg, scale_hint, alpha_cutoff=0.5,
             norm = (w2[..., None] * nn[0] + w1[..., None] * nn[1] + w0[..., None] * nn[2])
             ln = np.linalg.norm(norm, axis=-1, keepdims=True)
             norm = np.divide(norm, np.where(ln == 0, 1, ln))
+
+        if backface:
+            norm = -norm                          # two-sided: light the side we see
 
         mat = MAT[ti]
         uv = UV[ti]
@@ -584,11 +725,12 @@ def render(P, N, UV, MAT, size, yaw, pitch, bg, scale_hint, alpha_cutoff=0.5,
             texel = sample(mat["base"], "base")
             # Foliage and chains are alpha-cutout cards; without this they show
             # up as opaque black rectangles.
-            if texel.shape[-1] == 4 and alpha_cutoff > 0:
-                hit = hit & (texel[..., 3] >= alpha_cutoff)
+            cut = mat.get("cutout", alpha_cutoff) if "cutout" in mat else alpha_cutoff
+            if texel.shape[-1] == 4 and cut and alpha_cutoff > 0:
+                hit = hit & (texel[..., 3] >= cut)
                 if not hit.any():
                     continue
-            base = texel[..., :3].copy()
+            base = texel[..., :3] * np.array(mat.get("color", (1.0, 1.0, 1.0)), dtype=np.float32)
         else:
             base = np.broadcast_to(np.array([0.62, 0.60, 0.57], dtype=np.float32),
                                    hit.shape + (3,)).copy()

@@ -54,14 +54,16 @@ public static class SeedGenApi
         int worldGen = req.WorldGenVersion ?? 2;
         var dir = opts.SeedDir(worldGen, seedHash);
 
-        if (req.Force)
+        if (req.Force || req.Oracle)
         {
-            // Full regen: delete everything, re-queue (boots Valheim server)
-            if (Directory.Exists(dir))
+            // Full regen: delete everything, re-queue (boots Valheim server).
+            // Oracle implies a full run — the dump only exists if the server was
+            // booted under BepInEx for this job.
+            if (req.Force && Directory.Exists(dir))
                 Directory.Delete(dir, recursive: true);
 
             queue.Remove(seed);
-            var job = queue.Enqueue(seed, worldGen);
+            var job = queue.Enqueue(seed, worldGen, req.Oracle);
             var pos = queue.QueuePosition(job.Id);
             return Results.Ok(new StatusResponse(job.Id, seed, "queued", EstimateWait(pos), pos, null, null));
         }
@@ -74,8 +76,10 @@ public static class SeedGenApi
         if (!File.Exists(dbPath))
             return Results.NotFound("No .db file — use force=true for full generation");
 
-        // Re-parse POIs from .db
-        var pois = Vh.World.LocationFinder.ReadFromWorldDb(dbPath, seedHash);
+        // Re-parse POIs from the saved .db2, with the loot the plugin dumped on the full run
+        var wg = new Vh.World.WorldGenerator(seedHash, worldGen);
+        var loot = Vh.World.LocationFinder.LoadLoot(Path.Combine(dir, "oracle.loot.json"));
+        var pois = Vh.World.LocationFinder.ReadFromWorldDb(dbPath, seedHash, out _, wg, loot);
         var poisCount = pois?.Count ?? 0;
         var poisPath = Path.Combine(dir, "pois");
         if (pois != null && pois.Count > 0)
@@ -85,7 +89,7 @@ public static class SeedGenApi
         }
 
         // Re-generate BVEC from textures
-        artifacts.GenerateAll(seed, seedHash, worldGen, dir);
+        artifacts.GenerateAll(seed, seedHash, worldGen, dir, wg);
 
         return Results.Ok(new { seed, status = "done", poisCount, message = "BVEC + POIs regenerated" });
     }
@@ -142,8 +146,9 @@ public static class SeedGenApi
         }
 
         ctx.Response.Headers.ETag = etag;
+        // pois changes in place on a regen: always revalidate (a cheap 304 via the ETag).
         ctx.Response.Headers.CacheControl = file == "pois"
-            ? "public, max-age=3600"
+            ? "public, no-cache"
             : "public, max-age=31536000, immutable";
 
         return Results.File(path, ContentTypes.GetValueOrDefault(file, "application/octet-stream"));
@@ -152,11 +157,21 @@ public static class SeedGenApi
     // ── Helpers ──
 
     static readonly HashSet<string> AllowedFiles =
-        ["mapTexCache", "forestMaskTexCache", "heightTexCache", "bvec", "pois", "db"];
+        ["mapTexCache", "forestMaskTexCache", "heightTexCache", "bvec", "pois", "db",
+         // Worldgen oracle dump — see seedgen/oracle. Ground truth for validating
+         // the managed reimplementation; only present on seeds run with oracle=true.
+         "oracle.json", "oracle.height.f32.gz", "oracle.biome.u8.gz",
+         "oracle.forest.f32.gz", "oracle.perlin.f32.gz", "oracle.loot.json"];
 
     static readonly Dictionary<string, string> ContentTypes = new()
     {
         ["pois"] = "application/json",
+        ["oracle.json"] = "application/json",
+        ["oracle.loot.json"] = "application/json",
+        ["oracle.height.f32.gz"] = "application/gzip",
+        ["oracle.biome.u8.gz"] = "application/gzip",
+        ["oracle.forest.f32.gz"] = "application/gzip",
+        ["oracle.perlin.f32.gz"] = "application/gzip",
         ["bvec"] = "application/octet-stream",
         ["db"] = "application/octet-stream",
         ["mapTexCache"] = "image/png",
@@ -416,6 +431,11 @@ public static class SeedGenApi
 }
 
 public record SubmitRequest(string Seed, int? WorldGenVersion = null);
-public record RegenRequest(string Seed, int? WorldGenVersion = null, bool Force = false);
+/// <param name="Oracle">
+/// Boot the server under BepInEx and dump the game's own worldgen output for this
+/// seed (see <c>seedgen/oracle</c>). Implies a full regen. Slow — adds a
+/// single-threaded 2048² sweep — so it is only for validation runs.
+/// </param>
+public record RegenRequest(string Seed, int? WorldGenVersion = null, bool Force = false, bool Oracle = false);
 public record StatusResponse(int Id, string Seed, string Status, string? EstWait,
     int QueuePosition, string? Result, string? Error);

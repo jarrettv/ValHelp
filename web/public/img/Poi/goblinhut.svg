@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.93 16.93"
+   version="1.1"
+   id="svg9572"
+   sodipodi:docname="goblinhut.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata9578">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs9576" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1492"
+     inkscape:window-height="938"
+     id="namedview9574"
+     showgrid="false"
+     inkscape:zoom="2.6074563"
+     inkscape:cx="-41.158503"
+     inkscape:cy="-3.8725995"
+     inkscape:window-x="2558"
+     inkscape:window-y="184"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg9572" />
+  <!-- ground shadow -->
+  <!-- wall of pale stakes -->
+  <path
+     d="M 5.479674,13.62222 V 9.9359646 h 6.435327 V 13.62222 Z"
+     id="path9554"
+     inkscape:connector-curvature="0"
+     style="fill:#d9ccb0;stroke:#2a2724;stroke-width:0.15619725;stroke-linejoin:round" />
+  <path
+     d="M 6.0732236,9.9359646 V 13.62222 M 6.6667732,9.9359646 V 13.62222 M 7.2603223,9.9359646 V 13.62222 M 10.134352,9.9359646 V 13.62222 M 10.727901,9.9359646 V 13.62222 m 0.59355,-3.6862554 V 13.62222"
+     id="path9556"
+     inkscape:connector-curvature="0"
+     style="fill:none;stroke:#a8977a;stroke-width:0.12495781" />
+  <!-- rope lashings -->
+  <path
+     d="m 5.479674,11.310501 h 2.4054373 m 1.655691,0 h 2.3741987 m -6.435327,1.312057 h 2.4054373 m 1.655691,0 h 2.3741987"
+     id="path9558"
+     inkscape:connector-curvature="0"
+     style="fill:none;stroke:#804f2f;stroke-width:0.18743671" />
+  <!-- doorway -->
+  <path
+     d="m 7.8851113,13.62222 v -2.436677 q 0.812226,-0.56231 1.655691,0 v 2.436677 z"
+     id="path9560"
+     inkscape:connector-curvature="0"
+     style="fill:#1d1a17;stroke:#2a2724;stroke-width:0.12495781;stroke-linejoin:round" />
+  <!-- bone spikes poking out of the peak (behind the roof) -->
+  <path
+     d="M 7.5491403,6.8001461 6.945654,4.2908741 8.0855723,6.5994044 Z M 9.2925453,6.6997752 10.164248,4.4916159 9.9630853,6.900517 Z"
+     id="path9562"
+     inkscape:connector-curvature="0"
+     style="fill:#ece4cf;stroke:#2a2724;stroke-width:0.10182659;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+  <!-- conical hide roof, ragged where the hides hang over the wall -->
+  <path
+     d="M 8.7067093,5.4999628 Q 11.227733,7.0619353 13.164579,9.8110066 L 12.664747,9.6860496 12.352353,10.310839 11.790043,9.8110066 11.35269,10.498275 10.79038,9.9359646 10.290549,10.560754 9.7282393,9.9984436 9.2284083,10.623233 8.7035853,10.060923 8.1662673,10.623233 7.6664353,9.9984436 7.1041255,10.560754 6.6042943,9.9359646 6.0419841,10.498275 5.6046318,9.8110066 5.0423217,10.310839 4.7299272,9.6860496 4.230096,9.8110066 Q 6.1669419,7.0619353 8.7067093,5.4999628 Z"
+     id="path9564"
+     style="fill:#7d4e33;stroke:none;stroke-width:0.15619725;stroke-linejoin:round"
+     inkscape:connector-curvature="0" />
+  <!-- lighter hide tongues hanging from the peak -->
+  <path
+     d="m 8.5723793,5.8748362 q -1.062141,1.6244514 -1.312057,4.0611284 l 0.499832,-0.312394 0.312394,0.4373524 q 0.06248,-2.186762 0.499831,-4.1860868 z m 0.624789,0.062479 q 0.9996627,1.6244514 1.2495777,3.9986494 l 0.437353,-0.374873 0.249915,0.4998314 Q 10.759141,7.874161 9.1971683,5.9373152 Z M 8.0100693,6.2497096 Q 6.5105759,7.4992876 5.823308,9.6860496 L 6.1981814,9.4986126 6.448097,9.8734856 Q 7.0104071,7.7492032 8.0100693,6.2497096 Z"
+     id="path9566"
+     inkscape:connector-curvature="0"
+     style="fill:#a0684a;stroke-width:0.624789" />
+  <!-- seams between hides -->
+  <!-- a bone spike jutting from the eave -->
+  <path
+     d="m 11.321451,9.9359646 2.47401,-1.06029 -2.23839,1.6493404 z"
+     id="path9570"
+     inkscape:connector-curvature="0"
+     style="fill:#ece4cf;stroke:#2a2724;stroke-width:0.08784571;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#ece4cf;stroke:#2a2724;stroke-width:0.07922326;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     d="M 5.4874703,10.180983 3.9772619,8.0841343 5.9848296,9.8332426 Z"
+     id="path9570-2" />
+</svg>

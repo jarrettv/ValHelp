@@ -188,6 +188,8 @@
   top: 60px;
   right: 16px;
   width: 240px;
+  max-height: calc(100% - 80px);
+  overflow-y: auto;
   background: rgba(20, 24, 32, 0.95);
   border: 1px solid #30363d;
   border-radius: 8px;
@@ -219,3 +221,14 @@
   padding: 2px 0;
   color: #cad3dd;
 }
+
+.worlds-poi-chest { margin-top: 10px; }
+.worlds-poi-chest-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #8b949e; margin-bottom: 4px;
+}
+.worlds-poi-chest ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px; }
+.worlds-poi-chest li { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #cad3dd; }
+.worlds-poi-chest img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+.worlds-poi-chest-count { margin-left: auto; color: #8b949e; font-variant-numeric: tabular-nums; }
+
+.worlds-poi-vegvisir { margin-top: 8px; font-size: 13px; color: #e8c86a; }

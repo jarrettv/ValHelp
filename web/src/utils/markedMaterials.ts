@@ -29,7 +29,9 @@ function escapeHtml(text: string): string {
 
 function findMaterial(mats: Mat[], name: string): Mat | undefined {
   const key = name.toLowerCase();
-  const direct = mats.find((mat) => mat.name.toLowerCase() === key || mat.code.toLowerCase() === key);
+  // Name before code: "Flametal" is the 1.0 metal (FlametalNew), not the old Flametal item.
+  const direct = mats.find((mat) => mat.name.toLowerCase() === key)
+    ?? mats.find((mat) => mat.code.toLowerCase() === key);
   if (direct) {
     return direct;
   }

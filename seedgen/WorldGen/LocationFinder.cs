@@ -1,15 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+
 
 namespace Vh.World;
 
 public record PoiLocation(
     string Name, string Type, float X, float Z,
     bool Checked = false, string? Prefab = null, string[]? Items = null,
-    bool Generated = false);
+    bool Generated = false, string? Biome = null, ChestItem[][]? Chests = null,
+    IReadOnlyDictionary<string, int>? Creatures = null, string[]? Vegvisirs = null);
+
+/// <summary>One stack in one of a location's chests, as the game rolled it.</summary>
+public record ChestItem(string Item, int Count);
+
+/// <summary>
+/// What the game actually spawned for one location instance, from the oracle
+/// plugin's <c>oracle.loot.json</c> (see seedgen/oracle). Ground truth: the plugin
+/// spawns the location through <c>ZoneSystem.SpawnLocation</c> with the seed a
+/// player's first visit uses.
+/// </summary>
+public record LootSample(
+    string Prefab, float X, float Z, int Beehives, ChestItem[][] Chests,
+    IReadOnlyDictionary<string, int> Objects, IReadOnlyDictionary<string, int> Present,
+    IReadOnlyDictionary<string, int> Creatures, string[] Vegvisirs);
 
 /// <summary>
 /// Replicates Valheim's ZoneSystem.GenerateLocations to find POI positions from a world seed.
@@ -58,9 +75,9 @@ public static class LocationFinder
             WorldGenerator.BiomeArea.Everything, 5, true, false, false,
             0, 0, 1, 1000, false, 0, 1, 4000, 0, 32, 0, 40, 2048, ""),
 
-        // Kall Fimbulbringer — Deep North ("bosslocation" in _LocationList_DeepNorth).
+        // Kall Fimbulbringer — Deep North (prefab "DN_Bossroom" in 1.0).
         // exterior=32, altitude 80+ (it sits high), terrain delta 0-6, 1024 apart.
-        new LocationConfig("bosslocation", "Boss Altar", Biome.DeepNorth,
+        new LocationConfig("DN_Bossroom", "Boss Altar", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 3, true, false, false,
             0, 0, 80, 5000, false, 0, 0, 0, 0, 32, 0, 6, 1024, "dn_boss"),
 
@@ -90,7 +107,7 @@ public static class LocationFinder
     static readonly LocationConfig[] MeadowsLocations = new[]
     {
         // WoodHouse variants — abandoned houses, qty=20 each, forest threshold 0-1
-        // Beehive is RandomSpawn (simulated per-instance).
+        // Beehive is a RandomSpawn; the oracle plugin reports whether each house got one.
         // Chests: WoodHouse2 has TreasureChest_meadows_02 (AxeHead2/Curious Axe Head),
         //         WoodHouse6 has TreasureChest_meadows_01 (AxeHead1/Mysterious Axe Head),
         //         WoodHouse 1,7,9,10,11,12,13 have TreasureChest_meadows (no axe heads),
@@ -140,7 +157,7 @@ public static class LocationFinder
             0, 0, 1, 1000, true, 0, 1, 0, 0, 9, 0, 4, 0, ""),
 
         // Runestone_Boars — boar stone, qty=50, spawns boars nearby
-        new LocationConfig("Runestone_Boars", "Runestone", Biome.Meadows,
+        new LocationConfig("Runestone_Boars", "BoarRunestone", Biome.Meadows,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 1, 1000, true, 0, 1, 0, 0, 8, 0, 3, 128, ""),
 
@@ -306,7 +323,7 @@ public static class LocationFinder
         // HalfBurried_ForestCrypt and FimbulLocation01 switched off.
 
         // Mörkhalla — the fortress the shadow folk hold. Highest thing in the biome.
-        new LocationConfig("morkborg", "Morkhalla", Biome.DeepNorth,
+        new LocationConfig("MorkBorg", "Morkhalla", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 40, false, false, false,
             0, 0, 30, 10000, false, 0, 1, 0, 0, 30, 0, 300, 275, "morkborg"),
 
@@ -314,15 +331,15 @@ public static class LocationFinder
         new LocationConfig("NorthVillage", "NorthVillage", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 135, false, false, false,
             0, 0, 2, 1000, false, 0, 1, 0, 0, 32, 0, 3, 70, ""),
-        new LocationConfig("hut01", "NorthVillage", Biome.DeepNorth,
+        new LocationConfig("DN_hut01", "NorthVillage", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 40, false, false, false,
             0, 0, 40, 1000, false, 0, 1, 0, 0, 12, 0, 4, 100, "northvillage"),
 
         // Winding Tunnels — the Deep North dungeon entrance ("thehole").
-        new LocationConfig("thehole01", "WindingTunnels", Biome.DeepNorth,
+        new LocationConfig("TheHole01", "WindingTunnels", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 40, false, false, false,
             0, 0, 2, 1000, false, 0, 1, 0, 0, 28, 0, 3, 256, ""),
-        new LocationConfig("Lumbercamp", "LumberCamp", Biome.DeepNorth,
+        new LocationConfig("LumberCamp", "LumberCamp", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             0, 0, 4, 1000, true, 0, 1, 0, 0, 32, 0, 3, 100, "thehole"),
 
@@ -332,31 +349,31 @@ public static class LocationFinder
             0, 0, 2, 1000, false, 0, 1, 0, 0, 25, 0, 3, 400, "memorialplace"),
 
         // Ice ponds — the only Deep North location gated to inForest.
-        new LocationConfig("icepond", "IcePond", Biome.DeepNorth,
+        new LocationConfig("IcePond1", "IcePond", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 40, false, false, false,
             0, 0, 10, 200, true, 0, 1, 0, 0, 20, 0, 2, 128, "icepond"),
 
         // Frozen ships — locked to the outer rim (8000-9750 from centre) and
         // to below sea level, so they ring the far north coast.
-        new LocationConfig("FrozenShip01", "FrozenShip", Biome.DeepNorth,
+        new LocationConfig("FrozenShip01_DN", "FrozenShip", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             8000, 9750, -15, -5, false, 0, 1, 0, 0, 10, 0, 100, 64, "FrozenShip"),
-        new LocationConfig("FrozenShip02", "FrozenShip", Biome.DeepNorth,
+        new LocationConfig("FrozenShip02_DN", "FrozenShip", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             8000, 9750, -15, -5, false, 0, 1, 0, 0, 16, 0, 100, 64, "FrozenShip"),
-        new LocationConfig("FrozenShip03", "FrozenShip", Biome.DeepNorth,
+        new LocationConfig("FrozenShip03_DN", "FrozenShip", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 50, false, false, false,
             8000, 9750, -15, -5, false, 0, 1, 0, 0, 10, 0, 100, 64, "FrozenShip"),
 
         // Shipwrecks on the Deep North shoreline — same marker as the others.
-        new LocationConfig("Shipwreck_DN", "Shipwreck", Biome.DeepNorth,
+        new LocationConfig("ShipWreck01_DN", "Shipwreck", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 170, false, false, false,
             0, 0, -0.5f, 0, false, 0, 1, 0, 0, 10, 0, 2, 0, ""),
-        new LocationConfig("Shipwreck02_DN", "Shipwreck", Biome.DeepNorth,
+        new LocationConfig("ShipWreck02_DN", "Shipwreck", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 120, false, false, false,
             0, 0, -0.5f, 1, false, 0, 1, 0, 0, 10, 0, 2, 0, ""),
 
-        new LocationConfig("Runestone_DeepNorth", "Runestone", Biome.DeepNorth,
+        new LocationConfig("Runestone_DeepNorth", "DeepNorthRunestone", Biome.DeepNorth,
             WorldGenerator.BiomeArea.Everything, 70, false, false, false,
             0, 0, 0, 1000, false, 1, 5, 0, 0, 12, 0, 10, 128, "Runestones"),
 
@@ -418,19 +435,19 @@ public static class LocationFinder
         ["MorgenHole1"] = "Putrid Hole",
         ["MorgenHole2"] = "Putrid Hole",
         ["MorgenHole3"] = "Putrid Hole",
-        ["bosslocation"] = "Kall Fimbulbringer",
-        ["morkborg"] = "Mörkhalla",
+        ["DN_Bossroom"] = "Kall Fimbulbringer",
+        ["MorkBorg"] = "Mörkhalla",
         ["NorthVillage"] = "Northern Village",
-        ["hut01"] = "Northern Hut",
-        ["thehole01"] = "Winding Tunnels",
-        ["Lumbercamp"] = "Lumber Camp",
+        ["DN_hut01"] = "Northern Hut",
+        ["TheHole01"] = "Winding Tunnels",
+        ["LumberCamp"] = "Lumber Camp",
         ["NorthMemorialPlace"] = "Ancestral Memorial",
-        ["icepond"] = "Ice Pond",
-        ["FrozenShip01"] = "Frozen Ship",
-        ["FrozenShip02"] = "Frozen Ship",
-        ["FrozenShip03"] = "Frozen Ship",
-        ["Shipwreck_DN"] = "Shipwreck",
-        ["Shipwreck02_DN"] = "Shipwreck",
+        ["IcePond1"] = "Ice Pond",
+        ["FrozenShip01_DN"] = "Frozen Ship",
+        ["FrozenShip02_DN"] = "Frozen Ship",
+        ["FrozenShip03_DN"] = "Frozen Ship",
+        ["ShipWreck01_DN"] = "Shipwreck",
+        ["ShipWreck02_DN"] = "Shipwreck",
         ["Runestone_DeepNorth"] = "Deep North Runestone",
         ["BearCave"] = "Bear Cave",
         ["WoodHouse1"] = "WoodHouse1",
@@ -449,95 +466,272 @@ public static class LocationFinder
     };
 
     /// <summary>
-    /// Read boss locations from a world .db save file by scanning for known prefab name patterns.
-    /// Returns null if the file doesn't exist or no locations found.
+    /// Every other location prefab the 1.0 game places, as (type, display name).
+    /// These have no LocationConfig — they're extracted purely so the map/admin
+    /// can show them. Names resolved by hashing GameObject names in the shipped
+    /// bundles against the hashes in a real 1.0 world save.
     /// </summary>
-    public static List<PoiLocation>? ReadFromWorldDb(string dbPath, int worldSeed = 0)
+    static readonly Dictionary<string, (string Type, string Name)> ExtraPrefabs = new()
     {
+        ["AbandonedLogCabin02"] = ("AbandonedCabin", "Abandoned Log Cabin"),
+        ["AbandonedLogCabin03"] = ("AbandonedCabin", "Abandoned Log Cabin"),
+        ["AbandonedLogCabin04"] = ("AbandonedCabin", "Abandoned Log Cabin"),
+        ["AncientUpgradeStation"] = ("AncientUpgradeStation", "Ancient Upgrade Station"),
+        ["AshlandRuins"] = ("AshlandsRuins", "Ashlands Ruins"),
+        ["BigRockClearing"] = ("RockClearing", "Rock Clearing"),
+        ["CharredRuins1"] = ("CharredRuins", "Charred Ruins"),
+        ["CharredRuins2"] = ("CharredRuins", "Charred Ruins"),
+        ["CharredRuins3"] = ("CharredRuins", "Charred Ruins"),
+        ["CharredRuins4"] = ("CharredRuins", "Charred Ruins"),
+        ["CharredStone_Spawner"] = ("CharredStoneSpawner", "Charred Stone Spawner"),
+        ["CharredTowerRuins1"] = ("CharredTowerRuins", "Charred Tower Ruins"),
+        ["CharredTowerRuins2"] = ("CharredTowerRuins", "Charred Tower Ruins"),
+        ["CharredTowerRuins3"] = ("CharredTowerRuins", "Charred Tower Ruins"),
+        ["CombatRuin01"] = ("CombatRuin", "Combat Ruin"),
+        ["DN_gammeltrollFrac01"] = ("OldTroll", "Old Troll Remains"),
+        ["DN_gammeltrollFrac02"] = ("OldTroll", "Old Troll Remains"),
+        ["Dolmen01"] = ("Dolmen", "Dolmen"),
+        ["Dolmen02"] = ("Dolmen", "Dolmen"),
+        ["Dolmen03"] = ("Dolmen", "Dolmen"),
+        ["DrakeLorestone"] = ("Lorestone", "Drake Lorestone"),
+        ["FortressRuins"] = ("FortressRuins", "Fortress Ruins"),
+        ["GoblinHut01"] = ("GoblinHut", "Fuling Hut"),
+        ["GoblinHut02"] = ("GoblinHut", "Fuling Hut"),
+        ["GoblinHut03"] = ("GoblinHut", "Fuling Hut"),
+        ["Grave1"] = ("Grave", "Grave"),
+        ["Hildir_cave"] = ("HildirDungeon", "Howling Cavern"),
+        ["Hildir_crypt"] = ("HildirDungeon", "Smouldering Tomb"),
+        ["Hildir_plainsfortress"] = ("HildirDungeon", "Sealed Tower"),
+        ["InfestedTree01"] = ("InfestedTree", "Infested Tree"),
+        ["LeviathanLava"] = ("LavaLeviathan", "Lava Leviathan"),
+        ["Mistlands_Excavation1"] = ("Excavation", "Dvergr Excavation"),
+        ["Mistlands_Excavation2"] = ("Excavation", "Dvergr Excavation"),
+        ["Mistlands_Excavation3"] = ("Excavation", "Dvergr Excavation"),
+        ["Mistlands_Giant1"] = ("GiantRemains", "Giant Remains"),
+        ["Mistlands_Giant2"] = ("GiantRemains", "Giant Remains"),
+        ["Mistlands_GuardTower1_new"] = ("DvergrTower", "Dvergr Guard Tower"),
+        ["Mistlands_GuardTower1_ruined_new"] = ("RuinedDvergrTower", "Ruined Dvergr Tower"),
+        ["Mistlands_GuardTower1_ruined_new2"] = ("RuinedDvergrTower", "Ruined Dvergr Tower"),
+        ["Mistlands_GuardTower3_ruined_new"] = ("RuinedDvergrTower", "Ruined Dvergr Tower"),
+        ["Mistlands_Harbour1"] = ("Harbour", "Dvergr Harbour"),
+        ["Mistlands_RoadPost1"] = ("RoadPost", "Road Post"),
+        ["Mistlands_RockSpire1"] = ("RockSpire", "Rock Spire"),
+        ["Mistlands_Statue1"] = ("GiantStatue", "Giant Statue"),
+        ["Mistlands_Statue2"] = ("GiantStatue", "Giant Statue"),
+        ["Mistlands_Swords1"] = ("GiantSwords", "Giant Swords"),
+        ["Mistlands_Swords2"] = ("GiantSwords", "Giant Swords"),
+        ["Mistlands_Swords3"] = ("GiantSwords", "Giant Swords"),
+        ["Mistlands_Viaduct1"] = ("Viaduct", "Viaduct"),
+        ["Mistlands_Viaduct2"] = ("Viaduct", "Viaduct"),
+        ["MountainGrave01"] = ("Grave", "Mountain Grave"),
+        ["MountainWell1"] = ("Well", "Mountain Well"),
+        ["SwampWell1"] = ("Well", "Swamp Well"),
+        ["Ruin1"] = ("Ruin", "Ruin"),
+        ["Ruin3"] = ("Ruin", "Ruin"),
+        ["Runestone_Meadows"] = ("Lorestone", "Meadows Lorestone"),
+        ["Runestone_BlackForest"] = ("Lorestone", "Black Forest Lorestone"),
+        ["Runestone_Greydwarfs"] = ("Lorestone", "Greydwarf Lorestone"),
+        ["Runestone_Swamps"] = ("Lorestone", "Swamp Lorestone"),
+        ["Runestone_Draugr"] = ("Lorestone", "Draugr Lorestone"),
+        ["Runestone_Mountains"] = ("Lorestone", "Mountain Lorestone"),
+        ["Runestone_Plains"] = ("Lorestone", "Plains Lorestone"),
+        ["Runestone_Mistlands"] = ("Lorestone", "Mistlands Lorestone"),
+        ["Runestone_Ashlands"] = ("Lorestone", "Ashlands Lorestone"),
+        ["ShipSetting01"] = ("ShipSetting", "Ship Setting"),
+        ["ShipSetting02"] = ("ShipSetting", "Ship Setting"),
+        ["ShipSetting03"] = ("ShipSetting", "Ship Setting"),
+        ["StoneCircle"] = ("StoneCircle", "Stone Circle"),
+        ["StoneHenge1"] = ("StoneHenge", "Stone Henge"),
+        ["StoneHenge2"] = ("StoneHenge", "Stone Henge"),
+        ["StoneHenge6"] = ("StoneHenge", "Stone Henge"),
+        ["StoneHouse3"] = ("StoneHouse", "Stone House"),
+        ["StoneHouse4"] = ("StoneHouse", "Stone House"),
+        ["StoneTower3"] = ("StoneTower", "Stone Tower"),
+        ["StoneTowerRuins03"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins05"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins05_leet"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins07"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins07_sunk"] = ("StoneTowerRuins", "Sunken Stone Tower Ruins"),
+        ["StoneTowerRuins08"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins08_sunk"] = ("StoneTowerRuins", "Sunken Stone Tower Ruins"),
+        ["StoneTowerRuins09"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins09_sunk"] = ("StoneTowerRuins", "Sunken Stone Tower Ruins"),
+        ["StoneTowerRuins10"] = ("StoneTowerRuins", "Stone Tower Ruins"),
+        ["StoneTowerRuins10_sunk"] = ("StoneTowerRuins", "Sunken Stone Tower Ruins"),
+        ["SulfurArch"] = ("SulfurArch", "Sulfur Arch"),
+        ["SwampHut1"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut1_1"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut2"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut2_1"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut3"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut3_1"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut4"] = ("SwampHut", "Swamp Hut"),
+        ["SwampHut5"] = ("SwampHut", "Swamp Hut"),
+        ["TarPit1"] = ("TarPit", "Tar Pit"),
+        ["TarPit2"] = ("TarPit", "Tar Pit"),
+        ["TarPit3"] = ("TarPit", "Tar Pit"),
+        ["VoltureNest"] = ("VoltureNest", "Volture Nest"),
+        ["Waymarker01"] = ("Waymarker", "Waymarker"),
+        ["Waymarker02"] = ("Waymarker", "Waymarker"),
+        ["WoodFarm1"] = ("Village", "Abandoned Farm"),
+        ["WoodVillage1"] = ("Village", "Abandoned Village"),
+        ["WoodVillage2"] = ("Village", "Abandoned Village"),
+    };
+
+    /// <summary>
+    /// Reads location instances out of a Valheim 1.0 world save
+    /// (<c>worlds_local/&lt;world&gt;/_main.N.db2</c>), as written by
+    /// <c>ZNet.SaveWorldThread</c>:
+    /// <c>int version, double netTime, int len, byte[len] gzip(ZoneSystem data)</c>.
+    /// The ZoneSystem block is generated zones, location version, global keys,
+    /// the locations-generated flag, then <c>(int prefabHash, float x, y, z, bool placed)</c>
+    /// per location. Locations are keyed by <c>prefabName.GetStableHashCode()</c>.
+    /// Every instance is returned — map filtering is the frontend's job. Hashes
+    /// that match no known prefab come back as type "Unknown" with prefab
+    /// <c>#&lt;hash&gt;</c>, and are also counted into <paramref name="unknown"/>.
+    /// Returns null if the file is missing or holds no locations.
+    /// </summary>
+    public static List<PoiLocation>? ReadFromWorldDb(string dbPath, int worldSeed, out Dictionary<int, int> unknown,
+        WorldGenerator? wg = null, IReadOnlyDictionary<(string, int, int), LootSample>? loot = null)
+    {
+        unknown = new();
         if (!File.Exists(dbPath)) return null;
 
-        byte[] data;
-        try { data = File.ReadAllBytes(dbPath); }
-        catch { return null; }
-
-        var results = new List<PoiLocation>();
-        foreach (var (prefabName, friendly) in FriendlyNames)
+        byte[] zone;
+        using (var br = new BinaryReader(File.OpenRead(dbPath)))
         {
-            byte[] nameBytes = Encoding.UTF8.GetBytes(prefabName);
-            // BinaryWriter writes strings as 7-bit encoded length + UTF8 bytes
-            // For strings < 128 chars, length is a single byte
-            byte[] needle = new byte[1 + nameBytes.Length];
-            needle[0] = (byte)nameBytes.Length;
-            Array.Copy(nameBytes, 0, needle, 1, nameBytes.Length);
+            int version = br.ReadInt32();
+            if (version < 41)
+                throw new InvalidDataException($"{dbPath}: world version {version}, expected a 1.0 (41+) .db2");
+            br.ReadDouble(); // net time
+            var compressed = br.ReadBytes(br.ReadInt32());
+            using var gz = new GZipStream(new MemoryStream(compressed), CompressionMode.Decompress);
+            using var ms = new MemoryStream();
+            gz.CopyTo(ms);
+            zone = ms.ToArray();
+        }
 
-            // Look up config for type and items
+        var byHash = FriendlyNames.Keys.Concat(ExtraPrefabs.Keys).ToDictionary(StableHash.GetStableHashCode);
+        var results = new List<PoiLocation>();
+
+        using var r = new BinaryReader(new MemoryStream(zone), Encoding.UTF8);
+        int zones = r.ReadInt32();
+        r.BaseStream.Seek(zones * 4L, SeekOrigin.Current); // Vector2s = 2 x int16
+        r.ReadInt32(); // location version
+        int keys = r.ReadInt32();
+        for (int i = 0; i < keys; i++) r.ReadString();
+        r.ReadBoolean(); // locations generated
+        int count = r.ReadInt32();
+
+        for (int i = 0; i < count; i++)
+        {
+            int hash = r.ReadInt32();
+            float x = r.ReadSingle();
+            r.ReadSingle(); // y
+            float z = r.ReadSingle();
+            bool placed = r.ReadBoolean();
+
+            string? biome = wg?.GetBiome(x, z).ToString();
+
+            if (!byHash.TryGetValue(hash, out var prefabName))
+            {
+                unknown[hash] = unknown.GetValueOrDefault(hash) + 1;
+                results.Add(new PoiLocation("Unknown location", "Unknown", x, z,
+                    Prefab: $"#{hash}", Generated: placed, Biome: biome));
+                continue;
+            }
+
+            if (ExtraPrefabs.TryGetValue(prefabName, out var extra))
+            {
+                ChestItem[][]? extraChests = null;
+                if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out var extraSample)
+                    && extraSample.Chests.Length > 0)
+                    extraChests = extraSample.Chests;
+                results.Add(new PoiLocation(extra.Name, extra.Type, x, z,
+                    Prefab: prefabName, Generated: placed, Biome: biome, Chests: extraChests));
+                continue;
+            }
+
+            var friendly = FriendlyNames[prefabName];
             var cfg = AllLocations.FirstOrDefault(c => c.PrefabName == prefabName);
             string type = cfg?.Type ?? (prefabName == "StartTemple" ? "Start" : "Boss Altar");
 
-            int pos = 0;
-            while (true)
+            string[]? items = cfg?.StaticItems;
+            ChestItem[][]? chests = null;
+            IReadOnlyDictionary<string, int>? creatures = null;
+            string[]? vegvisirs = null;
+            if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out var sample))
             {
-                pos = FindBytes(data, needle, pos);
-                if (pos < 0) break;
-
-                int after = pos + needle.Length;
-                if (after + 13 <= data.Length)
-                {
-                    float x = BitConverter.ToSingle(data, after);
-                    float y = BitConverter.ToSingle(data, after + 4);
-                    float z = BitConverter.ToSingle(data, after + 8);
-
-                    // Sanity check coordinates
-                    if (Math.Abs(x) < 20000 && Math.Abs(z) < 20000 && Math.Abs(y) < 1000)
-                    {
-                        // The byte before the length prefix is the 'generated' flag
-                        // (0x01 = zone visited and location spawned, 0x00 = candidate only)
-                        bool generated = pos > 0 && data[pos - 1] == 0x01;
-
-                        // Simulate RandomSpawn + chest loot at real positions
-                        string[]? items = cfg?.StaticItems;
-                        if (worldSeed != 0 && PrefabSpawnData.ContainsKey(prefabName))
-                        {
-                            var rngState = UnityRandom.GetState();
-                            var simItems = SimulateRandomSpawns(prefabName, worldSeed, x, z,
-                                cfg?.ChestType);
-                            var (a, b, c, d) = rngState;
-                            UnityRandom.SetState(a, b, c, d);
-                            if (simItems.Count > 0)
-                                items = simItems.ToArray();
-                        }
-
-                        // For houses, only include if they have interesting items
-                        if (type == "House" && (items == null || items.Length == 0))
-                        {
-                            pos++;
-                            continue;
-                        }
-
-                        results.Add(new PoiLocation(friendly, type, x, z,
-                            Prefab: prefabName, Items: items, Generated: generated));
-                    }
-                }
-                pos++;
+                var found = LootItems(sample);
+                if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
+                if (sample.Chests.Length > 0) chests = sample.Chests;
+                if (sample.Creatures.Count > 0) creatures = sample.Creatures;
+                if (sample.Vegvisirs.Length > 0) vegvisirs = sample.Vegvisirs;
             }
+
+            results.Add(new PoiLocation(friendly, type, x, z,
+                Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
+                Creatures: creatures, Vegvisirs: vegvisirs));
         }
 
         return results.Count > 0 ? results : null;
     }
 
-    static int FindBytes(byte[] haystack, byte[] needle, int start)
+    /// <summary>Loot lookup key: prefab plus position rounded to 0.1 units.</summary>
+    public static (string, int, int) LootKey(string prefab, float x, float z)
+        => (prefab, (int)MathF.Round(x * 10f), (int)MathF.Round(z * 10f));
+
+    /// <summary>
+    /// Reads the oracle plugin's <c>oracle.loot.json</c> into a lookup by
+    /// <see cref="LootKey"/>. Missing or unreadable file: null, and POIs simply
+    /// carry no loot.
+    /// </summary>
+    public static Dictionary<(string, int, int), LootSample>? LoadLoot(string path)
     {
-        int end = haystack.Length - needle.Length;
-        for (int i = start; i <= end; i++)
+        if (!File.Exists(path)) return null;
+        using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+        var map = new Dictionary<(string, int, int), LootSample>();
+        foreach (var e in doc.RootElement.EnumerateArray())
         {
-            bool match = true;
-            for (int j = 0; j < needle.Length; j++)
-            {
-                if (haystack[i + j] != needle[j]) { match = false; break; }
-            }
-            if (match) return i;
+            string prefab = e.GetProperty("prefab").GetString() ?? "";
+            float x = e.GetProperty("x").GetSingle(), z = e.GetProperty("z").GetSingle();
+            var chests = e.GetProperty("chests").EnumerateArray()
+                .Select(c => c.EnumerateArray()
+                    .Select(item => new ChestItem(item[0].GetString() ?? "?", item[1].GetInt32()))
+                    .ToArray())
+                .ToArray();
+            static Dictionary<string, int> Counts(System.Text.Json.JsonElement parent, string name) =>
+                parent.TryGetProperty(name, out var o)
+                    ? o.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetInt32())
+                    : new Dictionary<string, int>();
+            var vegvisirs = e.TryGetProperty("vegvisirs", out var vv)
+                ? vv.EnumerateArray().Select(v => v.GetString() ?? "").Where(v => v != "").ToArray()
+                : Array.Empty<string>();
+            map[LootKey(prefab, x, z)] = new LootSample(prefab, x, z,
+                e.GetProperty("beehives").GetInt32(), chests,
+                Counts(e, "objects"), Counts(e, "present"), Counts(e, "creatures"), vegvisirs);
         }
-        return -1;
+        return map;
+    }
+
+    /// <summary>
+    /// The finds we surface as POI items (they drive the map's icons), read off
+    /// what the game spawned rather than simulated.
+    /// </summary>
+    static List<string> LootItems(LootSample s)
+    {
+        var items = new List<string>();
+        // Also check the spawned objects: plugin builds before the 1.0 fix counted 0 beehives.
+        if (s.Beehives > 0 || s.Objects.ContainsKey("Beehive")) items.Add("Beehive");
+        foreach (var c in s.Chests.SelectMany(x => x))
+        {
+            if (c.Item == "AxeHead1") items.Add("Mysterious Axe Head");
+            else if (c.Item == "AxeHead2") items.Add("Curious Axe Head");
+        }
+        if (s.Objects.ContainsKey("Spawner_Troll")) items.Add("Troll");
+        if (s.Objects.ContainsKey("goblin_totempole")) items.Add("GoblinTotem");
+        if (s.Present.Keys.Any(k => k.Contains("Vegvisir"))) items.Add("Vegvisir");
+        return items;
     }
 
     // All location configs combined: prioritized first, then non-prioritized
@@ -567,38 +761,10 @@ public static class LocationFinder
                 placed[loc.PrefabName] = new List<(float, float)>();
 
             var found = GenerateLocation(wg, loc, placed);
-            // Snapshot RNG state after placement (before RandomSpawn simulation)
-            var rngState = UnityRandom.GetState();
-
             string friendly = FriendlyNames.GetValueOrDefault(loc.PrefabName, loc.PrefabName);
             foreach (var (x, z) in found)
-            {
-                // Build per-instance items: static items + RandomSpawn results + chest loot
-                var randomItems = SimulateRandomSpawns(loc.PrefabName, wg.GetSeed(), x, z,
-                    loc.ChestType);
-                string[]? items = null;
-                int staticCount = loc.StaticItems?.Length ?? 0;
-                int totalCount = staticCount + randomItems.Count;
-                if (totalCount > 0)
-                {
-                    items = new string[totalCount];
-                    if (loc.StaticItems != null)
-                        Array.Copy(loc.StaticItems, items, staticCount);
-                    for (int ri = 0; ri < randomItems.Count; ri++)
-                        items[staticCount + ri] = randomItems[ri];
-                }
-
-                // Only include houses that have interesting items (beehive, axe heads)
-                if (loc.Type == "House" && (items == null || items.Length == 0))
-                    continue;
-
                 results.Add(new PoiLocation(friendly, loc.Type, x, z,
-                    Prefab: loc.PrefabName, Items: items));
-            }
-
-            // Restore RNG state so the next GenerateLocation call is unaffected
-            var (a, b, c, d) = rngState;
-            UnityRandom.SetState(a, b, c, d);
+                    Prefab: loc.PrefabName, Items: loc.StaticItems));
         }
 
         return results;
@@ -862,245 +1028,6 @@ public static class LocationFinder
     }
 
     static string Escape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
-
-    // --- RandomSpawn + chest loot simulation ---
-    //
-    // ZoneSystem.SpawnLocation execution order (confirmed from decompiled code):
-    //   1. Random.InitState(worldSeed + zoneID.x*4271 + zoneID.y*9187)
-    //   2. Iterate ALL RandomSpawn components → each consumes Range(0f, 100f)
-    //      Objects failing the roll are deactivated on the prefab template.
-    //   3. Iterate ZNetView[] → Instantiate each ACTIVE one.
-    //      Container.Awake() fires synchronously during Instantiate,
-    //      calling AddDefaultItems() → DropTable.GetDropListItems(),
-    //      which continues consuming from the SAME seeded RNG.
-    //
-    // This means chest contents are FULLY DETERMINISTIC from world seed + zone position.
-
-    // Per-prefab data: total RandomSpawn count + tracked items + chest info
-    record PrefabSpawnInfo(
-        int TotalRandomSpawns,                                         // total RS components in prefab
-        (string Item, int Index, float Chance)[] TrackedSpawns,        // RS items we care about
-        ChestInfo? Chest);                                             // null = no special chest
-
-    record ChestInfo(
-        bool IsRandomSpawn,      // true = chest itself is a RandomSpawn
-        int RsIndex,             // RandomSpawn index (only if IsRandomSpawn)
-        float RsChance,          // m_chanceToSpawn (only if IsRandomSpawn)
-        string AxeHeadItem,      // friendly name of the axe head
-        string AxeHeadPrefab,    // prefab name (AxeHead1 / AxeHead2)
-        float AxeHeadWeight,     // weight in DropTable (2.0)
-        float TotalWeight,       // sum of all weights (8.0)
-        int WearNTearBefore,     // # of non-conditional WearNTear before chest
-        (int Index, float Chance)[] VineGroups,  // RS vine groups that add WNT if survived
-        int WntPerVineGroup);                     // WNT pieces added per surviving vine group
-    // WearNTear.Awake() consumes 2 RNG calls when m_applyRandomDamage=true:
-    //   Range(0f, 4f) for m_updateCoverTimer (always)
-    //   Range(0.1*hp, 0.6*hp) for initial damage (when m_randomInitialDamage && hp==default)
-    // Both WoodHouse2 and WoodHouse6 have m_applyRandomDamage=true.
-    // Container.Awake fires BEFORE WearNTear.Awake on the same GameObject,
-    // so the chest's own WearNTear does not interfere.
-    // DropTable shared by both chest types: dropChance=1.0, dropMin=2, dropMax=3, oneOfEach=true
-    // Items: Feathers(w1,1-3), Coins(w1,5-15), Amber(w1,1-1), ArrowFlint(w1,10-20),
-    //        Torch(w1,1-1), Flint(w1,2-4), AxeHead(w2,1-1)
-
-    static readonly DropItem[] MeadowsChestDrops = new[]
-    {
-        new DropItem("Feathers",   1f, 1, 3),
-        new DropItem("Coins",      1f, 5, 15),
-        new DropItem("Amber",      1f, 1, 1),
-        new DropItem("ArrowFlint", 1f, 10, 20),
-        new DropItem("Torch",      1f, 1, 1),
-        new DropItem("Flint",      1f, 2, 4),
-    };
-    record DropItem(string Name, float Weight, int StackMin, int StackMax);
-
-    // Total RandomSpawn counts and beehive indices cross-referenced against game simulation ground truth.
-    // All beehives have m_chanceToSpawn=25. WoodHouse8/12 have no beehive.
-    static readonly Dictionary<string, PrefabSpawnInfo> PrefabSpawnData = new()
-    {
-        ["WoodHouse1"]  = new(50, new[] { ("Beehive",  1, 25f) }, null),
-        ["WoodHouse2"]  = new(67,
-            new[] { ("Beehive", 49, 25f), ("Chest", 50, 50f) },
-            new ChestInfo(true, 50, 50f, "Curious Axe Head", "AxeHead2", 2f, 8f,
-                WearNTearBefore: 61,    // 61 non-conditional WearNTear ZNetViews before chest
-                VineGroups: new[] { (0, 10f), (5, 10f), (11, 10f) },  // 3 vine groups before chest (10% each)
-                WntPerVineGroup: 2)),  // each surviving vine group adds 2 WNT pieces
-        ["WoodHouse3"]  = new(30, new[] { ("Beehive", 28, 25f) }, null),
-        ["WoodHouse4"]  = new(30, new[] { ("Beehive",  5, 25f) }, null),
-        ["WoodHouse5"]  = new(26, new[] { ("Beehive",  6, 25f) }, null),
-        ["WoodHouse6"]  = new(30,
-            new[] { ("Beehive", 1, 25f) },
-            new ChestInfo(false, 0, 0f, "Mysterious Axe Head", "AxeHead1", 2f, 8f,
-                WearNTearBefore: 29,    // 29 non-conditional WearNTear ZNetViews before chest
-                VineGroups: Array.Empty<(int, float)>(),
-                WntPerVineGroup: 0)),  // no conditional vine groups
-        ["WoodHouse7"]  = new(63, new[] { ("Beehive", 14, 25f) }, null),
-        // WoodHouse8: 42 RandomSpawns, no beehive, no special chest
-        ["WoodHouse9"]  = new(62, new[] { ("Beehive", 14, 25f) }, null),
-        ["WoodHouse10"] = new(46, new[] { ("Beehive", 15, 25f) }, null),
-        ["WoodHouse11"] = new(64, new[] { ("Beehive", 23, 25f) }, null),
-        // WoodHouse12: 24 RandomSpawns, no beehive, no special chest
-        ["WoodHouse13"] = new(47, new[] { ("Beehive",  9, 25f) }, null),
-
-        // TrollCave02: 7 RandomSpawns. Troll (SpawnOnce) at index 0, 33% chance.
-        ["TrollCave02"] = new(7, new[] { ("Troll", 0, 33f) }, null),
-
-        // GoblinCamp2: 1 RandomSpawn. GoblinTotem at index 0, 50% chance.
-        ["GoblinCamp2"] = new(1, new[] { ("GoblinTotem", 0, 50f) }, null),
-
-        // StoneTowerRuins04: 15 RandomSpawns. Vegvisir_DragonQueen at index 4, 70% chance.
-        ["StoneTowerRuins04"] = new(15, new[] { ("ModerVegvisir", 4, 70f) }, null),
-    };
-
-    /// <summary>
-    /// Simulate Valheim's RandomSpawn rolls and chest DropTable for a placed location.
-    /// Returns items that spawned/dropped at this position — fully deterministic from seed.
-    /// </summary>
-    static List<string> SimulateRandomSpawns(string prefabName, int worldSeed, float x, float z,
-        string? chestType)
-    {
-        var spawned = new List<string>();
-        if (!PrefabSpawnData.TryGetValue(prefabName, out var info))
-            return spawned;
-
-        // Compute zoneID from world position
-        int zoneX = FloorToInt((x + 32f) / 64f);
-        int zoneY = FloorToInt((z + 32f) / 64f);
-
-        // Seed the RNG for this location instance (game formula)
-        int seed = worldSeed + zoneX * 4271 + zoneY * 9187;
-        UnityRandom.InitState(seed);
-
-        // Build lookup for tracked RandomSpawn indices
-        var itemAt = new Dictionary<int, (string Item, float Chance)>();
-        foreach (var (item, idx, chance) in info.TrackedSpawns)
-            itemAt[idx] = (item, chance);
-
-        // Phase 1: Roll ALL RandomSpawn children (consuming Range(0,100) for each)
-        // Track which vine groups survived (they add WearNTear calls in the Instantiate loop)
-        bool chestSurvived = info.Chest != null && !info.Chest.IsRandomSpawn; // always-present chest
-        int survivedVineGroups = 0;
-
-        // Build vine group lookup: RS index → chance
-        Dictionary<int, float>? vineChances = null;
-        if (info.Chest?.VineGroups is { Length: > 0 })
-        {
-            vineChances = new Dictionary<int, float>();
-            foreach (var (vIdx, vChance) in info.Chest.VineGroups)
-                vineChances[vIdx] = vChance;
-        }
-
-        for (int i = 0; i < info.TotalRandomSpawns; i++)
-        {
-            float roll = UnityRandom.Range(0f, 100f);
-            if (itemAt.TryGetValue(i, out var entry))
-            {
-                if (roll <= entry.Chance)
-                {
-                    if (entry.Item == "Chest")
-                        chestSurvived = true;
-                    else
-                        spawned.Add(entry.Item);
-                }
-            }
-            // Check if this RS index is a vine group parent
-            if (vineChances != null && vineChances.TryGetValue(i, out float vineChance))
-            {
-                if (roll <= vineChance)
-                    survivedVineGroups++;
-            }
-        }
-
-        // Phase 2: Simulate the Instantiate loop's RNG consumption before the chest.
-        // Each WearNTear.Awake() consumes 2 Random calls (m_applyRandomDamage=true):
-        //   Range(0f, 4f) for cover timer + Range(0.1*hp, 0.6*hp) for initial damage.
-        // Container.Awake fires BEFORE WearNTear on the chest's own GameObject.
-        if (chestSurvived && info.Chest != null)
-        {
-            var chest = info.Chest;
-            int totalWnt = chest.WearNTearBefore + survivedVineGroups * chest.WntPerVineGroup;
-            for (int w = 0; w < totalWnt; w++)
-            {
-                UnityRandom.Range(0f, 4f);     // m_updateCoverTimer
-                UnityRandom.Range(0f, 1f);     // initial damage (Range(0.1*hp, 0.6*hp))
-            }
-
-            var lootItems = SimulateDropTable(chest);
-            bool hasAxeHead = false;
-            foreach (var item in lootItems)
-            {
-                if (item == chest.AxeHeadPrefab)
-                    hasAxeHead = true;
-            }
-            if (hasAxeHead)
-                spawned.Add(chest.AxeHeadItem);
-            else
-                spawned.Add($"Chest (no {chest.AxeHeadItem})");
-        }
-
-        return spawned;
-    }
-
-    /// <summary>
-    /// Simulate DropTable.GetDropListItems() using the current UnityRandom state.
-    /// Matches the exact game algorithm: dropChance check, pick count, weighted selection
-    /// with oneOfEach removal, and stack size rolls.
-    /// </summary>
-    static List<string> SimulateDropTable(ChestInfo chest)
-    {
-        var result = new List<string>();
-
-        // 1. dropChance check: Random.value > m_dropChance → early return
-        //    dropChance=1.0, so this always passes, but still consumes one RNG call
-        float dropCheck = UnityRandom.Value();
-        if (dropCheck > 1.0f) return result; // never true for dropChance=1.0
-
-        // 2. Build mutable drop list with weights
-        var drops = new List<(string Name, float Weight, int StackMin, int StackMax)>();
-        float totalWeight = 0f;
-        foreach (var d in MeadowsChestDrops)
-        {
-            drops.Add((d.Name, d.Weight, d.StackMin, d.StackMax));
-            totalWeight += d.Weight;
-        }
-        // Add the axe head entry
-        drops.Add((chest.AxeHeadPrefab, chest.AxeHeadWeight, 1, 1));
-        totalWeight += chest.AxeHeadWeight;
-
-        // 3. Pick number of items: Random.Range(dropMin, dropMax+1) = Range(2, 4)
-        int numItems = UnityRandom.Range(2, 4); // 2 or 3
-
-        // 4. For each item pick: weighted random selection
-        for (int i = 0; i < numItems && drops.Count > 0; i++)
-        {
-            float roll = UnityRandom.Range(0f, totalWeight);
-            string picked = drops[0].Name; // fallback
-            int pickedIdx = 0;
-
-            float cumulative = 0f;
-            for (int d = 0; d < drops.Count; d++)
-            {
-                cumulative += drops[d].Weight;
-                if (roll <= cumulative)
-                {
-                    picked = drops[d].Name;
-                    pickedIdx = d;
-                    break;
-                }
-            }
-
-            result.Add(picked);
-
-            // AddItemToList consumes Random.Range(stackMin, stackMax+1) for stack size
-            UnityRandom.Range(drops[pickedIdx].StackMin, drops[pickedIdx].StackMax + 1);
-
-            // oneOfEach: remove picked item and reduce weight
-            totalWeight -= drops[pickedIdx].Weight;
-            drops.RemoveAt(pickedIdx);
-        }
-
-        return result;
-    }
 
     record LocationConfig(
         string PrefabName, string Type, Biome Biome, WorldGenerator.BiomeArea BiomeArea,

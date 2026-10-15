@@ -289,13 +289,6 @@ const trophies = [
     biome: "Ashlands",
     code: "TrophyCharredMage"
   },
-  // TrophyWarlock is not a game prefab — the mod reports the Warlock as
-  // TrophyCharredMage. Kept so scoring records seeded before 1.0 still render.
-  {
-    name: "Warlock",
-    biome: "Ashlands",
-    code: "TrophyWarlock"
-  },
   {
     name: "Warrior",
     biome: "Ashlands",

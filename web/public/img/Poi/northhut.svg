@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.93 16.93"
+   version="1.1"
+   id="svg2110"
+   sodipodi:docname="northhut.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata2114">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1339"
+     inkscape:window-height="932"
+     id="namedview2112"
+     showgrid="false"
+     inkscape:zoom="5.2149125"
+     inkscape:cx="44.365849"
+     inkscape:cy="4.2348149"
+     inkscape:window-x="2670"
+     inkscape:window-y="375"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2110" />
+  <defs
+     id="defs2088">
+    <!-- the gable wall's triangle, so the wattle weave stays inside it -->
+    <clipPath
+       id="gable">
+      <path
+         d="M3.4 14.6 8.465 6.2l5.065 8.4z"
+         id="path2085" />
+    </clipPath>
+  </defs>
+  <!-- roof: dark shingles running all the way to the ground -->
+  <path
+     d="M 3.2838119,14.766079 8.5298082,6.0451152 13.775804,14.766079 H 12.400306 L 8.5298082,8.2253562 4.6593099,14.766079 Z"
+     id="path2090"
+     inkscape:connector-curvature="0"
+     style="fill:#4b3a2b;stroke-width:0.7713775" />
+  <!-- shingle rows, parallel to the ground -->
+  <path
+     d="M 4.0097692,13.55916 H 5.3470589 M 4.7357265,12.35224 H 6.0730161 M 5.4616836,11.145321 H 6.7989732 M 6.187641,9.9384024 H 7.4103057 M 6.9135982,8.7314836 H 7.9834299 M 11.712557,13.55916 h 1.33729 M 10.9866,12.35224 h 1.33729 m -2.063247,-1.206919 h 1.33729 M 9.6493107,9.9384024 H 10.871975 M 9.0761865,8.7314836 h 1.0698315"
+     id="path2092"
+     inkscape:connector-curvature="0"
+     style="fill:none;stroke:#2f241b;stroke-width:0.23141325" />
+  <path
+     d="M 3.0163541,15.233273 9.5881775,4.3320687 M 14.043262,15.233273 7.4714389,4.3320687"
+     id="path2104"
+     inkscape:connector-curvature="0"
+     style="fill:#eef7fa;fill-opacity:1;stroke:#6a4227;stroke-width:1.04585147;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path
+     style="fill:#eef7fa;fill-opacity:1;stroke:#bbe0ed;stroke-width:0.2466134px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 6.6083925,6.1641482 C 6.2320999,6.5413295 6.4044387,7.0553497 5.9956765,7.4654497 6.124366,7.8828207 5.094907,8.13842 5.4778747,8.6031112 4.8000696,9.0069862 4.9923574,9.6715704 4.4689833,10.095713 4.0077096,10.732985 3.5633697,11.299848 3.300501,11.986993 2.944058,12.662647 2.6860126,13.438076 2.154283,14.096938 2.5920484,14.513662 1.1615869,15.273574 2.2287815,15.222479 3.0095036,14.982753 3.2282178,14.135125 3.582422,13.579722 4.0075973,13.085735 4.2067317,12.60103 4.4327707,12.067576 4.7673475,11.56006 5.2213379,11.120682 5.5466697,10.608515 5.9936311,10.062989 5.8744353,9.3843224 6.3485286,8.8312363 6.7695611,8.2904778 6.7932491,7.623054 7.2694853,7.1075725 7.7022095,6.5296375 7.9903404,5.8761815 6.6083925,6.1641482 Z"
+     id="path2665-5"
+     inkscape:connector-curvature="0" />
+  <!-- gable wall: woven wattle -->
+  <path
+     d="M 4.6593099,14.766079 8.5298082,8.2253562 12.400306,14.766079 Z"
+     id="path2094"
+     inkscape:connector-curvature="0"
+     style="fill:#886c59;fill-opacity:1;stroke-width:0.7713775" />
+  <path
+     style="fill:#eef7fa;fill-opacity:1;stroke:#bbe0ed;stroke-width:0.2374472px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 10.013402,5.9373207 c 0.38506,0.317907 0.240889,0.9042597 0.64128,1.223242 0.08654,0.5239732 0.792071,0.7532901 0.74386,1.3214077 0.606115,0.4675828 0.520207,1.192958 1.170806,1.6326066 0.444959,0.622271 0.859754,1.21508 1.195097,1.896498 0.195716,0.753148 0.930388,1.327935 1.02432,2.0892 0.111875,0.353097 0.846603,0.824539 -0.01525,0.847513 -0.640777,-0.255349 -0.962108,-1.04133 -1.314619,-1.610787 C 12.94963,12.85901 12.842171,12.228515 12.428558,11.698916 11.945229,11.085483 11.272722,10.539247 11.08992,9.7720144 10.886989,9.0776446 10.343418,8.554539 10.076123,7.8880133 9.8820251,7.2448377 9.2197769,6.8343774 9.1431438,6.1557968 9.377039,5.9849397 9.7183267,5.9150689 10.013402,5.9373207 Z"
+     id="path2665"
+     inkscape:connector-curvature="0" />
+  <g
+     clip-path="url(#gable)"
+     id="g2100"
+     transform="matrix(0.76416551,0,0,0.77865749,2.0611471,3.3976797)"
+     style="fill:none;stroke:#623d24;stroke-width:0.34999999;stroke-opacity:1">
+    <path
+       d="m 2,9 8,8 M 2,11 8,17 M 4,7 13,16 M 6,6 l 9,9 m -7,-9 8,8"
+       id="path2096"
+       inkscape:connector-curvature="0"
+       style="stroke:#623d24;stroke-opacity:1" />
+    <path
+       d="m 15,9 -8,8 m 8,-6 -6,6 M 13,7 4,16 M 11,6 2,15 M 9,6 1,14"
+       id="path2098"
+       inkscape:connector-curvature="0"
+       style="stroke:#623d24;stroke-opacity:1" />
+  </g>
+  <!-- low doorway -->
+  <path
+     d="m 7.7923885,14.766079 v -1.635182 a 0.73741973,0.75140449 0 0 1 1.4748394,0 v 1.635182 z"
+     id="path2102"
+     inkscape:connector-curvature="0"
+     style="fill:#2b1f16;stroke-width:0.7713775" />
+  <!-- crossed log poles, poking out past the peak like the prefab -->
+  <!-- snow on the upper roof -->
+  <g
+     id="g2661"
+     transform="matrix(0.76631984,0,0,-0.69758202,1.9703754,7.9040148)">
+    <path
+       style="fill:#eef7fa"
+       d="M 8.465,3.4 C 7.8933333,4.3333333 7.3216667,5.2666667 6.75,6.2 7.4716701,6.387707 8.2094771,6.3972818 8.9378102,6.3981619 9.3274421,6.3540691 10.448103,6.4068226 10.343793,6.0501865 9.7175286,5.166791 9.0912643,4.2833955 8.465,3.4 Z"
+       id="path2106"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#bbe0ed;stroke-width:0.2;stroke-linejoin:round"
+       d="M 8.465,3.4 C 7.8933333,4.3333333 7.3216667,5.2666667 6.75,6.2 7.4716701,6.387707 8.2094771,6.3972818 8.9378102,6.3981619 9.3274421,6.3540691 10.448103,6.4068226 10.343793,6.0501865 9.7175286,5.166791 9.0912643,4.2833955 8.465,3.4 Z"
+       id="path2108"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

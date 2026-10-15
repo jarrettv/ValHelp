@@ -8,6 +8,7 @@ using ValHelpApi.ModuleRuns;
 using ValHelpApi.ModuleSeries;
 using ValHelpApi.ModuleStuff;
 using ValHelpApi.ModuleTrack;
+using ValHelpApi.ModuleWorlds;
 
 namespace ValHelpApi.Config;
 
@@ -32,6 +33,9 @@ public class AppDbContext : DbContext
     public DbSet<TrackLog> TrackLogs { get; set; }
     public DbSet<TrackMap> TrackMaps { get; set; }
 
+    public DbSet<PoiSetting> PoiSettings { get; set; }
+    public DbSet<PoiIcon> PoiIcons { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -42,6 +46,7 @@ public class AppDbContext : DbContext
         SeriesActivate.OnModelCreating(modelBuilder);
         StuffActivate.OnModelCreating(modelBuilder);
         TrackActivate.OnModelCreating(modelBuilder);
+        WorldsActivate.OnModelCreating(modelBuilder);
     }
 
 

@@ -1,8 +1,10 @@
+import { iconUrl } from '../guides/vh/data';
+
 export const PlayerTrophy = (props: { code: string }) => {
   const { code } = props;
   return (
     <div className="trophy">
-      <img src={`/img/Trophy/${code}.png`} alt={code} />
+      <img src={iconUrl(code)} alt={code} />
     </div>
   );
 };

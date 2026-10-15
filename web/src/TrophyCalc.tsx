@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import trophies from "./domain/trophies";
 import { useScorings, ScoringRecord } from "./hooks/useScorings.ts";
 import "./TrophyCalc.css";
+import { iconUrl } from "./guides/vh/data";
 
 interface DisplayTrophy {
     code: string;
@@ -179,7 +180,7 @@ const TrophyCalc: React.FC = () => {
                                 <div className="calc-chance">{dropChanceLabel}</div>
                                 <div className="calc-score">{trophy.score ?? 0}</div>
                             </div>
-                            <img src={`/img/Trophy/${trophy.code}.png`} alt={displayName} loading="lazy" />
+                            <img src={iconUrl(trophy.code)} alt={displayName} loading="lazy" />
                             <div className="calc-name">{displayName}</div>
                         </button>
                     );

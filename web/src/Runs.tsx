@@ -6,6 +6,7 @@ import Spinner from './components/Spinner';
 import { useAuth } from './contexts/AuthContext';
 import type { RunDetails, RunEvent, RunRecord, RunRow, RunUpsert } from './domain/run';
 import { useRun, useRuns } from './hooks/useRuns';
+import { EXTRA_ITEMS, fetchVhItems, iconUrl } from './guides/vh/data';
 
 type DataItem = {
   code: string;
@@ -47,10 +48,19 @@ function RecordBadge({ record }: { record: RunRecord }) {
   );
 }
 
+// Palette from the guides' item data: type is the tab an item belongs on, and
+// source the station that crafts it (the Stations tab).
+const GEAR_CATEGORIES = new Set(['Weapon', 'Armor', 'Shield', 'Bow', 'Ammo', 'Trinket', 'Utility', 'Tool', 'Misc']);
 const fetchItems = async (): Promise<DataItem[]> => {
-  const res = await fetch('/data.json');
-  if (!res.ok) throw new Error('Failed to load item data');
-  return res.json();
+  const all = [...(await fetchVhItems()), ...EXTRA_ITEMS].filter((i) => i.name && !i.hidden);
+  const byCode = new Map(all.map((i) => [i.code, i]));
+  return all.map((i) => ({
+    code: i.code,
+    type: i.food ? 'Food' : GEAR_CATEGORIES.has(i.category ?? '') ? 'Gear' : i.category ?? '',
+    name: i.name!,
+    image: iconUrl(i.code),
+    source: i.recipe?.station ? byCode.get(i.recipe.station)?.name ?? i.recipe.station : undefined,
+  }));
 };
 
 export default function Runs() {
@@ -135,34 +145,8 @@ export default function Runs() {
       return list;
     }
 
-    const gearTypes = new Set([
-      'Accessory',
-      'Armor',
-      'Axe',
-      'Bow',
-      'Club',
-      'Crossbow',
-      'Fists',
-      'Knife',
-      'Pickaxe',
-      'Polearm',
-      'Shield',
-      'Spear',
-      'Sword',
-      'Arrow',
-      'Bolt',
-      'Bomb',
-      'Missile',
-      'Misc',
-      'Blood magic',
-      'Elemental magic',
-    ]);
-
     return items
-      .filter((i) => {
-        if (tab === 'Food') return i.type === 'Food';
-        return gearTypes.has(i.type);
-      })
+      .filter((i) => i.type === (tab === 'Food' ? 'Food' : 'Gear'))
       .filter((i) => (q ? i.name.toLowerCase().includes(q) : true))
       .slice(0, 250);
   }, [items, search, stations, tab]);

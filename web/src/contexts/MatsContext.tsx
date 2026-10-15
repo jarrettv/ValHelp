@@ -1,6 +1,6 @@
-import React, { createContext, useContext, PropsWithChildren } from "react";
+import React, { createContext, useContext, PropsWithChildren, useMemo } from "react";
 import { Mat } from "../domain/materials";
-import { useQuery } from "@tanstack/react-query";
+import { EXTRA_ITEMS, iconUrl, useVhItems } from "../guides/vh/data";
 
 type MatsContextValue = {
     mats: Mat[];
@@ -9,17 +9,14 @@ type MatsContextValue = {
 const MatsContext = createContext<MatsContextValue | undefined>(undefined);
 
 export const MatsProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-    const { data } = useQuery<Mat[]>({
-        queryKey: ["mats"],
-        queryFn: async () => {
-            const res = await fetch("/data.json");
-            if (!res.ok) throw new Error(`Failed to load /data.json: ${res.status}`);
-            return (await res.json()) as Mat[];
-        },
-        refetchOnWindowFocus: false,
-    });
+    const { data } = useVhItems();
 
-    const mats = data ?? [];
+    const mats = useMemo<Mat[]>(() => {
+        if (!data) return [];
+        return [...data, ...EXTRA_ITEMS]
+            .filter(i => i.name && !i.hidden)
+            .map(i => ({ code: i.code, name: i.name!, image: iconUrl(i.code) }));
+    }, [data]);
 
     return <MatsContext.Provider value={{ mats }}>{children}</MatsContext.Provider>;
 };

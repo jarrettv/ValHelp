@@ -27,7 +27,7 @@ better gear/food before killing later bosses.
 * [__Phase 5__](#phase-5) [Flametal]* and [GemstoneRed]* [GemstoneBlue]* [GemstoneBlue]*
 * Break <small>(if necessary)</small>
 * [__Phase 6__](#phase-6) [Totem]*, [Sealbreaker fragment]*, [Bell fragment]*
-* [__Phase 7__](#phase-7) kill [Yagluth]* [TrophySeekerQueen]* [Fader]* [Bonemass]*
+* [__Phase 7__](#phase-7) kill [Yagluth]* [TrophySeekerQueen]* [TrophyFader]* [Bonemass]*
 
 </div>
 
@@ -37,7 +37,7 @@ better gear/food before killing later bosses.
   <div>
 
 * Defeat [Eikthyr]* and hang trophy (15m)
-* Gather [Flint]* [Leather]* and other resources as you go
+* Gather [Flint]* [LeatherScraps]* and other resources as you go
 *   Listen closely for [Queen bee]* and lookout for shipwrecks
 * Explore southward for good black forest (15m)
 * Start base near the following resources (30m)
@@ -61,7 +61,7 @@ better gear/food before killing later bosses.
 
 ### Gather
 * [Flint](25)
-* [Leather](30)
+* [LeatherScraps](30)
 * [Queen bee](4)
 * [Wood](300)
 * [Corewood](30)
@@ -71,7 +71,7 @@ better gear/food before killing later bosses.
 * [Copper](100)
 * [Tin](50)
 * [Deer Hide](20)
-* [Leather](30)
+* [LeatherScraps](30)
 * [Surtling core](19)
 * [Carrot seeds](12)
 
@@ -227,14 +227,14 @@ _Details coming soon._
 | Item               | Requirements                                          | Extra      |
 |--------------------|-------------------------------------------------------|------------|
 | Home, bed, storage | [Wood](250)                                           |            |
-| Comfort            | [Finewood](10) [Deer hide](4) [Leather](6) [Coal](4)  |            |
-| Workbench Lv3      | [Wood](30) [Flint](25) [Leather](20) [Deer hide](5)   |            |
+| Comfort            | [Finewood](10) [Deer hide](4) [LeatherScraps](6) [Coal](4)  |            |
+| Workbench Lv3      | [Wood](30) [Flint](25) [LeatherScraps](20) [Deer hide](5)   |            |
 | Beehives           | [Wood](40) [Queen bee](4)                             |            |
 | Forge Lv1          | [Wood](10) [Stone](4) [Copper](6) [Coal](4)           | [Coal](12) |
 | Portal set         | [Finewood](40) [Surtling core](4) [Greydwarf eye](20) |            |
 | Karve              | [Finewood](30) [Copper](8) [Tin](4) [Deer hide](4)    | [Coal](24) |
-| Bronze axe         | [Wood](4) [Leather](2) [Copper](16) [Tin](8)          | [Coal](48) |
-| Bronze sword       | [Wood](2) [Leather](2) [Copper](16) [Tin](8)          | [Coal](48) |
+| Bronze axe         | [Wood](4) [LeatherScraps](2) [Copper](16) [Tin](8)          | [Coal](48) |
+| Bronze sword       | [Wood](2) [LeatherScraps](2) [Copper](16) [Tin](8)          | [Coal](48) |
 | Travel Forge       | [Copper](10) [Tin](2)                                 | [Coal](24) |
 
 Getting material for the future is a good idea but can slow you down. You may also
@@ -245,7 +245,7 @@ come across easier sources of material such as shipwrecks or surtling spawners.
 |-----------------|-------------------------------------------------------|------------|
 | Cultivator      | [Corewood](5) [Copper](10) [Tin](5)                   | [Coal](30) |
 | Extra portals   | [Finewood](80) [Greydwarf eye](40) [Surtling core](8) |            |
-| Mead ketill     | [Copper](6) [Tin](4) [Leather](2)                     | [Coal](20) |
+| Mead ketill     | [Copper](6) [Tin](4) [LeatherScraps](2)                     | [Coal](20) |
 | Fermenter       | [Copper](10) [Tin](5)                                 | [Coal](30) |
 | Adze            | [Finewood](10) [Copper](6) [Tin](3)                   | [Coal](18) |
 | Tool shelf      | [Finewood](10)                                        |            |

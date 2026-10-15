@@ -4,11 +4,13 @@ using Microsoft.Data.Sqlite;
 namespace ValHelpApi.ModuleStuff;
 
 /// <summary>
-/// Serves creature "portrait" renders from renders.db (per-star WebP blobs
-/// produced by scripts/ingest_captures.py). Kept in a standalone SQLite file so
-/// it's independent of items.db (which the extractor rebuilds from scratch).
+/// Serves renders from renders.db. Kept in a standalone SQLite file so it's
+/// independent of items.db (which the extractor rebuilds from scratch).
 ///
-///   GET api/mob/&lt;code&gt;_&lt;star&gt;.webp   e.g. /api/mob/TrophyCharredMelee_2.webp
+///   GET api/mob/&lt;code&gt;_&lt;star&gt;.webp   creature portraits (table renders, scripts/ingest_captures.py)
+///                                     e.g. /api/mob/TrophyCharredMelee_2.webp
+///   GET api/poi/preview/&lt;prefab&gt;.webp  map POI previews for /auth/pois
+///                                     (table poi_previews, scripts/render_poi_previews.py)
 /// </summary>
 public static class StuffEndpointsMob
 {
@@ -17,6 +19,26 @@ public static class StuffEndpointsMob
     internal static void Map(WebApplication app)
     {
         app.MapGet("api/mob/{name}.webp", GetMobRender);
+        app.MapGet("api/poi/preview/{prefab}.webp", GetPoiPreview);
+    }
+
+    static async Task<Results<FileContentHttpResult, NotFound>> GetPoiPreview(
+        HttpContext ctx, IWebHostEnvironment env, ILoggerFactory lf, string prefab)
+    {
+        string? dbPath = ResolveDb(env, lf.CreateLogger("PoiPreview"));
+        if (dbPath == null)
+            return TypedResults.NotFound();
+
+        await using var conn = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly");
+        await conn.OpenAsync();
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT webp FROM poi_previews WHERE prefab = $p";
+        cmd.Parameters.AddWithValue("$p", prefab);
+        if (await cmd.ExecuteScalarAsync() is not byte[] blob)
+            return TypedResults.NotFound();
+
+        ctx.Response.Headers.CacheControl = "public, max-age=86400";
+        return TypedResults.File(blob, "image/webp");
     }
 
     // name = "<code>_<star>". Codes may contain underscores (e.g. Bestiary_Bat),

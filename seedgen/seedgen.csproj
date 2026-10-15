@@ -8,4 +8,13 @@
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
   </ItemGroup>
+  <!-- oracle/ is a separate net472 BepInEx plugin, built against the game's own
+       assemblies (see oracle/README.md). Neither its sources nor its generated
+       obj/ may be compiled into seedgen. -->
+  <ItemGroup>
+    <Compile Remove="oracle/**" />
+    <Content Remove="oracle/**" />
+    <None Remove="oracle/**" />
+    <EmbeddedResource Remove="oracle/**" />
+  </ItemGroup>
 </Project>
