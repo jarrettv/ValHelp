@@ -3,7 +3,7 @@
 <img src="/api/mob/TrophyEikthyr_0.webp" style="width:110px;float:right;margin:0 0 8px 16px">
 
 
-Jump to [Food](/#food) · [Comfort](/#comfort) · [Resources](/#resources) · [Mobs](/#mobs) · [Places](/#places) · [Boss](/#boss)
+Jump to [Food](/#food) · [Comfort](/#comfort) · [Resources](/#resources) · [Mobs](/#mobs) · [Places](/#places) · [Alt biomes](/#alternative-biomes) · [Boss](/#boss)
 
 
 Rolling grass, beech, birch, and oak trees, and the easiest enemies in the game. It is the only biome where you can afford to learn the fight mechanics. A Viking's favorite place to settle down and build a cozy home.
@@ -55,7 +55,7 @@ Every enemy telegraphs its attacks in some way so you need to learn their attack
 
 Learn more about damage types, backstab, and attack chains in our [Weapons guide](/guides/weapons).
 
-Practice on Greylings and boars until parries are automatic. They hit for almost nothing, so mistakes are free. Boars charge on a long, obvious wind-up and are the best parry dummy in the game.
+Practice on Greylings and boars until parries and dodging becomes automatic. Using a campfire as a weapon can help in difficult combat situations.
 
 **Watch your Stamina.** Nearly every early death is someone who attacked at an empty bar and could not roll. Stop swinging at a third left.
 
@@ -135,9 +135,28 @@ Only these two standalone houses carry them — never multi-house farms.
 <img src="/img/guide/meadows/woodhouse2.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="WoodHouse2 exterior — the house whose chest may not spawn">
 :::
 
+## Alternative biomes
+
+Not every meadow is the same. When a world is created, some patches of Meadows get a **variant** that changes what grows and what spawns there. The game doesn't name them, so you tell them apart by how they look. One patch can have more than one variant.
+
+| Variant | What's different | Per world | From centre |
+|---------|------------------|----------:|------------:|
+| **Mushroom** | Carpeted in [Mushroom]@. Also appears in the Black Forest | 1–3 | 500 m |
+| **Dandelion** | Fields of [Dandelion]@ | 1–3 | 500 m |
+| **Raspberry** | Big clusters of bushes full of [Raspberry]@ | 1–3 | 500 m |
+| **Birch** | Extra birch and beech, plus an oak or two. [TrophyDeer]@"Deer" graze here | 1–3 | 500 m |
+| **Smalltree** | Only small trees, with [TrophyNeck]@"Necks" in the lakes. **In rain, Necks swarm** | 1–3 | 500 m |
+| **Menhir** | Standing stones. Also appears in the Plains. After Bonemass, [TrophySkeleton]@"Skeletons" rise here at night | 1–3 | 750 m |
+| **Peaceful** | No Greydwarfs, Skeletons, Necks, Trolls or Bears. Big herds of [TrophyBoar]@"Boar" and [TrophyDeer]@"Deer", and fireflies | 1–2 | 1,000 m |
+| **Dark** | Gloomy weather that never clears. Creatures get stars **twice as often**. [TrophyDraugr]@"Draugr" roam, and Draugr villages replace farms | 2–5 | 1,900 m |
+
+* **Birch Meadows** is the easy way to get [FineWood]@ early. Grab an [AxeEarly]@ or a bronze axe and clear it out.
+* **Peaceful Meadows** is a very safe spot for a first base. It can never overlap a Dark Meadow.
+* **Dark Meadows** is dangerous. Draugr hit far harder than anything else in the Meadows, so don't wander in with starter gear.
+
 ## Boss
 
-**Eikthyr is the only boss with a single vegvisir.** And that vegvisir is at the very start next to his standing stone. Every other Forsaken is revealed by multiple runestones throughout the world/dungeons. There are 3 different Eikthyr altars per world and sometimes they are right near each other. However, touching the vegvisir will only mark the nearest location.
+**Eikthyr has a single vegvisir at the very start** near his boss stone. Every other Forsaken is revealed by multiple runestones throughout the world/dungeons. There are 3 different Eikthyr altars per world and sometimes they are right near each other. Remember, touching a boss vegvisir will only mark the nearest boss location.
 
 <img src="/img/guide/meadows/eikthyr-alter.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="The altar from a short distance — standing stones, antler arch, offering bowl." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
 

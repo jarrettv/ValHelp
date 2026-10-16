@@ -391,6 +391,15 @@ export default function ItemsPage({ config }: { config: ItemsPageConfig }) {
         </div>
       ) : (
         <div className="vh-items-detail" key={selectedCode}>
+          {/* Phones show the list or the detail, never both, and item clicks
+              replace history, so this is the way back to the list. Keeps the
+              search, unlike navigateToView. */}
+          <button className="vh-detail-back" onClick={() => {
+            const slug = viewToSlug(view, config);
+            navigate(`/guides/${config.pageSlug}/${slug && slug !== 'tips' ? slug : 'all'}`);
+          }}>
+            {BACK_ICON} Back
+          </button>
           <div ref={detailRef} />
           {editorAnchor && status?.id === 1 && pageToDetailsDoc(config.page) && createPortal(
             <NotesEditor

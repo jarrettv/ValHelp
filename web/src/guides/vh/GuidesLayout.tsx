@@ -14,7 +14,7 @@ import { getRevealedCount, subscribeSpoiler, syncSpoilerWithServer, clearSpoiler
 import { useAuth } from '../../contexts/AuthContext';
 import './GuidesLayout.css';
 
-type SideItem = { to: string; label: string; Icon: () => React.ReactNode };
+type SideItem = { to: string; label: string; short?: string; Icon: () => React.ReactNode };
 
 const SIDE_ITEMS: SideItem[] = [
   { to: '/guides/articles', label: 'Articles', Icon: ArticlesIcon },
@@ -22,7 +22,7 @@ const SIDE_ITEMS: SideItem[] = [
   { to: '/guides/gear', label: 'Gear', Icon: GearIcon },
   { to: '/guides/food', label: 'Food', Icon: FoodIcon },
   { to: '/guides/comfort', label: 'Comfort', Icon: ComfortIcon },
-  { to: '/guides/stations', label: 'Workstations', Icon: StationsIcon },
+  { to: '/guides/stations', label: 'Workstations', short: 'Stations', Icon: StationsIcon },
   { to: '/guides/enemies', label: 'Enemies', Icon: EnemiesIcon },
   { to: '/guides/weather', label: 'Weather', Icon: WeatherIcon },
 ];
@@ -41,7 +41,7 @@ export default function GuidesLayout() {
   return (
     <div className="vh-guides" data-spoiler={revealed}>
       <nav className="vh-sidebar">
-        {SIDE_ITEMS.map(({ to, label, Icon }) => (
+        {SIDE_ITEMS.map(({ to, label, short, Icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -49,6 +49,7 @@ export default function GuidesLayout() {
             className={({ isActive }) => `vh-nav-btn ${isActive ? 'active' : ''}`}
           >
             <Icon />
+            <span className="vh-nav-label">{short ?? label}</span>
           </NavLink>
         ))}
       </nav>

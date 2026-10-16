@@ -3,7 +3,7 @@
 <img src="/api/mob/TrophyTheElder_0.webp" style="width:110px;float:right;margin:0 0 8px 16px">
 
 
-Jump to [Food](/#food) · [Comfort](/#comfort) · [Resources](/#resources) · [Mobs](/#mobs) · [Places](/#places) · [Boss](/#boss)
+Jump to [Food](/#food) · [Comfort](/#comfort) · [Resources](/#resources) · [Mobs](/#mobs) · [Places](/#places) · [Alt biomes](/#alternative-biomes) · [Boss](/#boss)
 
 
 :::warn
@@ -173,6 +173,24 @@ A Troll is 600 HP that one-shots early armor. It is weak to pierce {modbox:Pierc
 A large rock surrounded by Rockies! Cute rocks added as April fools joke. Grab a couple "rocks".
 
 <img src="/img/guide/black-forest/rocky-circle.webp" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="The rare rocky circle formation in the Black Forest." style="width:100%;max-width:600px;border-radius:8px;display:block;margin:12px 0">
+
+## Alternative biomes
+
+Some patches of Black Forest get a **variant** when the world is created. The game doesn't name them, so you tell them apart by how they look. One patch can have more than one variant.
+
+| Variant | What's different | Per world | From centre |
+|---------|------------------|----------:|------------:|
+| **Mushroom** | Carpeted in [Mushroom]@. Also appears in the Meadows | 1–3 | 500 m |
+| **Blueberry** | Big clusters of [Blueberries]@ bushes | 1–5 | 500 m |
+| **Kalhygge** | A clear-cut: hundreds of stumps and no standing trees | 1–2 | 500 m |
+| **Ruin** | Crumbling stone walls and sunken stone towers. Glowing skulls ("Mystic light") release a Ghost when you get within 5 m | 1–5 | 500 m |
+| **Troll** | Extra [TrophyFrostTroll]@"Trolls" roam, up to 2 at a time. They only get stars past 2 km | 1–3 | 750 m |
+| **Rock** | Boulders and small firs instead of big trees. No troll caves. Stars **twice as often** | 1–5 | 750 m |
+| **Pinetree** | Pine-only forest, great for [RoundLog]@. Stars **twice as often** | 1–5 | 750 m |
+| **Root** | Writhing roots everywhere, and [TrophyGreydwarfBrute]@"Greydwarf Brutes" at night. Bone piles may burst into a Greydwarf ambush. No Skeletons | 1–4 | 2,000 m |
+
+* **Pinetree** forests are the best Corewood farm, but bring armor: creatures there get stars twice as often.
+* **Root** forests are tough: new roots keep sprouting every few minutes, and Brutes stalk at night.
 
 ## Boss
 

@@ -138,3 +138,47 @@
     opacity: 1;
   }
 }
+/* Your own row: tinted, gold edge, a "You" tag and the "Edit entry" button,
+   so it is obvious where to change or withdraw your registration. */
+.player-row.self {
+  position: relative;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(253, 226, 68, 0.13), rgba(253, 226, 68, 0.03)) !important;
+  box-shadow: inset 3px 0 0 rgba(253, 226, 68, 0.75) !important;
+  border-radius: 0.4rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.player-row .player-name .self-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 0.25rem;
+  background: rgba(253, 226, 68, 0.85);
+  color: #222;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.player-row .self-edit {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  background: rgba(253, 226, 68, 0.12);
+  border: 1px solid rgba(253, 226, 68, 0.55);
+  border-radius: 0.35rem;
+  color: #fde244;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.player-row .self-edit:hover { background: rgba(253, 226, 68, 0.22); }
+
+@media (max-width: 560px) {
+  .player-row.self { align-items: stretch; padding-top: 0.4rem; padding-bottom: 0.5rem; }
+  .player-row .player-score { white-space: nowrap; }
+  .player-row .self-edit { align-self: flex-end; margin: 0.4rem 0 0; padding: 0.35rem 0.8rem; }
+}

@@ -1,6 +1,6 @@
 # Gear Mechanics
 
-Jump to [Set Bonuses](/gear#armor-set-bonus-effects) · [Shields](/gear#shields) · [Capes](/gear#capes) · [Trinkets](/gear#trinkets) · [Best Gear per Biome](/gear#best-gear-per-biome) · [Tips](/gear#tips)
+Jump to [Set Bonuses](/#armor-set-bonus-effects) · [Shields](/#shields) · [Capes](/#capes) · [Trinkets](/#trinkets) · [Best Gear per Biome](/#best-gear-per-biome) · [Tips](/#tips)
 
 ## Armor
 

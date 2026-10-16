@@ -1,6 +1,6 @@
 # Food & Mead Mechanics
 
-Jump to [Meads](/consumables#meads) · [Feasts](/consumables#feasts) · [Best Food/Mead per Biome](/consumables#best-food-mead-per-biome) · [Tips](/consumables#tips)
+Jump to [Meads](/#meads) · [Feasts](/#feasts) · [Best Food/Mead per Biome](/#best-food-mead-per-biome) · [Tips](/#tips)
 
 ## How Food Works
 

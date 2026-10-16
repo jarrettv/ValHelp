@@ -1,6 +1,6 @@
 # Weapon Mechanics
 
-Jump to [Weapon Types](/weapons#weapon-types) · [Best Weapons per Biome](/weapons#best-weapons-per-biome) · [Tier Rankings](/weapons#tier-rankings)
+Jump to [Weapon Types](/#weapon-types) · [Best Weapons per Biome](/#best-weapons-per-biome) · [Tier Rankings](/#tier-rankings)
 
 ## Damage Types
 

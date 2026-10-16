@@ -35,6 +35,8 @@ export default function Event() {
   const [tab, setTab] = React.useState<'standings' | 'map'>('standings');
   const [mapAgreed, setMapAgreed] = React.useState(false);
   const [participantAcknowledged, setParticipantAcknowledged] = React.useState(false);
+  // Your registration form, opened from "Edit entry" on your own player row.
+  const [editingEntry, setEditingEntry] = React.useState(false);
 
   React.useEffect(() => {
     if (tab === 'map') {
@@ -67,9 +69,11 @@ export default function Event() {
     {!isPending && data && (
 
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>
-        { data.players.find(x => x.userId == status?.id) && <div className="alert info"><div>Last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        {/* Edits the whole event. Worded and styled apart from "Edit entry" in
+            <Register>, which only changes your own registration. */}
+        { data.players.find(x => x.userId == status?.id) && <div className="alert info event-admin-bar"><div>Event last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
 
-        <Link style={{margin:"0"}} to={`/events/${data.id}/edit`}>Edit</Link>
+        <Link className="event-edit-link" to={`/events/${data.id}/edit`}>✎ Edit event</Link>
         </div>}
         <div style={{ display: "flex" }}>
           <Trophy style={{opacity:data.status === EventStatus.Draft ? 0.2 : 1}} private={data.isPrivate} />
@@ -90,7 +94,7 @@ export default function Event() {
 
         <EventStatusArea event={data} />
 
-        {showRegistration(data) && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} />}
+        {showRegistration(data) && <Register eventId={data.id} player={data.players.find(x => x.userId === status?.id)} editing={editingEntry} onEditingChange={setEditingEntry} />}
 
         {data.status >= EventStatus.Live && (
           <div className="event-tabs">
@@ -99,8 +103,8 @@ export default function Event() {
           </div>
         )}
 
-        {data.status < EventStatus.Live && <EventPlayers players={data.players} /> }
-        {data.status >= EventStatus.Live && tab === 'standings' && <EventStandings players={data.players} /> }
+        {data.status < EventStatus.Live && <EventPlayers players={data.players} onEditSelf={showRegistration(data) ? () => setEditingEntry(true) : undefined} /> }
+        {data.status >= EventStatus.Live && tab === 'standings' && <EventStandings players={data.players} onEditSelf={showRegistration(data) ? () => setEditingEntry(true) : undefined} /> }
         {data.status >= EventStatus.Live && tab === 'map' && (
           data.status === EventStatus.Live ? (
             <LiveMapGate

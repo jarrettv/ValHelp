@@ -8,11 +8,12 @@ import { EventStatus } from "./domain/event";
 import "./PlayerLeaderboard.css";
 import "./components/CategoryLayout.css";
 
+// `wide` columns hide on phones; the event moves under the player's name there.
 const columns = [
-  { key: "placement", label: "Place", wide: true },
+  { key: "placement", label: "Place", short: "#", cls: "place-cell" },
   { key: "player", label: "Player" },
-  { key: "score", label: "Score" },
-  { key: "event", label: "Event" },
+  { key: "score", label: "Score", cls: "score-cell" },
+  { key: "event", label: "Event", wide: true },
   { key: "date", label: "Date", wide: true },
 ];
 
@@ -114,7 +115,7 @@ function PlayerLeaderboard() {
       <CategorySideNav basePath="/leaderboard" highlightDefault />
       <div className="content">
         <div className="leaderboard-table-container">
-          <h2>PB Leaderboard <small style={{ fontSize: '1rem', opacity: 0.7 }}>{category.label}</small></h2>
+          <h2 className="lb-title">PB Leaderboard <small>{category.label}</small></h2>
           {isPending && <div>Loading...</div>}
           {isError && <div>Problem loading events</div>}
           {!isPending && !isError && (
@@ -122,11 +123,12 @@ function PlayerLeaderboard() {
               <thead>
                 <tr>
                   {columns.map(col => (
-                    <th key={col.key} className={col.wide ? "wide" : ""} onClick={() => {
+                    <th key={col.key} className={[col.wide ? "wide" : "", col.cls ?? ""].join(" ").trim()} onClick={() => {
                       if (sortBy === col.key) setSortDir(sortDir === "desc" ? "asc" : "desc");
                       else { setSortBy(col.key); setSortDir("desc"); }
                     }} style={{ cursor: "pointer" }}>
-                      {col.label} {sortBy === col.key ? (sortDir === "desc" ? "↓" : "↑") : ""}
+                      {col.short ? <><span className="wide">{col.label}</span><span className="mobile-inline">{col.short}</span></> : col.label}
+                      {sortBy === col.key ? (sortDir === "desc" ? " ↓" : " ↑") : ""}
                     </th>
                   ))}
                 </tr>
@@ -134,20 +136,22 @@ function PlayerLeaderboard() {
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.player.id}>
-                    <td className="wide">
+                    <td className="place-cell">
                       {row.placement}
                       <sup style={{ fontSize: '0.85em', marginLeft: 1 }}>{getPlaceSuffix(row.placement)}</sup>
                     </td>
                     <td>
                       <img src={row.player.avatarUrl} alt={row.player.name} style={{ width: 22, height: 22, borderRadius: "50%", marginRight: 6, verticalAlign: "middle" }} />
                       <a href={`/players/${row.player.id}`}>{row.player.name}</a>
+                      <a className="lb-event-sub mobile" href={`/events/${row.event.id}`}>
+                        {row.event.name} · {row.date.toLocaleDateString()}
+                      </a>
                     </td>
                     <td className="score-cell">{row.score}</td>
-                    <td>
+                    <td className="wide">
                       <a style={{ display: 'flex', alignItems: 'center' }} href={`/events/${row.event.id}`}>
                         <Trophy style={{ width: 22, height: 22, verticalAlign: "middle", marginRight: 6, marginTop: -4 }} />
-                        <span className="naming wide">{row.event.name} <small>{row.hours}h</small></span>
-                        <span className="naming mobile">{row.event.name.replace('Trophy ', '').replace('Event ', '').replace('# ', '#').substring(0, 13)}</span>
+                        <span className="naming">{row.event.name} <small>{row.hours}h</small></span>
                       </a>
                     </td>
                     <td className="wide">{row.date.toLocaleDateString()}</td>

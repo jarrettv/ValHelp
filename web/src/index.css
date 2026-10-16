@@ -27,7 +27,12 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
+  /* 100vh on Android Chrome is the height with the address bar hidden, so the
+     body outgrew the screen, the 100dvh app shell got centred in it, and the
+     bottom nav slid half a toolbar off-screen. Match the shell instead. */
   min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior: none;
 }
 
 .layout {
@@ -456,4 +461,37 @@ form .radio-group input[type="radio"] {
   100% {
     opacity: 0.6;
   }
+}
+/* Event page: "Edit event" (the whole event) vs "Edit entry" (your own
+   registration, in <Register>). Kept visibly different so they don't blur. */
+.event-admin-bar { align-items: center; gap: 0.75rem; font-size: 0.9rem; }
+.competition a.event-edit-link {
+  margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #7289DA88;
+  border-radius: 0.3rem;
+  text-decoration: none;
+}
+.competition a.event-edit-link:hover { background: #7289DA33; }
+
+.reg-status { display: flex; align-items: center; gap: 0.8rem; }
+.reg-avatar { width: 2.5rem; height: 2.5rem; border-radius: 12%; flex-shrink: 0; }
+.reg-text { flex: 1; min-width: 0; line-height: 1.35; }
+.reg-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.reg-status.in .reg-label { color: #7fdc8a; opacity: 1; }
+.reg-status.out .reg-label { color: #e0a060; opacity: 1; }
+.reg-action { flex-shrink: 0; white-space: nowrap; }
+.reg-action.primary { padding: 0.5rem 1.2rem; background: #5b6eae; color: #fff; border: none; border-radius: 0.4rem; cursor: pointer; }
+.reg-action.primary:hover { background: #7289DA; }
+
+@media (max-width: 500px) {
+  .card:has(> .reg-status) { padding: 1rem 1.1rem; }
 }

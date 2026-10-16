@@ -15,7 +15,9 @@
 
 .competition {
   margin: 1rem auto;
-  min-width: 360px;
+  /* Never wider than the screen: a fixed 360px overflowed 360px phones. */
+  min-width: min(360px, 100%);
+  box-sizing: border-box;
   max-width: 620px;
   background-color: #7289DA22;
   border-radius: 0.4rem;

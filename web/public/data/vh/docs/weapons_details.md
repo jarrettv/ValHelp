@@ -127,9 +127,10 @@ The mini-boss [Lord Reto](/guides/enemies/ashlands/LordReto) protects the third 
 
 This sword does **huge Slash damage and +10 Fire damage** which will continue to tick to vulnerable mobs.
 
-Although this is the **most powerful one-handed sword** in the game, the difficulty in crafting this weapon combined with minimal gains in attack power make it hardly worth it. Perhaps this sword and the fire effect will own the Deep North.
+There are better weapons in the next biome and the difficulty in crafting this weapon combined with minimal gains in attack power make it hardly worth it.
 
 All 1-handed swords have a primary attack 3-hit combo where the **last hit does double damage**. The secondary attack stab has a longer reach and better stagger.
+
 
 
 

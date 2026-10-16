@@ -10,11 +10,13 @@ import { PlayerBonus } from './PlayerBonus';
 
 interface PlayerLogsRowProps {
   player: Player;
+  onEditSelf?: () => void;
 }
 
-const PlayerLogsRow: React.FC<PlayerLogsRowProps> = ({ player }) => {
+const PlayerLogsRow: React.FC<PlayerLogsRowProps> = ({ player, onEditSelf }) => {
   const { status } = useAuth();
-  const playerStatus = status?.id === player.userId ? "active" : "normal";
+  const isSelf = status?.id === player.userId;
+  const playerStatus = isSelf ? "active self" : "normal";
 
   if (player.status < 0) { return <></>; }
 
@@ -24,6 +26,7 @@ const PlayerLogsRow: React.FC<PlayerLogsRowProps> = ({ player }) => {
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
         <div className="player-name">
           <Link to={`/players/${player.userId}`}>{player.name}</Link>
+          {isSelf && <span className="self-tag">You</span>}
           {player.stream.length > 5 && <div style={{fontSize:'smaller'}}><a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a></div>}
         </div>
         <div className="player-score">{player.score}</div>
@@ -37,6 +40,11 @@ const PlayerLogsRow: React.FC<PlayerLogsRowProps> = ({ player }) => {
           log.code.startsWith("Bonus") ? <PlayerBonus key={index} code={log.code} /> : null
         )}
       </div>
+      {isSelf && onEditSelf && (
+        <button type="button" className="self-edit" onClick={onEditSelf} title="Change your name or stream link, or withdraw">
+          ✎ Edit entry
+        </button>
+      )}
     </div>
   );
 };

@@ -6,26 +6,33 @@ The BEST survival game ever is brutal for those who are not prepared. Because of
 
 The game has progressively more difficult biomes to conquer with each biome offering unique survival challenges. Each biome has a boss, the **Forsaken**, that acts as a "soft" gate to the next biome. You don't need to kill the bosses in order, but the game is optimized for this style of progression.
 
-When you defeat a boss, the boss will drop some useful item(s) and a trophy. Hang each trophy on the **boss stone** at the starting altar to unlock a **Forsaken power** (activate with `F`; triggering one also builds Adrenaline). The buffs generally last for 5 minutes.
+When you defeat a boss, the boss will drop some useful item(s) and a trophy. Hang each trophy on the **boss stone** at the starting altar to unlock a **Forsaken power**. Pick one at its stone (only one can be selected at a time), then activate it with `F`. Every power lasts **5 minutes** and needs **20 minutes** to recharge, and activating one gives you 10 Adrenaline.
 
-| Boss stone | Biome & Forsaken power |
-|------------|------------------------|
-| <img src="/api/mob/TrophyEikthyr_0.webp" style="width:64px;display:block"> | **1. Eikthyr** — Meadows. 60% less Stamina drain from running, jumping, and swimming. | {biome:meadows}
-| <img src="/api/mob/TrophyTheElder_0.webp" style="width:64px;display:block"> | **2. The Elder** — Black Forest. +60% chopping/mining damage and +30% Health regeneration. | {biome:blackforest}
-| <img src="/api/mob/TrophyBonemass_0.webp" style="width:64px;display:block"> | **3. Bonemass** — Swamp. 25% resistance to Pierce, Slash, and Blunt; blocking costs no Stamina and returns +5 Stamina per block. | {biome:swamp}
-| <img src="/api/mob/TrophyDragonQueen_0.webp" style="width:64px;display:block"> | **4. Moder** — Mountain. Permanent tailwind, +300 carry weight, +10% movement speed, and 50% Frost resistance. | {biome:mountain}
-| <img src="/api/mob/TrophyGoblinKing_0.webp" style="width:64px;display:block"> | **5. Yagluth** — Plains. 50% Lightning resistance, +25 Farming skill, and +10% damage. | {biome:plains}
-| <img src="/api/mob/TrophySeekerQueen_0.webp" style="width:64px;display:block"> | **6. The Queen** — Mistlands. +100% Eitr regeneration, sneaking costs no Stamina, and 50% Poison resistance. | {biome:mistlands}
-| <img src="/api/mob/TrophyFader_0.webp" style="width:64px;display:block"> | **7. Fader** — Ashlands. +100% Adrenaline generation, 50% reduced stagger, and 50% Fire resistance. | {biome:ashlands}
-| <img src="/img/guide/startstone.png" onerror="this.onerror=null;this.src='/img/guide/placeholder.svg'" alt="The empty boss stone at the Sacrificial Stones, vegvisir carved into its face." style="width:64px;display:block"> | **8. Kall Fimbulbringer** — Deep North. **No Forsaken power** so this boss allows the end credits to roll | {biome:deepnorth}
+Tap a boss below to open its biome guide.
+
+{bosscards}
 
 ## Finding bosses
 
-You don't start out knowing where a boss is — you have to find its **vegvisir**, a carved runestone that reveals the nearest boss and marks it on your map when you activate it.
-
 <img src="/api/mob/Vegvisir_0.webp" style="width:120px;float:right;margin:4px 0 8px 16px">
+Throughout the world of Valheim you can find **vegvisir**, a carved runestone that reveals the nearest boss and marks it on your map when you activate it. Keep an eye out for a shiney **red glow**.
 
-The trick is to watch for the **red glow**. Vegvisir runes shine bright red, so they stand out against grey stone and dark interiors — train your eye to catch that glow as you explore. They turn up both **out in the world** (the Sacrificial Stones at spawn, ruined towers, Stonehenge formations) and, more often, **inside dungeons** — Burial Chambers, Sunken Crypts, Frost Caves, Infested Mines, and Charred Fortresses.
+They turn up both **out in the world** by ruined stone buildings, Stonehenge formations, and, more often, **inside dungeons** — Burial Chambers, Sunken Crypts, Frost Caves, Infested Mines, and Charred Fortresses.
+
+## Alternative biomes
+
+Not every patch of a biome is the same. When a world is created, some patches get a **variant** with different plants, creatures or ruins: a herd-filled Peaceful Meadow, a Wolf Mountain full of starred packs, a Plains covered in tar pits. The game never names them, so it pays to know what to look for.
+
+| Biome | Variants |
+|-------|----------|
+| [Meadows](/guides/articles/meadows#alternative-biomes) | Mushroom, Dandelion, Raspberry, Birch, Smalltree, Menhir, Peaceful, Dark | {biome:meadows}
+| [Black Forest](/guides/articles/black-forest#alternative-biomes) | Mushroom, Blueberry, Kalhygge, Ruin, Troll, Rock, Pinetree, Root | {biome:blackforest}
+| [Swamp](/guides/articles/swamp#alternative-biomes) | Hut, Bog, Abomination, Bat, Bones | {biome:swamp}
+| [Mountain](/guides/articles/mountain#alternative-biomes) | Wolf, Drake, Fortress | {biome:mountain}
+| [Plains](/guides/articles/plains#alternative-biomes) | Menhir, Bones, Lox, Goblin, Death | {biome:plains}
+| [Mistlands](/guides/articles/mistlands#alternative-biomes) | Rockless, Trees, Swords, Hare, BroodSwarm, Bones | {biome:mistlands}
+
+The Ocean, Ashlands and Deep North have no variants.
 
 ## Reference & tools
 

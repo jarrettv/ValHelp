@@ -150,13 +150,12 @@ export default function ArticlesPage() {
   // the spoiler back down while viewing one).
   if (biome && isBiomeLocked(biome)) return <Navigate to="/guides/articles" replace />;
 
-  // No slug → default to the overview doc (shown on the right on desktop; on mobile
-  // the category grid shows until a card is tapped). `explicit` drives the mobile
-  // takeover, matching the Enemies "tips" behaviour.
+  // No slug → the overview doc. Desktop shows it beside the biome grid; phones
+  // show only the doc, so the overview is the landing page there too and its
+  // `{bosscards}` block is the way into each biome guide.
   const selectedDoc = biome ? biome.doc : OVERVIEW.doc;
   const selectedKey = biome ? biome.slug : OVERVIEW.slug;
-  const explicit = !!slug;
-  const containerClass = `vh-items-container${explicit ? ' show-tips' : ''}`;
+  const containerClass = 'vh-items-container show-tips';
 
   return (
     <div className={containerClass}>
@@ -202,7 +201,7 @@ export default function ArticlesPage() {
             <CompactSpoilerSlider />
           </div>
         )}
-        {explicit && (
+        {biome && (
           <button className="vh-detail-back" onClick={() => navigate('/guides/articles')}>
             {BACK_ICON} Guides
           </button>

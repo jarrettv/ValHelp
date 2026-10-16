@@ -15,6 +15,21 @@ Format:
 
 ## Swamp
 
+### Abomination <!-- TrophyAbomination -->
+
+Abominations only appear in swamps, and swamps only appear **2–6 km from the world centre**. Inside that band, a few **Bog** and **Abomination** swamps (up to 8 per world) spawn them much more often. That's where to farm.
+
+<img src="/img/guide/swamp/abomination-spawns.svg" alt="Ring map: no swamps within 2 km of the centre, swamps from 2 to 6 km with rare Bog and Abomination swamp patches. Any swamp: 15% per roll every ~67 min, max 1 nearby. Bog and Abomination swamps: an extra 20% roll every ~33 min, max 3 nearby." style="width:100%;max-width:760px;border-radius:12px;display:block;margin:12px 0">
+
+| Where | Chance per roll | Roll every | Max nearby | Average wait |
+|---|---:|---:|---:|---:|
+| Any swamp | 15% | ~67 min | 1 | ~7 h |
+| Bog / Abomination swamp | +20% extra roll | ~33 min | 3 | ~2 h |
+
+* They spawn deep inside a swamp, never along its edges.
+* They are **always 0★**, so you'll never see a starred one.
+* Missed rolls build up while you're away. Leave a bog for an hour or two, and when you come back it gets up to 3 rolls at once.
+
 ## Mountains
 
 ### Ulv <!-- TrophyUlv -->

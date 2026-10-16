@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" width="760" height="500" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>Where Abominations spawn</title>
+  <desc>Swamps only generate 2 to 6 km from the world centre. Any swamp: 15% chance per roll, a roll every ~67 minutes, max 1 nearby. Bog and Abomination swamp patches inside that band add a 20% roll every ~33 minutes, max 3 nearby.</desc>
+
+  <!-- Card surface -->
+  <rect width="760" height="500" rx="12" fill="#1e1e2e"/>
+
+  <text x="24" y="36" font-size="20" font-weight="700" fill="#e6e6ee">Where Abominations spawn</text>
+  <text x="24" y="58" font-size="13" fill="#a0a0b4">Distance from the world centre</text>
+
+  <!-- ── Distance rings ── centre (190,262), 0.028 px per metre: 2 km = 56, 6 km = 168 -->
+  <circle cx="190" cy="262" r="182" fill="none" stroke="#33334a" stroke-width="1" stroke-dasharray="3 4"/>
+  <!-- Swamp band, 2–6 km -->
+  <circle cx="190" cy="262" r="112" fill="none" stroke="#4f7f24" stroke-width="112"/>
+  <!-- No-swamp core -->
+  <circle cx="190" cy="262" r="54" fill="#2a2a3e" stroke="#1e1e2e" stroke-width="2"/>
+
+  <!-- Bog / Abomination swamp patches (positions are illustrative), 2px surface ring -->
+  <g fill="#9a6ad0" stroke="#1e1e2e" stroke-width="2">
+    <ellipse cx="262" cy="182" rx="17" ry="12" transform="rotate(-35 262 182)"/>
+    <ellipse cx="300" cy="304" rx="13" ry="10"/>
+    <ellipse cx="128" cy="162" rx="12" ry="9" transform="rotate(30 128 162)"/>
+    <ellipse cx="96" cy="340" rx="16" ry="11" transform="rotate(40 96 340)"/>
+    <ellipse cx="210" cy="394" rx="11" ry="8"/>
+  </g>
+
+  <!-- Centre marker -->
+  <circle cx="190" cy="262" r="4" fill="#e6e6ee"/>
+  <text x="190" y="252" font-size="11" fill="#a0a0b4" text-anchor="middle">centre</text>
+  <text x="190" y="284" font-size="12" font-weight="600" fill="#e6e6ee" text-anchor="middle">No swamps</text>
+  <text x="190" y="299" font-size="10.5" fill="#a0a0b4" text-anchor="middle">0–2 km</text>
+
+  <!-- Band label -->
+  <text x="190" y="126" font-size="13" font-weight="700" fill="#e6e6ee" text-anchor="middle">Swamp 2–6 km</text>
+
+  <!-- Distance scale along the left radius -->
+  <g stroke="#a0a0b4" stroke-width="1">
+    <line x1="190" y1="262" x2="22" y2="262" stroke-dasharray="2 3"/>
+    <line x1="136" y1="256" x2="136" y2="268"/>
+    <line x1="22" y1="256" x2="22" y2="268"/>
+  </g>
+  <g font-size="11" fill="#e6e6ee" text-anchor="middle" font-weight="600">
+    <text x="136" y="252">2 km</text>
+    <text x="34" y="252">6 km</text>
+  </g>
+
+  <!-- ── Card 1: any swamp ── -->
+  <rect x="396" y="84" width="340" height="160" rx="10" fill="#2a2a3e"/>
+  <rect x="412" y="100" width="14" height="14" rx="3" fill="#4f7f24"/>
+  <text x="434" y="112" font-size="15" font-weight="700" fill="#e6e6ee">Any swamp</text>
+  <text x="434" y="130" font-size="12" fill="#a0a0b4">The normal swamp, 2–6 km from the centre</text>
+  <g font-weight="700" font-size="20" fill="#e6e6ee">
+    <text x="412" y="168">15%</text>
+    <text x="580" y="168">~67 min</text>
+    <text x="412" y="214">1</text>
+    <text x="580" y="214">~7 h</text>
+  </g>
+  <g font-size="11.5" fill="#a0a0b4">
+    <text x="412" y="184">spawn chance per roll</text>
+    <text x="580" y="184">between rolls</text>
+    <text x="412" y="230">max alive nearby</text>
+    <text x="580" y="230">average wait</text>
+  </g>
+
+  <!-- ── Card 2: bog / abomination swamps ── -->
+  <rect x="396" y="258" width="340" height="160" rx="10" fill="#2a2a3e"/>
+  <rect x="412" y="274" width="14" height="14" rx="3" fill="#9a6ad0"/>
+  <text x="434" y="286" font-size="15" font-weight="700" fill="#e6e6ee">Bog &amp; Abomination swamps</text>
+  <text x="434" y="304" font-size="12" fill="#a0a0b4">Rare patches inside the band, up to 8 per world</text>
+  <g font-weight="700" font-size="20" fill="#e6e6ee">
+    <text x="412" y="342">+20%</text>
+    <text x="580" y="342">~33 min</text>
+    <text x="412" y="388">3</text>
+    <text x="580" y="388">~2 h</text>
+  </g>
+  <g font-size="11.5" fill="#a0a0b4">
+    <text x="412" y="358">extra roll, plus the normal one</text>
+    <text x="580" y="358">between rolls</text>
+    <text x="412" y="404">max alive nearby</text>
+    <text x="580" y="404">average wait (both rolls)</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="24" y="472" font-size="11.5" fill="#a0a0b4">Only spawns deep inside a swamp, never along its edges · Always 0★</text>
+  <text x="24" y="489" font-size="11.5" fill="#a0a0b4">Leave an area and come back later: rolls you missed while away happen as soon as you return</text>
+</svg>

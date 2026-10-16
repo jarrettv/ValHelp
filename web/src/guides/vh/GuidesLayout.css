@@ -52,6 +52,7 @@
 .vh-guides .vh-nav-btn.active { background: #2b3a4e; color: #88bbff; box-shadow: inset 3px 0 0 #5588cc; }
 .vh-guides .vh-nav-btn svg { width: 22px; height: 22px; display: block; margin: 0 auto; }
 .vh-guides .vh-nav-btn:hover { color: #aaa; }
+.vh-guides .vh-nav-label { display: none; }
 .vh-guides .vh-nav-btn.active { color: #88bbff; }
 
 .vh-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
@@ -210,6 +211,9 @@
 .vh-guides .detail-stat-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 13px; }
 .vh-guides .detail-stat-row .label { color: #aaa; }
 .vh-guides .detail-stat-row .val { color: #fff; }
+.vh-guides .detail-idol { margin-left: auto; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1px; max-width: 72px; padding: 2px 4px; background: #2a2a3e; border: 1px solid #333; border-radius: 4px; color: #cda; font-size: 9px; line-height: 1.1; text-align: center; text-decoration: none; }
+.vh-guides .detail-idol:hover { border-color: #5588cc; }
+.vh-guides .detail-idol img { width: 32px; height: 32px; image-rendering: pixelated; }
 .vh-guides .detail-toggles { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; align-self: stretch; }
 .vh-guides .detail-toggle-btn { display: flex; align-items: center; justify-content: center; flex: 1; width: 22px; background: #2a2a3e; border: 1px solid #333; cursor: pointer; transition: all 0.15s; padding: 0; }
 .vh-guides .detail-toggle-btn:first-child { border-radius: 4px 4px 0 0; }
@@ -1121,23 +1125,47 @@
 
 @media (max-width: 768px) {
   .vh-guides { flex-direction: column; }
+  /* Bottom tab bar. Height grows by the safe-area inset (iPhone home bar,
+     Android gesture bar) instead of the inset eating into a fixed 48px. */
   .vh-guides .vh-sidebar {
     width: 100%;
     min-width: unset;
     max-width: unset;
-    height: 48px;
-    flex: 0 0 48px;
+    height: auto;
+    flex: 0 0 auto;
     flex-direction: row;
+    align-items: stretch;
+    gap: 0;
     border-right: none;
     border-top: 1px solid #333;
     order: 2;
-    padding: 4px 0 env(safe-area-inset-bottom, 0);
-    justify-content: space-around;
-    overflow-x: auto;
+    padding: 0 env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
   }
-  .vh-guides .vh-nav-btn { width: 36px; height: 36px; flex: 0 0 36px; }
-  .vh-guides .vh-nav-btn svg { width: 20px; height: 20px; }
-  .vh-guides .vh-nav-btn.active { box-shadow: inset 0 -3px 0 #5588cc; }
+  .vh-guides .vh-nav-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: 54px;
+    max-height: none;
+    flex-direction: column;
+    gap: 3px;
+    border-radius: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vh-guides .vh-nav-btn svg { width: 22px; height: 22px; margin: 0; }
+  .vh-guides .vh-nav-label {
+    display: block;
+    max-width: 100%;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .vh-guides .vh-nav-btn:hover { background: none; }
+  .vh-guides .vh-nav-btn.active { background: #2b3a4e; box-shadow: inset 0 3px 0 #5588cc; }
+
+  /* 16px stops iOS zooming the page when the search box takes focus. */
+  .vh-items-search input { font-size: 16px; padding-top: 6px; padding-bottom: 6px; }
   .vh-main { order: 1; flex: 1; min-height: 0; }
 
   /* Stack list and detail vertically; detail hidden until item selected */
@@ -1631,4 +1659,129 @@
 @media (max-width: 560px) {
   .vh-guides .vh-set-table { font-size: 10.5px; }
   .vh-guides .vh-set-table th, .vh-guides .vh-set-table td { padding: 3px 4px; }
+}
+
+/* ── Boss cards — the `{bosscards}` block on the overview ───────────
+   Each card is a link into a biome guide. They carry `sp-item sp-b<index>`,
+   so a locked biome blurs behind the same veil as a locked item row.
+   One column on phones; the whole card is the tap target. */
+.vh-guides .vh-boss-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+.vh-guides .vh-boss-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 96px;
+  padding: 10px 10px 10px 10px;
+  background: linear-gradient(180deg, #1e1e2e 0%, #252536 100%);
+  border: 1px solid #33334a;
+  border-radius: 12px;
+  color: #ddd;
+  text-decoration: none;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.vh-guides .vh-boss-card:hover { border-color: #5588cc; }
+.vh-guides .vh-boss-card:active { background: #2b3a4e; transform: scale(0.99); }
+
+/* Left column: the main art, adorned with the fight-order number (top-left)
+   and the biome circle (bottom-right), with the biome name underneath. */
+.vh-guides .vh-boss-side {
+  flex: 0 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+}
+.vh-guides .vh-boss-art {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 60%, #383852 0%, #22222f 72%);
+  border: 1px solid #34344a;
+  border-radius: 10px;
+}
+.vh-guides .vh-boss-img { max-width: 68px; max-height: 68px; object-fit: contain; }
+.vh-guides .vh-boss-img.round { max-width: 58px; max-height: 58px; border-radius: 50%; }
+.vh-guides .vh-boss-n {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 10px 0 8px 0;
+  background: #3a2f12;
+  border: 1px solid #a8862a;
+  color: #f2c14e;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+.vh-guides .vh-boss-biome-icon {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #252536;
+  box-shadow: 0 0 0 1px #4a4a66, 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.vh-guides .vh-boss-biome {
+  max-width: 88px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a4a4be;
+}
+
+.vh-guides .vh-boss-body { flex: 1; min-width: 0; margin-right: 16px; }
+.vh-guides .vh-boss-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+}
+.vh-guides .vh-boss-name img { width: 26px; height: 26px; flex-shrink: 0; image-rendering: pixelated; }
+.vh-guides .vh-boss-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a7a96;
+  margin-bottom: 1px;
+}
+.vh-guides .vh-boss-power { font-size: 13px; line-height: 1.45; color: #b4b4c4; }
+.vh-guides .vh-boss-go { position: absolute; right: 8px; bottom: 10px; width: 18px; height: 18px; color: #5588cc; }
+
+@media (max-width: 480px) {
+  .vh-guides .vh-boss-cards { grid-template-columns: 1fr; gap: 8px; }
+  .vh-guides .vh-boss-card { gap: 12px; padding: 10px 8px 10px 10px; }
+  .vh-guides .vh-boss-side { flex-basis: 72px; }
+  .vh-guides .vh-boss-art { width: 68px; height: 68px; }
+  .vh-guides .vh-boss-img { max-width: 60px; max-height: 60px; }
+  .vh-guides .vh-boss-img.round { max-width: 52px; max-height: 52px; }
+  .vh-guides .vh-boss-biome-icon { width: 30px; height: 30px; }
+  .vh-guides .vh-boss-go { right: 6px; width: 16px; height: 16px; }
 }

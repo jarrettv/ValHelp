@@ -8,11 +8,13 @@ import ChannelLink from './ChannelLink';
 
 interface PlayerRowProps {
   player: Player;
+  onEditSelf?: () => void;
 }
 
-const PlayerInfoRow: React.FC<PlayerRowProps> = ({ player }) => {
+const PlayerInfoRow: React.FC<PlayerRowProps> = ({ player, onEditSelf }) => {
   const { status } = useAuth();
-  const playerStatus = status?.id === player.userId ? "active" : "normal";
+  const isSelf = status?.id === player.userId;
+  const playerStatus = isSelf ? "active self" : "normal";
 
   if (player.status < 0) { return <></>; }
 
@@ -22,6 +24,7 @@ const PlayerInfoRow: React.FC<PlayerRowProps> = ({ player }) => {
         <img src={player.avatarUrl} alt={player.name} className="player-avatar" />
         <div className="player-name">
           <Link to={`/players/${player.userId}`}>{player.name}</Link>
+          {isSelf && <span className="self-tag">You</span>}
         </div>
         {player.logs.some(log => log.code.startsWith("PersonalBest")) && <div className="player-score">PB {player.logs.find(log => log.code.startsWith("PersonalBest"))!.code.split('=')[1]}</div>}
       </div>
@@ -34,6 +37,11 @@ const PlayerInfoRow: React.FC<PlayerRowProps> = ({ player }) => {
         ))}
         {player.logs.filter(log => log.code.startsWith("Channel")).length === 0 && player.stream.length > 5 && <div style={{fontSize:'smaller'}}><a href={player.stream} target="_blank"><Watch width="30" height="30" style={{ color:"#5b6eae", verticalAlign: "middle", margin:'0 0.7rem' }} />Watch</a></div>}
       </div>
+      {isSelf && onEditSelf && (
+        <button type="button" className="self-edit" onClick={onEditSelf} title="Change your name or stream link, or withdraw">
+          ✎ Edit entry
+        </button>
+      )}
     </div>
   );
 };

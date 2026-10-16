@@ -457,9 +457,34 @@ function renderCraftListItem(it, maxStats) {
   return h;
 }
 
+// 1.0 lists a Forge of Potential idol (`Upgrader3Armor`, ...) in nearly every
+// recipe. It marks the item's upgrade tier, not something the workbench
+// takes, so it never shows as a material. The detail header shows it instead.
+function isIdol(code) { return /^Upgrader/.test(code || ''); }
+
+function craftMats(resources) {
+  return (resources || []).filter(function(res) { return !isIdol(res.item); });
+}
+
+/** Top-right badge on the detail header naming the item's Forge idol. */
+function renderIdolBadge(it) {
+  var res = (it.recipe && it.recipe.resources) || [];
+  var idol = null;
+  for (var i = 0; i < res.length; i++) if (isIdol(res[i].item)) { idol = res[i].item; break; }
+  if (!idol) return '';
+  var idolItem = craftItemsByCode[idol];
+  var name = (idolItem && idolItem.name) || idol;
+  var path = '/guides/weapons/material/' + idol;
+  var h = '<a class="detail-idol" href="' + path + '" title="' + esc(name) + ' — refine at a Forge of Potential"'
+    + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + path + '\');}">';
+  if (idolItem && idolItem.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(idol) + '.png" alt="">';
+  h += '<span>' + esc(name) + '</span></a>';
+  return h;
+}
+
 function renderTinyRecipeInner(resources) {
   var h = '';
-  resources.forEach(function(res) {
+  craftMats(resources).forEach(function(res) {
     var resItem = craftItemsByCode[res.item];
     h += '<span style="display:inline-flex;align-items:center;gap:1px;flex-shrink:0">';
     if (resItem && resItem.hasIcon) h += '<img src="/api/icon/' + encodeURIComponent(res.item) + '.png" style="width:14px;height:14px;image-rendering:pixelated">';
@@ -705,7 +730,7 @@ function renderComfortDetailFull(code) {
     h += '<div class="detail-desc">' + esc(desc) + '</div>';
   }
   h += '<div class="detail-meta">' + esc(it.comfortGroup || 'Comfort') + '</div>';
-  h += '</div></div>';
+  h += '</div>' + renderIdolBadge(it) + '</div>';
 
   // Comfort value
   h += '<div class="detail-section">Comfort</div>';
@@ -1190,7 +1215,7 @@ function renderRecipeCards(item) {
       ? '<a href="' + stPath + '" onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + stPath + '\');}">' + stName + '</a>'
       : stName) + '</div></div>';
   }
-  (r.resources || []).forEach(function(res) {
+  craftMats(r.resources).forEach(function(res) {
     var resItem = craftItemsByCode[res.item];
     var resName = resItem ? (resItem.name || res.item) : res.item;
     var resHasIcon = resItem && resItem.hasIcon;
@@ -1228,7 +1253,7 @@ function renderRecipeByQuality(item) {
     h += '<svg viewBox="0 0 24 24" style="width:24px;height:24px"><path fill="#b87333" stroke="#da5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.587 8.236l2.598-5.232a.911.911 0 0 1 1.63 0l2.598 5.232l5.808.844a.902.902 0 0 1 .503 1.542l-4.202 4.07l.992 5.75c.127.738-.653 1.3-1.32.952L12 18.678l-5.195 2.716c-.666.349-1.446-.214-1.319-.953l.992-5.75l-4.202-4.07a.902.902 0 0 1 .503-1.54z"/></svg>';
     h += '<span class="lvl-num" style="font-size:11px">' + qLvl + '</span></div>';
     // Resource cards with count
-    (r.resources || []).forEach(function(res) {
+    craftMats(r.resources).forEach(function(res) {
       var resItem = craftItemsByCode[res.item];
       var resName = resItem ? (resItem.name || res.item) : res.item;
       var resHasIcon = resItem && resItem.hasIcon;
@@ -1283,7 +1308,7 @@ function renderGenericDetail(code, detail) {
     _metaText = _st ? _st.name : it.recipe.station;
   }
   h += '<div class="detail-meta">' + esc(_metaText) + '</div>';
-  h += '</div></div>';
+  h += '</div>' + renderIdolBadge(it) + '</div>';
   var isUtilityItem = (it.code === 'BeltStrength' || it.code === 'Wishbone' || it.code === 'Demister' || it.code === 'CryptKey' || it.code.indexOf('Trinket') === 0);
   var stats = [];
   if (it.weight) stats.push(['Weight', it.weight]);
@@ -1639,14 +1664,65 @@ function mdRecipeBlock(name: string) {
 // power. Not in items.json (trophies carry no power data), so the text lives
 // here — keep it in sync with the boss table in docs/articles_overview.md.
 var BOSS_POWERS: any = {
-  TrophyEikthyr:     { name: 'Eikthyr',   desc: '60% less Stamina drain from running, jumping, and swimming.' },
+  TrophyEikthyr:     { name: 'Eikthyr',   desc: '60% less Stamina used running, jumping and swimming.' },
   TrophyTheElder:    { name: 'The Elder', desc: '+60% chopping and mining damage, and +30% Health regeneration.' },
-  TrophyBonemass:    { name: 'Bonemass',  desc: '25% resistance to Pierce, Slash, and Blunt; blocking costs no Stamina and returns +5 Stamina per block.' },
-  TrophyDragonQueen: { name: 'Moder',     desc: 'Permanent tailwind, +300 carry weight, +10% movement speed, and 50% Frost resistance.' },
-  TrophyGoblinKing:  { name: 'Yagluth',   desc: '50% Lightning resistance, +25 Farming skill, and +10% damage.' },
-  TrophySeekerQueen: { name: 'The Queen', desc: '+100% Eitr regeneration, sneaking costs no Stamina, and 50% Poison resistance.' },
-  TrophyFader:       { name: 'Fader',     desc: '+100% Adrenaline generation, 50% reduced stagger, and 50% Fire resistance.' },
+  TrophyBonemass:    { name: 'Bonemass',  desc: '25% resistance to Blunt, Slash and Pierce. Blocking costs no Stamina, and each block gives you 5 Stamina back.' },
+  TrophyDragonQueen: { name: 'Moder',     desc: 'Tailwind whenever you sail, +300 carry weight, +10% movement speed and 50% Frost resistance.' },
+  TrophyGoblinKing:  { name: 'Yagluth',   desc: '+10% to every damage type (chopping and mining too), +25 Farming skill and 50% Lightning resistance.' },
+  TrophySeekerQueen: { name: 'The Queen', desc: 'Double Eitr regeneration, sneaking costs no Stamina, and 50% Poison resistance.' },
+  TrophyFader:       { name: 'Fader',     desc: 'Double Adrenaline gain, 50% less stagger and 50% Fire resistance.' },
 };
+
+// `{bosscards}` — the overview's boss list as big tap targets, one per boss in
+// fight order, each opening that biome's guide. Ocean has no boss, so it is
+// left out here; the biome grid and slider still reach it. Locked biomes blur
+// like item rows.
+var BOSS_CARDS = [
+  { n: 1, trophy: 'TrophyEikthyr',       slug: 'meadows',      biome: 'meadows',     icon: 'Meadows' },
+  { n: 2, trophy: 'TrophyTheElder',      slug: 'black-forest', biome: 'blackforest', icon: 'BlackForest' },
+  { n: 3, trophy: 'TrophyBonemass',      slug: 'swamp',        biome: 'swamp',       icon: 'Swamp' },
+  { n: 4, trophy: 'TrophyDragonQueen',   slug: 'mountain',     biome: 'mountain',    icon: 'Mountains' },
+  { n: 5, trophy: 'TrophyGoblinKing',    slug: 'plains',       biome: 'plains',      icon: 'Plains' },
+  { n: 6, trophy: 'TrophySeekerQueen',   slug: 'mistlands',    biome: 'mistlands',   icon: 'Mistlands' },
+  { n: 7, trophy: 'TrophyFader',         slug: 'ashlands',     biome: 'ashlands',    icon: 'Ashlands' },
+  { n: 8, trophy: 'Bestiary_FrozenKing', slug: 'deep-north',   biome: 'deepnorth',   icon: 'DeepNorth' },
+];
+
+function renderBossCardsHtml() {
+  var h = '<div class="vh-boss-cards">';
+  for (var i = 0; i < BOSS_CARDS.length; i++) {
+    var c = BOSS_CARDS[i];
+    var bi = biomeIndex(c.biome);
+    var p = BOSS_POWERS[c.trophy];
+    var isKall = c.trophy === 'Bestiary_FrozenKing';
+    var name = p ? p.name : 'Kall Fimbulbringer';
+    var desc = p ? p.desc : 'None. He drops the items you need to complete the game.';
+    var path = '/guides/articles/' + c.slug;
+    h += '<a class="vh-boss-card' + (bi == null ? '' : ' sp-item sp-b' + bi) + '" href="' + path + '"'
+      + ' onclick="if(window.__vhNavigate){event.preventDefault();window.__vhNavigate(\'' + path + '\');}">';
+    // Left column: boss stone (Kall has none; the old table used the empty
+    // Sacrificial Stone) with the fight number top-left and the biome circle
+    // bottom-right, then the biome name underneath.
+    h += '<div class="vh-boss-side"><div class="vh-boss-art">'
+      + '<img class="vh-boss-img' + (isKall ? ' round' : '') + '" src="'
+      + (isKall ? '/img/guide/startstone.png' : '/api/mob/' + encodeURIComponent(c.trophy) + '_0.webp')
+      + '" alt="" loading="lazy">'
+      + '<span class="vh-boss-n">' + c.n + '</span>'
+      + '<img class="vh-boss-biome-icon" src="/data/vh/Biome' + c.icon + '.png" alt="">'
+      + '</div>'
+      + '<div class="vh-boss-biome">' + esc(bi == null ? c.slug : biomeLabel(bi)) + '</div></div>';
+    h += '<div class="vh-boss-body">';
+    h += '<div class="vh-boss-name"><img src="/api/icon/' + encodeURIComponent(c.trophy) + '.png" alt="" onerror="this.style.display=\'none\'">'
+      + '<span>' + esc(name) + '</span></div>';
+    h += '<div class="vh-boss-label">Forsaken power</div>';
+    h += '<div class="vh-boss-power">' + mdInline(desc) + '</div>';
+    h += '</div>';
+    h += '<svg class="vh-boss-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+    if (bi != null) h += '<div class="sp-veil" aria-hidden="true"><span class="sp-veil-lock">🔒</span><span class="sp-veil-txt">' + esc(biomeLabel(bi)) + '</span></div>';
+    h += '</a>';
+  }
+  return h + '</div>';
+}
 
 /// Accepts either the trophy code (`TrophyEikthyr`) or the boss name (`Eikthyr`).
 function mdFindPower(key: string) {
@@ -1669,7 +1745,7 @@ function mdPowerBlock(key: string) {
     + '<span class="vh-power-body">'
     + '<span class="vh-power-name">' + esc(hit.p.name) + '</span>'
     + '<span class="vh-power-desc">' + mdInline(hit.p.desc) + '</span>'
-    + '<span class="vh-power-meta">Activate with <code>F</code> &middot; 5 minutes per use</span>'
+    + '<span class="vh-power-meta">Activate with <code>F</code> &middot; lasts 5 minutes &middot; 20 minute recharge</span>'
     + '</span></span>';
 }
 
@@ -2231,7 +2307,9 @@ export function mdInline(text: string): string {
     .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#fff">$1</strong>')
     .replace(/\[([^\]]+)\]\(\/([^)]+)\)/g, function(_: string, text: string, path: string) {
       var hashIdx = path.indexOf('#');
-      if (hashIdx >= 0) {
+      // `/#x` scrolls within the current doc; `/page#x` navigates and lets
+      // TipsMarkdown scroll to the anchor once the target doc has rendered.
+      if (hashIdx === 0) {
         var hash = path.slice(hashIdx);
         return '<a href="' + hash + '" onclick="event.preventDefault();var el=document.getElementById(\'' + hash.slice(1).replace(/'/g, "\\'") + '\');if(el)el.scrollIntoView({behavior:\'smooth\'})" style="color:#88bbff;text-decoration:underline;cursor:pointer">' + text + '</a>';
       }
@@ -3155,6 +3233,12 @@ export function renderMdToElement(md: string, el: HTMLElement) {
     if (trimmed.match(/^\{creaturetypes\}$/i)) {
       if (inList) { h += '</ul>'; inList = false; }
       h += renderCreatureTypesHtml();
+      continue;
+    }
+    // `{bosscards}` is a block too: the overview's tappable boss / biome list.
+    if (trimmed.match(/^\{bosscards\}$/i)) {
+      if (inList) { h += '</ul>'; inList = false; }
+      h += renderBossCardsHtml();
       continue;
     }
     // `{comfortcalc}` is a block too: the pick-per-category comfort calculator.
