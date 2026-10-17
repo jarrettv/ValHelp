@@ -16,6 +16,7 @@ namespace ValHelpApi.ModuleWorlds;
 ///   GET    api/poi/config                 public — per-prefab overrides + uploaded icon versions
 ///   GET    api/poi/icons/{name}.svg       public — an uploaded icon
 ///   PUT    api/admin/poi/settings         admin  — upsert one override (all-null deletes it)
+///   DELETE api/admin/poi/settings         admin  — drop every override (back to the code defaults)
 ///   PUT    api/admin/poi/icons/{name}     admin  — upload/replace an icon
 ///   DELETE api/admin/poi/icons/{name}     admin
 /// </summary>
@@ -33,6 +34,7 @@ public static class WorldsPoiConfig
 
         var admin = app.MapGroup("api/admin/poi").RequireAuthorization();
         admin.MapPut("settings", PutSetting);
+        admin.MapDelete("settings", DeleteAllSettings);
         admin.MapPut("icons/{name}", PutIcon);
         admin.MapDelete("icons/{name}", DeleteIcon);
     }
@@ -108,6 +110,16 @@ public static class WorldsPoiConfig
         row.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync();
         return TypedResults.Ok(new SettingDto(row.Visible, row.Icon, row.Color, row.Lod));
+    }
+
+    public record ResetResp(int Removed);
+
+    /// <summary>Reset every prefab to its code default, e.g. after a deploy folds the overrides into code.</summary>
+    public static async Task<Results<Ok<ResetResp>, ForbidHttpResult>> DeleteAllSettings(ClaimsPrincipal user, AppDbContext db)
+    {
+        if (!IsAdmin(user)) return TypedResults.Forbid();
+        var removed = await db.PoiSettings.ExecuteDeleteAsync();
+        return TypedResults.Ok(new ResetResp(removed));
     }
 
     public record IconReq(string Svg);

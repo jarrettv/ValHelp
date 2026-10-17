@@ -32,6 +32,13 @@
 .apoi-error { color: #e88; }
 
 .apoi-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.apoi-reset-all {
+  align-self: center; margin-left: auto;
+  background: #3a1f24; color: #f2b8b8; border: 1px solid #6a3038; border-radius: 6px;
+  padding: 0.45rem 0.9rem; font-size: 0.85rem; cursor: pointer;
+}
+.apoi-reset-all:hover:not(:disabled) { background: #4a242b; color: #fff; }
+.apoi-reset-all:disabled { opacity: 0.4; cursor: default; }
 .apoi-stat {
   background: #1a1a2e; border: 1px solid #333; border-radius: 8px;
   padding: 0.5rem 0.9rem; color: #999; font-size: 0.8rem;
@@ -217,7 +224,10 @@ th.apoi-num .apoi-sort { justify-content: flex-end; }
 .apoi-lod-btn.on { background: #2f3b66; color: #fff; font-weight: 600; }
 .apoi-lod-btn:disabled { opacity: 0.35; cursor: default; }
 .apoi-lod-btn:focus-visible { outline: 2px solid #7289DA; outline-offset: -2px; }
-.apoi-lod-key b { color: #cde; }
+.apoi-lod-key { margin-bottom: 0.75rem; line-height: 1.45; }
+.apoi-lod-key strong, .apoi-lod-key b { color: #cde; }
+.apoi-lod-key ul { margin: 0.35rem 0 0; padding-left: 1.2rem; }
+.apoi-lod-key li { margin: 0.15rem 0; }
 
 .apoi-col-thumb { width: 1%; padding-right: 0; }
 .apoi-thumb-btn {

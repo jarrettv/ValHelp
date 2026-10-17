@@ -51,7 +51,15 @@ interface PrefabRow {
 }
 
 const ICON_LABEL: Record<IconStatus, string> = { own: 'Own art', borrowed: 'Borrowed', none: 'No icon' };
-const VIS_LABEL: Record<Visibility, string> = { shown: 'Shown', partial: 'Partly shown', hidden: 'Hidden' };
+/// When to pick each LOD, for the key above the table.
+const LOD_GUIDE: readonly string[] = [
+  'landmarks you navigate by: bosses, traders, the start, the Forge.',
+  'what players plan a run around: vegvisirs, quests, drake nests, crypts.',
+  'the default for dungeons, camps and caves.',
+  'filler that would clutter the map: houses, huts, tar pits, geysers.',
+];
+
+const VIS_LABEL: Record<Visibility, string> ={ shown: 'Shown', partial: 'Partly shown', hidden: 'Hidden' };
 const STATUS_ORDER: Record<IconStatus, number> = { none: 0, borrowed: 1, own: 2 };
 const VIS_ORDER: Record<Visibility, number> = { hidden: 0, partial: 1, shown: 2 };
 
@@ -186,6 +194,15 @@ async function resetSetting(prefab: string) {
   const prefabs = { ...cfg.prefabs };
   delete prefabs[prefab];
   setPoiConfig({ ...cfg, prefabs });
+}
+
+/// Drop every override so all prefabs follow the code defaults again — e.g.
+/// after a deploy that folded the overrides into poiIcons.ts.
+async function resetAllSettings(): Promise<number> {
+  const r = await apiJson('/api/admin/poi/settings', { method: 'DELETE' });
+  const { removed } = await r.json() as { removed: number };
+  setPoiConfig({ ...getPoiConfig(), prefabs: {} });
+  return removed;
 }
 
 async function uploadIcon(name: string, svg: string) {
@@ -569,6 +586,8 @@ const AdminPois: React.FC = () => {
     return <div style={{ padding: '1rem' }}>Admin access required.</div>;
   }
 
+  // Every saved override, including prefabs this seed doesn't happen to place.
+  const editedCount = Object.keys(getPoiConfig().prefabs).length;
   const count = <K extends keyof PrefabRow>(k: K, v: PrefabRow[K]) => rows.filter(r => r[k] === v).length;
 
   return (
@@ -608,6 +627,18 @@ const AdminPois: React.FC = () => {
             <div className="apoi-stat"><span>{count('visibility', 'hidden')}</span>hidden</div>
             <div className="apoi-stat"><span>{count('iconStatus', 'own')}</span>own art</div>
             <div className="apoi-stat warn"><span>{count('iconStatus', 'borrowed')}</span>borrowed art</div>
+            <div className="apoi-stat"><span>{editedCount}</span>edited</div>
+            <button
+              className="apoi-reset-all"
+              disabled={editedCount === 0}
+              title="Drop every admin override so each prefab uses the default from the code"
+              onClick={() => {
+                if (!window.confirm(`Reset all ${editedCount} edited prefabs to the code defaults? This can't be undone.`)) return;
+                resetAllSettings().then(
+                  n => toast.success(`Reset ${n} prefab${n === 1 ? '' : 's'} to defaults`),
+                  err => toast.error(`Reset failed: ${(err as Error).message}`));
+              }}
+            >Reset all to defaults</button>
           </div>
 
           <div className="apoi-filters">
@@ -633,12 +664,18 @@ const AdminPois: React.FC = () => {
             ]} />
           </div>
 
-          <p className="apoi-sub apoi-lod-key">
-            <strong>LOD</strong> — hidden when zoomed far out, then a dot, then an icon as you zoom in:
-            {LOD_LEVELS.map(l => (
-              <span key={l}> <b>{l}</b> {l === 0 ? 'always an icon' : `${LOD_LABELS[l]}: dot from ${DOT_ZOOM[l]}×, icon from ${LOD_ZOOM[l]}×`}{l < 3 ? ' ·' : ''}</span>
-            ))}
-          </p>
+          <div className="apoi-sub apoi-lod-key">
+            <strong>LOD (level of detail)</strong> decides how early a POI appears as you zoom in: hidden, then a dot, then
+            its icon. A whole world fits the screen at about 0.9× on a desktop and 0.35× on a phone.
+            <ul>
+              {LOD_LEVELS.map(l => (
+                <li key={l}>
+                  <b>{l} {LOD_LABELS[l]}</b>
+                  {' '}({l === 0 ? 'icon at every zoom' : `dot from ${DOT_ZOOM[l]}×, icon from ${LOD_ZOOM[l]}×`}) — {LOD_GUIDE[l]}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="apoi-table-wrap">
             <table className="apoi-table">
               <thead>
