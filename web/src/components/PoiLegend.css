@@ -1,37 +1,158 @@
-.poi-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.poi-legend-btn {
+/* Map marker key. Positioned by the host (.worlds-legend / .event-map-legend,
+   bottom-left); this file styles the pill and the panel. */
+
+/* ── Collapsed: one pill ─────────────────────────────────── */
+.poi-legend-pill {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 5px 1px 1px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 10px;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px 0 10px;
+  background: rgba(18, 22, 30, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  color: #e6e9ef;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  -webkit-tap-highlight-color: transparent;
+}
+.poi-legend-pill:hover { background: rgba(32, 38, 50, 0.95); }
+.poi-legend-pill svg,
+.poi-legend-head svg { width: 18px; height: 18px; flex-shrink: 0; }
+.poi-legend-badge {
+  padding: 2px 6px;
+  border-radius: 9px;
+  background: #5b6eae;
+  color: #fff;
+  font-size: 11px;
+}
+
+/* ── Open: panel of group toggles ────────────────────────── */
+.poi-legend:not(.collapsed) {
+  width: 250px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100% - 120px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 22, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #e6e9ef;
+  overflow: hidden;
+}
+.poi-legend-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 6px 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  font-weight: 700;
+}
+.poi-legend-title { flex: 1; }
+.poi-legend-link {
+  background: none;
+  border: none;
+  color: #8fb3ff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.poi-legend-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #aab;
+  cursor: pointer;
+}
+.poi-legend-close:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.poi-legend-body { overflow-y: auto; padding: 4px; overscroll-behavior: contain; }
+
+.poi-legend-row { display: flex; align-items: stretch; gap: 2px; }
+.poi-legend-toggle,
+.poi-legend-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition: opacity 0.15s, background 0.15s;
 }
-.poi-legend-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-.poi-legend-btn.off {
-  opacity: 0.3;
-}
+.poi-legend-toggle { min-height: 40px; padding: 4px 8px; font-size: 13px; font-weight: 600; }
+.poi-legend-toggle:hover,
+.poi-legend-item:hover,
+.poi-legend-more:hover { background: rgba(255, 255, 255, 0.07); }
+.poi-legend-group.off .poi-legend-toggle { opacity: 0.38; }
+.poi-legend-group.some .poi-legend-toggle .poi-legend-count { color: #f2c14e; }
+
+/* The group's first marker type stands for it, a size up from the items. */
+.poi-legend-group-icon { display: flex; flex-shrink: 0; }
+.poi-legend-group-icon .poi-legend-swatch { width: 26px; height: 26px; }
 .poi-legend-swatch {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: block;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 }
+.poi-legend-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .poi-legend-count {
+  flex-shrink: 0;
+  color: #9aa3b2;
+  font-size: 12px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  min-width: 1em;
-  text-align: right;
+}
+.poi-legend-more {
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #9aa3b2;
+  cursor: pointer;
+}
+.poi-legend-more svg { width: 16px; height: 16px; transition: transform 0.15s; }
+
+/* Individual types inside an expanded group. */
+.poi-legend-items {
+  margin: 0 0 4px 22px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+.poi-legend-item { width: 100%; min-height: 34px; padding: 3px 8px; font-size: 12.5px; }
+.poi-legend-item.off { opacity: 0.38; }
+
+/* Phones: the open panel becomes a short bottom sheet across the map. */
+@media (max-width: 600px) {
+  .poi-legend.poi-legend:not(.collapsed) {
+    left: 8px;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    max-height: 46vh;
+  }
+  .poi-legend.poi-legend.collapsed {
+    left: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
 }

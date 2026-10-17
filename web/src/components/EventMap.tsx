@@ -620,6 +620,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         const [sx, sy] = toScreen(ppx, ppy);
         if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
         const m = markerFor(rule, scale);
+        if (!m) continue;
         if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
         else icons.push([rule, m, sx, sy]);
       }

@@ -30,6 +30,7 @@ public static class SeedGenApi
 
         // Check filesystem cache first
         var poisPath = Path.Combine(opts.SeedDir(worldGen, seedHash), "pois");
+        PoiCache.EnsureCurrent(opts.SeedDir(worldGen, seedHash), seedHash, worldGen);
         if (File.Exists(poisPath))
         {
             var cached = File.ReadAllText(poisPath);
@@ -78,15 +79,7 @@ public static class SeedGenApi
 
         // Re-parse POIs from the saved .db2, with the loot the plugin dumped on the full run
         var wg = new Vh.World.WorldGenerator(seedHash, worldGen);
-        var loot = Vh.World.LocationFinder.LoadLoot(Path.Combine(dir, "oracle.loot.json"));
-        var pois = Vh.World.LocationFinder.ReadFromWorldDb(dbPath, seedHash, out _, wg, loot);
-        var poisCount = pois?.Count ?? 0;
-        var poisPath = Path.Combine(dir, "pois");
-        if (pois != null && pois.Count > 0)
-        {
-            var json = System.Text.Json.JsonSerializer.Serialize(pois, Json.CamelCase);
-            File.WriteAllText(poisPath, json);
-        }
+        var poisCount = PoiCache.Rebuild(dir, seedHash, wg);
 
         // Re-generate BVEC from textures
         artifacts.GenerateAll(seed, seedHash, worldGen, dir, wg);
@@ -133,6 +126,8 @@ public static class SeedGenApi
             return Results.NotFound();
 
         var path = Path.Combine(options.Value.SeedDir(worldGen, seedHash), file);
+        if (file == "pois")
+            PoiCache.EnsureCurrent(options.Value.SeedDir(worldGen, seedHash), seedHash, worldGen);
         if (!File.Exists(path))
             return Results.NotFound();
 

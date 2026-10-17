@@ -1,5 +1,10 @@
 using SeedGen;
 
+// Dev: `dungeon-check <oracle.loot.json> <seed>` / `pois-check <db2> <seed> <oracle.loot.json>`
+// compare DungeonSim with an oracle dump (see WorldGen/DungeonCheck.cs).
+if (args.Length > 0 && args[0] == "dungeon-check") return Vh.World.DungeonCheck.Run(args[1..]);
+if (args.Length > 0 && args[0] == "pois-check") return Vh.World.DungeonCheck.RunPois(args[1..]);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<SeedGenOptions>(opts =>
@@ -28,3 +33,4 @@ app.UseResponseCompression();
 app.MapEndpoints();
 
 app.Run();
+return 0;

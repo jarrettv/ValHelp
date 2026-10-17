@@ -627,7 +627,7 @@ public static class LocationFinder
         {
             int hash = r.ReadInt32();
             float x = r.ReadSingle();
-            r.ReadSingle(); // y
+            float y = r.ReadSingle();
             float z = r.ReadSingle();
             bool placed = r.ReadBoolean();
 
@@ -660,7 +660,8 @@ public static class LocationFinder
             ChestItem[][]? chests = null;
             IReadOnlyDictionary<string, int>? creatures = null;
             string[]? vegvisirs = null;
-            if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out var sample))
+            LootSample? sample = null;
+            if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out sample))
             {
                 var found = LootItems(sample);
                 if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
@@ -668,6 +669,8 @@ public static class LocationFinder
                 if (sample.Creatures.Count > 0) creatures = sample.Creatures;
                 if (sample.Vegvisirs.Length > 0) vegvisirs = sample.Vegvisirs;
             }
+            var dungeonFound = DungeonItems(prefabName, new V3(x, y, z), worldSeed, wg, sample);
+            if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
 
             results.Add(new PoiLocation(friendly, type, x, z,
                 Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
@@ -731,6 +734,53 @@ public static class LocationFinder
         if (s.Objects.ContainsKey("Spawner_Troll")) items.Add("Troll");
         if (s.Objects.ContainsKey("goblin_totempole")) items.Add("GoblinTotem");
         if (s.Present.Keys.Any(k => k.Contains("Vegvisir"))) items.Add("Vegvisir");
+        return items;
+    }
+
+    // Declared before DungeonFinds: static initializers run in text order.
+    static readonly (string, string)[] MineFinds =
+    {
+        ("Pickable_BlackCoreStand", "Black Core"),
+        ("blackmarble_altar_crystal", "Sealbreaker Fragment"),
+    };
+
+    /// <summary>
+    /// Dungeon finds we surface as POI items, by the networked prefab that holds
+    /// them: one black core per stand, one Sealbreaker fragment per altar crystal,
+    /// one Fenris claw or hair per frost cave pickup, 2-5 crystal per node.
+    /// </summary>
+    static readonly Dictionary<string, (string Prefab, string Item)[]> DungeonFinds = new()
+    {
+        ["Mistlands_DvergrTownEntrance1"] = MineFinds,
+        ["Mistlands_DvergrTownEntrance2"] = MineFinds,
+        ["MountainCave02"] = new[]
+        {
+            ("Pickable_MountainCaveRandom", "Fenris Claw/Hair"),
+            ("Pickable_MountainCaveCrystal", "Crystal"),
+        },
+    };
+
+    /// <summary>
+    /// Counts of the finds inside a dungeon, as "Black Core x4". From the oracle's
+    /// spawn when it generated this dungeon (oracle jobs), otherwise from
+    /// <see cref="DungeonSim"/>, which re-runs the game's generator from the room
+    /// catalog. A failed simulation just leaves the POI without dungeon items.
+    /// </summary>
+    static List<string> DungeonItems(string prefab, V3 pos, int worldSeed, WorldGenerator? wg, LootSample? sample)
+    {
+        var items = new List<string>();
+        if (!DungeonFinds.TryGetValue(prefab, out var finds)) return items;
+        IReadOnlyDictionary<string, int>? objects = null;
+        // The generator's own network object (DG_*) is only there if the oracle built the interior.
+        if (sample != null && sample.Objects.Keys.Any(k => k.StartsWith("DG_")))
+            objects = sample.Objects;
+        else
+        {
+            try { objects = new DungeonSim(DungeonCatalog.Instance, wg).Simulate(prefab, pos, worldSeed).Objects; }
+            catch (Exception) { return items; }
+        }
+        foreach (var (obj, item) in finds)
+            if (objects.TryGetValue(obj, out int n) && n > 0) items.Add($"{item} x{n}");
         return items;
     }
 

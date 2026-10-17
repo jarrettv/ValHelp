@@ -8,6 +8,11 @@
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
   </ItemGroup>
+  <!-- Dungeon room catalog for WorldGen/DungeonSim.cs, exported from the game by
+       scripts/export_dungeon_rooms.py. -->
+  <ItemGroup>
+    <EmbeddedResource Include="WorldGen/Data/dungeons.json.gz" LogicalName="dungeons.json.gz" />
+  </ItemGroup>
   <!-- oracle/ is a separate net472 BepInEx plugin, built against the game's own
        assemblies (see oracle/README.md). Neither its sources nor its generated
        obj/ may be compiled into seedgen. -->

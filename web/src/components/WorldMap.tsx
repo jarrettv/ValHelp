@@ -106,6 +106,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
       const sy = ppy * mScale * scale + panY;
       if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
       const m = markerFor(rule, scale);
+      if (!m) continue;
       if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
       else icons.push([rule, m, sx, sy]);
     }
@@ -270,6 +271,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         if (!rule) continue;
         if (hidden && hidden.has(rule.icon)) continue;
         const m = markerFor(rule, scale);
+        if (!m) continue;
         // Dots are tiny; give them a finger-sized target.
         const r = m.kind === 'dot' ? 6 : m.size / 2;
         const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);

@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router';
 import Spinner from './components/Spinner';
 import { useAuth } from './contexts/AuthContext';
 import {
-  PoiMarker, PoiSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_ZOOM, LOD_LABELS,
+  PoiMarker, PoiSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_ZOOM, DOT_ZOOM, LOD_LABELS,
   resolvePoiIcon, defaultPoiIcon, getColoredIconDataUrl,
   getPoiConfig, getPoiConfigError, setPoiConfig, usePoiConfigVersion,
 } from './components/poiIcons';
@@ -284,7 +284,7 @@ function FilterChips<T extends string>({ label, value, options, onChange }: {
 }
 
 /// Shown/hidden switch. Turning a prefab on returns it to its type's code rule
-/// when it has one (so e.g. empty houses stay hidden); otherwise forces it on.
+/// when it has one; otherwise forces it on.
 function VisibilitySwitch({ row, run }: { row: PrefabRow; run: (f: () => Promise<void>) => void }) {
   const on = row.visible > 0;
   return (
@@ -316,7 +316,7 @@ function LodPicker({ row, run }: { row: PrefabRow; run: (f: () => Promise<void>)
           aria-checked={!disabled && row.lod === l}
           disabled={disabled}
           className={`apoi-lod-btn ${!disabled && row.lod === l ? 'on' : ''}`}
-          title={l === 0 ? 'LOD 0: always an icon' : `LOD ${l} (${LOD_LABELS[l]}): a dot until zoom ${LOD_ZOOM[l]}×, then an icon`}
+          title={l === 0 ? 'LOD 0: always an icon' : `LOD ${l} (${LOD_LABELS[l]}): hidden below zoom ${DOT_ZOOM[l]}×, a dot until ${LOD_ZOOM[l]}×, then an icon`}
           onClick={() => run(() => saveSetting(row.prefab, { lod: l }))}
         >{l}</button>
       ))}
@@ -346,9 +346,6 @@ function PrefabEditor({ row, run }: { row: PrefabRow; run: (f: () => Promise<voi
 
   return (
     <div className="apoi-editor">
-      {row.icons.length > 1 && (
-        <p className="apoi-sub">This prefab draws {row.icons.length} icons depending on what&apos;s inside. Finds like a beehive or axe head keep their own icon; your pick applies to the rest.</p>
-      )}
       <div className="apoi-editor-grid" role="radiogroup" aria-label={`Icon for ${row.prefab}`}>
         {allIconNames().map(name => {
           const selected = (override.icon ?? (row.icons.length === 1 ? current.icon : '')) === name;
@@ -637,9 +634,9 @@ const AdminPois: React.FC = () => {
           </div>
 
           <p className="apoi-sub apoi-lod-key">
-            <strong>LOD</strong> — every shown POI is on the map at every zoom, as a dot until it&apos;s detailed enough:
+            <strong>LOD</strong> — hidden when zoomed far out, then a dot, then an icon as you zoom in:
             {LOD_LEVELS.map(l => (
-              <span key={l}> <b>{l}</b> {l === 0 ? 'always an icon' : `${LOD_LABELS[l]}: icon from ${LOD_ZOOM[l]}× zoom`}{l < 3 ? ' ·' : ''}</span>
+              <span key={l}> <b>{l}</b> {l === 0 ? 'always an icon' : `${LOD_LABELS[l]}: dot from ${DOT_ZOOM[l]}×, icon from ${LOD_ZOOM[l]}×`}{l < 3 ? ' ·' : ''}</span>
             ))}
           </p>
           <div className="apoi-table-wrap">

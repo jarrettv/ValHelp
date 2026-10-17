@@ -92,6 +92,7 @@ public sealed class SeedGenWorker(
             File.Copy(dbPath, Path.Combine(outDir, "db"), overwrite: true);
             await File.WriteAllTextAsync(Path.Combine(outDir, "pois"),
                 JsonSerializer.Serialize(pois, Json.CamelCase), ct);
+            PoiCache.MarkCurrent(outDir);
 
             CollectOracle(job.Id, oracleDir, outDir);
 

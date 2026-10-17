@@ -30,19 +30,24 @@ export interface IconRule {
   opacity?: number;      // canvas alpha (e.g. 0.25 for empty troll caves)
   lod?: number;          // level of detail 0-3: zoom at which the icon replaces its dot (LOD_ZOOM)
   borrowed?: boolean;    // placeholder: reuses another POI type's art (tracked on /auth/pois)
-  find?: boolean;        // icon shows what's inside (beehive, axe head); an admin icon override doesn't replace it
 }
 
 // ── Level of detail ─────────────────────────────────────────────────────────
-// Every shown POI is on the map at every zoom; its LOD decides whether it's a
-// full icon or a small dot. LOD 0 (bosses, start, traders) is always an icon;
-// LOD 1-3 stay dots until the map is zoomed past LOD_ZOOM[lod], so the
-// overview stays readable and detail arrives in waves as you zoom in.
+// A POI's LOD decides how it draws at the current zoom. LOD 0 (bosses, start,
+// traders) is always an icon. LOD 1-3 are hidden when zoomed far out, a small
+// dot from DOT_ZOOM[lod], and a full icon from LOD_ZOOM[lod], so the overview
+// stays readable and detail arrives in waves as you zoom in.
 
 export const LOD_LEVELS = [0, 1, 2, 3] as const;
 
 /// Map scale at which each LOD switches from dot to icon.
 export const LOD_ZOOM: readonly number[] = [0, 1, 2, 4];
+
+/// Map scale below which each LOD isn't drawn at all: a quarter of its icon
+/// zoom. Scale is screen px per map px on the 1024px map, so a whole-world fit
+/// is ~0.9 on a desktop and ~0.35 on a phone, and zooming out halves that:
+/// zoomed right out only the Region dots remain.
+export const DOT_ZOOM: readonly number[] = LOD_ZOOM.map(z => z / 4);
 
 export const LOD_LABELS: readonly string[] = ['Always', 'Region', 'Area', 'Close-up'];
 
@@ -60,14 +65,16 @@ const DOT_PX = 5;             // diameter of a not-yet-detailed marker
 
 export interface MarkerDraw { kind: 'icon' | 'dot'; size: number }
 
-/// How a POI with this rule draws at this map scale. Shared by every map and
-/// the click hit-test, so they can't disagree.
-export function markerFor(rule: IconRule, scale: number): MarkerDraw {
+/// How a POI with this rule draws at this map scale, or null when it's zoomed
+/// out past its LOD. Shared by every map and the click hit-test, so they can't
+/// disagree.
+export function markerFor(rule: IconRule, scale: number): MarkerDraw | null {
   const lod = Math.max(0, Math.min(3, rule.lod ?? 0));
   const capped = Math.min(MAX_SCREEN_PX, BASE_WORLD_SIZE * scale * (rule.sizeScale ?? 1));
   if (lod === 0) return { kind: 'icon', size: capped };
   const size = capped * MINOR_SIZE_FACTOR;
   if (scale >= LOD_ZOOM[lod] && size >= MIN_MINOR_SCREEN_PX) return { kind: 'icon', size };
+  if (scale < DOT_ZOOM[lod]) return null;
   return { kind: 'dot', size: DOT_PX };
 }
 
@@ -185,8 +192,6 @@ export function resolvePoiIcon(poi: PoiMarker): IconRule | null {
   if (o.visible === false) return null;
   const rule = base ?? (o.visible ? { icon: FALLBACK_ICON, color: '#ffffff', lod: 3 } : null);
   if (!rule) return null;
-  // A find (e.g. a house's beehive) keeps its own icon; the override's art is for the rest.
-  if (rule.find) return { ...rule, lod: o.lod ?? rule.lod };
   return {
     ...rule,
     icon: o.icon ?? rule.icon,
@@ -196,12 +201,13 @@ export function resolvePoiIcon(poi: PoiMarker): IconRule | null {
   };
 }
 
-/// The code default for a POI, before admin overrides.
+/// The code default for a POI, before admin overrides. Art depends only on the
+/// prefab, never on what's inside, so every POI of a prefab looks the same.
 export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
-  const items = poi.items ?? [];
   switch (poi.type) {
     case 'Boss Altar':       return { icon: 'boss',           color: '#ffffff' };
     case 'Start':            return { icon: 'start',          color: '#ffffff', sizeScale: 1.5 };
+    case 'AncientUpgradeStation': return { icon: 'forgeofpotential', color: '#ffffff' };
     case 'Trader':
       switch (poi.prefab) {
         case 'Vendor_BlackForest': return { icon: 'haldor',   color: '#ffffff' };
@@ -209,59 +215,81 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
         case 'BogWitch_Camp':      return { icon: 'bogwitch', color: '#ffffff' };
         default:                   return { icon: 'cauldron', color: '#ffffff' };
       }
-    case 'House': {
-      const hasCurious    = items.some(i => i.includes('Curious Axe Head')    && !i.includes('no '));
-      const hasMysterious = items.some(i => i.includes('Mysterious Axe Head') && !i.includes('no '));
-      const hasBee        = items.includes('Beehive');
-      if (hasCurious)    return { icon: 'axehead',  color: '#c0c0c0', lod: 1, find: true };
-      if (hasMysterious) return { icon: 'axehead',  color: '#cd7f32', lod: 1, find: true };
-      if (hasBee)        return { icon: 'beehive',  color: '#f0c040', lod: 1, find: true };
-      return null;
-    }
+    // ── Meadows / Black Forest ──
+    // Only the houses that read well on the map; the rest stay off.
+    case 'House':
+      switch (poi.prefab) {
+        case 'WoodHouse1':
+        case 'WoodHouse7':   return { icon: 'woodhouse2', color: '#ffffff', lod: 3 };
+        case 'WoodHouse12':  return { icon: 'woodhouse6', color: '#ffffff', lod: 3 };
+        case 'WoodHouse5':
+        case 'WoodHouse9':
+        case 'WoodHouse10':
+        case 'WoodHouse11':
+        case 'WoodHouse13':  return { icon: 'woodhouse',  color: '#ffffff', lod: 3 };
+        default:             return null;
+      }
+    case 'Village':          return { icon: 'farm',           color: '#ffffff', lod: 2 };
+    case 'AbandonedCabin':   return { icon: 'logcabin',       color: '#ffffff', lod: 3 };
+    case 'StoneHenge':       return { icon: 'stonehenge',     color: '#ffffff', lod: 1 };
     case 'BoarRunestone':    return { icon: 'boar7',          color: '#c8a070', lod: 2 };
-    case 'Shipwreck':        return { icon: 'shipwreck',      color: '#ffffff', lod: 3 };
-    case 'GreydwarfNest':    return { icon: 'greydwarfnest',  color: '#7b2d8b', lod: 2 };
-    case 'TrollCave':        return { icon: 'trollcave',     color: '#4a90c4', lod: 2 };
+    case 'GreydwarfNest':    return { icon: 'greydwarfnest',  color: '#7b2d8b', lod: 1 };
+    case 'TrollCave':        return { icon: 'trollcave',      color: '#4a90c4', lod: 2 };
     case 'Crypt':            return { icon: 'chamber',        color: '#9e9b8e', lod: 2 };
-    case 'SunkenCrypt':      return { icon: 'sunkencrypt',    color: '#4a7a3d', lod: 2 };
-    case 'Geyser':           return { icon: 'surtlingspawner',color: '#ff6820', lod: 3 };
-    // Each of these vegvisirs is a RandomSpawn (30-70%): seedgen reports whether this one got it.
+    case 'HildirDungeon':    return { icon: 'quest',          color: '#ffffff', lod: 1 };
+    // ── Ocean ──
+    case 'Shipwreck':
+      switch (poi.prefab) {
+        case 'ShipWreck01_DN': return { icon: 'shipwreck',     color: '#57423d', lod: 2 };
+        case 'ShipWreck02_DN': return { icon: 'shipwrecksnow', color: '#45342b', lod: 2 };
+        default:               return { icon: 'shipwreck',     color: '#ffffff', lod: 1 };
+      }
+    // ── Swamp / Mountain / Plains ──
+    case 'SunkenCrypt':      return { icon: 'sunkencrypt',    color: '#4a7a3d', lod: 1 };
+    // The vegvisir itself is a 30-70% RandomSpawn; the POI card says whether this one got it.
     case 'RuinVegvisir':
     case 'SwampVegvisir':
     case 'PlainsVegvisir':
-    case 'MountainVegvisir':
-      return items.includes('Vegvisir') ? { icon: 'vegvisir', color: '#8b7355', lod: 1 } : null;
+    case 'MountainVegvisir': return { icon: 'vegvisir',       color: '#8b7355', lod: 1 };
     case 'MountainCave':     return { icon: 'mountaincave',   color: '#a0a0a0', lod: 2 };
-    case 'DrakeNest':        return { icon: 'egg',            color: '#ff69b4', lod: 2 };
-    case 'StoneTower':       return { icon: 'stonetower',     color: '#c8a050', lod: 2 };
-    case 'Totem': {
-      if (poi.prefab === 'StoneTower1') return { icon: 'stonetower', color: '#c8a050', lod: 2 };
-      const hasTotem = poi.prefab !== 'GoblinCamp2' || items.includes('GoblinTotem');
-      return hasTotem
-        ? { icon: 'totem', color: '#c8a050', lod: 2 }
-        : { icon: 'camp',  color: '#6b4226', lod: 2 };
-    }
+    case 'DrakeNest':        return { icon: 'egg',            color: '#ff69b4', lod: 1 };
+    case 'StoneTower':       return { icon: 'stonetower',     color: '#c8a050', lod: 3 };
+    case 'Totem':
+      switch (poi.prefab) {
+        case 'StoneTower1':  return { icon: 'stonetower', color: '#c8a050', lod: 2 };
+        case 'GoblinCamp2':  return { icon: 'goblincamp', color: '#c8a050', lod: 2 };
+        default:             return { icon: 'totem',      color: '#c8a050', lod: 2 };
+      }
+    case 'GoblinHut':        return { icon: 'goblinhut',      color: '#ffffff', lod: 3 };
+    case 'TarPit':           return { icon: 'tarpit',         color: '#ffffff', lod: 3 };
+    // ── Mistlands ──
     case 'InfestedMine':     return { icon: 'infestedmine',   color: '#6a4e8a', lod: 2 };
-    case 'CharredFortress':  return { icon: 'fortress',       color: '#cc4040', lod: 2 };
     case 'DvergrHouse':      return { icon: 'dvergrhouse',    color: '#c89060', lod: 2 };
     case 'DvergrTower':      return { icon: 'dvergrtower',    color: '#8aa0b0', lod: 2 };
-    case 'PlaceOfMystery':   return { icon: 'tormentelite',   color: '#a070d0', lod: 2 };
+    case 'GiantSwords':      return { icon: 'giantswords',    color: '#c4562a', lod: 2 };
+    case 'GiantRemains':
+      return poi.prefab === 'Mistlands_Giant2'
+        ? { icon: 'giantribcage', color: '#6a6a62', lod: 2 }
+        : { icon: 'giantskull',   color: '#6a6a62', lod: 2 };
+    // ── Ashlands ──
+    case 'CharredFortress':  return { icon: 'fortress',       color: '#cc4040', lod: 1 };
+    case 'PlaceOfMystery':   return { icon: 'tormentelite',   color: '#a070d0', lod: 0 };
     case 'PutridHole':       return { icon: 'putridhole',     color: '#a8923a', lod: 2 };
+    case 'Geyser':           return { icon: 'surtlingspawner',color: '#ff6820', lod: 3 };
+    case 'LavaLeviathan':    return { icon: 'leviathanlava',  color: '#4fb8b0', lod: 2 };
     // ── Deep North (1.0) ──
-    // No dedicated art yet — these borrow the closest existing SVG and lean on
-    // colour to stay distinguishable. Swap the `icon` values (and drop
-    // `borrowed`) once Deep North SVGs land in /img/Poi.
     case 'Morkhalla':        return { icon: 'morkhalla',      color: '#7f9bb5', lod: 2 };
-    case 'WindingTunnels':   return { icon: 'mountaincave',   color: '#7fd0e0', lod: 2, borrowed: true };
+    case 'WindingTunnels':   return { icon: 'thehole',        color: '#7fd0e0', lod: 2 };
+    // Placeholder: borrows the vegvisir art until it has its own.
     case 'AncestralMemorial':return { icon: 'vegvisir',       color: '#b9c6d4', lod: 2, borrowed: true };
     case 'NorthVillage':
       return poi.prefab === 'DN_hut01'
-        ? { icon: 'northhut', color: '#8a6a45', lod: 2 }
-        : { icon: 'camp',     color: '#8a6a45', lod: 2, borrowed: true };
+        ? { icon: 'northhut',     color: '#8a6a45', lod: 2 }
+        : { icon: 'northvillage', color: '#8a6a45', lod: 2 };
+    case 'LumberCamp':       return { icon: 'northhut',       color: '#ffffff', lod: 3 };
     case 'BearCave':         return { icon: 'bearcave',       color: '#8a5a3a', lod: 2 };
-    case 'FrozenShip':       return { icon: 'shipwreck',      color: '#9fd8e8', lod: 2, borrowed: true };
-    // 'IcePond' and 'LumberCamp' are generated and searchable but deliberately
-    // unmapped: nothing in the current icon set reads as either one.
+    case 'FrozenShip':       return { icon: 'frozenship',     color: '#9fd8e8', lod: 3 };
+    // 'IcePond' is generated and searchable but deliberately unmapped.
     default:                 return null;
   }
 }

@@ -317,6 +317,29 @@ public class OraclePlugin : BaseUnityPlugin
                 foreach (var vg in dg.GetComponentsInChildren<Vegvisir>(false))
                     vegvisirs.AddRange(vg.m_locations.Select(l => l.m_locationName));
 
+            // The generated layout as the generator saved it (room, position), so
+            // seedgen's DungeonSim can be checked room by room.
+            var rooms = new List<string>();
+            string dgInfo = "";
+            foreach (var dgv in spawned.Where(v => v.GetComponent<DungeonGenerator>()))
+            {
+                var dg = dgv.GetComponent<DungeonGenerator>();
+                var p = dg.transform.position;
+                dgInfo = $",\"dungeon\":{{\"seed\":{dg.m_generatedSeed},\"pos\":[{F(p.x)},{F(p.y)},{F(p.z)}]}}";
+                if (!dgv.GetZDO().GetByteArray(ZDOVars.s_roomData, out var data)) continue;
+                using var br = new BinaryReader(new MemoryStream(data));
+                int n = br.ReadInt32();
+                for (int i = 0; i < n; i++)
+                {
+                    int hash = br.ReadInt32();
+                    float x = br.ReadSingle(), y = br.ReadSingle(), z = br.ReadSingle();
+                    // Rotation is saved as euler angles (Utils.Write(Quaternion)).
+                    br.ReadSingle(); float ry = br.ReadSingle(); br.ReadSingle();
+                    var room = DungeonDB.instance.GetRoom(hash);
+                    rooms.Add($"[\"{Escape(room != null ? room.m_prefab.Name : hash.ToString())}\",{F(x)},{F(y)},{F(z)},{F(ry)}]");
+                }
+            }
+
             foreach (var v in spawned) ZNetScene.instance.Destroy(v.gameObject);
             string rs = string.Join(",", present.GroupBy(x => x).OrderBy(g => g.Key)
                 .Select(g => $"\"{Escape(g.Key)}\":{g.Count()}"));
@@ -324,7 +347,8 @@ public class OraclePlugin : BaseUnityPlugin
                 .Select(g => $"\"{Escape(g.Key)}\":{g.Count()}"));
             string vv = string.Join(",", vegvisirs.Distinct().Select(x => $"\"{Escape(x)}\""));
             return $"\"beehives\":{beehives},\"chests\":[{string.Join(",", chests.OrderBy(c => c, StringComparer.Ordinal))}],\"present\":{{{rs}}}," +
-                   $"\"creatures\":{{{cr}}},\"vegvisirs\":[{vv}]";
+                   $"\"creatures\":{{{cr}}},\"vegvisirs\":[{vv}]" +
+                   (rooms.Count > 0 ? $",\"rooms\":[{string.Join(",", rooms)}]" : "") + dgInfo;
         }
 
         var sb = new StringBuilder("[\n");
@@ -336,9 +360,14 @@ public class OraclePlugin : BaseUnityPlugin
             string name = inst.m_location.m_prefab.Name ?? "";
             if (!LootPrefabs.Contains(name) && !name.StartsWith("WoodHouse")
                 && !(dungeons && DungeonPrefabs.Contains(name))) continue;
+            // Dev probes: VALHELP_LOOT_ONLY=Prefab1,Prefab2 samples just those.
+            if (s_only != null && !s_only.Contains(name)) continue;
 
             int seed = wg.GetSeed() + kv.Key.x * 4271 + kv.Key.y * 9187;
+            // Per-location cost, so the price of each dungeon type can be weighed.
+            var one = Stopwatch.StartNew();
             string result = Sample(inst, seed, Quaternion.identity, out string objects);
+            long ms = one.ElapsedMilliseconds;
             string rotField = "";
             if (checkRotation)
             {
@@ -357,7 +386,7 @@ public class OraclePlugin : BaseUnityPlugin
 
             sb.Append(count++ == 0 ? "" : ",\n")
               .Append($"{{\"prefab\":\"{Escape(name)}\",\"x\":{F(inst.m_position.x)},\"z\":{F(inst.m_position.z)},")
-              .Append($"\"zone\":[{kv.Key.x},{kv.Key.y}],{result},\"objects\":{objects}{rotField}}}");
+              .Append($"\"zone\":[{kv.Key.x},{kv.Key.y}],\"ms\":{ms},{result},\"objects\":{objects}{rotField}}}");
         }
         sb.Append("\n]\n");
         File.WriteAllText(path, sb.ToString());
@@ -500,6 +529,9 @@ public class OraclePlugin : BaseUnityPlugin
     /// vegvisirs, chests), which is slow — only on oracle jobs or with
     /// VALHELP_LOOT_DUNGEONS=1.
     /// </summary>
+    static readonly HashSet<string> s_only = Environment.GetEnvironmentVariable("VALHELP_LOOT_ONLY") is string only
+        && only.Length > 0 ? new HashSet<string>(only.Split(',')) : null;
+
     static readonly HashSet<string> DungeonPrefabs = new HashSet<string>
     {
         "MountainCave02", "Mistlands_DvergrTownEntrance1", "Mistlands_DvergrTownEntrance2", "TheHole01",

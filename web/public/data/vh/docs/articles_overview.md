@@ -17,7 +17,7 @@ Tap a boss below to open its biome guide.
 <img src="/api/mob/Vegvisir_0.webp" style="width:120px;float:right;margin:4px 0 8px 16px">
 Throughout the world of Valheim you can find **vegvisir**, a carved runestone that reveals the nearest boss and marks it on your map when you activate it. Keep an eye out for a shiney **red glow**.
 
-They turn up both **out in the world** by ruined stone buildings, Stonehenge formations, and, more often, **inside dungeons** — Burial Chambers, Sunken Crypts, Frost Caves, Infested Mines, and Charred Fortresses.
+They turn up both **out in the world** by ruined stone buildings, Stonehenge formations, and, more often, **inside dungeons** — chambers, crypts, mines, caves, and forts
 
 ## Alternative biomes
 
