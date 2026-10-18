@@ -1,18 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams, Link } from 'react-router';
+import { useNavigate, useParams, Navigate } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
 import WorldMap, { PoiMarker } from './components/WorldMap';
 import PoiLegend from './components/PoiLegend';
+import SeedControl from './components/SeedControl';
 import { useVhItems } from './guides/vh/data';
 import './Worlds.css';
-
-interface WorldListItem {
-  seed: string;
-  createdAt: string;
-  lastViewAt: string;
-  viewCount: number;
-}
 
 interface VisitResp {
   seed: string;
@@ -23,86 +17,34 @@ interface VisitResp {
   error: string | null;
 }
 
-export default function Worlds() {
-  const { seed } = useParams<{ seed?: string }>();
-  return seed ? <WorldView seed={seed} /> : <WorldsIndex />;
-}
+/// The seed Worlds opens on, and the only one anyone but the owner can see;
+/// choosing a seed isn't open yet.
+/// The API enforces the same (WorldsEndpoints.PublicSeed).
+const PUBLIC_SEED = 'JVModsFun';
 
-function WorldsIndex() {
-  const { status: auth } = useAuth();
-  const navigate = useNavigate();
-  const [seedInput, setSeedInput] = useState('');
-  const [list, setList] = useState<WorldListItem[] | null>(null);
-
-  const { data: profile, isPending: profilePending } = useQuery<{ id: number; roles?: string[] }>({
+/// Only the site owner (user 1) can switch seeds for now.
+function useIsOwner(enabled: boolean) {
+  const { data: profile, isPending } = useQuery<{ id: number }>({
     queryKey: ['profile'],
     queryFn: () => fetch('/api/auth/profile', { credentials: 'include' }).then(r => r.json()),
-    enabled: !!auth?.id,
+    enabled,
   });
-  const isAdmin = !!profile && (profile.id === 1 || (profile.roles ?? []).includes('admin'));
-
-  useEffect(() => {
-    if (!auth?.id || !isAdmin) return;
-    fetch('/api/worlds/list', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : [])
-      .then(setList)
-      .catch(() => setList([]));
-  }, [auth?.id, isAdmin]);
-
-  if (auth === null) return <div className="worlds-page"><p>Loading…</p></div>;
-  if (auth.id && profilePending) return <div className="worlds-page"><p>Loading…</p></div>;
-  if (!isAdmin) {
-    return (
-      <div className="worlds-page">
-        <h1>Worlds</h1>
-        <p>Coming soon.</p>
-      </div>
-    );
-  }
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const s = seedInput.trim();
-    if (!s) return;
-    navigate(`/worlds/${encodeURIComponent(s)}`);
-  }
-
-  return (
-    <div className="worlds-page">
-      <h1>Worlds</h1>
-      <p>Enter a Valheim seed to view its map. Boss altars, traders, dungeons and POIs are extracted from a generated world.</p>
-      <form className="worlds-form" onSubmit={submit}>
-        <input
-          type="text"
-          placeholder="Seed (e.g. HappyValheim)"
-          value={seedInput}
-          onChange={e => setSeedInput(e.target.value)}
-          autoFocus
-          maxLength={64}
-        />
-        <button type="submit" disabled={!seedInput.trim()}>View</button>
-      </form>
-
-      {list && list.length > 0 && (
-        <div className="worlds-recent">
-          <h2>Your worlds</h2>
-          <ul>
-            {list.map(w => (
-              <li key={w.seed}>
-                <Link to={`/worlds/${encodeURIComponent(w.seed)}`}>{w.seed}</Link>
-                <span className="worlds-meta">
-                  {w.viewCount} view{w.viewCount === 1 ? '' : 's'} · last {formatRelative(w.lastViewAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  return { isOwner: profile?.id === 1, pending: enabled && isPending };
 }
 
-function WorldView({ seed }: { seed: string }) {
+export default function Worlds() {
+  const { seed } = useParams<{ seed?: string }>();
+  const { status: auth } = useAuth();
+  const { isOwner, pending } = useIsOwner(!!auth?.id);
+
+  if (auth === null || pending) return <div className="worlds-page"><p>Loading…</p></div>;
+  // Worlds always opens on the public seed; only the owner can switch from there.
+  if (seed && seed !== PUBLIC_SEED && !isOwner) return <Navigate to="/worlds" replace />;
+  const shown = seed ?? PUBLIC_SEED;
+  return <WorldView key={shown} seed={shown} canChange={isOwner} />;
+}
+
+function WorldView({ seed, canChange }: { seed: string; canChange: boolean }) {
   const { status: auth } = useAuth();
   const navigate = useNavigate();
   const [visit, setVisit] = useState<VisitResp | null>(null);
@@ -111,9 +53,12 @@ function WorldView({ seed }: { seed: string }) {
   const [pois, setPois] = useState<PoiMarker[]>([]);
   const [hiddenIcons, setHiddenIcons] = useState<Set<string>>(new Set());
 
-  // Initial visit + status polling
+  // Initial visit + status polling. Logged out (public seed only) there's no
+  // user to record the visit for, so it starts with a status check instead.
+  const authReady = auth !== null;
+  const loggedIn = !!auth?.id;
   useEffect(() => {
-    if (!auth?.id) return;
+    if (!authReady) return;
     let cancelled = false;
     let timer: number | undefined;
 
@@ -129,7 +74,7 @@ function WorldView({ seed }: { seed: string }) {
 
     async function loop() {
       try {
-        const first = await call('visit');
+        const first = await call(loggedIn ? 'visit' : 'status');
         if (cancelled) return;
         setVisit(first);
         if (first.status === 'done') return;
@@ -155,14 +100,14 @@ function WorldView({ seed }: { seed: string }) {
     loop();
 
     return () => { cancelled = true; if (timer) clearTimeout(timer); };
-  }, [auth?.id, seed]);
+  }, [authReady, loggedIn, seed]);
 
   const baseUrl = useMemo(() => `/api/worlds/${encodeURIComponent(seed)}`, [seed]);
   // Forest is a single static tile shared across all seeds — reuse the existing track-map
   // endpoint (which serves wwwroot/forest.png and never touches track_maps).
   const forestUrl = useMemo(() => `/api/track/map/${encodeURIComponent(seed)}/forest`, [seed]);
 
-  function close() { navigate('/worlds'); }
+  function close() { navigate('/'); }
   function toggleIcon(icon: string) {
     setHiddenIcons(prev => {
       const next = new Set(prev);
@@ -172,15 +117,6 @@ function WorldView({ seed }: { seed: string }) {
   }
 
   if (auth === null) return <div className="worlds-page"><p>Loading…</p></div>;
-  if (!auth.id) {
-    return (
-      <div className="worlds-page">
-        <h1>Worlds</h1>
-        <p>Log in to view this world.</p>
-        <a className="worlds-login-btn" href="/api/auth/discord">Login with Discord</a>
-      </div>
-    );
-  }
 
   const pending = visit?.status !== 'done';
 
@@ -188,7 +124,12 @@ function WorldView({ seed }: { seed: string }) {
     <div className="worlds-view-fullscreen">
       <button className="worlds-view-close" onClick={close} title="Close map" aria-label="Close">&times;</button>
 
-      <div className="worlds-view-seed">{seed}</div>
+      <SeedControl
+        seed={seed}
+        canChange={canChange}
+        onChange={s => navigate(`/worlds/${encodeURIComponent(s)}`)}
+        className="worlds-seed-control"
+      />
 
       {pending && (
         <div className="worlds-pending-overlay">
@@ -317,16 +258,4 @@ function PoiChest({ chest, title }: { chest: { item: string; count: number }[]; 
       </ul>
     </div>
   );
-}
-
-function formatRelative(iso: string): string {
-  const t = new Date(iso).getTime();
-  const sec = Math.max(1, Math.round((Date.now() - t) / 1000));
-  if (sec < 60) return `${sec}s ago`;
-  const min = Math.round(sec / 60);
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.round(min / 60);
-  if (hr < 48) return `${hr}h ago`;
-  const days = Math.round(hr / 24);
-  return `${days}d ago`;
 }

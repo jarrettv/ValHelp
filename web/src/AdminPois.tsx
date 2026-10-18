@@ -4,9 +4,9 @@ import { useSearchParams } from 'react-router';
 import Spinner from './components/Spinner';
 import { useAuth } from './contexts/AuthContext';
 import {
-  PoiMarker, PoiSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_ZOOM, DOT_ZOOM, LOD_LABELS,
+  PoiMarker, PoiSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_BANDS, LOD_LABELS,
   resolvePoiIcon, defaultPoiIcon, getColoredIconDataUrl,
-  getPoiConfig, getPoiConfigError, setPoiConfig, usePoiConfigVersion,
+  getPoiConfig, getPoiConfigError, loadPoiConfig, setPoiConfig, usePoiConfigVersion,
 } from './components/poiIcons';
 import { Toaster } from './components/Toasts';
 import { toast } from './components/toast';
@@ -196,13 +196,13 @@ async function resetSetting(prefab: string) {
   setPoiConfig({ ...cfg, prefabs });
 }
 
-/// Drop every override so all prefabs follow the code defaults again — e.g.
-/// after a deploy that folded the overrides into poiIcons.ts.
-async function resetAllSettings(): Promise<number> {
+/// Drop every override so all prefabs follow the code defaults again, and any
+/// uploaded icon (e.g. pushed by poi-sync) that the deploy now ships itself.
+async function resetAllSettings(): Promise<{ removed: number; prunedIcons: string[] }> {
   const r = await apiJson('/api/admin/poi/settings', { method: 'DELETE' });
-  const { removed } = await r.json() as { removed: number };
-  setPoiConfig({ ...getPoiConfig(), prefabs: {} });
-  return removed;
+  const res = await r.json() as { removed: number; prunedIcons: string[] };
+  await loadPoiConfig(true);
+  return res;
 }
 
 async function uploadIcon(name: string, svg: string) {
@@ -333,7 +333,7 @@ function LodPicker({ row, run }: { row: PrefabRow; run: (f: () => Promise<void>)
           aria-checked={!disabled && row.lod === l}
           disabled={disabled}
           className={`apoi-lod-btn ${!disabled && row.lod === l ? 'on' : ''}`}
-          title={l === 0 ? 'LOD 0: always an icon' : `LOD ${l} (${LOD_LABELS[l]}): hidden below zoom ${DOT_ZOOM[l]}×, a dot until ${LOD_ZOOM[l]}×, then an icon`}
+          title={l === 0 ? 'LOD 0: always an icon' : `LOD ${l} (${LOD_LABELS[l]}): hidden below zoom ${LOD_BANDS[l].dotFrom}×, a dot until ${LOD_BANDS[l].iconFrom}×, then an icon`}
           onClick={() => run(() => saveSetting(row.prefab, { lod: l }))}
         >{l}</button>
       ))}
@@ -588,6 +588,7 @@ const AdminPois: React.FC = () => {
 
   // Every saved override, including prefabs this seed doesn't happen to place.
   const editedCount = Object.keys(getPoiConfig().prefabs).length;
+  const uploadedCount = Object.keys(getPoiConfig().icons).length;
   const count = <K extends keyof PrefabRow>(k: K, v: PrefabRow[K]) => rows.filter(r => r[k] === v).length;
 
   return (
@@ -630,12 +631,13 @@ const AdminPois: React.FC = () => {
             <div className="apoi-stat"><span>{editedCount}</span>edited</div>
             <button
               className="apoi-reset-all"
-              disabled={editedCount === 0}
+              disabled={editedCount === 0 && uploadedCount === 0}
               title="Drop every admin override so each prefab uses the default from the code"
               onClick={() => {
                 if (!window.confirm(`Reset all ${editedCount} edited prefabs to the code defaults? This can't be undone.`)) return;
                 resetAllSettings().then(
-                  n => toast.success(`Reset ${n} prefab${n === 1 ? '' : 's'} to defaults`),
+                  ({ removed, prunedIcons }) => toast.success(`Reset ${removed} prefab${removed === 1 ? '' : 's'} to defaults` +
+                    (prunedIcons.length ? `; dropped ${prunedIcons.length} uploaded icon${prunedIcons.length === 1 ? '' : 's'} the deploy now ships` : '')),
                   err => toast.error(`Reset failed: ${(err as Error).message}`));
               }}
             >Reset all to defaults</button>
@@ -666,12 +668,14 @@ const AdminPois: React.FC = () => {
 
           <div className="apoi-sub apoi-lod-key">
             <strong>LOD (level of detail)</strong> decides how early a POI appears as you zoom in: hidden, then a dot, then
-            its icon. A whole world fits the screen at about 0.9× on a desktop and 0.35× on a phone.
+            its icon, fading in rather than popping. Every POI of a LOD changes at the same zoom; where markers
+            overlap, the lower LOD draws on top. A whole world fits the screen at about 0.9× on a desktop and 0.35×
+            on a phone.
             <ul>
               {LOD_LEVELS.map(l => (
                 <li key={l}>
                   <b>{l} {LOD_LABELS[l]}</b>
-                  {' '}({l === 0 ? 'icon at every zoom' : `dot from ${DOT_ZOOM[l]}×, icon from ${LOD_ZOOM[l]}×`}) — {LOD_GUIDE[l]}
+                  {' '}({l === 0 ? 'icon at every zoom' : `dot from ${LOD_BANDS[l].dotFrom}×, icon from ${LOD_BANDS[l].iconFrom}×`}) — {LOD_GUIDE[l]}
                 </li>
               ))}
             </ul>

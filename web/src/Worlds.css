@@ -13,85 +13,14 @@
   margin-bottom: 16px;
 }
 
-.worlds-form {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 32px;
-}
-.worlds-form input {
-  flex: 1;
-  background: #161b22;
-  border: 1px solid #30363d;
-  color: #e6edf3;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 15px;
-}
-.worlds-form input:focus {
-  outline: none;
-  border-color: #58a6ff;
-}
-.worlds-form button {
-  background: #2e7d32;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.worlds-form button:disabled {
-  background: #30363d;
-  color: #8b949e;
-  cursor: not-allowed;
-}
-
-.worlds-login-btn {
-  display: inline-block;
-  background: #5865f2;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.worlds-recent h2 {
-  font-size: 14px;
-  text-transform: uppercase;
-  color: #8b949e;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-.worlds-recent ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.worlds-recent li {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid #21262d;
-}
-.worlds-recent li a {
-  color: #58a6ff;
-  font-family: 'SF Mono', monospace;
-  text-decoration: none;
-}
-.worlds-recent li a:hover {
-  text-decoration: underline;
-}
-.worlds-meta {
-  color: #8b949e;
-  font-size: 13px;
-}
-
 /* ── Full-screen world viewer ─────────────────────────── */
+/* Fills the page's content area (<article>, between the site header and the
+   phone tab bar). It can't overlay the header anyway: <article> is its own
+   stacking context below it, which is what used to hide the seed picker. */
 .worlds-view-fullscreen {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 100;
+  z-index: 1;
   background: #0a0a14;
   color: #e6edf3;
   overflow: hidden;
@@ -100,20 +29,13 @@
   position: absolute;
   inset: 0;
 }
-.worlds-view-seed {
+/* Two classes so this beats .seed-control's own position: relative whatever
+   order the stylesheets load in. */
+.seed-control.worlds-seed-control {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 5;
-  font-family: 'SF Mono', monospace;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  background: rgba(0,0,0,0.55);
-  padding: 6px 12px;
-  border-radius: 6px;
-  letter-spacing: 0.3px;
-  user-select: text;
+  top: 12px;
+  left: 12px;
+  z-index: 20;
 }
 .worlds-view-close {
   position: absolute;

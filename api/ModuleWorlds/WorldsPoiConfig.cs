@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
@@ -19,6 +21,12 @@ namespace ValHelpApi.ModuleWorlds;
 ///   DELETE api/admin/poi/settings         admin  — drop every override (back to the code defaults)
 ///   PUT    api/admin/poi/icons/{name}     admin  — upload/replace an icon
 ///   DELETE api/admin/poi/icons/{name}     admin
+///
+/// web/scripts/poi-sync.mjs pushes local icon edits with the X-Poi-Sync-Key
+/// header (matching the POI_SYNC_KEY setting; unset turns these off):
+///   PUT    api/admin/poi/sync/icons/{name}            upload/replace an icon
+///   DELETE api/admin/poi/sync/icons/{name}
+///   DELETE api/admin/poi/sync/icons?redundant=true    drop uploads identical to the deployed built-in
 /// </summary>
 public static class WorldsPoiConfig
 {
@@ -37,6 +45,24 @@ public static class WorldsPoiConfig
         admin.MapDelete("settings", DeleteAllSettings);
         admin.MapPut("icons/{name}", PutIcon);
         admin.MapDelete("icons/{name}", DeleteIcon);
+
+        // Key-authenticated (no cookie), for the poi-sync script.
+        var sync = app.MapGroup("api/admin/poi/sync").AddEndpointFilter(async (ctx, next) =>
+        {
+            var config = ctx.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            return HasSyncKey(config, ctx.HttpContext.Request) ? await next(ctx) : TypedResults.Forbid();
+        });
+        sync.MapPut("icons/{name}", (AppDbContext db, string name, IconReq req) => SaveIcon(db, name, req));
+        sync.MapDelete("icons/{name}", (AppDbContext db, string name) => RemoveIcon(db, name));
+        sync.MapDelete("icons", PruneIcons);
+    }
+
+    static bool HasSyncKey(IConfiguration config, HttpRequest req)
+    {
+        var expected = config["POI_SYNC_KEY"];
+        var given = req.Headers["X-Poi-Sync-Key"].ToString();
+        return !string.IsNullOrEmpty(expected) && !string.IsNullOrEmpty(given)
+            && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expected), Encoding.UTF8.GetBytes(given));
     }
 
     static bool IsAdmin(ClaimsPrincipal user) =>
@@ -112,14 +138,49 @@ public static class WorldsPoiConfig
         return TypedResults.Ok(new SettingDto(row.Visible, row.Icon, row.Color, row.Lod));
     }
 
-    public record ResetResp(int Removed);
+    public record ResetResp(int Removed, string[] PrunedIcons);
 
-    /// <summary>Reset every prefab to its code default, e.g. after a deploy folds the overrides into code.</summary>
-    public static async Task<Results<Ok<ResetResp>, ForbidHttpResult>> DeleteAllSettings(ClaimsPrincipal user, AppDbContext db)
+    /// <summary>
+    /// Reset every prefab to its code default and drop uploaded icons the deploy
+    /// now ships itself, e.g. after a deploy folds the overrides into code.
+    /// </summary>
+    public static async Task<Results<Ok<ResetResp>, ForbidHttpResult>> DeleteAllSettings(
+        ClaimsPrincipal user, AppDbContext db, IWebHostEnvironment env)
     {
         if (!IsAdmin(user)) return TypedResults.Forbid();
         var removed = await db.PoiSettings.ExecuteDeleteAsync();
-        return TypedResults.Ok(new ResetResp(removed));
+        var pruned = await PruneRedundant(db, env);
+        return TypedResults.Ok(new ResetResp(removed, pruned));
+    }
+
+    public record PruneResp(int Removed, string[] Names);
+
+    static async Task<Results<Ok<PruneResp>, BadRequest<string>>> PruneIcons(
+        AppDbContext db, IWebHostEnvironment env, bool redundant = false)
+    {
+        if (!redundant) return TypedResults.BadRequest("Only ?redundant=true is supported");
+        var names = await PruneRedundant(db, env);
+        return TypedResults.Ok(new PruneResp(names.Length, names));
+    }
+
+    /// <summary>Delete uploads identical (after sanitizing) to the built-in of the same name in wwwroot/img/Poi.</summary>
+    static async Task<string[]> PruneRedundant(AppDbContext db, IWebHostEnvironment env)
+    {
+        var dir = Path.Combine(env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot"), "img", "Poi");
+        var redundant = new List<PoiIcon>();
+        foreach (var icon in await db.PoiIcons.ToListAsync())
+        {
+            var path = Path.Combine(dir, icon.Name + ".svg");
+            if (!File.Exists(path)) continue;
+            try
+            {
+                if (SanitizeSvg(await File.ReadAllTextAsync(path)) == icon.Svg) redundant.Add(icon);
+            }
+            catch (Exception) { /* unreadable built-in: keep the upload */ }
+        }
+        db.PoiIcons.RemoveRange(redundant);
+        await db.SaveChangesAsync();
+        return redundant.Select(i => i.Name).OrderBy(n => n).ToArray();
     }
 
     public record IconReq(string Svg);
@@ -129,6 +190,17 @@ public static class WorldsPoiConfig
         ClaimsPrincipal user, AppDbContext db, string name, IconReq req)
     {
         if (!IsAdmin(user)) return TypedResults.Forbid();
+        var r = await SaveIcon(db, name, req);
+        return r.Result switch
+        {
+            Ok<IconResp> ok => ok,
+            BadRequest<string> bad => bad,
+            _ => throw new InvalidOperationException(),
+        };
+    }
+
+    static async Task<Results<Ok<IconResp>, BadRequest<string>>> SaveIcon(AppDbContext db, string name, IconReq req)
+    {
         if (!IconNamePattern.IsMatch(name)) return TypedResults.BadRequest("Name: lowercase letters, digits, - or _ (max 40)");
         if (string.IsNullOrWhiteSpace(req.Svg)) return TypedResults.BadRequest("SVG required");
         if (req.Svg.Length > MaxSvgBytes) return TypedResults.BadRequest($"SVG too large (max {MaxSvgBytes / 1024} KB)");
@@ -153,6 +225,12 @@ public static class WorldsPoiConfig
         ClaimsPrincipal user, AppDbContext db, string name)
     {
         if (!IsAdmin(user)) return TypedResults.Forbid();
+        var r = await RemoveIcon(db, name);
+        return r.Result is NoContent ? TypedResults.NoContent() : TypedResults.NotFound();
+    }
+
+    static async Task<Results<NoContent, NotFound>> RemoveIcon(AppDbContext db, string name)
+    {
         var row = await db.PoiIcons.FirstOrDefaultAsync(i => i.Name == name);
         if (row == null) return TypedResults.NotFound();
         db.PoiIcons.Remove(row);

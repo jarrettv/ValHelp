@@ -3,15 +3,8 @@ import { Event as Ev, EventStatus, Player } from '../domain/event';
 import '../lib/vector-map.js';
 import './EventMap.css';
 import TimelineSlider from './TimelineSlider';
-import {
-  PoiMarker as SharedPoiMarker,
-  resolvePoiIcon,
-  subscribeIconRedraw,
-  markerFor,
-  drawMarker,
-  type IconRule,
-  type MarkerDraw,
-} from './poiIcons';
+import { PoiMarker as SharedPoiMarker, subscribeIconRedraw } from './poiIcons';
+import { PoiLayer } from './poiLayer';
 import PoiLegend from './PoiLegend';
 import { EXTRA_ITEMS, fetchVhItems, iconUrl } from '../guides/vh/data';
 
@@ -373,6 +366,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
   hiddenIconsRef.current = hiddenIcons;
   const [pois, setPois] = useState<PoiMarker[]>([]);
   const poisRef = useRef<PoiMarker[]>([]);
+  const poiLayerRef = useRef(new PoiLayer());
   const isLive = event.status === EventStatus.Live;
   const eventStartMs = new Date(event.startAt).getTime();
   const eventEndMs = new Date(event.endAt).getTime();
@@ -608,24 +602,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     }
 
     // ── Draw POI markers on top of everything ──
-    {
-      // Level of detail: icon or dot per POI (markerFor); dots first, icons on top.
-      const hidden = hiddenIconsRef.current;
-      const icons: [IconRule, MarkerDraw, number, number][] = [];
-      for (const poi of poisRef.current) {
-        const rule = resolvePoiIcon(poi);
-        if (!rule) continue;
-        if (hidden.has(rule.icon)) continue;
-        const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
-        const [sx, sy] = toScreen(ppx, ppy);
-        if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
-        const m = markerFor(rule, scale);
-        if (!m) continue;
-        if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
-        else icons.push([rule, m, sx, sy]);
-      }
-      for (const [rule, m, sx, sy] of icons) drawMarker(ctx, rule, m, sx, sy);
-    }
+    // Only the POIs in view, decluttered by LOD (see poiLayer.ts).
+    poiLayerRef.current.draw(ctx, poisRef.current, hiddenIconsRef.current,
+      { size: imgW * scale, panX, panY, scale, width: w, height: h });
 
   }, []);
 

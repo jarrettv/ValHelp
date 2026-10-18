@@ -1,10 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import '../lib/vector-map.js';
 import './WorldMap.css';
-import {
-  PoiMarker, resolvePoiIcon, subscribeIconRedraw,
-  markerFor, drawMarker, type IconRule, type MarkerDraw,
-} from './poiIcons';
+import { PoiMarker, subscribeIconRedraw } from './poiIcons';
+import { PoiLayer } from './poiLayer';
 
 declare global {
   interface Window {
@@ -16,19 +14,6 @@ declare global {
       ready: boolean;
     };
   }
-}
-
-// Valheim minimap: 2048 texels, 12 world units per texel, half-pixel offset
-const TEX_SIZE = 2048;
-const PIXEL_SIZE = 12;
-const HALF_PIXEL = PIXEL_SIZE / 2;
-
-function worldToPixel(worldX: number, worldZ: number, gs: number): [number, number] {
-  const texX = (worldX - HALF_PIXEL) / PIXEL_SIZE + TEX_SIZE / 2;
-  const texY = (worldZ - HALF_PIXEL) / PIXEL_SIZE + TEX_SIZE / 2;
-  const px = texX / TEX_SIZE * gs;
-  const py = (1 - texY / TEX_SIZE) * gs;
-  return [px, py];
 }
 
 interface WorldMapProps {
@@ -56,6 +41,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const poisRef = useRef<PoiMarker[]>([]);
+  const layerRef = useRef(new PoiLayer());
   // Mirror hiddenIcons into a ref so drawMarkers (memoized with empty deps) sees the
   // current value without rebuilding the callback chain on every prop change.
   const hiddenIconsRef = useRef<ReadonlySet<string> | undefined>(hiddenIcons);
@@ -90,27 +76,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
     const { scale, panX, panY, imgW } = stateRef.current;
     if (imgW === 0) return;
 
-    const gs = window.VectorMap.getGridSize();
-    const mScale = imgW / gs;
-
-    // Level of detail: each POI is an icon or a dot depending on its LOD and the
-    // zoom (markerFor). Dots go down first so detailed icons always sit on top.
-    const hidden = hiddenIconsRef.current;
-    const icons: [IconRule, MarkerDraw, number, number][] = [];
-    for (const poi of poisRef.current) {
-      const rule = resolvePoiIcon(poi);
-      if (!rule) continue;
-      if (hidden && hidden.has(rule.icon)) continue;
-      const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
-      const sx = ppx * mScale * scale + panX;
-      const sy = ppy * mScale * scale + panY;
-      if (sx < -40 || sx > w + 40 || sy < -40 || sy > h + 40) continue;
-      const m = markerFor(rule, scale);
-      if (!m) continue;
-      if (m.kind === 'dot') drawMarker(ctx, rule, m, sx, sy);
-      else icons.push([rule, m, sx, sy]);
-    }
-    for (const [rule, m, sx, sy] of icons) drawMarker(ctx, rule, m, sx, sy);
+    // Only the POIs in view, decluttered by LOD (see poiLayer.ts).
+    layerRef.current.draw(ctx, poisRef.current, hiddenIconsRef.current,
+      { size: imgW * scale, panX, panY, scale, width: w, height: h });
   }, []);
 
   const applyTransform = useCallback(() => {
@@ -253,33 +221,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
         // Click without drag — hit-test POIs
         const rect = area!.getBoundingClientRect();
         const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
-        const hit = hitTestPoi(cx, cy);
+        // Hit-test what the last frame actually drew, topmost first.
+        const hit = layerRef.current.hitTest(cx, cy);
         if (hit) onPoiClick(hit);
       }
-    }
-
-    function hitTestPoi(cx: number, cy: number): PoiMarker | null {
-      const { scale, panX, panY, imgW } = stateRef.current;
-      if (imgW === 0) return null;
-      const gs = window.VectorMap.getGridSize();
-      const mScale = imgW / gs;
-      const hidden = hiddenIconsRef.current;
-      // Iterate in reverse so the topmost-drawn marker wins on overlap.
-      for (let i = poisRef.current.length - 1; i >= 0; i--) {
-        const poi = poisRef.current[i];
-        const rule = resolvePoiIcon(poi);
-        if (!rule) continue;
-        if (hidden && hidden.has(rule.icon)) continue;
-        const m = markerFor(rule, scale);
-        if (!m) continue;
-        // Dots are tiny; give them a finger-sized target.
-        const r = m.kind === 'dot' ? 6 : m.size / 2;
-        const [ppx, ppy] = worldToPixel(poi.x, poi.z, gs);
-        const sx = ppx * mScale * scale + panX;
-        const sy = ppy * mScale * scale + panY;
-        if (Math.abs(sx - cx) <= r && Math.abs(sy - cy) <= r) return poi;
-      }
-      return null;
     }
 
     let lastTouchDist = 0, lastTouchMidX = 0, lastTouchMidY = 0, touching = false;
