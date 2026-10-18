@@ -35,6 +35,7 @@ public class AppDbContext : DbContext
 
     public DbSet<PoiSetting> PoiSettings { get; set; }
     public DbSet<PoiIcon> PoiIcons { get; set; }
+    public DbSet<PublicWorld> PublicWorlds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

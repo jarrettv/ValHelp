@@ -8,11 +8,13 @@ public static class WorldsActivate
     {
         WorldsEndpoints.Map(app);
         WorldsPoiConfig.Map(app);
+        WorldsPublic.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PoiSetting>().HasKey(s => s.Prefab);
         modelBuilder.Entity<PoiIcon>().HasKey(i => i.Name);
+        modelBuilder.Entity<PublicWorld>().HasKey(w => w.Seed);
     }
 }

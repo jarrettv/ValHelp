@@ -5,6 +5,7 @@ import { useAuth } from './contexts/AuthContext';
 import WorldMap, { PoiMarker } from './components/WorldMap';
 import PoiLegend from './components/PoiLegend';
 import SeedControl from './components/SeedControl';
+import { usePublicWorlds } from './components/publicWorlds';
 import PoiCard from './components/PoiCard';
 import './Worlds.css';
 
@@ -17,12 +18,8 @@ interface VisitResp {
   error: string | null;
 }
 
-/// The seed Worlds opens on, and the only one anyone but the owner can see;
-/// choosing a seed isn't open yet.
-/// The API enforces the same (WorldsEndpoints.PublicSeed).
-const PUBLIC_SEED = 'JVModsFun';
-
-/// Only the site owner (user 1) can switch seeds for now.
+/// Only the site owner (user 1) can open any seed and manage the public worlds;
+/// everyone else picks from the public worlds (api WorldsPublic enforces it).
 function useIsOwner(enabled: boolean) {
   const { data: profile, isPending } = useQuery<{ id: number }>({
     queryKey: ['profile'],
@@ -36,15 +33,16 @@ export default function Worlds() {
   const { seed } = useParams<{ seed?: string }>();
   const { status: auth } = useAuth();
   const { isOwner, pending } = useIsOwner(!!auth?.id);
+  const { seeds: publicSeeds } = usePublicWorlds();
 
-  if (auth === null || pending) return <div className="worlds-page"><p>Loading…</p></div>;
-  // Worlds always opens on the public seed; only the owner can switch from there.
-  if (seed && seed !== PUBLIC_SEED && !isOwner) return <Navigate to="/worlds" replace />;
-  const shown = seed ?? PUBLIC_SEED;
-  return <WorldView key={shown} seed={shown} canChange={isOwner} />;
+  if (auth === null || pending || !publicSeeds) return <div className="worlds-page"><p>Loading…</p></div>;
+  // Worlds opens on the default public world; anyone else's links to other seeds land there too.
+  if (seed && !isOwner && !publicSeeds.includes(seed)) return <Navigate to="/worlds" replace />;
+  const shown = seed ?? publicSeeds[0];
+  return <WorldView key={shown} seed={shown} isOwner={isOwner} />;
 }
 
-function WorldView({ seed, canChange }: { seed: string; canChange: boolean }) {
+function WorldView({ seed, isOwner }: { seed: string; isOwner: boolean }) {
   const { status: auth } = useAuth();
   const navigate = useNavigate();
   const [visit, setVisit] = useState<VisitResp | null>(null);
@@ -130,7 +128,7 @@ function WorldView({ seed, canChange }: { seed: string; canChange: boolean }) {
 
       <SeedControl
         seed={seed}
-        canChange={canChange}
+        isOwner={isOwner}
         onChange={s => navigate(`/worlds/${encodeURIComponent(s)}`)}
         className="worlds-seed-control"
       />

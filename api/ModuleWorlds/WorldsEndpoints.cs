@@ -14,12 +14,7 @@ public static class WorldsEndpoints
     // Last N viewAt timestamps kept per world to bound storage.
     const int MaxViewAtPerWorld = 50;
 
-    /// The one seed anyone but the site owner (user 1) may open; choosing a seed
-    /// isn't open to everyone yet. Mirrors PUBLIC_SEED in web/src/Worlds.tsx.
-    public const string PublicSeed = "JVModsFun";
-
-    static bool MayOpen(ClaimsPrincipal user, string seed) =>
-        seed == PublicSeed || (int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var id) && id == 1);
+    // Who may open which seed: WorldsPublic (the owner any, everyone else the public worlds).
 
     // Allowed asset names + their seedgen file equivalents.
     static readonly Dictionary<string, string> AssetMap = new()
@@ -37,8 +32,8 @@ public static class WorldsEndpoints
         var api = app.MapGroup("api/worlds");
         api.MapGet("list", GetList).RequireAuthorization();
         api.MapPost("visit", PostVisit).RequireAuthorization();
-        // Anonymous so logged-out visitors can open the public seed; MayOpen
-        // keeps every other seed to the owner.
+        // Anonymous so logged-out visitors can open the public worlds;
+        // WorldsPublic.MayOpen keeps every other seed to the owner.
         api.MapGet("status", GetStatus);
 
         // Public assets — cacheable, served via seedgen proxy. Don't require auth so
@@ -83,8 +78,8 @@ public static class WorldsEndpoints
         var seed = (req.Seed ?? "").Trim();
         if (string.IsNullOrWhiteSpace(seed) || seed.Length > 64)
             return TypedResults.Problem("Invalid seed", statusCode: 400);
-        if (!MayOpen(user, seed))
-            return TypedResults.Problem("Only the public seed is available", statusCode: 403);
+        if (!await WorldsPublic.MayOpen(user, db, seed))
+            return TypedResults.Problem("Only the public worlds are available", statusCode: 403);
 
         var userId = UserId(user);
         var currentUser = await db.Users.SingleOrDefaultAsync(u => u.Id == userId);
@@ -112,13 +107,13 @@ public static class WorldsEndpoints
     }
 
     public static async Task<Results<Ok<VisitResp>, ProblemHttpResult>> GetStatus(
-        [FromQuery] string seed, ClaimsPrincipal user, IConfiguration config, IHttpClientFactory httpFactory)
+        [FromQuery] string seed, ClaimsPrincipal user, AppDbContext db, IConfiguration config, IHttpClientFactory httpFactory)
     {
         seed = (seed ?? "").Trim();
         if (string.IsNullOrWhiteSpace(seed) || seed.Length > 64)
             return TypedResults.Problem("Invalid seed", statusCode: 400);
-        if (!MayOpen(user, seed))
-            return TypedResults.Problem("Only the public seed is available", statusCode: 403);
+        if (!await WorldsPublic.MayOpen(user, db, seed))
+            return TypedResults.Problem("Only the public worlds are available", statusCode: 403);
 
         var status = await SubmitToSeedGen(config, httpFactory, seed);
         return TypedResults.Ok(status);

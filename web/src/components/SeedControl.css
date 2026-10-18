@@ -20,10 +20,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   -webkit-tap-highlight-color: transparent;
 }
-.seed-control-pill:hover:not(.locked) { background: rgba(32, 38, 50, 0.95); }
-.seed-control-pill.locked { cursor: default; }
+.seed-control-pill:hover { background: rgba(32, 38, 50, 0.95); }
 .seed-control-pill svg { width: 16px; height: 16px; flex-shrink: 0; color: #aab4c8; }
-.seed-control-pill.locked svg:last-child { width: 13px; height: 13px; color: #c8a050; }
 .seed-control-name {
   font-family: 'SF Mono', ui-monospace, monospace;
   letter-spacing: 0.3px;
@@ -36,29 +34,42 @@
   position: absolute;
   top: 40px;
   left: 0;
-  width: 240px;
+  width: 290px;
   max-width: calc(100vw - 24px);
-  background: rgba(18, 22, 30, 0.95);
+  padding-top: 4px;
+  background: rgba(18, 22, 30, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   color: #e6e9ef;
   overflow: hidden;
 }
+.seed-control-label {
+  padding: 6px 12px 2px;
+  color: #8a93a6;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
 .seed-control-menu ul {
   list-style: none;
   margin: 0;
-  padding: 4px;
-  max-height: min(50vh, 320px);
+  padding: 2px 4px 4px;
+  max-height: min(34vh, 260px);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.seed-control-menu li button {
+
+/* A row: the seed (switches to it) and, for the owner, pin/default actions. */
+.seed-control-row { display: flex; align-items: center; gap: 2px; }
+.seed-control-pick {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
-  min-height: 32px;
+  flex: 1;
+  min-width: 0;
+  min-height: 34px;
   padding: 0 8px;
   background: none;
   border: none;
@@ -68,38 +79,81 @@
   text-align: left;
   cursor: pointer;
 }
-.seed-control-menu li button:hover { background: rgba(255, 255, 255, 0.07); }
-.seed-control-menu li button.current { background: rgba(91, 110, 174, 0.35); font-weight: 700; }
-.seed-control-menu li button .seed-control-name { flex: 1; }
+.seed-control-pick:hover { background: rgba(255, 255, 255, 0.07); }
+.seed-control-pick.current { background: rgba(91, 110, 174, 0.35); font-weight: 700; }
+.seed-control-pick .seed-control-name { flex: 1; }
+.seed-control-badge {
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(240, 192, 64, 0.16);
+  color: #f0c040;
+  font-size: 10.5px;
+  font-weight: 700;
+}
 .seed-control-when { color: #8a93a6; font-size: 12px; }
-.seed-control-empty { padding: 8px; color: #8a93a6; font-size: 12px; }
 
+.seed-control-actions { display: flex; gap: 2px; }
+.seed-control-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #8a93a6;
+  cursor: pointer;
+}
+.seed-control-icon:hover { background: rgba(255, 255, 255, 0.08); color: #f2f4f8; }
+.seed-control-icon.on { color: #8fb3ff; }
+.seed-control-icon:disabled { opacity: 0.4; cursor: default; }
+.seed-control-icon svg { width: 16px; height: 16px; }
+
+.seed-control-error { padding: 4px 12px; color: #ff8a80; font-size: 12px; }
+
+/* Open any seed: the owner types and goes; everyone else sees it read-only and locked.
+   The site's global `form input` / `form button` rules (index.css: 100% wide
+   buttons, % padding) are overridden here, or the button squeezes the input. */
 .seed-control-other {
   display: flex;
   gap: 6px;
-  padding: 6px;
+  padding: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .seed-control-other input {
-  flex: 1;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
-  height: 36px;
-  padding: 0 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
   color: #fff;
-  font-size: 15px;
+  font-family: 'SF Mono', ui-monospace, monospace;
+  font-size: 16px;
 }
+.seed-control-other input:focus { outline: none; border-color: #8fb3ff; }
+.seed-control-other input[readonly] { color: #8a93a6; font-family: inherit; font-size: 13px; cursor: not-allowed; }
 .seed-control-other button {
-  height: 36px;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 52px;
+  height: 40px;
+  margin: 0;
   padding: 0 14px;
   background: #5b6eae;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   color: #fff;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }
-.seed-control-other button:disabled { opacity: 0.4; cursor: default; }
+.seed-control-other button:disabled { opacity: 0.45; cursor: default; }
+.seed-control-other button svg { width: 16px; height: 16px; color: #f0c040; }
