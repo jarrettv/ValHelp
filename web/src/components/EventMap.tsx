@@ -14,6 +14,7 @@ declare global {
       init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string) => Promise<void>;
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
+      setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       destroy: () => void;
       ready: boolean;
     };

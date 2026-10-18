@@ -143,6 +143,13 @@ public class OraclePlugin : BaseUnityPlugin
         // the job its loot.
         try { DumpDrops(Path.Combine(dir, "oracle.drops.json")); }
         catch (Exception ex) { Log($"{Tag} drops failed: {ex}"); }
+        try { DumpAltBiomes(Path.Combine(dir, "oracle.altbiomes.json")); }
+        catch (Exception ex) { Log($"{Tag} altbiomes failed: {ex}"); }
+        if (Environment.GetEnvironmentVariable("VALHELP_ALTBIOMES_ONLY") == "1")
+        {
+            Log(TagDone);
+            yield break;
+        }
 
         var sw = Stopwatch.StartNew();
         // Dungeons (frost caves, infested mines, winding tunnels) cost minutes per
@@ -186,6 +193,45 @@ public class OraclePlugin : BaseUnityPlugin
     {
         System.Console.WriteLine(msg);
         System.Console.Out.Flush();
+    }
+
+    /// <summary>
+    /// Alt biomes ("Mushroom", "Dandelion Meadows", ...): every biome sector the
+    /// game gave one or more, as computed at world load (AltBiomeWorldData).
+    /// Sectors are listed in the game's own order, so two runs can be diffed.
+    /// </summary>
+    static void DumpAltBiomes(string path)
+    {
+        var data = ZNet.World.m_biomeData;
+        var sb = new StringBuilder("[\n");
+        bool first = true;
+        for (int i = 0; i < data.Sectors.Count; i++)
+        {
+            var s = data.Sectors[i];
+            if (s.AltBiomes.Count == 0) continue;
+            sb.Append(first ? "" : ",\n");
+            first = false;
+            sb.Append($"{{\"index\":{i},\"biome\":\"{s.Biome}\",\"edge\":{s.EdgeCount},")
+              .Append($"\"cx\":{F(s.Center.x)},\"cy\":{F(s.Center.y)},")
+              .Append($"\"min\":[{F(s.Min.x)},{F(s.Min.y)}],\"max\":[{F(s.Max.x)},{F(s.Max.y)}],")
+              .Append("\"alts\":[").Append(string.Join(",", s.AltBiomes.Select(a => $"\"{a.m_name}\""))).Append("]}");
+        }
+        sb.Append("\n]\n");
+        File.WriteAllText(path, sb.ToString());
+
+        // Which sector each minimap cell is in: byte = 1 + its entry in the list
+        // above, 0 for none. Row-major over the game's map space: x = world x,
+        // y = world z, both increasing (AltBiomeWorldData.MapSpaceToWorldSpace).
+        var entry = new Dictionary<BiomeSector, byte>();
+        foreach (var s in data.Sectors)
+            if (s.AltBiomes.Count > 0 && entry.Count < 255) entry[s] = (byte)(entry.Count + 1);
+        int size = data.Size;
+        var grid = new byte[size * size];
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+                if (data.PointSectors[x, y] is BiomeSector sec && entry.TryGetValue(sec, out var b)) grid[y * size + x] = b;
+        WriteGz(Path.ChangeExtension(path, null) + ".u8.gz", grid);
+        Log($"{Tag} altbiomes {entry.Count} sectors");
     }
 
     static string OutDir()

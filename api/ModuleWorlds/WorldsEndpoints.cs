@@ -27,6 +27,9 @@ public static class WorldsEndpoints
         ["biomes"] = "bvec",
         ["mask"] = "forestMaskTexCache",
         ["pois"] = "pois",
+        // Alt biome sectors + their 2048² cell grid (see BIOME_VARIANTS.md).
+        ["altbiomes"] = "oracle.altbiomes.json",
+        ["altbiomegrid"] = "oracle.altbiomes.u8.gz",
     };
 
     public static void Map(WebApplication app)

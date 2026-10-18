@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Map pattern for the "Smalltree Meadows" alt biome: one repeating tile drawn over
+       every cell of its sectors (128-unit tile: spread 1 in biomePatterns.ts).
+       One motif (#m, base at 6,16) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M5.3 16 C5.4 13.6 5.4 11.6 5.2 9.8 H6.8 C6.6 11.6 6.6 13.6 6.7 16 Z" fill="#6a4a2e" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M6 1.6 C9 1.6 11.2 4 11 6.8 C10.8 9.6 8.6 11 6 10.8 C3.4 11 1.2 9.6 1 6.8 C0.8 4 3 1.6 6 1.6 Z" fill="#6aa23a" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M7.6 2.2 C9.6 3.2 10.8 5.2 10.6 7.4 C10 9.4 8.6 10.6 7 10.8 C8.6 8.6 8.8 5.4 7.6 2.2 Z" fill="#4f8a2c"/>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(10.1 13.7) scale(1.0) translate(12 0) scale(-1 1) rotate(-7 6 16)"/>
+  <use xlink:href="#m" transform="translate(59.7 18.3) scale(1.0) rotate(2 6 16)"/>
+  <use xlink:href="#m" transform="translate(72.7 22.8) scale(1.0) translate(12 0) scale(-1 1) rotate(8 6 16)"/>
+  <use xlink:href="#m" transform="translate(32.3 68.4) scale(1.0) translate(12 0) scale(-1 1) rotate(5 6 16)"/>
+  <use xlink:href="#m" transform="translate(100.4 79.6) scale(1.0) translate(12 0) scale(-1 1) rotate(-10 6 16)"/>
+</svg>

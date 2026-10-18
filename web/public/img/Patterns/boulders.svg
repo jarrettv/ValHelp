@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Map pattern for the "Rock Black Forest" alt biome: one repeating tile drawn over
+       every cell of its sectors (128-unit tile: spread 1 in biomePatterns.ts).
+       One motif (#m, base at 7,9.8) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M0.8 9.6 C0.4 6.4 1.8 3.4 4.6 2.2 C7 1 10.6 1.6 12.4 3.8 C14 5.8 14 8.4 13.2 9.6 Z" fill="#7d8088" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M9.4 9.6 C11 8.4 11.8 6.4 11.4 4.2 C12.8 5.6 13.6 7.8 13.2 9.6 Z" fill="#5a5d64"/>
+      <path d="M3 5 C3.8 3.8 5.2 3 6.8 2.8" stroke="#a9acb2" stroke-width="0.6" stroke-linecap="round" fill="none"/>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(22.3 14.1) scale(1.0) rotate(-1 7 9.8)"/>
+  <use xlink:href="#m" transform="translate(103.8 17.4) scale(1.0) rotate(-1 7 9.8)"/>
+  <use xlink:href="#m" transform="translate(8.6 113.7) scale(1.0) rotate(-8 7 9.8)"/>
+</svg>

@@ -1,0 +1,27 @@
+/* POI card (PoiCard.tsx); base look in MapCard.css. */
+
+.poi-card-head { display: flex; align-items: baseline; gap: 8px; }
+.poi-card-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; color: #f2f4f8; }
+.poi-card-coords { color: #8b93a6; font-family: 'SF Mono', ui-monospace, monospace; font-size: 10.5px; white-space: nowrap; }
+.poi-card-meta { color: #8b93a6; font-size: 10.5px; margin-top: 1px; }
+
+.poi-card-section { margin-top: 5px; }
+.poi-card-section .map-card-label { margin-bottom: 2px; }
+
+/* Icon chips: an item (or trophy) icon with its count. */
+.poi-card-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.poi-card-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  height: 24px;
+  padding: 0 5px 0 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+.poi-card-chip img { width: 20px; height: 20px; object-fit: contain; }
+.poi-card-chip-text { padding-left: 3px; color: #cad3dd; font-size: 11.5px; }
+.poi-card-count { margin-left: 2px; color: #e6e9ef; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.poi-card-vegvisir { margin-top: 4px; color: #e8c86a; font-size: 11.5px; }

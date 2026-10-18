@@ -21,6 +21,15 @@ var forestProg;
 var fu_mvp, fu_forestTex, fu_maskTex, fu_gridSize, fu_tileScale;
 var fa_pos;
 
+// ── Biome variant pattern shader ─────────────────────────────────────
+var patternProg;
+var pu_mvp, pu_gridSize, pu_altTex, pu_lutTex, pu_atlas, pu_cols, pu_rows, pu_tile, pu_tintAlpha, pu_patternAlpha;
+var pa_pos;
+var altTex = null;     // which variant sector each game cell is in (LUMINANCE, 1 byte per cell)
+var lutTex = null;     // sector entry → tint + up to 3 pattern slots/spreads (RGBA, 256x4, see setPatternOverlay)
+var atlasTex = null;   // pattern tiles in a grid, one slot each, row by row
+var _patternCols = 1, _patternRows = 1;
+
 // ── Fog shader ───────────────────────────────────────────────────────
 var fogProg;
 var fogu_mvp, fogu_fogTex, fogu_opacity, fogu_gridSize;
@@ -98,6 +107,58 @@ var FOREST_FRAG_SRC = [
   // Blend factor: density * texAlpha * 0.5 (matches topo renderer)
   '  float blend = density * fSample.a * 0.5;',
   '  gl_FragColor = vec4(forestColor, blend);',
+  '}'
+].join('\n');
+
+// Biome variant patterns (alt biomes, see BIOME_VARIANTS.md): every cell of a
+// variant sector gets its tint, plus its repeating pattern tile once zoomed in
+// far enough for it to read. The tile repeats in map space, so it stays put
+// while panning.
+var PATTERN_FRAG_SRC = [
+  'precision mediump float;',
+  'uniform sampler2D u_altTex;',
+  'uniform sampler2D u_lutTex;',
+  'uniform sampler2D u_atlas;',
+  'uniform float u_cols;',
+  'uniform float u_rows;',
+  'uniform float u_tile;',
+  'uniform float u_tintAlpha;',
+  'uniform float u_patternAlpha;',
+  'varying vec2 v_uv;',
+  'varying vec2 v_gridPos;',
+  // One pattern layer: slot and spread as stored in the LUT (0-1), and a
+  // phase so stacked layers don't put their motifs in the same spots.
+  'vec4 layer(float slotN, float spreadN, vec2 phase) {',
+  '  float slot = floor(slotN * 255.0 + 0.5);',
+  '  if (slot < 0.5) return vec4(0.0);',
+  // A sparser pattern repeats over a bigger area (its SVG is drawn bigger to match).
+  '  float spread = spreadN * 255.0 / 32.0;',
+  '  vec2 t = clamp(fract(v_gridPos / (u_tile * spread) + phase), 0.005, 0.995);',
+  '  float s = slot - 1.0;',
+  '  float row = floor(s / u_cols);',
+  '  return texture2D(u_atlas, vec2((s - row * u_cols + t.x) / u_cols, (row + t.y) / u_rows));',
+  '}',
+  'void main() {',
+  // The cell grid runs south to north; the map runs north to south.
+  '  float e = texture2D(u_altTex, vec2(v_uv.x, 1.0 - v_uv.y)).r;',
+  '  float lx = (e * 255.0 + 0.5) / 256.0;',
+  '  vec4 r0 = texture2D(u_lutTex, vec2(lx, 0.125));',
+  '  vec4 r1 = texture2D(u_lutTex, vec2(lx, 0.375));',
+  '  vec4 r2 = texture2D(u_lutTex, vec2(lx, 0.625));',
+  '  vec4 lut = r0;',
+  // Row 2 green flags a sector with any variant shown: a tint, maybe no pattern.
+  '  if (r2.g < 0.5) discard;',
+  // Up to three patterns per sector (it can carry several variants), first on top.
+  '  vec4 p3 = layer(r1.a, r2.r, vec2(0.61, 0.29));',
+  '  vec4 p2 = layer(r1.g, r1.b, vec2(0.37, 0.71));',
+  '  vec4 p1 = layer(r0.a, r1.r, vec2(0.0, 0.0));',
+  '  vec4 p = p3;',
+  '  p = vec4(mix(p.rgb, p2.rgb, p2.a), p2.a + p.a * (1.0 - p2.a));',
+  '  p = vec4(mix(p.rgb, p1.rgb, p1.a), p1.a + p.a * (1.0 - p1.a));',
+  '  float pa = p.a * u_patternAlpha;',
+  '  float a = pa + u_tintAlpha * (1.0 - pa);',
+  '  vec3 rgb = (p.rgb * pa + lut.rgb * u_tintAlpha * (1.0 - pa)) / max(a, 0.0001);',
+  '  gl_FragColor = vec4(rgb, a);',
   '}'
 ].join('\n');
 
@@ -325,6 +386,8 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
     renderForestFallback(mvp);
   }
 
+  if (altTex && lutTex && atlasTex) renderPatterns(mvp, viewScale);
+
   // ── Contour lines ────────────────────────────────────────────────
   gl.useProgram(prog);
   gl.uniformMatrix3fv(u_mvp, false, mvp);
@@ -365,6 +428,112 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
 
     gl.disable(gl.BLEND);
   }
+}
+
+// Biome variant patterns. The tile is sized to ~80 screen px (a 128-unit
+// pattern tile, so its 12-unit shapes come out ~7.5 px), snapped to powers of
+// two in map units so it only changes size at whole zoom steps. It never gets
+// smaller than PATTERN_MIN_TILE map units, so zooming in past that spreads the
+// pattern out (fewer per screen) instead of keeping it as dense. At
+// low zoom a variant sector is a few pixels across, so only its tint shows
+// (stronger, to be findable); the pattern fades in as it becomes big enough
+// to read. Clipped to land: a sector also covers its biome's cells below sea
+// level, which would otherwise put mushrooms on the sea.
+var PATTERN_TILE_PX = 80;     // on-screen size of one pattern tile
+var PATTERN_MIN_TILE = 8;     // map units (1 = 24 m); reached from ~10x zoom. Variant sectors are
+                              // only ~8-20 units across, so keep a few clusters in even the smallest
+
+function renderPatterns(mvp, viewScale) {
+  var tile = Math.pow(2, Math.round(Math.log2(PATTERN_TILE_PX / viewScale)));
+  tile = Math.min(128, Math.max(PATTERN_MIN_TILE, tile));
+  var patternAlpha = Math.min(1, Math.max(0, (viewScale - 1.5) / 1.5));
+
+  // Stencil = land (the land layer is even-odd, like in the fill pass).
+  gl.useProgram(prog);
+  gl.uniformMatrix3fv(u_mvp, false, mvp);
+  gl.enable(gl.STENCIL_TEST);
+  gl.clear(gl.STENCIL_BUFFER_BIT);
+  gl.colorMask(false, false, false, false);
+  gl.stencilFunc(gl.ALWAYS, 0, 0xFF);
+  gl.stencilOp(gl.KEEP, gl.KEEP, gl.INVERT);
+  gl.enableVertexAttribArray(a_pos);
+  for (var i = 0; i < fillLayers.length; i++) {
+    if (fillLayers[i].type !== 'land') continue;
+    gl.bindBuffer(gl.ARRAY_BUFFER, fillLayers[i].vbo);
+    gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, fillLayers[i].ibo);
+    gl.drawElements(gl.TRIANGLES, fillLayers[i].indexCount, fillLayers[i].indexType, 0);
+  }
+  gl.disableVertexAttribArray(a_pos);
+  gl.colorMask(true, true, true, true);
+  gl.stencilFunc(gl.NOTEQUAL, 0, 0x01);
+  gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+
+  gl.useProgram(patternProg);
+  gl.uniformMatrix3fv(pu_mvp, false, mvp);
+  gl.uniform1f(pu_gridSize, gridSize);
+  gl.uniform1f(pu_cols, _patternCols);
+  gl.uniform1f(pu_rows, _patternRows);
+  gl.uniform1f(pu_tile, tile);
+  gl.uniform1f(pu_tintAlpha, 0.6 - 0.4 * patternAlpha);
+  gl.uniform1f(pu_patternAlpha, patternAlpha);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, altTex);
+  gl.uniform1i(pu_altTex, 0);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, lutTex);
+  gl.uniform1i(pu_lutTex, 1);
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, atlasTex);
+  gl.uniform1i(pu_atlas, 2);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.enableVertexAttribArray(pa_pos);
+  gl.bindBuffer(gl.ARRAY_BUFFER, mapQuadVBO);
+  gl.vertexAttribPointer(pa_pos, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.disableVertexAttribArray(pa_pos);
+  gl.disable(gl.BLEND);
+  gl.disable(gl.STENCIL_TEST);
+  gl.clear(gl.STENCIL_BUFFER_BIT);
+  gl.activeTexture(gl.TEXTURE0);
+}
+
+/// Biome variant overlay, or null to clear it.
+///   grid:  Uint8Array(size*size), row-major, south to north: 0 = no variant,
+///          else an entry number into lut
+///   size:  grid width (the game's 2048)
+///   lut:   Uint8Array(256*4*4), four rows, per entry: row 0 tint rgb + slot 1;
+///          row 1 spread 1, slot 2, spread 2, slot 3; row 2 spread 3 (slots
+///          1-based, 0 = none; spreads × 32), shown flag (255) in green
+///   atlas: canvas of square pattern tiles, `cols` per row, slot 1 top left
+function setPatternOverlay(o) {
+  if (!gl) return;
+  if (altTex) { gl.deleteTexture(altTex); altTex = null; }
+  if (lutTex) { gl.deleteTexture(lutTex); lutTex = null; }
+  if (atlasTex) { gl.deleteTexture(atlasTex); atlasTex = null; }
+  if (!o) return;
+
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  altTex = rawTexture(o.size, o.size, gl.LUMINANCE, o.grid);
+  lutTex = rawTexture(256, 4, gl.RGBA, o.lut);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+  atlasTex = createTexture(o.atlas, false);
+  _patternCols = o.cols;
+  _patternRows = o.rows;
+}
+
+function rawTexture(w, h, format, data) {
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, format, w, h, 0, format, gl.UNSIGNED_BYTE, data);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  return tex;
 }
 
 // Flat-color forest fallback when textures aren't loaded
@@ -425,6 +594,10 @@ function destroy() {
     if (forestTex) gl.deleteTexture(forestTex);
     if (maskTex) gl.deleteTexture(maskTex);
     if (fogTex) gl.deleteTexture(fogTex);
+    if (altTex) gl.deleteTexture(altTex);
+    if (lutTex) gl.deleteTexture(lutTex);
+    if (atlasTex) gl.deleteTexture(atlasTex);
+    if (patternProg) gl.deleteProgram(patternProg);
     if (prog) gl.deleteProgram(prog);
     if (forestProg) gl.deleteProgram(forestProg);
     if (fogProg) gl.deleteProgram(fogProg);
@@ -436,6 +609,12 @@ function destroy() {
   forestTex = null;
   maskTex = null;
   fogTex = null;
+  altTex = null;
+  lutTex = null;
+  atlasTex = null;
+  patternProg = null;
+  _patternCols = 1;
+  _patternRows = 1;
   _fogOpacity = 1.0;
   prog = null;
   forestProg = null;
@@ -497,6 +676,7 @@ window.VectorMap = {
   getGridSize: getGridSize,
   setFog: setFog,
   setFogOpacity: setFogOpacity,
+  setPatternOverlay: setPatternOverlay,
   destroy: destroy,
   get ready() { return _ready; }
 };
@@ -520,6 +700,21 @@ function initShaders() {
   fu_gridSize = gl.getUniformLocation(forestProg, 'u_gridSize');
   fu_tileScale = gl.getUniformLocation(forestProg, 'u_tileScale');
   fa_pos = gl.getAttribLocation(forestProg, 'a_pos');
+
+  // Biome variant pattern program (shares the forest vertex shader)
+  patternProg = linkProgram(FOREST_VERT_SRC, PATTERN_FRAG_SRC);
+  if (!patternProg) return false;
+  pu_mvp = gl.getUniformLocation(patternProg, 'u_mvp');
+  pu_gridSize = gl.getUniformLocation(patternProg, 'u_gridSize');
+  pu_altTex = gl.getUniformLocation(patternProg, 'u_altTex');
+  pu_lutTex = gl.getUniformLocation(patternProg, 'u_lutTex');
+  pu_atlas = gl.getUniformLocation(patternProg, 'u_atlas');
+  pu_cols = gl.getUniformLocation(patternProg, 'u_cols');
+  pu_rows = gl.getUniformLocation(patternProg, 'u_rows');
+  pu_tile = gl.getUniformLocation(patternProg, 'u_tile');
+  pu_tintAlpha = gl.getUniformLocation(patternProg, 'u_tintAlpha');
+  pu_patternAlpha = gl.getUniformLocation(patternProg, 'u_patternAlpha');
+  pa_pos = gl.getAttribLocation(patternProg, 'a_pos');
 
   // Fog program
   fogProg = linkProgram(FOG_VERT_SRC, FOG_FRAG_SRC);

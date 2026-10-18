@@ -1,10 +1,14 @@
-import { readdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
 import { loadEnv, type Plugin, type ResolvedConfig } from "vite";
 import { ICON_DIR, iconNames, optimizedIcon, pushConfig, watchAndPush } from "./poi-sync.mjs";
 
 // Exposes `virtual:poi-icons`: the names of every SVG in public/img/Poi, so the
-// POI icon list (poiIcons.ts BUILTIN_ICONS) never has to be kept by hand.
+// POI icon list (poiIcons.ts BUILTIN_ICONS) never has to be kept by hand, and
+// `version`, a hash of all their contents. poiIcons.ts puts it in each icon's
+// URL, so a deploy that changes any icon is never hidden by a browser's cached
+// copy (the server lets browsers keep static files for an hour).
 //
 // public/img/Poi holds the icons exactly as saved in Inkscape, and this plugin
 // never writes there. A build replaces the copies Vite puts in dist with
@@ -35,7 +39,11 @@ export function poiIconsPlugin(): Plugin {
     },
     load(id) {
       if (id !== RESOLVED_ID) return null;
-      return `export default ${JSON.stringify(listIcons())};`;
+      const names = listIcons();
+      const hash = createHash("sha256");
+      for (const n of names) hash.update(n).update(readFileSync(join(dir, `${n}.svg`)));
+      return `export default ${JSON.stringify(names)};
+export const version = ${JSON.stringify(hash.digest("hex").slice(0, 10))};`;
     },
     // Build only: optimize the copies in dist (the originals stay as saved).
     closeBundle() {

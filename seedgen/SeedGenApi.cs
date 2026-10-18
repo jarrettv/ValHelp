@@ -156,13 +156,18 @@ public static class SeedGenApi
          // Worldgen oracle dump — see seedgen/oracle. Ground truth for validating
          // the managed reimplementation; only present on seeds run with oracle=true.
          "oracle.json", "oracle.height.f32.gz", "oracle.biome.u8.gz",
-         "oracle.forest.f32.gz", "oracle.perlin.f32.gz", "oracle.loot.json"];
+         "oracle.forest.f32.gz", "oracle.perlin.f32.gz", "oracle.loot.json",
+         // Alt biomes ("Mushroom", ...) as the game placed them: the sector list
+         // and a 2048² grid of which sector each minimap cell is in. Every job.
+         "oracle.altbiomes.json", "oracle.altbiomes.u8.gz"];
 
     static readonly Dictionary<string, string> ContentTypes = new()
     {
         ["pois"] = "application/json",
         ["oracle.json"] = "application/json",
         ["oracle.loot.json"] = "application/json",
+        ["oracle.altbiomes.json"] = "application/json",
+        ["oracle.altbiomes.u8.gz"] = "application/gzip",
         ["oracle.height.f32.gz"] = "application/gzip",
         ["oracle.biome.u8.gz"] = "application/gzip",
         ["oracle.forest.f32.gz"] = "application/gzip",

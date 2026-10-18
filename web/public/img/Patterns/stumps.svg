@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Map pattern for the "Kalhygge Black Forest" alt biome: one repeating tile drawn over
+       every cell of its sectors (128-unit tile: spread 1 in biomePatterns.ts).
+       One motif (#m, base at 6,9.6) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M1.4 4 V8.6 C3 10 9 10 10.6 8.6 V4 Z" fill="#7a5530" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M8 4.6 V9.4 C9 9.2 10 8.9 10.6 8.6 V4 Z" fill="#5a3d22"/>
+      <ellipse cx="6" cy="4" rx="4.6" ry="1.8" fill="#c9a06a" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <ellipse cx="6" cy="4" rx="2.6" ry="0.9" fill="none" stroke="#9a7444" stroke-width="0.4"/>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(36.8 5.4) scale(1.0) translate(12 0) scale(-1 1) rotate(6 6 9.6)"/>
+  <use xlink:href="#m" transform="translate(22.0 6.9) scale(1.0) rotate(4 6 9.6)"/>
+  <use xlink:href="#m" transform="translate(71.8 56.1) scale(1.0) translate(12 0) scale(-1 1) rotate(7 6 9.6)"/>
+  <use xlink:href="#m" transform="translate(23.5 79.6) scale(1.0) rotate(8 6 9.6)"/>
+  <use xlink:href="#m" transform="translate(104.8 107.6) scale(1.0) rotate(-1 6 9.6)"/>
+</svg>

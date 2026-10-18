@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Map pattern for the "Pinetree Black Forest" alt biome: one repeating tile drawn over
+       every cell of its sectors (128-unit tile: spread 1 in biomePatterns.ts).
+       One motif (#m, base at 6,22) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M5.2 22 V17.6 H6.8 V22 Z" fill="#5a3f28" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M6 1 L10.4 9 H8.6 L11.6 14.4 H9.4 L12.2 18.4 H-0.2 L2.6 14.4 H0.4 L3.4 9 H1.6 Z" fill="#2c5a34" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M6 1 L10.4 9 H8.6 L11.6 14.4 H9.4 L12.2 18.4 H8 C8.6 13 7.6 6.4 6 1 Z" fill="#20462a"/>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(36.6 20.6) scale(1.0) translate(12 0) scale(-1 1) rotate(7 6 22)"/>
+  <use xlink:href="#m" transform="translate(15.0 78.3) scale(1.0) rotate(-0 6 22)"/>
+  <use xlink:href="#m" transform="translate(67.2 83.0) scale(1.0) rotate(-2 6 22)"/>
+  <use xlink:href="#m" transform="translate(79.9 84.2) scale(1.0) rotate(-9 6 22)"/>
+</svg>

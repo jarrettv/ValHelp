@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="256" viewBox="0 0 256 256">
+  <!-- Map pattern for the "Bones" alt biome: one repeating tile drawn over
+       every cell of its sectors (256-unit tile: spread 2 in biomePatterns.ts).
+       One motif (#m, base at 11,12) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M2 11 C2 6 6 2.6 11 2.6 C16 2.6 20 6 20 11" stroke="#1d1712" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+      <path d="M2 11 C2 6 6 2.6 11 2.6 C16 2.6 20 6 20 11" stroke="#e6dfcb" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      <path d="M6 11 C6 7.8 8.2 5.6 11 5.6 C13.8 5.6 16 7.8 16 11" stroke="#1d1712" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M6 11 C6 7.8 8.2 5.6 11 5.6 C13.8 5.6 16 7.8 16 11" stroke="#d8cfb6" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      <path d="M1 11.6 H21" stroke="#1d1712" stroke-width="2" stroke-linecap="round"/>
+      <path d="M1 11.6 H21" stroke="#c9bfa3" stroke-width="1" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(211.7 7.3) scale(1.2) translate(22 0) scale(-1 1) rotate(-8 11 12)"/>
+  <use xlink:href="#m" transform="translate(63.1 81.6) scale(1.2) rotate(-9 11 12)"/>
+  <use xlink:href="#m" transform="translate(193.4 161.9) scale(1.2) translate(22 0) scale(-1 1) rotate(4 11 12)"/>
+</svg>

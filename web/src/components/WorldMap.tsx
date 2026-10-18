@@ -3,6 +3,8 @@ import '../lib/vector-map.js';
 import './WorldMap.css';
 import { PoiMarker, subscribeIconRedraw } from './poiIcons';
 import { PoiLayer } from './poiLayer';
+import { loadPatternOverlay, type PatternOverlay, type AltSector } from './biomePatterns';
+import AltBiomeCard from './AltBiomeCard';
 
 declare global {
   interface Window {
@@ -10,6 +12,7 @@ declare global {
       init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string) => Promise<void>;
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
+      setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       destroy: () => void;
       ready: boolean;
     };
@@ -22,7 +25,11 @@ interface WorldMapProps {
   forestUrl?: string;       // override for the static forest tile (default `${baseUrl}/forest`)
   poisUrl?: string;         // optional override; defaults to `${baseUrl}/pois`
   className?: string;
-  onPoiClick?: (poi: PoiMarker) => void;
+  /// A click on a POI marker (poi, and where in the map's own pixels), or on
+  /// empty map (null).
+  onPoiClick?: (poi: PoiMarker | null, at: { x: number; y: number }) => void;
+  /// The POI marker under the cursor (null when none), for a hover card.
+  onPoiHover?: (hover: { poi: PoiMarker; x: number; y: number } | null) => void;
   /// Set of icon names (e.g. 'boss', 'axehead') to suppress from rendering — driven
   /// by the parent's legend toggles. Markers whose resolved icon is in this set are
   /// skipped in both the draw loop and the click hit-test.
@@ -32,7 +39,7 @@ interface WorldMapProps {
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({
-  seed, baseUrl, forestUrl, poisUrl, className, onPoiClick, hiddenIcons, onPoisLoaded,
+  seed, baseUrl, forestUrl, poisUrl, className, onPoiClick, onPoiHover, hiddenIcons, onPoisLoaded,
 }) => {
   const mapAreaRef = useRef<HTMLDivElement>(null);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,6 +49,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [mapReady, setMapReady] = useState(false);
   const poisRef = useRef<PoiMarker[]>([]);
   const layerRef = useRef(new PoiLayer());
+  // Biome variant data, for the hover card (null until loaded / none for this seed).
+  const overlayRef = useRef<PatternOverlay | null>(null);
+  const [hover, setHover] = useState<{ sector: AltSector; x: number; y: number } | null>(null);
+  const onPoiHoverRef = useRef(onPoiHover);
+  onPoiHoverRef.current = onPoiHover;
   // Mirror hiddenIcons into a ref so drawMarkers (memoized with empty deps) sees the
   // current value without rebuilding the callback chain on every prop change.
   const hiddenIconsRef = useRef<ReadonlySet<string> | undefined>(hiddenIcons);
@@ -123,6 +135,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
         await window.VectorMap.init(glCanvas, seed, baseUrl, forestUrl);
         if (cancelled) return;
 
+        // Biome variant patterns (Mushroom, ...): optional, seeds made before
+        // they were recorded just don't get them.
+        loadPatternOverlay(baseUrl)
+          .then(o => {
+            if (cancelled || !o) return;
+            overlayRef.current = o;
+            window.VectorMap.setPatternOverlay(o);
+            scheduleUpdate();
+          })
+          .catch(err => console.warn('[WorldMap] biome patterns unavailable', err));
+
         fetch(poisUrl ?? `${baseUrl}/pois`)
           .then(r => r.ok ? r.json() : [])
           .then((pois: PoiMarker[]) => {
@@ -151,6 +174,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
     load();
     return () => {
       cancelled = true;
+      overlayRef.current = null;
+      setHover(null);
       window.VectorMap.destroy();
       stateRef.current.ready = false;
       setMapReady(false);
@@ -177,6 +202,34 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
     let downX = 0, downY = 0, didDrag = false;
 
+    // Biome variant hover card: which sector (if any) is under the cursor.
+    // Updated at most once a frame; hidden while dragging or over a POI marker.
+    let hoverX = -1, hoverY = -1, hoverRaf = 0;
+    function updateHover() {
+      hoverRaf = 0;
+      const o = overlayRef.current, s = stateRef.current;
+      const poi = s.dragging || hoverX < 0 ? null : layerRef.current.hitTest(hoverX, hoverY);
+      onPoiHoverRef.current?.(poi ? { poi, x: hoverX, y: hoverY } : null);
+      if (!o || poi || s.dragging || hoverX < 0 || s.imgW === 0) { setHover(null); return; }
+      const size = s.imgW * s.scale;
+      const ux = (hoverX - s.panX) / size, uy = (hoverY - s.panY) / size;
+      if (ux < 0 || ux >= 1 || uy < 0 || uy >= 1) { setHover(null); return; }
+      // The grid runs south to north, the map north to south.
+      const entry = o.grid[Math.floor((1 - uy) * o.size) * o.size + Math.floor(ux * o.size)];
+      const sector = entry ? o.sectors[entry - 1] : undefined;
+      setHover(prev => (sector
+        ? (prev && prev.sector === sector && prev.x === hoverX && prev.y === hoverY ? prev : { sector, x: hoverX, y: hoverY })
+        : null));
+    }
+    function queueHover() { if (!hoverRaf) hoverRaf = requestAnimationFrame(updateHover); }
+    function onAreaMove(e: MouseEvent) {
+      const rect = area!.getBoundingClientRect();
+      hoverX = e.clientX - rect.left;
+      hoverY = e.clientY - rect.top;
+      queueHover();
+    }
+    function onAreaLeave() { hoverX = -1; queueHover(); }
+
     function onWheel(e: WheelEvent) {
       e.preventDefault();
       const s = stateRef.current;
@@ -190,6 +243,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
       s.panY = my - (my - s.panY) * (newScale / s.scale);
       s.scale = newScale;
       scheduleUpdate();
+      queueHover();   // the map moved under the cursor
     }
 
     function onMouseDown(e: MouseEvent) {
@@ -200,6 +254,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
       stateRef.current.lastMY = e.clientY;
       downX = e.clientX; downY = e.clientY; didDrag = false;
       area!.classList.add('dragging');
+      queueHover();
     }
 
     function onMouseMove(e: MouseEvent) {
@@ -217,13 +272,14 @@ const WorldMap: React.FC<WorldMapProps> = ({
       const wasDragging = stateRef.current.dragging;
       stateRef.current.dragging = false;
       area!.classList.remove('dragging');
+      queueHover();
       if (wasDragging && !didDrag && onPoiClick) {
         // Click without drag — hit-test POIs
         const rect = area!.getBoundingClientRect();
         const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
         // Hit-test what the last frame actually drew, topmost first.
         const hit = layerRef.current.hitTest(cx, cy);
-        if (hit) onPoiClick(hit);
+        onPoiClick(hit, { x: cx, y: cy });
       }
     }
 
@@ -288,6 +344,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
     }
 
     area.addEventListener('wheel', onWheel, { passive: false });
+    area.addEventListener('mousemove', onAreaMove);
+    area.addEventListener('mouseleave', onAreaLeave);
     area.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
@@ -296,7 +354,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
     area.addEventListener('touchend', onTouchEnd);
     return () => {
       area.removeEventListener('wheel', onWheel);
+      area.removeEventListener('mousemove', onAreaMove);
+      area.removeEventListener('mouseleave', onAreaLeave);
       area.removeEventListener('mousedown', onMouseDown);
+      if (hoverRaf) cancelAnimationFrame(hoverRaf);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       area.removeEventListener('touchstart', onTouchStart);
@@ -311,6 +372,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
       {error && <div className="world-map-status error">{error}</div>}
       <canvas ref={glCanvasRef} className="world-map-gl" />
       <canvas ref={markerCanvasRef} className="world-map-markers" />
+      {hover && mapAreaRef.current && (
+        <AltBiomeCard sector={hover.sector} x={hover.x} y={hover.y}
+          width={mapAreaRef.current.clientWidth} height={mapAreaRef.current.clientHeight} />
+      )}
     </div>
   );
 };

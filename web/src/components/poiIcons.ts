@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import builtinIcons from 'virtual:poi-icons';
+import builtinIcons, { version as builtinVersion } from 'virtual:poi-icons';
 
 // Shared POI icon resolver + colored data-URL Image cache.
 // Used by both WorldMap (Worlds page) and EventMap (event playback).
@@ -311,8 +311,10 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
 function iconUrl(name: string): string {
   const v = poiConfig.icons[name];
   if (v) return `/api/poi/icons/${name}.svg?v=${v}`;
+  // The version changes whenever any built-in icon does, so a deploy is never
+  // masked by a browser's cached copy.
   const t = devEdits.get(name);
-  return ICON_BASE + name + '.svg' + (t ? `?t=${t}` : '');
+  return `${ICON_BASE}${name}.svg?v=${builtinVersion}${t ? `&t=${t}` : ''}`;
 }
 
 // Dev only: poi-sync rewrote a built-in icon (an Inkscape save in web/poi-src).

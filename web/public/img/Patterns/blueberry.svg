@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Map pattern for the "Blueberry Black Forest" alt biome: one repeating tile drawn over
+       every cell of its sectors (128-unit tile: spread 1 in biomePatterns.ts).
+       One motif (#m, base at 8,12) is drawn once and placed by <use>, so
+       all are the same size; edit #m to change them all (each <use> adds its own
+       tilt/mirror). Shapes stay inside the tile, since it repeats edge to edge.
+       First pass from a layout script; move the <use>s freely. -->
+  <defs>
+    <g id="m">
+      <path d="M1 11.6 C0.2 8.6 1.6 5.6 4.4 4.6 C5.4 2.4 8.6 1.6 10.6 3 C13 2.8 15.2 4.8 15 7.6 C15.8 9.4 15.4 11 14.6 11.6 Z" fill="#2f5f2c" stroke="#1d1712" stroke-width="0.6" stroke-linejoin="round"/>
+      <path d="M9.6 11.6 C11.4 10.4 12.6 8.6 12.8 6.4 C14 7.4 14.6 9.2 14.2 11.6 Z" fill="#224a22"/>
+      <g fill="#4a62c8" stroke="#121a44" stroke-width="0.4">
+        <circle cx="4.4" cy="7.6" r="1.6"/><circle cx="8" cy="5" r="1.6"/><circle cx="11" cy="8.2" r="1.6"/>
+        <circle cx="7.2" cy="9.4" r="1.4"/>
+      </g>
+    </g>
+  </defs>
+
+  <use xlink:href="#m" transform="translate(70.4 16.2) scale(1.0) translate(16 0) scale(-1 1) rotate(7 8 12)"/>
+  <use xlink:href="#m" transform="translate(85.8 19.9) scale(1.0) rotate(-9 8 12)"/>
+  <use xlink:href="#m" transform="translate(32.0 70.7) scale(1.0) rotate(-6 8 12)"/>
+  <use xlink:href="#m" transform="translate(78.3 93.8) scale(1.0) rotate(-0 8 12)"/>
+  <use xlink:href="#m" transform="translate(94.8 94.2) scale(1.0) rotate(-7 8 12)"/>
+</svg>
