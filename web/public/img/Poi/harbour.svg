@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.93 16.93"
+   version="1.1"
+   id="harbour"
+   sodipodi:docname="harbour.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <rect
+     style="opacity:1;fill:#282828;fill-opacity:1;stroke:none;stroke-width:0.79308319;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect969"
+     width="7.2254105"
+     height="7.2102394"
+     x="9.0038519"
+     y="4.2992449" />
+  <metadata
+     id="metadata81">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs79" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2400"
+     inkscape:window-height="1261"
+     id="namedview77"
+     showgrid="false"
+     inkscape:zoom="10.429825"
+     inkscape:cx="50.263458"
+     inkscape:cy="19.673106"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="harbour" />
+  <!-- Dvergr harbour (Mistlands_Harbour1): a plank pier with a cargo hoist beside a mossy dvergr stone storehouse -->
+  <!-- pier post at x=1.2 -->
+  <path
+     style="fill:#bc774a;stroke:none"
+     d="M 1.2,8.3 h 1.1 v 6.3 h -1.10 Z"
+     id="path2" />
+  <path
+     style="fill:#675333;stroke:none"
+     d="M 1.95,8.3 h 0.35 v 6.3 h -0.35 Z"
+     id="path4" />
+  <!-- pier post at x=4.2 -->
+  <path
+     style="fill:#bc774a;stroke:none"
+     d="M 4.2,8.3 h 1.1 v 6.3 h -1.10 Z"
+     id="path6" />
+  <path
+     style="fill:#675333;stroke:none"
+     d="M 4.95,8.3 h 0.35 v 6.3 h -0.35 Z"
+     id="path8" />
+  <!-- pier post at x=7.2 -->
+  <path
+     style="fill:#bc774a;stroke:none"
+     d="M 7.2,8.3 h 1.1 v 6.3 h -1.10 Z"
+     id="path10" />
+  <path
+     style="fill:#675333;stroke:none"
+     d="M 7.95,8.3 h 0.35 v 6.3 h -0.35 Z"
+     id="path12" />
+  <!-- pier deck -->
+  <path
+     style="fill:#b06d32;stroke:none;fill-opacity:1"
+     d="M 0.6,9.5 h 9.2 v 1.2 h -9.20 Z"
+     id="path14" />
+  <path
+     style="fill:#563e2c;stroke:none;fill-opacity:1"
+     d="M 0.6,10.4 h 9.2 v 0.35 h -9.20 Z"
+     id="path16" />
+  <!-- deck plank seams -->
+  <path
+     style="fill:none;stroke:#8d6546;stroke-width:0.14468883"
+     d="M 2.4012451,9.55 V 10.4"
+     id="path18"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;stroke:#8d6546;stroke-width:0.14468883"
+     d="m 4.984904,9.524637 v 0.85"
+     id="path20"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;stroke:#8d6546;stroke-width:0.14468883"
+     d="M 7.5957938,9.5263824 V 10.376382"
+     id="path22"
+     inkscape:connector-curvature="0" />
+  <!-- hoist mast -->
+  <path
+     style="fill:#bc774a;stroke:none"
+     d="M 5.7,2.0 h 0.75 v 7.5 h -0.75 Z"
+     id="path24" />
+  <path
+     style="fill:#675333;stroke:none"
+     d="M 6.2,2.0 h 0.25 v 7.5 h -0.25 Z"
+     id="path26" />
+  <!-- hoist arm -->
+  <path
+     style="fill:#bc774a;stroke:none"
+     d="M 2.2,2.0 h 4.25 v 0.65 h -4.25 Z"
+     id="path28" />
+  <path
+     style="fill:#675333;stroke:none"
+     d="M 2.2,2.45 h 4.25 v 0.2 h -4.25 Z"
+     id="path30" />
+  <!-- hoist brace -->
+  <path
+     style="fill:none;stroke:#bc774a;stroke-width:0.45;stroke-linecap:round"
+     d="M 5.9,4.3 L 4.3,2.6"
+     id="path32" />
+  <!-- hoist rope -->
+  <path
+     style="fill:none;stroke:#2a1a0c;stroke-width:0.16"
+     d="M 2.75,2.65 V 5.2"
+     id="path34" />
+  <!-- crate on the rope -->
+  <path
+     style="fill:#8d6546;stroke:none"
+     d="M 2.0,5.2 h 1.5 v 1.4 h -1.50 Z"
+     id="path36" />
+  <path
+     style="fill:none;stroke:#675333;stroke-width:0.18"
+     d="M 2.05,5.25 L 3.45,6.55 M 3.45,5.25 L 2.05,6.55"
+     id="path38" />
+  <!-- stone block body with crenels -->
+  <g
+     transform="matrix(0.84824922,0,0,1,6.931809,-0.15136263)"
+     id="g1006">
+    <path
+       inkscape:connector-curvature="0"
+       id="path16-5"
+       transform="translate(0,-280.07)"
+       style="opacity:1;fill:#424242;fill-opacity:1;stroke:none;stroke-width:0.22072561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 2.72,289.22 c -0.25,0.63 -0.41,1.67 0.25,2.09 0.75,0.27 1.53,-0.1 2.3,0.02 0.76,0.21 1.47,-0.32 1.2,-1.13 0.08,-0.62 -0.33,-1.3 -1.02,-1.03 -0.9,0.04 -1.82,0.02 -2.73,0.05 m 3,2.1 c -0.14,-0.05 -0.41,0.06 -0.11,0.02 z" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path38-9"
+       transform="translate(0,-280.07)"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.2089725px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 5.6,289.33 c 0.18,0.25 0.1,1.11 0.4,1.02 -0.2,-0.36 0.18,-1.67 -0.37,-1.2 -0.06,-0.04 0,0.22 -0.03,0.18" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path52"
+       transform="translate(0,-280.07)"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.18289179px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3.97,290.12 c 0.5,-0.16 1.45,0.27 1.37,0.6 -0.54,0.04 0.39,0.5 0.32,0.16 0.13,-0.3 -0.34,-0.85 -1.07,-0.91 -0.27,-0.02 -0.53,0.02 -0.62,0.15" />
+  </g>
+  <g
+     id="g947"
+     transform="matrix(0.96423408,0,0,0.90907858,2.0783516,6.0721273)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path30-0"
+       style="opacity:1;fill:#424242;fill-opacity:1;stroke:none;stroke-width:0.32569191;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 14.165125,2.714816 11.255258,2.687 Q 10.703717,3.8917832 10.01266,5.0452295 c -0.657044,0.7337532 0.654425,0.586283 0.960588,0.9892273 a 7,7 0 0 1 1.961248,-0.121258 l 2.31999,0.012176 C 15.539443,5.4080754 14.764452,4.8806431 14.7,4.3 A 4,4 0 0 1 14.165124,2.7148164 m -4.058588,2.9713402 c -0.219988,-0.0021 -0.09076,0.079135 0,0 m 3.997906,0.2382261 c -0.66064,0.063688 0.829866,0.017933 0,0" />
+    <path
+       id="path32-2"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.26082623px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 10.810258,5.8150909 C 10.746174,4.9129306 12.155564,4.9019362 12.107991,3.960694 12.234019,3.5533648 13.376525,3.2837722 13.13757,3.7585359 12.540746,4.3354252 12.235119,5.2042127 11.363609,5.4501218 q -0.277685,0.1667054 -0.553351,0.3649691"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path959"
+       d="m 13.865707,3.7974852 c 0.120656,0.3503456 -0.431026,1.0384203 0.0061,1.1847204 -0.07663,-0.4545638 1.116948,-1.2629439 0.125061,-1.3135296 -0.05615,-0.085131 -0.108609,0.1844019 -0.13118,0.1288092"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:connector-curvature="0" />
+  </g>
+  <!-- lighter stone blocks -->
+  <!-- copper band -->
+  <path
+     style="fill:#c87137;stroke:none;stroke-width:0.98195422"
+     d="m 8.977353,7.9637708 h 7.328179 V 8.8137706 H 8.977353 Z"
+     id="path64"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:#8a4a20;stroke:none;stroke-width:0.98195422"
+     d="m 8.977353,8.3094151 h 7.328179 v 0.2 H 8.977353 Z"
+     id="path66"
+     inkscape:connector-curvature="0" />
+  <!-- dark doorway -->
+  <!-- moss over the top and down the sides -->
+  <g
+     id="g942"
+     transform="matrix(0.6480516,0,0,1,-3.307859,-4.7914435)">
+    <path
+       id="path4-3"
+       style="opacity:1;fill:#424242;fill-opacity:1;stroke:none;stroke-width:0.32569164;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 19.309768,9.4160084 c -0.58308,0.6799996 -0.09718,1.6099996 -0.29154,2.3999996 0.03887,0.87 1.205032,0.92 1.84642,0.86 1.16616,-0.13 2.33232,0 3.49848,-0.06 0.563644,-0.35 0.330412,-1.18 0.310976,-1.74 0.07774,-0.57 0.155488,-1.4999996 -0.651106,-1.4799996 -0.63167,-0.05 -1.26334,0.11 -1.89501,0.02 z m 4.32451,3.2099996 c -0.524772,-0.04 -0.43731,0.12 0,0"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path6-5"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.26082602px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 20.748032,10.116008 c 0.748286,-0.3799996 1.273058,0.7 2.011626,0.48 0.53449,-0.26 1.477136,0.92 0.553926,0.77 -0.53449,-0.24 -1.156442,-0.2 -1.642342,-0.57 -0.310976,-0.22 -0.58308,-0.5 -0.92321,-0.68"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path957"
+       d="m 20.358515,11.02914 c -0.03,0.39 -0.79,0.8 -0.44,1.12 0.1,-0.46 1.5,-0.76 0.6,-1.18 -0.01,-0.1 -0.17,0.13 -0.16,0.07"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     id="g951"
+     transform="matrix(1.1118571,0,0,1.1530987,-2.3287372,-1.634394)">
+    <path
+       id="path22-8"
+       style="opacity:1;fill:#424242;fill-opacity:1;stroke:none;stroke-width:0.16045678;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 16.42875,6.5893839 c 0.193125,-0.443472 0.343333,-1.194514 -0.12875,-1.509237 -0.543611,-0.200278 -1.130139,0.05007 -1.695209,-0.03576 -0.493542,-0.143055 -1.030001,0.143056 -0.879792,0.715278 -0.107292,0.443473 0.150208,1.058612 0.69382,0.858334 0.672361,-0.05007 1.33757,0 2.002778,-0.02146 m -2.138681,-1.545003 c 0.100139,0.03576 0.300417,-0.03576 0.08583,-0.01431 z"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path34-7"
+       d="m 15.048263,5.4663969 c 0.300417,0.107292 0.979931,0.522153 0.793959,0.715279 -0.343334,-0.364792 -0.836875,-0.157362 -1.230278,-0.09299 -0.321875,-0.193125 0.01431,-0.500694 0.271805,-0.307569 0.143056,-0.02146 0.171667,-0.193125 0.164514,-0.314723"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.18925065px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     id="g963"
+     transform="matrix(0.82935453,0,0,0.75907661,-5.3025582,-1.1671757)">
+    <path
+       id="path20-9"
+       style="opacity:1;fill:#424242;fill-opacity:1;stroke:none;stroke-width:0.22072561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 22.201123,9.8406035 c -0.26,0.6200005 -0.45,1.6700005 0.2,2.0800005 0.79,0.28 1.6,-0.1 2.4,0.03 0.73,0.2 1.35,-0.34 1.13,-1.08 0.1,-0.63 -0.29,-1.3800005 -1.01,-1.1000005 -0.9,0.09 -1.81,0.02 -2.72,0.07 m 2.96,2.1000005 c -0.15,-0.05 -0.42,0.06 -0.12,0.02 z"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path46"
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:0.16189872px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 23.591123,10.380604 c -0.31,-0.2 -0.93,0.32 -0.87,0.73 0.34,0.05 -0.25,0.62 -0.21,0.2 -0.08,-0.37 0.22,-1.04 0.69,-1.12 0.17,-0.02 0.34,0.03 0.4,0.19"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

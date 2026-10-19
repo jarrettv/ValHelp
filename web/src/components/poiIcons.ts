@@ -274,11 +274,18 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
     case 'InfestedMine':     return { icon: 'infestedmine',   color: '#6a4e8a', lod: 2 };
     case 'DvergrHouse':      return { icon: 'dvergrhouse',    color: '#c89060', lod: 2 };
     case 'DvergrTower':      return { icon: 'dvergrtower',    color: '#3d6fb6', lod: 2 };   // blue jute
+    case 'Harbour':          return { icon: 'harbour',        color: '#c87137', lod: 2 };
     case 'GiantSwords':      return { icon: 'giantswords',    color: '#c4562a', lod: 2 };
     case 'GiantRemains':
       return poi.prefab === 'Mistlands_Giant2'
         ? { icon: 'giantribcage', color: '#6a6a62', lod: 2 }
         : { icon: 'giantskull',   color: '#6a6a62', lod: 2 };
+    case 'Excavation':
+      switch (poi.prefab) {
+        case 'Mistlands_Excavation1': return { icon: 'excavationskull',   color: '#b06d32', lod: 2 };
+        case 'Mistlands_Excavation2': return { icon: 'excavationribcage', color: '#b06d32', lod: 2 };
+        default:                      return { icon: 'excavation',        color: '#b06d32', lod: 2 };
+      }
     case 'Viaduct':
       return poi.prefab === 'Mistlands_Viaduct2'
         ? { icon: 'viaductpillar', color: '#5c7a34', lod: 2 }
