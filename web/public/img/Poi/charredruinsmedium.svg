@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 16.93 16.93"
+   version="1.1"
+   id="charredruinsmedium"
+   sodipodi:docname="charredruinsmedium.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata35">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs33">
+    <pattern
+       y="0"
+       x="0"
+       height="6"
+       width="6"
+       patternUnits="userSpaceOnUse"
+       id="EMFhbasepattern" />
+    <pattern
+       y="0"
+       x="0"
+       height="6"
+       width="6"
+       patternUnits="userSpaceOnUse"
+       id="EMFhbasepattern-9" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1352"
+     inkscape:window-height="991"
+     id="namedview31"
+     showgrid="false"
+     inkscape:zoom="10.429825"
+     inkscape:cx="27.574573"
+     inkscape:cy="4.4627353"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="charredruinsmedium" />
+  <!-- Ashlands charred ruins: blackened gothic blocks topped with spires, embers glowing in the windows -->
+  <!-- left block: stone body with corner and centre spires -->
+  <path
+     style="fill:#5c5552;stroke:#1c1816;stroke-width:0.3;stroke-linejoin:round"
+     d="M 2.2,15.6 V 8.2 L 3.01,4.76 L 3.83,8.2 H 4.51 L 5.33,2.26 L 6.14,8.2 H 6.82 L 7.64,4.76 L 8.45,8.2 V 15.6 Z"
+     id="path2" />
+  <path
+     id="path851"
+     d="m 4.2808658,13.80286 h 1.9892603 v 1.841124 H 4.2808658 Z"
+     style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.26453125"
+     inkscape:connector-curvature="0" />
+  <!-- left block: pinnacle -->
+  <!-- left block: pinnacle -->
+  <!-- left block: buttress rib -->
+  <path
+     style="fill:none;stroke:#2c2725;stroke-width:0.28"
+     d="M 3.01,8.5 V 15.4"
+     id="path8" />
+  <!-- left block: buttress rib -->
+  <path
+     style="fill:none;stroke:#2c2725;stroke-width:0.28"
+     d="M 7.64,8.5 V 15.4"
+     id="path10" />
+  <!-- left block: glowing window -->
+  <!-- left block: window ember -->
+  <!-- right block: stone body with corner and centre spires -->
+  <path
+     style="fill:#5c5552;stroke:#1c1816;stroke-width:1.1340816;stroke-linejoin:round"
+     d="M 43.888672 8.5429688 L 40.789062 30.998047 L 38.21875 30.998047 L 35.119141 17.994141 L 32.056641 30.998047 L 32.056641 58.972656 L 55.683594 58.972656 L 55.683594 49.941406 C 55.508109 49.813187 55.335243 49.676132 55.166016 49.529297 C 53.592704 48.341003 52.724745 46.870199 52.232422 45.248047 C 51.895628 45.232808 51.557331 45.191358 51.275391 45.164062 C 50.060808 45.042206 50.899384 43.08077 49.478516 43.212891 C 48.529845 43.500547 47.472389 43.137895 47.783203 41.945312 C 47.442434 40.865279 48.232061 39.925287 49.351562 40.445312 C 50.664206 41.024546 50.70049 39.340391 50.847656 38.507812 C 51.075046 38.278968 51.342232 38.173664 51.611328 38.146484 C 51.616591 37.265475 51.609684 36.388632 51.574219 35.523438 L 48.130859 35.523438 L 48.130859 30.998047 L 46.951172 30.998047 L 43.888672 8.5429688 z "
+     transform="scale(0.26453125)"
+     id="path16" />
+  <rect
+     style="opacity:1;fill:#5c5552;fill-opacity:1;stroke:#2c2725;stroke-width:0.26453125;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect888-8"
+     width="2.3673306"
+     height="1.4347458"
+     x="15.779182"
+     y="10.640708"
+     transform="rotate(10.109781)" />
+  <path
+     id="path864"
+     d="m 10.621606,13.828223 h 1.989261 v 1.841124 h -1.989261 z"
+     style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.26453125"
+     inkscape:connector-curvature="0" />
+  <rect
+     style="opacity:1;fill:#5c5552;fill-opacity:1;stroke:#2c2725;stroke-width:0.26453125;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect888-2"
+     width="2.3673306"
+     height="1.4347458"
+     x="5.8698182"
+     y="17.837257"
+     transform="rotate(-18.171693)" />
+  <!-- right block: pinnacle -->
+  <!-- right block: pinnacle -->
+  <!-- right block: buttress rib -->
+  <path
+     style="fill:none;stroke:#2c2725;stroke-width:0.28"
+     d="M 9.29,8.5 V 15.4"
+     id="path22" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#b6523a;stroke:#1c1816;stroke-width:0.18000001;fill-opacity:1"
+     d="m 4.364637,12.167052 v -2.39 q 0,-0.66 0.94,-0.94 0.93,0.28 0.93,0.94 v 2.39 z"
+     id="path12" />
+  <ellipse
+     style="fill:#ff7a50"
+     cx="5.304637"
+     cy="11.327052"
+     rx="0.41"
+     ry="0.56"
+     id="ellipse14" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#b6523a;stroke:#1c1816;stroke-width:0.18000001;fill-opacity:1"
+     d="m 10.644637,12.167052 v -2.39 q 0,-0.66 0.94,-0.94 0.93,0.28 0.93,0.94 v 2.39 z"
+     id="path26" />
+  <ellipse
+     style="fill:#ff7a50;fill-opacity:1"
+     cx="11.584637"
+     cy="11.327052"
+     rx="0.41"
+     ry="0.56"
+     id="ellipse28" />
+  <rect
+     style="opacity:1;fill:#5c5552;fill-opacity:1;stroke:#2c2725;stroke-width:0.26453125;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect888"
+     width="2.3673306"
+     height="1.4347458"
+     x="12.162443"
+     y="11.996272"
+     transform="rotate(-0.86140528)" />
+  <!-- right block: buttress rib -->
+  <!-- right block: glowing window -->
+  <!-- right block: window ember -->
+</svg>

@@ -189,6 +189,7 @@ const TAR_BLACK = '#111111';     // tar pits
 const STONE_GREY = '#9a9a9a';    // stone ruins
 const SUNK_GREY = '#555555';     // sunken stone ruins
 const HENGE_RED = '#c0392b';     // stonehenges and the StoneTowerRuins04 vegvisir site
+const CHARRED_GREY = '#5c5552';  // Ashlands charred ruins
 
 export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
   switch (poi.type) {
@@ -284,6 +285,12 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
         : { icon: 'viaduct',       color: '#5c7a34', lod: 2 };
     // ── Ashlands ──
     case 'CharredFortress':  return { icon: 'fortress',       color: '#cc4040', lod: 1 };
+    case 'CharredRuins':
+      switch (poi.prefab) {
+        case 'CharredRuins1': return { icon: 'charredruinslarge',  color: CHARRED_GREY, lod: 2 };
+        case 'CharredRuins2': return { icon: 'charredruinsmedium', color: CHARRED_GREY, lod: 3 };
+        default:              return { icon: 'charredruinssmall',  color: CHARRED_GREY, lod: 3 };
+      }
     case 'PlaceOfMystery':   return { icon: 'tormentelite',   color: '#a070d0', lod: 0 };
     case 'PutridHole':       return { icon: 'putridhole',     color: '#a8923a', lod: 2 };
     case 'Geyser':           return { icon: 'surtlingspawner',color: '#ff6820', lod: 3 };

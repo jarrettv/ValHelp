@@ -468,9 +468,12 @@ Like all clubs, the primary attack is a 3 swing combo with the **last hit doing 
 
 The only mace that does **both** Blunt and Pierce damage and a lot of damage at that. This mace pairs well with the Vilebone armor set.
 
+This mace can **break yggdrasil saplings** even before you have a black metal.
+
 Upgrades are cheap but they only add Pierce damage.
 
 Like all clubs, the primary attack is a 3 swing combo with the **last hit doing 2x damage** and some 20% extra knockback. The secondary attack is a long underhanded swing that does **2.5x damage and 2x staggering**. The secondary attack has great knockback too.
+
 
 
 
