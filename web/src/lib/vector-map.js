@@ -30,6 +30,17 @@ var lutTex = null;     // sector entry → tint + up to 3 pattern slots/spreads 
 var atlasTex = null;   // pattern tiles in a grid, one slot each, row by row
 var _patternCols = 1, _patternRows = 1;
 
+// ── Biome variant stroke shader ──────────────────────────────────────
+// How variant sectors are drawn: 'stroke' outlines them (one band per
+// variant), 'pattern' is the older tint wash plus repeating pattern tiles.
+var VARIANT_STYLE = 'stroke';
+var strokeProg;
+var su_mvp, su_gridSize, su_altTex, su_distTex, su_strokeLut, su_cellPx, su_bandPx;
+var sa_pos;
+var distTex = null;       // per cell, distance to its sector's edge on land (see buildSectorDistance)
+var strokeLutTex = null;  // sector entry → up to 3 stroke colours (RGBA, 256x4, rows outermost first)
+var _altSize = 2048;
+
 // ── Fog shader ───────────────────────────────────────────────────────
 var fogProg;
 var fogu_mvp, fogu_fogTex, fogu_opacity, fogu_gridSize;
@@ -163,6 +174,44 @@ var PATTERN_FRAG_SRC = [
   '  float a = pa + u_tintAlpha * (1.0 - pa);',
   '  vec3 rgb = (p.rgb * pa + lut.rgb * u_tintAlpha * (1.0 - pa)) / max(a, 0.0001);',
   '  gl_FragColor = vec4(rgb, a);',
+  '}'
+].join('\n');
+
+// Biome variant strokes: a band of constant screen width just inside each
+// variant sector's edge, in its first variant's tint, then one more band
+// further in per extra variant. u_distTex holds each cell's distance to the
+// edge (see buildSectorDistance) and is filtered linearly, so the bands follow
+// smooth contours instead of the cell steps.
+var STROKE_FRAG_SRC = [
+  '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+  'precision highp float;',
+  '#else',
+  'precision mediump float;',
+  '#endif',
+  'uniform sampler2D u_altTex;',
+  'uniform sampler2D u_distTex;',
+  'uniform sampler2D u_strokeLut;',
+  'uniform float u_cellPx;',   // device px per grid cell
+  'uniform float u_bandPx;',   // device px per band
+  'varying vec2 v_uv;',
+  'void main() {',
+  // The cell grid runs south to north; the map runs north to south.
+  '  vec2 g = vec2(v_uv.x, 1.0 - v_uv.y);',
+  '  float e = texture2D(u_altTex, g).r;',
+  '  if (e < 0.5 / 255.0) discard;',
+  '  float d = (texture2D(u_distTex, g).r * 255.0 - 8.0) / 4.0;',   // cells inside the edge
+  '  if (d <= 0.0) discard;',
+  '  float px = d * u_cellPx;',
+  '  float band = floor(px / u_bandPx);',
+  '  if (band > 2.5) discard;',
+  '  float lx = (e * 255.0 + 0.5) / 256.0;',
+  '  vec4 c = texture2D(u_strokeLut, vec2(lx, (band + 0.5) / 4.0));',
+  '  if (c.a < 0.5) discard;',
+  // A dark hairline along the outer edge of each band keeps neighbours apart
+  // and the outer one readable over any biome colour.
+  '  float edge = px - band * u_bandPx;',
+  '  float line = 1.0 - smoothstep(0.0, 1.5, edge);',
+  '  gl_FragColor = vec4(mix(c.rgb, vec3(0.0), 0.45 * line), 0.95);',
   '}'
 ].join('\n');
 
@@ -390,7 +439,11 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
     renderForestFallback(mvp);
   }
 
-  if (altTex && lutTex && atlasTex) renderPatterns(mvp, viewScale);
+  if (VARIANT_STYLE === 'stroke') {
+    if (altTex && distTex && strokeLutTex) renderStrokes(mvp, viewScale, dpr);
+  } else if (altTex && lutTex && atlasTex) {
+    renderPatterns(mvp, viewScale);
+  }
 
   // ── Contour lines ────────────────────────────────────────────────
   gl.useProgram(prog);
@@ -505,6 +558,146 @@ function renderPatterns(mvp, viewScale) {
   gl.activeTexture(gl.TEXTURE0);
 }
 
+// Biome variant strokes. Bands are STROKE_BAND_PX wide on screen at any zoom;
+// zoomed far out a small sector is all stroke, which keeps it findable.
+var STROKE_BAND_PX = 4;
+
+function renderStrokes(mvp, viewScale, dpr) {
+  gl.useProgram(strokeProg);
+  gl.uniformMatrix3fv(su_mvp, false, mvp);
+  gl.uniform1f(su_gridSize, gridSize);
+  gl.uniform1f(su_cellPx, viewScale * dpr * gridSize / _altSize);
+  gl.uniform1f(su_bandPx, STROKE_BAND_PX * dpr);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, altTex);
+  gl.uniform1i(su_altTex, 0);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, distTex);
+  gl.uniform1i(su_distTex, 1);
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, strokeLutTex);
+  gl.uniform1i(su_strokeLut, 2);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.enableVertexAttribArray(sa_pos);
+  gl.bindBuffer(gl.ARRAY_BUFFER, mapQuadVBO);
+  gl.vertexAttribPointer(sa_pos, 2, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.disableVertexAttribArray(sa_pos);
+  gl.disable(gl.BLEND);
+  gl.activeTexture(gl.TEXTURE0);
+}
+
+/// Which cells of a size × size grid (south to north, like the variant grid)
+/// are land: the land layer rasterised offscreen and read back. Null if the
+/// GPU can't (the strokes then also run along sector edges out at sea).
+function rasterizeLand(size) {
+  if (size > gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)) return null;
+  var fb = gl.createFramebuffer();
+  var color = gl.createRenderbuffer();
+  var stencil = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, color);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, size, size);
+  gl.bindRenderbuffer(gl.RENDERBUFFER, stencil);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, size, size);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, color);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, stencil);
+  var land = null;
+  if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) {
+    // Map y runs north to south, so clip-space bottom (pixel row 0) is the south edge.
+    var mvp = new Float32Array([2 / gridSize, 0, 0,  0, -2 / gridSize, 0,  -1, 1, 1]);
+    gl.viewport(0, 0, size, size);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    gl.useProgram(prog);
+    gl.uniformMatrix3fv(u_mvp, false, mvp);
+    gl.enable(gl.STENCIL_TEST);
+    gl.colorMask(false, false, false, false);
+    gl.stencilFunc(gl.ALWAYS, 0, 0xFF);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.INVERT);   // the land layer is even-odd
+    gl.enableVertexAttribArray(a_pos);
+    for (var i = 0; i < fillLayers.length; i++) {
+      if (fillLayers[i].type !== 'land') continue;
+      gl.bindBuffer(gl.ARRAY_BUFFER, fillLayers[i].vbo);
+      gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, fillLayers[i].ibo);
+      gl.drawElements(gl.TRIANGLES, fillLayers[i].indexCount, fillLayers[i].indexType, 0);
+    }
+    gl.colorMask(true, true, true, true);
+    gl.stencilFunc(gl.NOTEQUAL, 0, 0x01);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+    gl.uniform4f(u_color, 1, 1, 1, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, mapQuadVBO);
+    gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.disableVertexAttribArray(a_pos);
+    gl.disable(gl.STENCIL_TEST);
+    var px = new Uint8Array(size * size * 4);
+    gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    land = new Uint8Array(size * size);
+    for (var j = 0; j < land.length; j++) land[j] = px[j * 4] > 127 ? 1 : 0;
+  }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.deleteFramebuffer(fb);
+  gl.deleteRenderbuffer(color);
+  gl.deleteRenderbuffer(stencil);
+  return land;
+}
+
+/// Per cell of a variant sector on land, its distance in cells to the
+/// sector's edge (a chamfer approximation of the Euclidean one), where the
+/// sector meets another sector, plain biome or the sea. Encoded as one byte,
+/// 8 + 4 × distance (capped at 255, ~62 cells), and 6 (= half a cell outside)
+/// for every other cell, so linear filtering puts the edge at exactly 8.
+function buildSectorDistance(grid, size, land) {
+  var n = size * size;
+  var id = new Uint8Array(n);
+  for (var i = 0; i < n; i++) id[i] = land && !land[i] ? 0 : grid[i];
+  var d = new Float32Array(n);
+  var INF = 1e9, D = Math.SQRT2;
+  for (var y = 0; y < size; y++) {
+    for (var x = 0; x < size; x++) {
+      var k = y * size + x, v = id[k];
+      if (!v) continue;
+      var edge = x === 0 || y === 0 || x === size - 1 || y === size - 1 ||
+        id[k - 1] !== v || id[k + 1] !== v || id[k - size] !== v || id[k + size] !== v;
+      d[k] = edge ? 0.5 : INF;
+    }
+  }
+  // Two passes, each taking the distance from the neighbours already visited
+  // (only through cells of the same sector).
+  for (var y = 1; y < size - 1; y++) {
+    for (var x = 1; x < size - 1; x++) {
+      var k = y * size + x, v = id[k];
+      if (!v || d[k] === 0.5) continue;
+      var m = d[k];
+      if (id[k - 1] === v && d[k - 1] + 1 < m) m = d[k - 1] + 1;
+      if (id[k - size] === v && d[k - size] + 1 < m) m = d[k - size] + 1;
+      if (id[k - size - 1] === v && d[k - size - 1] + D < m) m = d[k - size - 1] + D;
+      if (id[k - size + 1] === v && d[k - size + 1] + D < m) m = d[k - size + 1] + D;
+      d[k] = m;
+    }
+  }
+  for (var y = size - 2; y > 0; y--) {
+    for (var x = size - 2; x > 0; x--) {
+      var k = y * size + x, v = id[k];
+      if (!v || d[k] === 0.5) continue;
+      var m = d[k];
+      if (id[k + 1] === v && d[k + 1] + 1 < m) m = d[k + 1] + 1;
+      if (id[k + size] === v && d[k + size] + 1 < m) m = d[k + size] + 1;
+      if (id[k + size + 1] === v && d[k + size + 1] + D < m) m = d[k + size + 1] + D;
+      if (id[k + size - 1] === v && d[k + size - 1] + D < m) m = d[k + size - 1] + D;
+      d[k] = m;
+    }
+  }
+  var out = new Uint8Array(n);
+  for (var i = 0; i < n; i++) out[i] = id[i] ? Math.min(255, Math.round(8 + 4 * d[i])) : 6;
+  return out;
+}
+
 /// Biome variant overlay, or null to clear it.
 ///   grid:  Uint8Array(size*size), row-major, south to north: 0 = no variant,
 ///          else an entry number into lut
@@ -513,16 +706,25 @@ function renderPatterns(mvp, viewScale) {
 ///          row 1 spread 1, slot 2, spread 2, slot 3; row 2 spread 3 (slots
 ///          1-based, 0 = none; spreads × 32), shown flag (255) in green
 ///   atlas: canvas of square pattern tiles, `cols` per row, slot 1 top left
+///   strokeLut: Uint8Array(256*4*4), row k per entry: its (k+1)th stroke
+///          colour rgb + 255, or 0 past its last
 function setPatternOverlay(o) {
   if (!gl) return;
   if (altTex) { gl.deleteTexture(altTex); altTex = null; }
   if (lutTex) { gl.deleteTexture(lutTex); lutTex = null; }
   if (atlasTex) { gl.deleteTexture(atlasTex); atlasTex = null; }
+  if (distTex) { gl.deleteTexture(distTex); distTex = null; }
+  if (strokeLutTex) { gl.deleteTexture(strokeLutTex); strokeLutTex = null; }
   if (!o) return;
 
+  _altSize = o.size;
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
   altTex = rawTexture(o.size, o.size, gl.LUMINANCE, o.grid);
   lutTex = rawTexture(256, 4, gl.RGBA, o.lut);
+  strokeLutTex = rawTexture(256, 4, gl.RGBA, o.strokeLut);
+  distTex = rawTexture(o.size, o.size, gl.LUMINANCE, buildSectorDistance(o.grid, o.size, rasterizeLand(o.size)));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
   atlasTex = createTexture(o.atlas, false);
   _patternCols = o.cols;
@@ -602,6 +804,9 @@ function destroy() {
     if (lutTex) gl.deleteTexture(lutTex);
     if (atlasTex) gl.deleteTexture(atlasTex);
     if (patternProg) gl.deleteProgram(patternProg);
+    if (distTex) gl.deleteTexture(distTex);
+    if (strokeLutTex) gl.deleteTexture(strokeLutTex);
+    if (strokeProg) gl.deleteProgram(strokeProg);
     if (prog) gl.deleteProgram(prog);
     if (forestProg) gl.deleteProgram(forestProg);
     if (fogProg) gl.deleteProgram(fogProg);
@@ -617,6 +822,9 @@ function destroy() {
   lutTex = null;
   atlasTex = null;
   patternProg = null;
+  distTex = null;
+  strokeLutTex = null;
+  strokeProg = null;
   _patternCols = 1;
   _patternRows = 1;
   _fogOpacity = 1.0;
@@ -719,6 +927,18 @@ function initShaders() {
   pu_tintAlpha = gl.getUniformLocation(patternProg, 'u_tintAlpha');
   pu_patternAlpha = gl.getUniformLocation(patternProg, 'u_patternAlpha');
   pa_pos = gl.getAttribLocation(patternProg, 'a_pos');
+
+  // Biome variant stroke program (shares the forest vertex shader)
+  strokeProg = linkProgram(FOREST_VERT_SRC, STROKE_FRAG_SRC);
+  if (!strokeProg) return false;
+  su_mvp = gl.getUniformLocation(strokeProg, 'u_mvp');
+  su_gridSize = gl.getUniformLocation(strokeProg, 'u_gridSize');
+  su_altTex = gl.getUniformLocation(strokeProg, 'u_altTex');
+  su_distTex = gl.getUniformLocation(strokeProg, 'u_distTex');
+  su_strokeLut = gl.getUniformLocation(strokeProg, 'u_strokeLut');
+  su_cellPx = gl.getUniformLocation(strokeProg, 'u_cellPx');
+  su_bandPx = gl.getUniformLocation(strokeProg, 'u_bandPx');
+  sa_pos = gl.getAttribLocation(strokeProg, 'a_pos');
 
   // Fog program
   fogProg = linkProgram(FOG_VERT_SRC, FOG_FRAG_SRC);

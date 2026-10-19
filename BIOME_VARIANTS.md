@@ -159,17 +159,19 @@ texture override, a forced environment, or forced music.
 
 ## On our map
 
-Patterns are defined in `web/src/components/biomePatterns.ts`, with tiles in
-`web/public/img/Patterns`. A sector shows up to three of its variants' patterns
-together, plus the first one's tint.
+Variants are defined in `web/src/components/biomePatterns.ts`. The map outlines each
+sector with a stroke in its first variant's tint, plus one more stroke inside per extra
+variant (up to three). The older look, a wash of the first tint under up to three
+patterns (tiles in `web/public/img/Patterns`), is still behind `VARIANT_STYLE` in
+`web/src/lib/vector-map.js`.
 
-- **Patterned (18):**
+- **Patterned (17):**
   - Mushroom
   - Root Black Forest
   - Bog Swamp and Abomination Swamp (shared)
   - Dandelion, Raspberry, Birch, Smalltree and Peaceful Meadows
   - Blueberry, Pinetree, Kalhygge and Rock Black Forest
-  - Lantern, Bones, Menhir
+  - Bones, Menhir
   - Swords and Trees Mistlands
 - **Left to their POIs:** each adds locations that already mark it on the map.
   - Goblin Plains: camps and houses
@@ -182,6 +184,8 @@ together, plus the first one's tint.
   - The creature-only variants: Troll Black Forest, Bat Swamp, Wolf Mountain,
     Drake Mountain, Lox Plains, Hare Mistlands, BroodSwarm Mistlands.
   - Rockless Mistlands, which removes things rather than adding them.
+- **Hidden:** Lantern. The game's world data places it, but it doesn't actually occur in
+  real games, so the map and hover card leave it out.
 
 ## Re-extracting after a game update
 

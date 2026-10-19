@@ -1,13 +1,15 @@
 // Map patterns for biome variants (the game's alt biomes, see BIOME_VARIANTS.md).
 //
-// A sector can carry several variants; it shows up to three of their patterns,
-// interleaved, with the first one's tint.
+// The map outlines each variant sector with a heavy stroke in its variant's
+// tint; a sector carrying several variants gets one more stroke inside per
+// extra variant (up to three), outermost first. (vector-map.js still has the
+// older look, a tint wash plus up to three interleaved patterns, behind
+// VARIANT_STYLE.)
 //
 // seedgen saves, per seed, the variant sectors the game placed
 // (`/api/worlds/<seed>/altbiomes`) and a 2048x2048 grid of which sector each
 // minimap cell is in (`/altbiomegrid`, gzipped). Every variant listed below gets
-// its tint over its sectors, and its SVG tile from /img/Patterns repeated over
-// them once zoomed in (vector-map.js renderPatterns).
+// its tint as a stroke around its sectors (vector-map.js renderPatterns).
 //
 // Adding one: draw a square tile in public/img/Patterns/<pattern>.svg (keep its
 // shapes inside the tile with a margin, since it repeats edge to edge), then add
@@ -15,7 +17,7 @@
 
 export interface BiomePattern {
   pattern?: string;  // file stem under /img/Patterns; none = tint only
-  tint: string;      // #rrggbb wash under the pattern, and all that shows when zoomed out
+  tint: string;      // #rrggbb stroke colour (and the wash under the pattern, in the pattern look)
   label: string;
   /// How sparse: the SVG's viewBox is 128 × spread units square (1 or 2), and
   /// it repeats over spread × spread the usual area, so its shapes come out the
@@ -31,7 +33,6 @@ export const BIOME_PATTERNS: Record<string, BiomePattern> = {
   'Dandelion Meadows': { pattern: 'dandelion', tint: '#e8c43a', label: 'Dandelions' },
   'Raspberry Meadows': { pattern: 'raspberry', tint: '#c8314a', label: 'Raspberries' },
   'Blueberry Black Forest': { pattern: 'blueberry', tint: '#4a62c8', label: 'Blueberries' },
-  Lantern: { pattern: 'lantern', tint: '#f0a83a', label: 'Lost lanterns', spread: 2 },
   Bones: { pattern: 'bones', tint: '#d8d0b8', label: 'Bones', spread: 2 },
   Menhir: { pattern: 'menhir', tint: '#9aa0a8', label: 'Menhirs', spread: 2 },
   'Swords Mistlands': { pattern: 'swords', tint: '#c4562a', label: 'Giant swords', spread: 2 },
@@ -65,9 +66,15 @@ export interface PatternOverlay {
   atlas: HTMLCanvasElement;
   cols: number;   // atlas grid: slot n is at column (n-1) % cols, row (n-1) / cols
   rows: number;
+  /// Stroke colours, RGBA 256x4: row k, entry n is sector n's (k+1)th variant's
+  /// tint, alpha 255, or all 0 past its last variant.
+  strokeLut: Uint8Array;
   /// The seed's variant sectors; a grid cell's value n (1-based) is sectors[n - 1].
   sectors: AltSector[];
 }
+
+/// Most strokes drawn around one sector: its first three variants.
+const MAX_STROKES = 3;
 
 /// Atlas columns: keeps the atlas within 1024 px wide, which every GPU handles.
 const ATLAS_COLS = 4;
@@ -88,11 +95,15 @@ export async function loadPatternOverlay(baseUrl: string): Promise<PatternOverla
   // spread 2, slot 3; 2 spread 3, shown flag.
   const slotOf = new Map<string, number>();
   const lut = new Uint8Array(256 * 4 * 4);
+  const strokeLut = new Uint8Array(256 * 4 * 4);
   const ROW = 256 * 4;
   sectors.slice(0, 255).forEach((s, i) => {
     const all = s.alts.map(a => BIOME_PATTERNS[a]).filter(Boolean);
     if (!all.length) return;
     const o = (i + 1) * 4;
+    all.slice(0, MAX_STROKES).forEach((d, k) => {
+      strokeLut.set([parseInt(d.tint.slice(1, 3), 16), parseInt(d.tint.slice(3, 5), 16), parseInt(d.tint.slice(5, 7), 16), 255], k * ROW + o);
+    });
     // Tint from the first variant listed, patterned or not.
     lut[o] = parseInt(all[0].tint.slice(1, 3), 16);
     lut[o + 1] = parseInt(all[0].tint.slice(3, 5), 16);
@@ -125,5 +136,5 @@ export async function loadPatternOverlay(baseUrl: string): Promise<PatternOverla
     try { await img.decode(); } catch { return; }   // missing tile: tint only
     ctx.drawImage(img, ((slot - 1) % cols) * SLOT_PX, Math.floor((slot - 1) / cols) * SLOT_PX, SLOT_PX, SLOT_PX);
   }));
-  return { grid, size, lut, atlas, cols, rows, sectors };
+  return { grid, size, lut, atlas, cols, rows, strokeLut, sectors };
 }
