@@ -69,7 +69,7 @@ var FRAG_SRC = [
 
 // Forest texture shader — samples tiled forest tex modulated by mask density
 var FOREST_VERT_SRC = [
-  'precision mediump float;',
+  'precision highp float;',
   'attribute vec2 a_pos;',
   'uniform mat3 u_mvp;',
   'uniform float u_gridSize;',
@@ -88,15 +88,13 @@ var FOREST_FRAG_SRC = [
   'uniform sampler2D u_forestTex;',
   'uniform sampler2D u_maskTex;',
   'uniform float u_tileScale;',
-  'uniform float u_gridSize;',
   'varying vec2 v_uv;',
-  'varying vec2 v_gridPos;',
   'void main() {',
   // Sample mask: R = forest density
   '  float density = texture2D(u_maskTex, v_uv).r;',
   '  if (density < 0.01) discard;',
   // Sample tiled forest texture
-  '  vec2 tileUV = v_gridPos / u_gridSize * u_tileScale;',
+  '  vec2 tileUV = v_uv * u_tileScale;',
   '  vec4 fSample = texture2D(u_forestTex, tileUV);',
   // Luminance from forest texture (use max channel like topo renderer)
   '  float fLum = max(max(fSample.r, fSample.g), fSample.b);',
@@ -114,8 +112,14 @@ var FOREST_FRAG_SRC = [
 // variant sector gets its tint, plus its repeating pattern tile once zoomed in
 // far enough for it to read. The tile repeats in map space, so it stays put
 // while panning.
+// highp where the GPU has it: mediump is a real 16-bit float on mobile GPUs,
+// too coarse for map coordinates (2048 units) to place cells and tile repeats.
 var PATTERN_FRAG_SRC = [
+  '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+  'precision highp float;',
+  '#else',
   'precision mediump float;',
+  '#endif',
   'uniform sampler2D u_altTex;',
   'uniform sampler2D u_lutTex;',
   'uniform sampler2D u_atlas;',

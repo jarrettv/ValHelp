@@ -205,21 +205,30 @@ const WorldMap: React.FC<WorldMapProps> = ({
     // Biome variant hover card: which sector (if any) is under the cursor.
     // Updated at most once a frame; hidden while dragging or over a POI marker.
     let hoverX = -1, hoverY = -1, hoverRaf = 0;
-    function updateHover() {
-      hoverRaf = 0;
+    /// The biome variant sector at a point in the map's own pixels, if any.
+    function sectorAt(x: number, y: number): AltSector | undefined {
       const o = overlayRef.current, s = stateRef.current;
-      const poi = s.dragging || hoverX < 0 ? null : layerRef.current.hitTest(hoverX, hoverY);
-      onPoiHoverRef.current?.(poi ? { poi, x: hoverX, y: hoverY } : null);
-      if (!o || poi || s.dragging || hoverX < 0 || s.imgW === 0) { setHover(null); return; }
+      if (!o || s.imgW === 0) return undefined;
       const size = s.imgW * s.scale;
-      const ux = (hoverX - s.panX) / size, uy = (hoverY - s.panY) / size;
-      if (ux < 0 || ux >= 1 || uy < 0 || uy >= 1) { setHover(null); return; }
+      const ux = (x - s.panX) / size, uy = (y - s.panY) / size;
+      if (ux < 0 || ux >= 1 || uy < 0 || uy >= 1) return undefined;
       // The grid runs south to north, the map north to south.
       const entry = o.grid[Math.floor((1 - uy) * o.size) * o.size + Math.floor(ux * o.size)];
-      const sector = entry ? o.sectors[entry - 1] : undefined;
+      return entry ? o.sectors[entry - 1] : undefined;
+    }
+    function showSector(x: number, y: number) {
+      const sector = sectorAt(x, y);
       setHover(prev => (sector
-        ? (prev && prev.sector === sector && prev.x === hoverX && prev.y === hoverY ? prev : { sector, x: hoverX, y: hoverY })
+        ? (prev && prev.sector === sector && prev.x === x && prev.y === y ? prev : { sector, x, y })
         : null));
+    }
+    function updateHover() {
+      hoverRaf = 0;
+      const s = stateRef.current;
+      const poi = s.dragging || hoverX < 0 ? null : layerRef.current.hitTest(hoverX, hoverY);
+      onPoiHoverRef.current?.(poi ? { poi, x: hoverX, y: hoverY } : null);
+      if (poi || s.dragging || hoverX < 0) { setHover(null); return; }
+      showSector(hoverX, hoverY);
     }
     function queueHover() { if (!hoverRaf) hoverRaf = requestAnimationFrame(updateHover); }
     function onAreaMove(e: MouseEvent) {
@@ -284,6 +293,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
     }
 
     let lastTouchDist = 0, lastTouchMidX = 0, lastTouchMidY = 0, touching = false;
+    // A tap (one finger, barely moved) stands in for both click and hover:
+    // there is no hover on touch, so it opens the POI or biome variant card.
+    let tapX = 0, tapY = 0, isTap = false;
 
     function onTouchStart(e: TouchEvent) {
       if (e.touches.length === 1) {
@@ -292,10 +304,13 @@ const WorldMap: React.FC<WorldMapProps> = ({
         s.dragging = true;
         s.lastMX = e.touches[0].clientX;
         s.lastMY = e.touches[0].clientY;
+        tapX = s.lastMX; tapY = s.lastMY; isTap = true;
         area!.classList.add('dragging');
       } else if (e.touches.length === 2) {
         e.preventDefault();
         touching = true;
+        isTap = false;
+        setHover(null);
         stateRef.current.dragging = false;
         const dx = e.touches[1].clientX - e.touches[0].clientX;
         const dy = e.touches[1].clientY - e.touches[0].clientY;
@@ -313,6 +328,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
         s.panY += e.touches[0].clientY - s.lastMY;
         s.lastMX = e.touches[0].clientX;
         s.lastMY = e.touches[0].clientY;
+        if (isTap && Math.hypot(s.lastMX - tapX, s.lastMY - tapY) > 8) {
+          isTap = false;
+          setHover(null);   // the card is placed in screen space, it would drift
+        }
         scheduleUpdate();
       } else if (e.touches.length === 2 && touching) {
         const dx = e.touches[1].clientX - e.touches[0].clientX;
@@ -340,6 +359,14 @@ const WorldMap: React.FC<WorldMapProps> = ({
       if (e.touches.length === 0) {
         stateRef.current.dragging = false;
         area!.classList.remove('dragging');
+        if (isTap) {
+          isTap = false;
+          const rect = area!.getBoundingClientRect();
+          const cx = tapX - rect.left, cy = tapY - rect.top;
+          const hit = layerRef.current.hitTest(cx, cy, 12);
+          onPoiClick?.(hit, { x: cx, y: cy });
+          if (hit) setHover(null); else showSector(cx, cy);
+        }
       }
     }
 

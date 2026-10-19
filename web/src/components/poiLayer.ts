@@ -119,12 +119,18 @@ export class PoiLayer {
   }
 
   /** The topmost marker under (x, y) in the last frame. */
-  hitTest(x: number, y: number): PoiMarker | null {
+  /// `slop` widens the target (a fingertip): with no exact hit, the nearest
+  /// marker within that many extra px wins.
+  hitTest(x: number, y: number, slop = 0): PoiMarker | null {
+    let best: PoiMarker | null = null, bestDist = Infinity;
     for (let i = this.drawn.length - 1; i >= 0; i--) {
       const d = this.drawn[i];
-      if (Math.abs(d.x - x) <= d.r && Math.abs(d.y - y) <= d.r) return d.poi;
+      const dx = Math.abs(d.x - x), dy = Math.abs(d.y - y);
+      if (dx <= d.r && dy <= d.r) return d.poi;
+      const dist = Math.hypot(dx, dy) - d.r;
+      if (dist <= slop && dist < bestDist) { best = d.poi; bestDist = dist; }
     }
-    return null;
+    return best;
   }
 }
 

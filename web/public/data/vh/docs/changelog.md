@@ -2,6 +2,10 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-10-19
+
+* **The [Deep North guide](/guides/articles/deep-north) explains Jotun Invasions**, checked against the game files. It covers where an invasion can land after you break the Black Ice in Mörkhalla, why you can't predict the spot, the three-at-once limit, and what you'll find when you get there.
+
 ## 2026-10-15
 
 * **The [bestiary guide](/guides/enemies) has 1.0.20's trophy rules**, checked against the game files. Each star now doubles the trophy chance, rare-drop countdowns are saved when you log out, and each star level keeps its own countdown, so neither logging off nor a starred kill throws your progress away any more.
