@@ -15,6 +15,7 @@ declare global {
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
+      setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
       destroy: () => void;
       ready: boolean;
     };

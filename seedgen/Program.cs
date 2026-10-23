@@ -4,6 +4,13 @@ using SeedGen;
 // compare DungeonSim with an oracle dump (see WorldGen/DungeonCheck.cs).
 if (args.Length > 0 && args[0] == "dungeon-check") return Vh.World.DungeonCheck.Run(args[1..]);
 if (args.Length > 0 && args[0] == "pois-check") return Vh.World.DungeonCheck.RunPois(args[1..]);
+// Dev: `prefab-types` prints every POI prefab with its type and name (scripts/export_poi_catalog.py).
+if (args.Length > 0 && args[0] == "prefab-types")
+{
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(Vh.World.LocationFinder.KnownPrefabs()
+        .Select(p => new { prefab = p.Prefab, type = p.Type, name = p.Name, inside = p.Inside })));
+    return 0;
+}
 
 var builder = WebApplication.CreateBuilder(args);
 

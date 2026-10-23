@@ -1,5 +1,6 @@
-// POI icons: web/public/img/Poi holds the icons exactly as you save them in
-// Inkscape. Nothing here ever writes to that folder. Optimized (svgo) copies
+// POI icons: web/public/img/Poi holds the icons as you save them in Inkscape.
+// Nothing here ever writes to that folder (only the admin page's SVGO button
+// does, through poi-icons-plugin.ts). Optimized (svgo) copies
 // are made on the way out: into dist by the build (poi-icons-plugin.ts), and
 // for uploads to production. Git is the history: roll an icon back with
 // `git checkout <rev> -- web/public/img/Poi/<name>.svg`.

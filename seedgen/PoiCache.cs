@@ -14,7 +14,9 @@ public static class PoiCache
 {
     /// <summary>Bump whenever LocationFinder's output changes.</summary>
     // 2: infested mine / frost cave contents from DungeonSim.
-    public const int Version = 2;
+    // 3: farm maypoles (DungeonSim lays farms out on the zone's terrain).
+    // 4: Deep North village granaries.
+    public const int Version = 4;
 
     static readonly ConcurrentDictionary<string, object> s_locks = new();
 

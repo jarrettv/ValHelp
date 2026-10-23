@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
 import { loadEnv, type Plugin, type ResolvedConfig } from "vite";
 import { ICON_DIR, iconNames, optimizedIcon, pushConfig, watchAndPush } from "./poi-sync.mjs";
@@ -10,11 +10,13 @@ import { ICON_DIR, iconNames, optimizedIcon, pushConfig, watchAndPush } from "./
 // URL, so a deploy that changes any icon is never hidden by a browser's cached
 // copy (the server lets browsers keep static files for an hour).
 //
-// public/img/Poi holds the icons exactly as saved in Inkscape, and this plugin
-// never writes there. A build replaces the copies Vite puts in dist with
-// optimized ones. In dev, an edited icon updates the open map without a
-// reload (a new or deleted icon reloads the page, since the list changes), and
-// with POI_SYNC_KEY set each save is also uploaded to production.
+// public/img/Poi holds the icons as saved in Inkscape. A build replaces the
+// copies Vite puts in dist with optimized ones. In dev, an edited icon updates
+// the open map without a reload (a new or deleted icon reloads the page, since
+// the list changes), and with POI_SYNC_KEY set each save is also uploaded to
+// production. The one write to public/img/Poi is the admin page's SVGO button
+// (POST /__poi/svgo?name=…, dev only), which replaces that icon with its
+// optimized copy after saving the original under node_modules/.cache/poi-svgo.
 
 const VIRTUAL_ID = "virtual:poi-icons";
 const RESOLVED_ID = "\0" + VIRTUAL_ID;
@@ -63,6 +65,30 @@ export const version = ${JSON.stringify(hash.digest("hex").slice(0, 10))};`;
         const stop = watchAndPush(cfg, (msg) => log.info(msg, { timestamp: true }));
         server.httpServer?.on("close", stop);
       }
+
+      // SVGO button on the admin page's complexity listing: optimize one icon in place.
+      server.middlewares.use("/__poi/svgo", (req, res) => {
+        const send = (status: number, body: unknown) => {
+          res.statusCode = status;
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify(body));
+        };
+        if (req.method !== "POST") return send(405, { error: "POST only" });
+        const name = new URL(req.url ?? "", "http://x").searchParams.get("name") ?? "";
+        if (!listIcons().includes(name)) return send(404, { error: `no icon ${name}` });
+        const file = join(dir, `${name}.svg`);
+        const source = readFileSync(file, "utf8");
+        const svg = optimizedIcon(name, dir);
+        if (svg === null) return send(422, { error: `${name}.svg isn't valid SVG` });
+        if (svg === source) return send(200, { name, before: source.length, after: svg.length, changed: false });
+        const backups = join(config.root, "node_modules", ".cache", "poi-svgo");
+        mkdirSync(backups, { recursive: true });
+        const backup = join(backups, `${name}.${new Date().toISOString().replace(/[:.]/g, "-")}.svg`);
+        copyFileSync(file, backup);
+        writeFileSync(file, svg);
+        log.info(`[poi-icons] svgo ${name}.svg: ${source.length} -> ${svg.length} bytes (original: ${backup})`, { timestamp: true });
+        send(200, { name, before: source.length, after: svg.length, changed: true, backup });
+      });
 
       server.watcher.add(dir);
       const isIcon = (file: string) => file.startsWith(dir + sep) && file.toLowerCase().endsWith(".svg");

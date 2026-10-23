@@ -158,7 +158,15 @@
 .apoi-icon-choice.on { border-color: #7289DA; background: #2f3b66; color: #fff; }
 .apoi-editor-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
 .apoi-editor-row label { display: flex; align-items: center; gap: 0.5rem; color: #999; font-size: 0.85rem; }
-.apoi-editor-row input[type="color"] { width: 40px; height: 26px; border: 1px solid #444; background: none; padding: 0; }
+.apoi-color { width: 40px; height: 26px; border: 1px solid #444; background: none; padding: 0; cursor: pointer; }
+.apoi-color:disabled { opacity: 0.3; cursor: default; }
+.apoi-dot { display: flex; align-items: center; gap: 0.4rem; }
+
+.apoi-variants { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.apoi-variants h3 { margin: 0.5rem 0 0; }
+.apoi-variants-table { max-width: 52rem; }
+.apoi-off td { opacity: 0.55; }
+.apoi-off td:nth-child(3) { opacity: 1; }
 
 .apoi-icons { display: flex; flex-direction: column; gap: 0.5rem; }
 .apoi-icons h3 { margin: 0.5rem 0 0; }

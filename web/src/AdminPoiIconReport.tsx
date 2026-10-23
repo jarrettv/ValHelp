@@ -3,6 +3,7 @@ import {
   BUILTIN_ICONS, getPoiConfig, loadSvgText, getColoredIconDataUrl, usePoiConfigVersion,
 } from './components/poiIcons';
 import { SvgStats, svgStats, median } from './components/svgStats';
+import { toast } from './components/toast';
 
 // Vector complexity report for the POI icon art: what each SVG costs to ship
 // and to draw, against the set's medians, with the obvious optimisations called out.
@@ -34,6 +35,33 @@ const COLUMNS: { key: SortKey; label: string; title: string }[] = [
 ];
 
 const fmtBytes = (n: number) => (n >= 1024 ? `${(n / 1024).toFixed(1)} KB` : `${n} B`);
+
+/// Dev server only: replace public/img/Poi/<name>.svg with its SVGO-optimized
+/// copy (poi-icons-plugin.ts keeps the original under node_modules/.cache/poi-svgo).
+/// The file watcher then reloads the icon, which re-measures it here.
+function SvgoButton({ name }: { name: string }) {
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    setBusy(true);
+    try {
+      const r = await fetch(`/__poi/svgo?name=${encodeURIComponent(name)}`, { method: 'POST' });
+      const res = await r.json() as { before: number; after: number; changed: boolean; error?: string };
+      if (!r.ok) throw new Error(res.error ?? `HTTP ${r.status}`);
+      if (res.changed) toast.success(`${name}.svg optimized: ${fmtBytes(res.before)} → ${fmtBytes(res.after)}`);
+      else toast.info(`${name}.svg is already optimized`);
+    } catch (err) {
+      toast.error(`SVGO ${name} failed: ${(err as Error).message}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button className="apoi-link" disabled={busy} onClick={run}
+            title={`Replace public/img/Poi/${name}.svg with its SVGO-optimized copy (the build's settings)`}>
+      {busy ? 'SVGO…' : 'SVGO'}
+    </button>
+  );
+}
 const fmtNum = (n: number) => (Number.isInteger(n) ? n.toLocaleString() : n.toFixed(1));
 
 function Preview({ name }: { name: string }) {
@@ -176,6 +204,7 @@ export default function AdminPoiIconReport({ usage }: { usage: Record<string, st
                     <Preview name={r.name} />
                     <code>{r.name}</code>
                     {r.uploaded && <span className="apoi-tag">uploaded</span>}
+                    {import.meta.env.DEV && BUILTIN_ICONS.includes(r.name) && <SvgoButton name={r.name} />}
                   </span>
                 </td>
                 <td className="apoi-num" title={r.usedBy.join(', ')}>{r.usedBy.length || '—'}</td>

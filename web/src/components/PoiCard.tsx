@@ -29,6 +29,7 @@ const FIND_ICONS: Record<string, string[]> = {
   'Troll': ['TrophyFrostTroll'],
   'GoblinTotem': ['GoblinTotem'],
   'Beehive': ['QueenBee'],
+  'Maypole': ['piece_maypole'],
 };
 
 const icon = (code: string) => `/api/icon/${encodeURIComponent(code)}.png`;

@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import '../lib/vector-map.js';
 import './WorldMap.css';
-import { PoiMarker, subscribeIconRedraw } from './poiIcons';
+import { PoiMarker, subscribeIconRedraw, usePoiConfigVersion } from './poiIcons';
 import { PoiLayer } from './poiLayer';
-import { loadPatternOverlay, type PatternOverlay, type AltSector } from './biomePatterns';
+import { loadPatternOverlay, variantLuts, type PatternOverlay, type AltSector } from './biomePatterns';
 import AltBiomeCard from './AltBiomeCard';
 
 declare global {
@@ -13,6 +13,7 @@ declare global {
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
+      setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
       destroy: () => void;
       ready: boolean;
     };
@@ -188,6 +189,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, [fitMap]);
+
+  // Biome variant colours or visibility edited (or the config arrived after the
+  // overlay): rebuild just the colour tables.
+  const configVersion = usePoiConfigVersion();
+  useEffect(() => {
+    const o = overlayRef.current;
+    if (!o || !mapReady) return;
+    const { lut, strokeLut } = variantLuts(o.sectors, o.slotOf);
+    window.VectorMap.setVariantLuts(lut, strokeLut);
+    scheduleUpdate();
+  }, [configVersion, mapReady, scheduleUpdate]);
 
   // Redraw when colored POI icons finish loading.
   useEffect(() => subscribeIconRedraw(scheduleUpdate), [scheduleUpdate]);

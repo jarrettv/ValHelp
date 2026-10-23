@@ -15,6 +15,7 @@ public static class WorldsActivate
     {
         modelBuilder.Entity<PoiSetting>().HasKey(s => s.Prefab);
         modelBuilder.Entity<PoiIcon>().HasKey(i => i.Name);
+        modelBuilder.Entity<AltBiomeSetting>().HasKey(s => s.Name);
         modelBuilder.Entity<PublicWorld>().HasKey(w => w.Seed);
     }
 }

@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router';
 import Spinner from './components/Spinner';
 import { useAuth } from './contexts/AuthContext';
 import {
-  PoiMarker, PoiSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_BANDS, LOD_LABELS,
+  PoiMarker, PoiSetting, AltBiomeSetting, BUILTIN_ICONS, FALLBACK_ICON, LOD_LEVELS, LOD_BANDS, LOD_LABELS,
   resolvePoiIcon, defaultPoiIcon, getColoredIconDataUrl,
   getPoiConfig, getPoiConfigError, loadPoiConfig, setPoiConfig, usePoiConfigVersion,
 } from './components/poiIcons';
@@ -13,15 +13,38 @@ import { toast } from './components/toast';
 import { SPOILER_BIOMES } from './guides/vh/spoiler';
 import { biomeIconUrl } from './guides/vh/data';
 import AdminPoiIconReport from './AdminPoiIconReport';
+import { BIOME_PATTERNS, variantLook, type AltSector } from './components/biomePatterns';
+import { ALT_BIOME_INFO } from './components/altBiomeInfo';
 import './AdminPois.css';
 
-// Admin worklist for POI icons, one row per prefab. Rows come from a real seed's
-// `pois` artifact (seedgen emits every location the game places), run through
-// the same resolvePoiIcon the maps use. The game's types supply the code
+// Admin worklist for POI icons, one row per prefab. Rows come from the POI
+// catalogue (/data/vh/poi-catalog.json, scripts/export_poi_catalog.py): every
+// location the game can place plus the pieces seedgen maps on their own, run
+// through the same resolvePoiIcon the maps use. A generated world adds its
+// counts (and any older prefab it still holds). The game's types supply the code
 // defaults; edits are per-prefab overrides stored by the API
 // (api/ModuleWorlds/WorldsPoiConfig.cs) and apply to every map immediately.
+// Below the table, the biome variants (alt biomes) get the same: a stroke
+// colour and a shown switch each, over the defaults in biomePatterns.ts.
 
 const DEFAULT_SEED = 'NewDNTest';
+
+interface CatalogPrefab {
+  prefab: string;
+  type: string;
+  name: string;
+  biomes: string[];       // seedgen's Biome names, e.g. 'BlackForest'
+  quantity?: number;      // placed per world (the game's ZoneLocation.m_quantity)
+  inside?: string[];      // pieces mapped on their own: the camps they stand in
+  unmapped?: boolean;     // the game places it but seedgen doesn't know it
+}
+interface PoiCatalog { prefabs: CatalogPrefab[]; altBiomes: { name: string; biomes: string[] }[] }
+
+const fetchCatalog = async (): Promise<PoiCatalog> => {
+  const res = await fetch('/data/vh/poi-catalog.json');
+  if (!res.ok) throw new Error(`POI catalogue: ${res.status}`);
+  return res.json();
+};
 
 // seedgen's Biome enum names -> SPOILER_BIOMES index (progression order).
 const BIOME_INDEX: Record<string, number> = Object.fromEntries(
@@ -40,8 +63,10 @@ interface PrefabRow {
   type: string;
   name: string;            // in-game name, e.g. "Burial Chamber"
   biomes: number[];        // SPOILER_BIOMES indices, ascending
-  total: number;
-  visible: number;
+  total: number;           // in the loaded seed (0: the seed has none)
+  visible: number;         // of those, drawn; for a prefab the seed lacks, 1 if it would be
+  quantity?: number;       // the game's per-world quantity
+  inside?: string[];
   visibility: Visibility;
   iconStatus: IconStatus;
   icons: { icon: string; color: string }[];
@@ -88,7 +113,7 @@ function sortRows(rows: PrefabRow[], sort: Sort): PrefabRow[] {
   });
 }
 
-function buildRows(pois: PoiMarker[]): PrefabRow[] {
+function buildRows(pois: PoiMarker[], catalog: PoiCatalog): PrefabRow[] {
   const groups = new Map<string, PoiMarker[]>();
   for (const p of pois) {
     const key = p.prefab ?? `(${p.type})`;
@@ -96,6 +121,9 @@ function buildRows(pois: PoiMarker[]): PrefabRow[] {
     if (g) g.push(p);
     else groups.set(key, [p]);
   }
+  const cat = new Map(catalog.prefabs.map(c => [c.prefab, c]));
+  // Every catalogued prefab gets a row, placed in this seed or not.
+  for (const c of catalog.prefabs) if (!groups.has(c.prefab)) groups.set(c.prefab, []);
 
   // Which built-in icons each *type* uses by default — an override that picks
   // another type's icon is borrowed art (prefabs of one type sharing is fine).
@@ -110,7 +138,11 @@ function buildRows(pois: PoiMarker[]): PrefabRow[] {
 
   const config = getPoiConfig();
   const rows: PrefabRow[] = [];
-  for (const [prefab, list] of groups) {
+  for (const [prefab, placed] of groups) {
+    const c = cat.get(prefab);
+    // A prefab this seed lacks is judged on a stand-in POI: its rules depend on
+    // type and prefab only.
+    const list = placed.length ? placed : [{ type: c!.type, name: c!.name, prefab, x: 0, z: 0 } as PoiMarker];
     const type = list[0].type;
     const biomeCounts = new Map<number, number>();
     const icons = new Map<string, { icon: string; color: string }>();
@@ -129,14 +161,19 @@ function buildRows(pois: PoiMarker[]): PrefabRow[] {
       lod = Math.max(lod, rule.lod ?? 0);
       icons.set(rule.icon + '|' + rule.color, { icon: rule.icon, color: rule.color });
     }
+    // The game's own biomes when catalogued; else where this seed placed it.
+    const biomes = c?.biomes.length
+      ? [...new Set(c.biomes.map(biomeIndexOf).filter((b): b is number => b !== undefined))]
+      : [...biomeCounts].filter(([, n]) => n / list.length >= BIOME_MIN_SHARE).map(([b]) => b);
     rows.push({
       prefab,
       type,
-      name: list[0].name,
-      biomes: [...biomeCounts].filter(([, n]) => n / list.length >= BIOME_MIN_SHARE)
-        .map(([b]) => b).sort((a, b) => a - b),
-      total: list.length,
+      name: c?.name ?? list[0].name,
+      biomes: biomes.sort((a, b) => a - b),
+      total: placed.length,
       visible,
+      quantity: c?.quantity,
+      inside: c?.inside,
       visibility: visible === 0 ? 'hidden' : visible < list.length ? 'partial' : 'shown',
       iconStatus: visible === 0 ? 'none' : borrowed ? 'borrowed' : 'own',
       icons: [...icons.values()],
@@ -186,6 +223,21 @@ async function saveSetting(prefab: string, patch: PoiSetting) {
   if (next.visible == null && next.icon == null && next.color == null && next.lod == null) delete prefabs[prefab];
   else prefabs[prefab] = next;
   setPoiConfig({ ...cfg, prefabs });
+}
+
+/// Merge `patch` into the variant's override and save it. All-null clears it.
+async function saveAltBiome(name: string, patch: AltBiomeSetting) {
+  const cur = getPoiConfig().altBiomes[name] ?? {};
+  const next: AltBiomeSetting = {
+    visible: 'visible' in patch ? patch.visible : cur.visible ?? null,
+    color: 'color' in patch ? patch.color : cur.color ?? null,
+  };
+  await apiJson('/api/admin/poi/altbiomes', { method: 'PUT', body: JSON.stringify({ name, ...next }) });
+  const cfg = getPoiConfig();
+  const altBiomes = { ...cfg.altBiomes };
+  if (next.visible == null && next.color == null) delete altBiomes[name];
+  else altBiomes[name] = next;
+  setPoiConfig({ ...cfg, altBiomes });
 }
 
 async function resetSetting(prefab: string) {
@@ -317,6 +369,52 @@ function VisibilitySwitch({ row, run }: { row: PrefabRow; run: (f: () => Promise
   );
 }
 
+/// Colour picker that saves once the native picker settles (it fires on every
+/// drag step), showing the picked colour until the save lands.
+function ColorInput({ value, label, disabled, run, save }: {
+  value: string; label: string; disabled?: boolean;
+  run: (f: () => Promise<void>) => void; save: (c: string) => Promise<void>;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return (
+    <input
+      type="color"
+      className="apoi-color"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      value={draft ?? value}
+      onChange={e => {
+        const c = e.target.value;
+        setDraft(c);
+        window.clearTimeout(timer.current);
+        timer.current = window.setTimeout(() => run(async () => {
+          try { await save(c); } finally { setDraft(null); }
+        }), 500);
+      }}
+    />
+  );
+}
+
+/// Inline dot colour: the marker's dot, and the currentColor in its icon.
+function DotColor({ row, run }: { row: PrefabRow; run: (f: () => Promise<void>) => void }) {
+  const color = row.icons[0]?.color ?? '#ffffff';
+  return (
+    <div className="apoi-dot">
+      <ColorInput
+        value={color}
+        label={`Dot colour for ${row.prefab}`}
+        disabled={row.visible === 0}
+        run={run}
+        save={c => saveSetting(row.prefab, { color: c })}
+      />
+      {row.icons.length > 1 && <span className="apoi-muted" title="Its POIs draw in more than one colour; picking one sets them all">mixed</span>}
+    </div>
+  );
+}
+
 function allIconNames(): string[] {
   return [...new Set([...BUILTIN_ICONS, ...Object.keys(getPoiConfig().icons)])].sort();
 }
@@ -345,16 +443,7 @@ function PrefabEditor({ row, run }: { row: PrefabRow; run: (f: () => Promise<voi
   usePoiConfigVersion();
   const override = getPoiConfig().prefabs[row.prefab] ?? {};
   const current = row.icons[0] ?? { icon: FALLBACK_ICON, color: '#ffffff' };
-  const [color, setColor] = useState(override.color ?? current.color);
-  const colorTimer = useRef<number | undefined>(undefined);
-  useEffect(() => () => window.clearTimeout(colorTimer.current), []);
-
-  const onColor = (c: string) => {
-    setColor(c);
-    // The native picker fires on every drag step; save once it settles.
-    window.clearTimeout(colorTimer.current);
-    colorTimer.current = window.setTimeout(() => run(() => saveSetting(row.prefab, { color: c })), 500);
-  };
+  const color = override.color ?? current.color;
   const pickIcon = (icon: string) => run(() => saveSetting(row.prefab, {
     icon,
     // Choosing art for a prefab with no code rule implies you want it on the map.
@@ -384,13 +473,10 @@ function PrefabEditor({ row, run }: { row: PrefabRow; run: (f: () => Promise<voi
       <div className="apoi-editor-row">
         <label>
           Colour
-          <input type="color" value={color} onChange={e => onColor(e.target.value)} />
+          <ColorInput value={color} label={`Colour for ${row.prefab}`} run={run} save={c => saveSetting(row.prefab, { color: c })} />
         </label>
         {row.overridden && (
-          <button className="apoi-link" onClick={() => run(async () => {
-            await resetSetting(row.prefab);
-            setColor(row.icons[0]?.color ?? '#ffffff');
-          })}>Reset to {row.type} default</button>
+          <button className="apoi-link" onClick={() => run(() => resetSetting(row.prefab))}>Reset to {row.type} default</button>
         )}
       </div>
     </div>
@@ -469,6 +555,111 @@ function IconManager({ run }: { run: (f: () => Promise<void>) => void }) {
   );
 }
 
+/// Every variant: the game's (from the catalogue, in its order), then any only the code knows.
+const variantNames = (catalog?: PoiCatalog): string[] =>
+  [...new Set([...(catalog?.altBiomes.map(a => a.name) ?? []), ...Object.keys(ALT_BIOME_INFO), ...Object.keys(BIOME_PATTERNS)])];
+
+const fetchAltSectors = async (seed: string): Promise<AltSector[]> => {
+  const res = await fetch(`/api/worlds/${encodeURIComponent(seed)}/altbiomes`);
+  return res.ok ? res.json() : [];
+};
+
+/// Biome variants: the stroke colour each is outlined with on the maps, and
+/// whether it shows at all (stroke and hover card).
+function AltBiomeSettings({ seed, catalog, run }: {
+  seed: string; catalog?: PoiCatalog; run: (f: () => Promise<void>) => void;
+}) {
+  usePoiConfigVersion();
+  const biomesOf = new Map((catalog?.altBiomes ?? []).map(a => [a.name, a.biomes]));
+  const { data: sectors } = useQuery<AltSector[]>({
+    queryKey: ['admin-altbiomes', seed],
+    queryFn: () => fetchAltSectors(seed),
+    retry: false,
+  });
+  const counts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const s of sectors ?? []) for (const a of s.alts) m.set(a, (m.get(a) ?? 0) + 1);
+    return m;
+  }, [sectors]);
+  const overrides = getPoiConfig().altBiomes;
+
+  return (
+    <section className="apoi-variants" id="apoi-variants">
+      <h3>Biome variants</h3>
+      <p className="apoi-sub">
+        Each variant sector is outlined in its variant&apos;s colour, with one more stroke inside per extra variant.
+        Variants with no colour aren&apos;t outlined; pick one to outline them. Switching one off hides its stroke and
+        drops it from the hover card. Every variant the game has is listed; <strong>Sectors</strong> counts them in
+        this seed.
+      </p>
+      <div className="apoi-table-wrap">
+        <table className="apoi-table apoi-variants-table">
+          <thead>
+            <tr>
+              <th>Colour</th>
+              <th className="apoi-col-biome">Biome</th>
+              <th>Variant</th>
+              <th>Shown</th>
+              <th className="apoi-num">Sectors</th>
+            </tr>
+          </thead>
+          <tbody>
+            {variantNames(catalog).map(name => {
+              const look = variantLook(name);
+              const o = overrides[name];
+              const on = !look.hidden;
+              return (
+                <tr key={name} className={on ? undefined : 'apoi-off'}>
+                  <td>
+                    <div className="apoi-dot">
+                      <ColorInput value={look.color ?? '#808080'} label={`Stroke colour for ${name}`} run={run}
+                        save={c => saveAltBiome(name, { color: c })} />
+                      {!look.color && <span className="apoi-muted">none</span>}
+                    </div>
+                  </td>
+                  <td className="apoi-col-biome">
+                    <BiomeBubbles biomes={(biomesOf.get(name) ?? []).map(biomeIndexOf).filter((b): b is number => b !== undefined)} />
+                  </td>
+                  <td>
+                    <div className="apoi-type">
+                      <code>{name}</code>
+                      {o && <span className="apoi-tag" title="Has an admin override">edited</span>}
+                      {look.hiddenByDefault && <span className="apoi-tag" title="Off unless switched on: the game's data has it, but it doesn't occur in real games">off by default</span>}
+                    </div>
+                    <div className="apoi-names">{ALT_BIOME_INFO[name]?.blurb ?? BIOME_PATTERNS[name]?.label}</div>
+                  </td>
+                  <td>
+                    <div className="apoi-vis">
+                      <button
+                        role="switch"
+                        aria-checked={on}
+                        aria-label={`${name} shown on map`}
+                        className={`apoi-switch ${on ? 'on' : ''}`}
+                        // Back to the default when that's what the switch asks for.
+                        onClick={() => run(() => saveAltBiome(name, {
+                          visible: on ? (look.hiddenByDefault ? null : false) : (look.hiddenByDefault ? true : null),
+                        }))}
+                      >
+                        <span className="apoi-switch-knob" />
+                      </button>
+                      {o && (
+                        <button className="apoi-link" onClick={() => run(() => saveAltBiome(name, { visible: null, color: null }))}>
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td className="apoi-num">{counts.get(name) ?? 0}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 // Rendered by scripts/render_poi_previews.py from the game's own prefabs; stored in renders.db.
 const previewUrl = (prefab: string) => `/api/poi/preview/${encodeURIComponent(prefab)}.webp`;
 
@@ -533,7 +724,7 @@ const fetchPois = async (seed: string): Promise<PoiMarker[]> => {
   return res.json();
 };
 
-const COLUMNS = 8;
+const COLUMNS = 9;
 
 const AdminPois: React.FC = () => {
   const { status } = useAuth();
@@ -568,9 +759,11 @@ const AdminPois: React.FC = () => {
     enabled: status?.id === 1,
     retry: false,
   });
+  const catalogQuery = useQuery<PoiCatalog>({ queryKey: ['poi-catalog'], queryFn: fetchCatalog, staleTime: Infinity });
+  const catalog = catalogQuery.data;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- configVersion invalidates resolvePoiIcon's overrides
-  const rows = useMemo(() => buildRows(data ?? []), [data, configVersion]);
+  const rows = useMemo(() => (catalog ? buildRows(data ?? [], catalog) : []), [data, catalog, configVersion]);
   // Icon -> prefabs currently drawing with it, for the complexity report.
   const iconUsage = useMemo(() => {
     const m: Record<string, string[]> = {};
@@ -596,9 +789,10 @@ const AdminPois: React.FC = () => {
       <h2>POI Icons</h2>
       <div className="apoi-header">
         <p className="apoi-sub">
-          Every location prefab the game places, from a generated world. Each prefab starts from its type&apos;s
-          default; toggle it to show or hide it on every map, <strong>Edit</strong> its icon and colour, and set
-          its <strong>LOD</strong>. Changes save immediately.
+          Every POI the map can show: each location the game can place, plus pieces mapped on their own (maypoles).
+          The seed below only supplies counts. Each prefab starts from its type&apos;s default; toggle it to show or hide it on every map, <strong>Edit</strong> its icon and colour, and set
+          its <strong>LOD</strong>, or pick its <strong>Dot</strong> colour right in the table. Changes save
+          immediately. <a href="#apoi-variants">Biome variant colours</a> are below the table.
         </p>
         <form
           className="apoi-seed"
@@ -616,10 +810,11 @@ const AdminPois: React.FC = () => {
 
       <Toaster />
 
-      {isLoading && <Spinner />}
-      {isError && <div className="apoi-error">{(error as Error).message}</div>}
+      {(isLoading || catalogQuery.isLoading) && <Spinner />}
+      {isError && <div className="apoi-error">{(error as Error).message} Counts show as 0.</div>}
+      {catalogQuery.isError && <div className="apoi-error">{(catalogQuery.error as Error).message}</div>}
 
-      {data && (
+      {catalog && (data || isError) && (
         <>
           <div className="apoi-stats">
             <div className="apoi-stat"><span>{rows.length}</span>prefabs</div>
@@ -690,6 +885,7 @@ const AdminPois: React.FC = () => {
                   <SortHeader label="Type" k="type" sort={sort} onSort={onSort} />
                   <SortHeader label="Visibility" k="visibility" sort={sort} onSort={onSort} />
                   <SortHeader label="Icon" k="icon" sort={sort} onSort={onSort} />
+                  <th>Dot</th>
                   <SortHeader label="LOD" k="lod" sort={sort} onSort={onSort} />
                   <SortHeader label="Count" k="count" sort={sort} onSort={onSort} className="apoi-num" />
                 </tr>
@@ -728,6 +924,7 @@ const AdminPois: React.FC = () => {
                         </div>
                         {r.icons.map(i => <IconSwatch key={i.icon + i.color} icon={i.icon} color={i.color} />)}
                       </td>
+                      <td><DotColor row={r} run={run} /></td>
                       <td><LodPicker row={r} run={run} /></td>
                       <td className="apoi-num">{r.total.toLocaleString()}</td>
                     </tr>
@@ -745,6 +942,7 @@ const AdminPois: React.FC = () => {
             </table>
           </div>
 
+          <AltBiomeSettings seed={seed} catalog={catalog} run={run} />
           <IconManager run={run} />
           <AdminPoiIconReport usage={iconUsage} />
           <PreviewDialog row={preview} onClose={() => setPreview(null)} />

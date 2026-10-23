@@ -184,8 +184,9 @@ patterns (tiles in `web/public/img/Patterns`), is still behind `VARIANT_STYLE` i
   - The creature-only variants: Troll Black Forest, Bat Swamp, Wolf Mountain,
     Drake Mountain, Lox Plains, Hare Mistlands, BroodSwarm Mistlands.
   - Rockless Mistlands, which removes things rather than adding them.
-- **Hidden:** Lantern. The game's world data places it, but it doesn't actually occur in
-  real games, so the map and hover card leave it out.
+- **Off by default:** Lantern. The game's world data places it, but it doesn't actually occur
+  in real games, so the map and hover card leave it out unless it's switched on on the POI
+  admin page (`HIDDEN_BY_DEFAULT` in biomePatterns.ts).
 
 ## Re-extracting after a game update
 

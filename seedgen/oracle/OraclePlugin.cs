@@ -75,6 +75,18 @@ public class OraclePlugin : BaseUnityPlugin
         }
     }
 
+    // Probe: every GetGroundData while a camp zone is generated (VALHELP_LOG_GROUND=1).
+    static List<string> s_ground;
+
+    [HarmonyPatch(typeof(ZoneSystem), nameof(ZoneSystem.GetGroundData))]
+    static class GroundPatch
+    {
+        static void Postfix(ref Vector3 p, ref Vector3 normal)
+        {
+            if (s_ground != null) s_ground.Add($"[{F(p.x)},{F(p.y)},{F(p.z)},{F(normal.x)},{F(normal.y)},{F(normal.z)}]");
+        }
+    }
+
     static bool ActiveChain(Transform t)
     {
         for (; t != null; t = t.parent)
@@ -84,7 +96,9 @@ public class OraclePlugin : BaseUnityPlugin
 
     void Awake()
     {
-        new Harmony(Guid).PatchAll(typeof(RandomSpawnPatch));
+        var harmony = new Harmony(Guid);
+        harmony.PatchAll(typeof(RandomSpawnPatch));
+        harmony.PatchAll(typeof(GroundPatch));
     }
 
     void Update()
@@ -313,6 +327,8 @@ public class OraclePlugin : BaseUnityPlugin
             null, new[] { typeof(ZoneSystem.ZoneLocation), typeof(int), typeof(Vector3), typeof(Quaternion),
                           typeof(ZoneSystem.SpawnMode), typeof(List<GameObject>), typeof(bool) }, null)
             ?? throw new MissingMethodException("ZoneSystem.SpawnLocation");
+        var spawnZone = typeof(ZoneSystem).GetMethod("SpawnZone", BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new MissingMethodException("ZoneSystem.SpawnZone");
         var instancesField = typeof(ZNetScene).GetField("m_instances", BindingFlags.NonPublic | BindingFlags.Instance)
             ?? throw new MissingFieldException("ZNetScene.m_instances");
         var views = (Dictionary<ZDO, ZNetView>)instancesField.GetValue(ZNetScene.instance);
@@ -330,6 +346,12 @@ public class OraclePlugin : BaseUnityPlugin
             var present = s_present ?? new List<string>();
             s_asset = null;
             s_present = null;
+            return Collect(before, present, out objectsJson);
+        }
+
+        // What a spawn left behind: every network object that wasn't there before.
+        string Collect(HashSet<ZDO> before, List<string> present, out string objectsJson)
+        {
             var spawned = views.Where(v => !before.Contains(v.Key) && v.Value).Select(v => v.Value).ToList();
 
             // By prefab name: in 1.0 the Beehive component isn't on the networked root.
@@ -386,6 +408,11 @@ public class OraclePlugin : BaseUnityPlugin
                 }
             }
 
+            // Where the pieces we map as their own POI ended up (camp rooms place them).
+            var marks = spawned.Where(v => MarkedPrefabs.Contains(Utils.GetPrefabName(v.gameObject)))
+                .Select(v => { var p = v.transform.position; return $"[\"{Escape(Utils.GetPrefabName(v.gameObject))}\",{F(p.x)},{F(p.y)},{F(p.z)}]"; })
+                .OrderBy(x => x, StringComparer.Ordinal).ToList();
+
             foreach (var v in spawned) ZNetScene.instance.Destroy(v.gameObject);
             string rs = string.Join(",", present.GroupBy(x => x).OrderBy(g => g.Key)
                 .Select(g => $"\"{Escape(g.Key)}\":{g.Count()}"));
@@ -394,7 +421,8 @@ public class OraclePlugin : BaseUnityPlugin
             string vv = string.Join(",", vegvisirs.Distinct().Select(x => $"\"{Escape(x)}\""));
             return $"\"beehives\":{beehives},\"chests\":[{string.Join(",", chests.OrderBy(c => c, StringComparer.Ordinal))}],\"present\":{{{rs}}}," +
                    $"\"creatures\":{{{cr}}},\"vegvisirs\":[{vv}]" +
-                   (rooms.Count > 0 ? $",\"rooms\":[{string.Join(",", rooms)}]" : "") + dgInfo;
+                   (rooms.Count > 0 ? $",\"rooms\":[{string.Join(",", rooms)}]" : "") + dgInfo +
+                   (marks.Count > 0 ? $",\"marks\":[{string.Join(",", marks)}]" : "");
         }
 
         var sb = new StringBuilder("[\n");
@@ -405,13 +433,35 @@ public class OraclePlugin : BaseUnityPlugin
             if (inst.m_location == null) continue;
             string name = inst.m_location.m_prefab.Name ?? "";
             if (!LootPrefabs.Contains(name) && !name.StartsWith("WoodHouse")
-                && !(dungeons && DungeonPrefabs.Contains(name))) continue;
+                && !(dungeons && (DungeonPrefabs.Contains(name) || ZonePrefabs.Contains(name)))) continue;
             // Dev probes: VALHELP_LOOT_ONLY=Prefab1,Prefab2 samples just those.
             if (s_only != null && !s_only.Contains(name)) continue;
 
             int seed = wg.GetSeed() + kv.Key.x * 4271 + kv.Key.y * 9187;
             // Per-location cost, so the price of each dungeon type can be weighed.
             var one = Stopwatch.StartNew();
+            if (ZonePrefabs.Contains(name))
+            {
+                // Camps lay out their rooms on the zone's terrain (slope and height
+                // per room), so build the whole zone the way a player's arrival
+                // does: terrain, then the location, then vegetation.
+                var zbefore = new HashSet<ZDO>(views.Keys);
+                inst.m_location.m_prefab.Load();
+                var args = new object[] { kv.Key, ZoneSystem.SpawnMode.Full, null };
+                if (Environment.GetEnvironmentVariable("VALHELP_LOG_GROUND") == "1") s_ground = new List<string>();
+                bool ok = false;
+                // SpawnZone waits for the terrain, built off-thread; give it a few seconds.
+                for (int tries = 0; tries < 300 && !(ok = (bool)spawnZone.Invoke(zs, args)); tries++)
+                    yield return null;
+                string zres = ok ? Collect(zbefore, new List<string>(), out string zobjects) : "\"error\":\"zone not spawned\"";
+                if (s_ground != null) { zres += $",\"ground\":[{string.Join(",", s_ground)}]"; s_ground = null; }
+                if (args[2] is GameObject root) UnityEngine.Object.Destroy(root);
+                yield return null;
+                sb.Append(count++ == 0 ? "" : ",\n")
+                  .Append($"{{\"prefab\":\"{Escape(name)}\",\"x\":{F(inst.m_position.x)},\"z\":{F(inst.m_position.z)},")
+                  .Append($"\"zone\":[{kv.Key.x},{kv.Key.y}],\"ms\":{one.ElapsedMilliseconds},\"wholeZone\":true,{zres}}}");
+                continue;
+            }
             string result = Sample(inst, seed, Quaternion.identity, out string objects);
             long ms = one.ElapsedMilliseconds;
             string rotField = "";
@@ -577,6 +627,16 @@ public class OraclePlugin : BaseUnityPlugin
     /// </summary>
     static readonly HashSet<string> s_only = Environment.GetEnvironmentVariable("VALHELP_LOOT_ONLY") is string only
         && only.Length > 0 ? new HashSet<string>(only.Split(',')) : null;
+
+    /// <summary>
+    /// Camps (DungeonGenerator CampRadial) sampled by generating their whole zone,
+    /// terrain included, on oracle jobs or with VALHELP_LOOT_DUNGEONS=1: their
+    /// layout depends on the ground, which SpawnLocation alone never sees.
+    /// </summary>
+    static readonly HashSet<string> ZonePrefabs = new HashSet<string> { "WoodFarm1", "NorthVillage" };
+
+    /// <summary>Pieces whose positions the loot dump lists (seedgen maps them as POIs).</summary>
+    static readonly HashSet<string> MarkedPrefabs = new HashSet<string> { "piece_maypole" };
 
     static readonly HashSet<string> DungeonPrefabs = new HashSet<string>
     {

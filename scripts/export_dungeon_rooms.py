@@ -308,6 +308,8 @@ def main():
                 "useCustomInteriorTransform": bool(g["m_useCustomInteriorTransform"]),
                 "addBaseSeedToRandomSpawn": bool(g["m_addBaseSeedToRandomSpawn"]),
                 "campRadiusMin": g["m_campRadiusMin"], "campRadiusMax": g["m_campRadiusMax"],
+                "maxTilt": g["m_maxTilt"], "minAltitude": g["m_minAltitude"],
+                "perimeterSections": g["m_perimeterSections"], "perimeterBuffer": g["m_perimeterBuffer"],
                 "originalPosition": [g["m_originalPosition"]["x"], g["m_originalPosition"]["y"], g["m_originalPosition"]["z"]],
                 "doorTypes": [[prefab_name(go_names.get(d["m_prefab"]["m_PathID"], "?")), d["m_connectionType"], d["m_chance"]]
                               for d in g["m_doorTypes"]],

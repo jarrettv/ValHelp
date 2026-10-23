@@ -99,3 +99,25 @@ Sections are ordered so the first failure is the root cause, not a symptom:
 Height and forest diffs are reported split by ulp distance, so a `FloatToHalf`-class
 rounding issue (≤1 ulp on a minority of pixels) is distinguishable from an upstream
 worldgen error (large diffs, everywhere).
+
+## Camps (farms)
+
+Farms (`WoodFarm1`) and Deep North villages (`NorthVillage`), the game's CampRadial
+generator, lay their rooms out on the zone's terrain, so on oracle jobs (or with
+`VALHELP_LOOT_DUNGEONS=1`) the plugin builds each one's **whole zone** through
+`ZoneSystem.SpawnZone`, terrain first, the way a player's arrival does. Their
+`oracle.loot.json` entries carry `"wholeZone":true`, the generated `rooms` (a
+village's `northvillage_granary` is one), and `marks`: where each maypole
+(`piece_maypole`, a 10% roll per farm yard room) ended up.
+
+seedgen predicts the same thing without the game (`WorldGen/DungeonSim.cs` +
+`WorldGen/ZoneTerrain.cs`) and is checked against such a dump with:
+
+```
+dotnet run -- dungeon-check <oracle.loot.json> <SeedName>          # layouts, generator seeds, maypoles/granaries
+dotnet run -- pois-check <db> <SeedName> <oracle.loot.json>        # the Maypole/Granary POIs a normal job emits
+```
+
+`VALHELP_LOOT_ONLY=WoodFarm1` (or `NorthVillage`) limits sampling to those. `VALHELP_LOG_GROUND=1`
+adds every `GetGroundData` probe made while a farm's zone generates (position
+and normal) as `ground`, for finding where the simulated terrain disagrees.

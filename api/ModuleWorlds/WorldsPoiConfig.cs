@@ -13,11 +13,13 @@ namespace ValHelpApi.ModuleWorlds;
 /// <summary>
 /// Admin overrides for how each map POI prefab renders, plus admin-uploaded icon
 /// art. The code rules in web/src/components/poiIcons.ts are the defaults; a row
-/// here replaces them for that prefab, so changes need no deploy.
+/// here replaces them for that prefab, so changes need no deploy. Biome variants
+/// (alt biomes) get the same treatment over web/src/components/biomePatterns.ts.
 ///
-///   GET    api/poi/config                 public — per-prefab overrides + uploaded icon versions
+///   GET    api/poi/config                 public — per-prefab and per-variant overrides + uploaded icon versions
 ///   GET    api/poi/icons/{name}.svg       public — an uploaded icon
 ///   PUT    api/admin/poi/settings         admin  — upsert one override (all-null deletes it)
+///   PUT    api/admin/poi/altbiomes        admin  — upsert one variant's override (all-null deletes it)
 ///   DELETE api/admin/poi/settings         admin  — drop every override (back to the code defaults)
 ///   PUT    api/admin/poi/icons/{name}     admin  — upload/replace an icon
 ///   DELETE api/admin/poi/icons/{name}     admin
@@ -32,6 +34,7 @@ public static class WorldsPoiConfig
 {
     static readonly Regex PrefabPattern = new(@"^[A-Za-z0-9_# \-]{1,80}$", RegexOptions.Compiled);
     static readonly Regex IconNamePattern = new(@"^[a-z0-9][a-z0-9_\-]{0,39}$", RegexOptions.Compiled);
+    static readonly Regex AltBiomePattern = new(@"^[A-Za-z0-9 \-]{1,60}$", RegexOptions.Compiled);
     static readonly Regex ColorPattern = new(@"^#[0-9a-fA-F]{6}$", RegexOptions.Compiled);
     const int MaxSvgBytes = 64 * 1024;
 
@@ -43,6 +46,7 @@ public static class WorldsPoiConfig
         var admin = app.MapGroup("api/admin/poi").RequireAuthorization();
         admin.MapPut("settings", PutSetting);
         admin.MapDelete("settings", DeleteAllSettings);
+        admin.MapPut("altbiomes", PutAltBiome);
         admin.MapPut("icons/{name}", PutIcon);
         admin.MapDelete("icons/{name}", DeleteIcon);
 
@@ -70,11 +74,13 @@ public static class WorldsPoiConfig
         || user.IsInRole("admin");
 
     public record SettingDto(bool? Visible, string? Icon, string? Color, int? Lod);
-    public record ConfigResp(Dictionary<string, SettingDto> Prefabs, Dictionary<string, long> Icons);
+    public record AltBiomeDto(bool? Visible, string? Color);
+    public record ConfigResp(Dictionary<string, SettingDto> Prefabs, Dictionary<string, long> Icons, Dictionary<string, AltBiomeDto> AltBiomes);
 
     public static async Task<Ok<ConfigResp>> GetConfig(AppDbContext db, HttpContext ctx)
     {
         var settings = await db.PoiSettings.AsNoTracking().ToListAsync();
+        var alts = await db.AltBiomeSettings.AsNoTracking().ToListAsync();
         var icons = await db.PoiIcons.AsNoTracking()
             .Select(i => new { i.Name, i.UpdatedAt })
             .ToListAsync();
@@ -84,7 +90,8 @@ public static class WorldsPoiConfig
         // Tiny and admin-edited: always revalidate so changes show up on next load.
         ctx.Response.Headers.CacheControl = "no-cache";
         return TypedResults.Ok(new ConfigResp(prefabs,
-            icons.ToDictionary(i => i.Name, i => new DateTimeOffset(i.UpdatedAt).ToUnixTimeMilliseconds())));
+            icons.ToDictionary(i => i.Name, i => new DateTimeOffset(i.UpdatedAt).ToUnixTimeMilliseconds()),
+            alts.ToDictionary(a => a.Name, a => new AltBiomeDto(a.Visible, a.Color))));
     }
 
     public static async Task<Results<ContentHttpResult, NotFound>> GetIcon(AppDbContext db, HttpContext ctx, string name)
@@ -136,6 +143,39 @@ public static class WorldsPoiConfig
         row.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync();
         return TypedResults.Ok(new SettingDto(row.Visible, row.Icon, row.Color, row.Lod));
+    }
+
+    public record AltBiomeReq(string Name, bool? Visible, string? Color);
+
+    /// <summary>Show/hide a biome variant on the maps, or change its stroke colour (AltBiome.m_name).</summary>
+    public static async Task<Results<Ok<AltBiomeDto>, NoContent, BadRequest<string>, ForbidHttpResult>> PutAltBiome(
+        ClaimsPrincipal user, AppDbContext db, AltBiomeReq req)
+    {
+        if (!IsAdmin(user)) return TypedResults.Forbid();
+        if (req.Name == null || !AltBiomePattern.IsMatch(req.Name)) return TypedResults.BadRequest("Invalid variant name");
+        if (req.Color != null && !ColorPattern.IsMatch(req.Color)) return TypedResults.BadRequest("Color must be #rrggbb");
+
+        var row = await db.AltBiomeSettings.FirstOrDefaultAsync(s => s.Name == req.Name);
+        if (req.Visible == null && req.Color == null)
+        {
+            if (row != null)
+            {
+                db.AltBiomeSettings.Remove(row);
+                await db.SaveChangesAsync();
+            }
+            return TypedResults.NoContent();
+        }
+
+        if (row == null)
+        {
+            row = new AltBiomeSetting { Name = req.Name };
+            db.AltBiomeSettings.Add(row);
+        }
+        row.Visible = req.Visible;
+        row.Color = req.Color?.ToLowerInvariant();
+        row.UpdatedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
+        return TypedResults.Ok(new AltBiomeDto(row.Visible, row.Color));
     }
 
     public record ResetResp(int Removed, string[] PrunedIcons);
@@ -291,6 +331,16 @@ public class PoiSetting
     public string? Color { get; set; }
     /// <summary>Level of detail 0-3: zoom at which the POI turns from a dot into its icon.</summary>
     public int? Lod { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+public class AltBiomeSetting
+{
+    /// <summary>The game's AltBiome.m_name, e.g. "Mushroom".</summary>
+    public string Name { get; set; } = null!;
+    public bool? Visible { get; set; }
+    /// <summary>Map stroke colour, #rrggbb.</summary>
+    public string? Color { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
 

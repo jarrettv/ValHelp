@@ -2,7 +2,8 @@
 //
 // The map outlines each variant sector with a heavy stroke in its variant's
 // tint; a sector carrying several variants gets one more stroke inside per
-// extra variant (up to three), outermost first. (vector-map.js still has the
+// extra variant (up to three), the most important outermost (STROKE_PRIORITY
+// below). (vector-map.js still has the
 // older look, a tint wash plus up to three interleaved patterns, behind
 // VARIANT_STYLE.)
 //
@@ -10,10 +11,14 @@
 // (`/api/worlds/<seed>/altbiomes`) and a 2048x2048 grid of which sector each
 // minimap cell is in (`/altbiomegrid`, gzipped). Every variant listed below gets
 // its tint as a stroke around its sectors (vector-map.js renderPatterns).
+// Admins can recolour or hide any variant on /auth/pois (PoiConfig.altBiomes),
+// including ones without a line here, which then get a stroke too.
 //
 // Adding one: draw a square tile in public/img/Patterns/<pattern>.svg (keep its
 // shapes inside the tile with a margin, since it repeats edge to edge), then add
 // its line here. Variant names are the game's (`AltBiome.m_name`).
+
+import { getPoiConfig } from './poiIcons';
 
 export interface BiomePattern {
   pattern?: string;  // file stem under /img/Patterns; none = tint only
@@ -67,8 +72,11 @@ export interface PatternOverlay {
   cols: number;   // atlas grid: slot n is at column (n-1) % cols, row (n-1) / cols
   rows: number;
   /// Stroke colours, RGBA 256x4: row k, entry n is sector n's (k+1)th variant's
-  /// tint, alpha 255, or all 0 past its last variant.
+  /// colour, alpha 255, or all 0 past its last variant.
   strokeLut: Uint8Array;
+  /// Atlas slot (1-based) of every pattern this seed uses, hidden or not, so a
+  /// config change only rebuilds the LUTs (variantLuts).
+  slotOf: Map<string, number>;
   /// The seed's variant sectors; a grid cell's value n (1-based) is sectors[n - 1].
   sectors: AltSector[];
 }
@@ -76,8 +84,90 @@ export interface PatternOverlay {
 /// Most strokes drawn around one sector: its first three variants.
 const MAX_STROKES = 3;
 
+/// Which of a sector's variants gets the outer ring: earlier here is further out
+/// (and higher in the hover card). Variants only share a sector within one biome,
+/// so only the order inside each biome's group matters: what changes how the
+/// area plays (new enemies, ruins, the whole landscape) beats a change of
+/// creatures or plants. Unlisted variants go innermost, in the game's order.
+const STROKE_PRIORITY: readonly string[] = [
+  // Meadows
+  'Dark Meadows', 'Menhir', 'Mushroom', 'Peaceful Meadows',
+  'Dandelion Meadows', 'Raspberry Meadows', 'Birch Meadows', 'Smalltree Meadows',
+  // Black Forest
+  'Troll Black Forest', 'Root Black Forest', 'Ruin Black Forest', 'Rock Black Forest',
+  'Pinetree Black Forest', 'Kalhygge Black Forest', 'Blueberry Black Forest',
+  // Swamp
+  'Abomination Swamp', 'Bog Swamp', 'Bones', 'Hut Swamp', 'Bat Swamp',
+  // Mountain
+  'Fortress Mountain', 'Drake Mountain', 'Wolf Mountain',
+  // Plains
+  'Goblin Plains', 'Death Plains', 'Lox Plains',
+  // Mistlands
+  'BroodSwarm Mistlands', 'Swords Mistlands', 'Trees Mistlands', 'Rockless Mistlands', 'Hare Mistlands',
+];
+const PRIORITY = new Map(STROKE_PRIORITY.map((n, i) => [n, i]));
+
+/// A sector's variants, outermost ring first.
+export function byStrokePriority(alts: readonly string[]): string[] {
+  return [...alts].sort((a, b) => (PRIORITY.get(a) ?? STROKE_PRIORITY.length) - (PRIORITY.get(b) ?? STROKE_PRIORITY.length));
+}
+
 /// Atlas columns: keeps the atlas within 1024 px wide, which every GPU handles.
 const ATLAS_COLS = 4;
+
+/// Variants the game's data places but that never actually show up in real
+/// games: off unless an admin switches them on.
+export const HIDDEN_BY_DEFAULT: ReadonlySet<string> = new Set(['Lantern']);
+
+/// How a variant shows right now: the code default above, then the admin's override.
+export interface VariantLook {
+  color: string | null;   // stroke colour; null = not drawn (no default and no override)
+  hidden: boolean;        // off: no stroke, not in the hover card
+  hiddenByDefault: boolean;
+  def?: BiomePattern;
+}
+
+export function variantLook(name: string): VariantLook {
+  const o = getPoiConfig().altBiomes[name];
+  const def = BIOME_PATTERNS[name];
+  const hiddenByDefault = HIDDEN_BY_DEFAULT.has(name);
+  return {
+    color: o?.color ?? def?.tint ?? null,
+    hidden: o?.visible === false || (o?.visible == null && hiddenByDefault),
+    hiddenByDefault,
+    def,
+  };
+}
+
+const rgb = (hex: string) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+
+/// The LUTs VectorMap needs for the current config (see VectorMap.setPatternOverlay):
+/// pattern look, rows per sector entry: 0 tint rgb + slot 1; 1 spread 1, slot 2,
+/// spread 2, slot 3; 2 spread 3, shown flag. Strokes: row k, (k+1)th colour.
+export function variantLuts(sectors: AltSector[], slotOf: Map<string, number>): { lut: Uint8Array; strokeLut: Uint8Array } {
+  const lut = new Uint8Array(256 * 4 * 4);
+  const strokeLut = new Uint8Array(256 * 4 * 4);
+  const ROW = 256 * 4;
+  sectors.slice(0, 255).forEach((s, i) => {
+    const all = byStrokePriority(s.alts).map(variantLook).filter(l => !l.hidden && l.color);
+    if (!all.length) return;
+    const o = (i + 1) * 4;
+    all.slice(0, MAX_STROKES).forEach((l, k) => strokeLut.set([...rgb(l.color!), 255], k * ROW + o));
+    // Tint from the first variant listed, patterned or not.
+    lut.set(rgb(all[0].color!), o);
+    lut[2 * ROW + o + 1] = 255;
+    const defs = [...new Map(all.filter(l => l.def?.pattern).map(l => [l.def!.pattern, l.def!])).values()].slice(0, 3);
+    const slots = defs.map(d => slotOf.get(d.pattern!) ?? 0);
+    const spreads = defs.map(d => Math.round((d.spread ?? 1) * 32));
+    lut[o + 3] = slots[0] ?? 0;
+    lut[ROW + o] = spreads[0] ?? 0;
+    lut[ROW + o + 1] = slots[1] ?? 0;
+    lut[ROW + o + 2] = spreads[1] ?? 0;
+    lut[ROW + o + 3] = slots[2] ?? 0;
+    lut[2 * ROW + o] = spreads[2] ?? 0;
+  });
+  return { lut, strokeLut };
+}
 
 /// Everything VectorMap.setPatternOverlay needs for one seed (plus its sectors,
 /// for the hover card), or null when the seed has no variant data (generated
@@ -90,38 +180,13 @@ export async function loadPatternOverlay(baseUrl: string): Promise<PatternOverla
   const size = Math.round(Math.sqrt(grid.length));
   if (size * size !== grid.length) return null;
 
-  // One atlas slot per pattern this seed uses. LUT rows, per sector entry (see
-  // VectorMap.setPatternOverlay): 0 tint rgb + slot 1; 1 spread 1, slot 2,
-  // spread 2, slot 3; 2 spread 3, shown flag.
+  // One atlas slot per pattern this seed uses.
   const slotOf = new Map<string, number>();
-  const lut = new Uint8Array(256 * 4 * 4);
-  const strokeLut = new Uint8Array(256 * 4 * 4);
-  const ROW = 256 * 4;
-  sectors.slice(0, 255).forEach((s, i) => {
-    const all = s.alts.map(a => BIOME_PATTERNS[a]).filter(Boolean);
-    if (!all.length) return;
-    const o = (i + 1) * 4;
-    all.slice(0, MAX_STROKES).forEach((d, k) => {
-      strokeLut.set([parseInt(d.tint.slice(1, 3), 16), parseInt(d.tint.slice(3, 5), 16), parseInt(d.tint.slice(5, 7), 16), 255], k * ROW + o);
-    });
-    // Tint from the first variant listed, patterned or not.
-    lut[o] = parseInt(all[0].tint.slice(1, 3), 16);
-    lut[o + 1] = parseInt(all[0].tint.slice(3, 5), 16);
-    lut[o + 2] = parseInt(all[0].tint.slice(5, 7), 16);
-    lut[2 * ROW + o + 1] = 255;
-    const defs = [...new Map(all.filter(d => d.pattern).map(d => [d.pattern, d])).values()].slice(0, 3);
-    const slots = defs.map(d => {
-      if (!slotOf.has(d.pattern!)) slotOf.set(d.pattern!, slotOf.size + 1);
-      return slotOf.get(d.pattern!)!;
-    });
-    const spreads = defs.map(d => Math.round((d.spread ?? 1) * 32));
-    lut[o + 3] = slots[0] ?? 0;
-    lut[ROW + o] = spreads[0] ?? 0;
-    lut[ROW + o + 1] = slots[1] ?? 0;
-    lut[ROW + o + 2] = spreads[1] ?? 0;
-    lut[ROW + o + 3] = slots[2] ?? 0;
-    lut[2 * ROW + o] = spreads[2] ?? 0;
-  });
+  for (const s of sectors.slice(0, 255))
+    for (const a of s.alts) {
+      const pattern = BIOME_PATTERNS[a]?.pattern;
+      if (pattern && !slotOf.has(pattern)) slotOf.set(pattern, slotOf.size + 1);
+    }
   // Returned even with nothing to draw: the map's hover card still uses the sectors.
 
   // At least one slot: a seed with only tint-only variants still needs a valid texture.
@@ -136,5 +201,5 @@ export async function loadPatternOverlay(baseUrl: string): Promise<PatternOverla
     try { await img.decode(); } catch { return; }   // missing tile: tint only
     ctx.drawImage(img, ((slot - 1) % cols) * SLOT_PX, Math.floor((slot - 1) / cols) * SLOT_PX, SLOT_PX, SLOT_PX);
   }));
-  return { grid, size, lut, atlas, cols, rows, strokeLut, sectors };
+  return { grid, size, ...variantLuts(sectors, slotOf), atlas, cols, rows, slotOf, sectors };
 }

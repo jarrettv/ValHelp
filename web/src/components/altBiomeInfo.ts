@@ -11,6 +11,7 @@ const poi = (name: string) => `/img/Poi/${name}.svg`;
 
 export const ALT_BIOME_INFO: Record<string, AltBiomeInfo> = {
   'Mushroom': { blurb: 'Mushrooms to pick.' },
+  'Lantern': { blurb: 'Lost lanterns lying about.' },
   'Bones': { blurb: 'Giant bones; poison skeletons.' },
   'Menhir': { blurb: 'Standing stones; skeletons.' },
   'Dark Meadows': { blurb: 'Draugr roam, gloomy weather, a village instead of farms.', stars: 2, icon: trophy('TrophyDraugr') },

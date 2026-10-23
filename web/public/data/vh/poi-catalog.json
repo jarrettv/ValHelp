@@ -1,0 +1,1748 @@
+{
+ "prefabs": [
+  {
+   "prefab": "AbandonedLogCabin02",
+   "type": "AbandonedCabin",
+   "name": "Abandoned Log Cabin",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 33
+  },
+  {
+   "prefab": "AbandonedLogCabin03",
+   "type": "AbandonedCabin",
+   "name": "Abandoned Log Cabin",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 33
+  },
+  {
+   "prefab": "AbandonedLogCabin04",
+   "type": "AbandonedCabin",
+   "name": "Abandoned Log Cabin",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "AncientUpgradeStation",
+   "type": "AncientUpgradeStation",
+   "name": "Ancient Upgrade Station",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "AshlandRuins",
+   "type": "AshlandsRuins",
+   "name": "Ashlands Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "BearCave",
+   "type": "BearCave",
+   "name": "Bear Cave",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "BigRockClearing",
+   "type": "RockClearing",
+   "name": "Rock Clearing",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "BogWitch_Camp",
+   "type": "Trader",
+   "name": "Bog Witch",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "Bonemass",
+   "type": "Boss Altar",
+   "name": "Bonemass",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "CharredFortress",
+   "type": "CharredFortress",
+   "name": "Charred Fortress",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "CharredRuins1",
+   "type": "CharredRuins",
+   "name": "Charred Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 75
+  },
+  {
+   "prefab": "CharredRuins2",
+   "type": "CharredRuins",
+   "name": "Charred Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "CharredRuins3",
+   "type": "CharredRuins",
+   "name": "Charred Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "CharredRuins4",
+   "type": "CharredRuins",
+   "name": "Charred Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "CharredStone_Spawner",
+   "type": "CharredStoneSpawner",
+   "name": "Charred Stone Spawner",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 300
+  },
+  {
+   "prefab": "CharredTowerRuins1",
+   "type": "CharredTowerRuins",
+   "name": "Charred Tower Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "CharredTowerRuins1_dvergr",
+   "type": "DvergrHouse",
+   "name": "Dvergr House",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "CharredTowerRuins2",
+   "type": "CharredTowerRuins",
+   "name": "Charred Tower Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "CharredTowerRuins3",
+   "type": "CharredTowerRuins",
+   "name": "Charred Tower Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "CombatRuin01",
+   "type": "CombatRuin",
+   "name": "Combat Ruin",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "Crypt2",
+   "type": "Crypt",
+   "name": "Burial Chamber",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Crypt3",
+   "type": "Crypt",
+   "name": "Burial Chamber",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Crypt4",
+   "type": "Crypt",
+   "name": "Burial Chamber",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "DN_Bossroom",
+   "type": "Boss Altar",
+   "name": "Kall Fimbulbringer",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "DN_gammeltrollFrac01",
+   "type": "OldTroll",
+   "name": "Old Troll Remains",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "DN_gammeltrollFrac02",
+   "type": "OldTroll",
+   "name": "Old Troll Remains",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "DN_hut01",
+   "type": "NorthVillage",
+   "name": "Northern Hut",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "Dolmen01",
+   "type": "Dolmen",
+   "name": "Dolmen",
+   "biomes": [
+    "Meadows",
+    "BlackForest"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Dolmen02",
+   "type": "Dolmen",
+   "name": "Dolmen",
+   "biomes": [
+    "Meadows",
+    "BlackForest"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Dolmen03",
+   "type": "Dolmen",
+   "name": "Dolmen",
+   "biomes": [
+    "Meadows",
+    "BlackForest"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Dragonqueen",
+   "type": "Boss Altar",
+   "name": "Moder",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "DrakeLorestone",
+   "type": "Lorestone",
+   "name": "Drake Lorestone",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "DrakeNest01",
+   "type": "DrakeNest",
+   "name": "Drake Nest",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Eikthyrnir",
+   "type": "Boss Altar",
+   "name": "Eikthyr",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "FaderLocation",
+   "type": "Boss Altar",
+   "name": "Fader",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "FireHole",
+   "type": "Geyser",
+   "name": "Geyser",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 75
+  },
+  {
+   "prefab": "FortressRuins",
+   "type": "FortressRuins",
+   "name": "Fortress Ruins",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "FrozenShip01_DN",
+   "type": "FrozenShip",
+   "name": "Frozen Ship",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "FrozenShip02_DN",
+   "type": "FrozenShip",
+   "name": "Frozen Ship",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "FrozenShip03_DN",
+   "type": "FrozenShip",
+   "name": "Frozen Ship",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "GDKing",
+   "type": "Boss Altar",
+   "name": "The Elder",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 4
+  },
+  {
+   "prefab": "GoblinCamp2",
+   "type": "Totem",
+   "name": "Fuling Totem",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "GoblinKing",
+   "type": "Boss Altar",
+   "name": "Yagluth",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 4
+  },
+  {
+   "prefab": "Grave1",
+   "type": "Grave",
+   "name": "Grave",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Greydwarf_camp1",
+   "type": "GreydwarfNest",
+   "name": "Greydwarf Nest",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 300
+  },
+  {
+   "prefab": "Hildir_camp",
+   "type": "Trader",
+   "name": "Hildir",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "Hildir_cave",
+   "type": "HildirDungeon",
+   "name": "Howling Cavern",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "Hildir_crypt",
+   "type": "HildirDungeon",
+   "name": "Smouldering Tomb",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "Hildir_plainsfortress",
+   "type": "HildirDungeon",
+   "name": "Sealed Tower",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 3
+  },
+  {
+   "prefab": "IcePond1",
+   "type": "IcePond",
+   "name": "Ice Pond",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "InfestedTree01",
+   "type": "InfestedTree",
+   "name": "Infested Tree",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 700
+  },
+  {
+   "prefab": "LeviathanLava",
+   "type": "LavaLeviathan",
+   "name": "Lava Leviathan",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "LumberCamp",
+   "type": "LumberCamp",
+   "name": "Lumber Camp",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Mistlands_DvergrBossEntrance1",
+   "type": "Boss Altar",
+   "name": "The Queen",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "Mistlands_DvergrTownEntrance1",
+   "type": "InfestedMine",
+   "name": "Infested Mine",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 120
+  },
+  {
+   "prefab": "Mistlands_DvergrTownEntrance2",
+   "type": "InfestedMine",
+   "name": "Infested Mine",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 120
+  },
+  {
+   "prefab": "Mistlands_Excavation1",
+   "type": "Excavation",
+   "name": "Dvergr Excavation",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "Mistlands_Excavation2",
+   "type": "Excavation",
+   "name": "Dvergr Excavation",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "Mistlands_Excavation3",
+   "type": "Excavation",
+   "name": "Dvergr Excavation",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "Mistlands_Giant1",
+   "type": "GiantRemains",
+   "name": "Giant Remains",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 250
+  },
+  {
+   "prefab": "Mistlands_Giant2",
+   "type": "GiantRemains",
+   "name": "Giant Remains",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 85
+  },
+  {
+   "prefab": "Mistlands_GuardTower1_new",
+   "type": "DvergrTower",
+   "name": "Dvergr Guard Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 75
+  },
+  {
+   "prefab": "Mistlands_GuardTower1_ruined_new",
+   "type": "RuinedDvergrTower",
+   "name": "Ruined Dvergr Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "Mistlands_GuardTower1_ruined_new2",
+   "type": "RuinedDvergrTower",
+   "name": "Ruined Dvergr Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "Mistlands_GuardTower2_new",
+   "type": "DvergrTower",
+   "name": "Dvergr Guard Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 75
+  },
+  {
+   "prefab": "Mistlands_GuardTower3_new",
+   "type": "DvergrTower",
+   "name": "Dvergr Guard Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Mistlands_GuardTower3_ruined_new",
+   "type": "RuinedDvergrTower",
+   "name": "Ruined Dvergr Tower",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Mistlands_Harbour1",
+   "type": "Harbour",
+   "name": "Dvergr Harbour",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Mistlands_Lighthouse1_new",
+   "type": "DvergrTower",
+   "name": "Dvergr Lighthouse",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Mistlands_RoadPost1",
+   "type": "RoadPost",
+   "name": "Road Post",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 500
+  },
+  {
+   "prefab": "Mistlands_RockSpire1",
+   "type": "RockSpire",
+   "name": "Rock Spire",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Mistlands_Statue1",
+   "type": "GiantStatue",
+   "name": "Giant Statue",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Mistlands_Statue2",
+   "type": "GiantStatue",
+   "name": "Giant Statue",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Mistlands_StatueGroup1",
+   "type": "AncientRoot",
+   "name": "Ancient Root",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Mistlands_Swords1",
+   "type": "GiantSwords",
+   "name": "Giant Swords",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 33
+  },
+  {
+   "prefab": "Mistlands_Swords2",
+   "type": "GiantSwords",
+   "name": "Giant Swords",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 33
+  },
+  {
+   "prefab": "Mistlands_Swords3",
+   "type": "GiantSwords",
+   "name": "Giant Swords",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 33
+  },
+  {
+   "prefab": "Mistlands_Viaduct1",
+   "type": "Viaduct",
+   "name": "Viaduct",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Mistlands_Viaduct2",
+   "type": "Viaduct",
+   "name": "Viaduct",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 150
+  },
+  {
+   "prefab": "MorgenHole1",
+   "type": "PutridHole",
+   "name": "Putrid Hole",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "MorgenHole2",
+   "type": "PutridHole",
+   "name": "Putrid Hole",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "MorgenHole3",
+   "type": "PutridHole",
+   "name": "Putrid Hole",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "MorkBorg",
+   "type": "Morkhalla",
+   "name": "M\u00f6rkhalla",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "MountainCave02",
+   "type": "MountainCave",
+   "name": "Frost Cave",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 120
+  },
+  {
+   "prefab": "MountainGrave01",
+   "type": "Grave",
+   "name": "Mountain Grave",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "MountainWell1",
+   "type": "Well",
+   "name": "Mountain Well",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "NorthMemorialPlace",
+   "type": "AncestralMemorial",
+   "name": "Ancestral Memorial",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 15
+  },
+  {
+   "prefab": "NorthVillage",
+   "type": "NorthVillage",
+   "name": "Northern Village",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 135
+  },
+  {
+   "prefab": "PlaceofMystery1",
+   "type": "PlaceOfMystery",
+   "name": "Place of Mystery",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 1
+  },
+  {
+   "prefab": "PlaceofMystery2",
+   "type": "PlaceOfMystery",
+   "name": "Place of Mystery",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 1
+  },
+  {
+   "prefab": "PlaceofMystery3",
+   "type": "PlaceOfMystery",
+   "name": "Place of Mystery",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 1
+  },
+  {
+   "prefab": "Ruin1",
+   "type": "Ruin",
+   "name": "Ruin",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Ruin2",
+   "type": "RuinVegvisir",
+   "name": "Elder Vegvisir Ruin",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Ruin3",
+   "type": "Ruin",
+   "name": "Ruin",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Runestone_Ashlands",
+   "type": "Lorestone",
+   "name": "Ashlands Lorestone",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 70
+  },
+  {
+   "prefab": "Runestone_BlackForest",
+   "type": "Lorestone",
+   "name": "Black Forest Lorestone",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Runestone_Boars",
+   "type": "BoarRunestone",
+   "name": "Boar Runestone",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Runestone_DeepNorth",
+   "type": "DeepNorthRunestone",
+   "name": "Deep North Runestone",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 70
+  },
+  {
+   "prefab": "Runestone_Draugr",
+   "type": "Lorestone",
+   "name": "Draugr Lorestone",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Runestone_Greydwarfs",
+   "type": "Lorestone",
+   "name": "Greydwarf Lorestone",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "Runestone_Meadows",
+   "type": "Lorestone",
+   "name": "Meadows Lorestone",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Runestone_Mistlands",
+   "type": "Lorestone",
+   "name": "Mistlands Lorestone",
+   "biomes": [
+    "Mistlands"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Runestone_Mountains",
+   "type": "Lorestone",
+   "name": "Mountain Lorestone",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Runestone_Plains",
+   "type": "Lorestone",
+   "name": "Plains Lorestone",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "Runestone_Swamps",
+   "type": "Lorestone",
+   "name": "Swamp Lorestone",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "ShipSetting01",
+   "type": "ShipSetting",
+   "name": "Ship Setting",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "ShipSetting02",
+   "type": "ShipSetting",
+   "name": "Ship Setting",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "ShipSetting03",
+   "type": "ShipSetting",
+   "name": "Ship Setting",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "ShipWreck01",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "Swamp",
+    "BlackForest",
+    "Plains",
+    "Ocean"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "ShipWreck01_DN",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 170
+  },
+  {
+   "prefab": "ShipWreck02",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "Swamp",
+    "BlackForest",
+    "Plains",
+    "Ocean"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "ShipWreck02_DN",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 120
+  },
+  {
+   "prefab": "ShipWreck03",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "Swamp",
+    "BlackForest",
+    "Plains",
+    "Ocean"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "ShipWreck04",
+   "type": "Shipwreck",
+   "name": "Shipwreck",
+   "biomes": [
+    "Swamp",
+    "BlackForest",
+    "Plains",
+    "Ocean"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "StartTemple",
+   "type": "Start",
+   "name": "Sacrificial Stones",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 1
+  },
+  {
+   "prefab": "StoneCircle",
+   "type": "StoneCircle",
+   "name": "Stone Circle",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "StoneHenge1",
+   "type": "StoneHenge",
+   "name": "Stone Henge",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "StoneHenge2",
+   "type": "StoneHenge",
+   "name": "Stone Henge",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "StoneHenge3",
+   "type": "PlainsVegvisir",
+   "name": "Yagluth Vegvisir",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "StoneHenge4",
+   "type": "PlainsVegvisir",
+   "name": "Yagluth Vegvisir",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 5
+  },
+  {
+   "prefab": "StoneHenge5",
+   "type": "PlainsVegvisir",
+   "name": "Yagluth Vegvisir",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "StoneHenge6",
+   "type": "StoneHenge",
+   "name": "Stone Henge",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "StoneHouse3",
+   "type": "StoneHouse",
+   "name": "Stone House",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "StoneHouse4",
+   "type": "StoneHouse",
+   "name": "Stone House",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "StoneTower1",
+   "type": "Totem",
+   "name": "Fuling Totem",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "StoneTower3",
+   "type": "StoneTower",
+   "name": "Stone Tower",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "StoneTowerRuins03",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "StoneTowerRuins04",
+   "type": "MountainVegvisir",
+   "name": "Moder Vegvisir",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "StoneTowerRuins05",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "StoneTowerRuins07",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "StoneTowerRuins08",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "StoneTowerRuins09",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "StoneTowerRuins10",
+   "type": "StoneTowerRuins",
+   "name": "Stone Tower Ruins",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 80
+  },
+  {
+   "prefab": "SulfurArch",
+   "type": "SulfurArch",
+   "name": "Sulfur Arch",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "SunkenCrypt4",
+   "type": "SunkenCrypt",
+   "name": "Sunken Crypt",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 175
+  },
+  {
+   "prefab": "SwampHut1",
+   "type": "SwampHut",
+   "name": "Swamp Hut",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "SwampHut2",
+   "type": "SwampHut",
+   "name": "Swamp Hut",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "SwampHut3",
+   "type": "SwampHut",
+   "name": "Swamp Hut",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "SwampHut4",
+   "type": "SwampHut",
+   "name": "Swamp Hut",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "SwampHut5",
+   "type": "SwampHut",
+   "name": "Swamp Hut",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "SwampRuin1",
+   "type": "SwampVegvisir",
+   "name": "Bonemass Vegvisir",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "SwampRuin2",
+   "type": "SwampVegvisir",
+   "name": "Bonemass Vegvisir",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 30
+  },
+  {
+   "prefab": "SwampWell1",
+   "type": "Well",
+   "name": "Swamp Well",
+   "biomes": [
+    "Swamp"
+   ],
+   "quantity": 25
+  },
+  {
+   "prefab": "TarPit1",
+   "type": "TarPit",
+   "name": "Tar Pit",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "TarPit2",
+   "type": "TarPit",
+   "name": "Tar Pit",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 16
+  },
+  {
+   "prefab": "TarPit3",
+   "type": "TarPit",
+   "name": "Tar Pit",
+   "biomes": [
+    "Plains"
+   ],
+   "quantity": 100
+  },
+  {
+   "prefab": "TheHole01",
+   "type": "WindingTunnels",
+   "name": "Winding Tunnels",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "quantity": 40
+  },
+  {
+   "prefab": "TrollCave02",
+   "type": "TrollCave",
+   "name": "Troll Cave",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 200
+  },
+  {
+   "prefab": "Vendor_BlackForest",
+   "type": "Trader",
+   "name": "Haldor",
+   "biomes": [
+    "BlackForest"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "VoltureNest",
+   "type": "VoltureNest",
+   "name": "Volture Nest",
+   "biomes": [
+    "AshLands"
+   ],
+   "quantity": 350
+  },
+  {
+   "prefab": "Waymarker01",
+   "type": "Waymarker",
+   "name": "Waymarker",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "Waymarker02",
+   "type": "Waymarker",
+   "name": "Waymarker",
+   "biomes": [
+    "Mountain"
+   ],
+   "quantity": 50
+  },
+  {
+   "prefab": "WoodFarm1",
+   "type": "Village",
+   "name": "Abandoned Farm",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 10
+  },
+  {
+   "prefab": "WoodHouse1",
+   "type": "House",
+   "name": "WoodHouse1",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse10",
+   "type": "House",
+   "name": "WoodHouse10",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse11",
+   "type": "House",
+   "name": "WoodHouse11",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse12",
+   "type": "House",
+   "name": "WoodHouse12",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse13",
+   "type": "House",
+   "name": "WoodHouse13",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse2",
+   "type": "House",
+   "name": "WoodHouse2",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse3",
+   "type": "House",
+   "name": "WoodHouse3",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse4",
+   "type": "House",
+   "name": "WoodHouse4",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse5",
+   "type": "House",
+   "name": "WoodHouse5",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse6",
+   "type": "House",
+   "name": "WoodHouse6",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse7",
+   "type": "House",
+   "name": "WoodHouse7",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse8",
+   "type": "House",
+   "name": "WoodHouse8",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodHouse9",
+   "type": "House",
+   "name": "WoodHouse9",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 20
+  },
+  {
+   "prefab": "WoodVillage1",
+   "type": "Village",
+   "name": "Abandoned Village",
+   "biomes": [
+    "Meadows"
+   ],
+   "quantity": 15
+  },
+  {
+   "prefab": "piece_maypole",
+   "type": "Maypole",
+   "name": "Maypole",
+   "biomes": [
+    "Meadows"
+   ],
+   "inside": [
+    "WoodFarm1"
+   ]
+  },
+  {
+   "prefab": "northvillage_granary",
+   "type": "Granary",
+   "name": "Granary",
+   "biomes": [
+    "DeepNorth"
+   ],
+   "inside": [
+    "NorthVillage"
+   ]
+  }
+ ],
+ "altBiomes": [
+  {
+   "name": "Mushroom",
+   "biomes": [
+    "Meadows",
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Lantern",
+   "biomes": [
+    "Meadows",
+    "Swamp",
+    "Mountain",
+    "BlackForest",
+    "Plains",
+    "DeepNorth",
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "Bones",
+   "biomes": [
+    "Swamp",
+    "Plains",
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "Menhir",
+   "biomes": [
+    "Meadows",
+    "Plains"
+   ]
+  },
+  {
+   "name": "Dark Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Peaceful Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Dandelion Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Raspberry Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Smalltree Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Birch Meadows",
+   "biomes": [
+    "Meadows"
+   ]
+  },
+  {
+   "name": "Troll Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Root Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Ruin Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Rock Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Pinetree Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Blueberry Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Hut Swamp",
+   "biomes": [
+    "Swamp"
+   ]
+  },
+  {
+   "name": "Bog Swamp",
+   "biomes": [
+    "Swamp"
+   ]
+  },
+  {
+   "name": "Bat Swamp",
+   "biomes": [
+    "Swamp"
+   ]
+  },
+  {
+   "name": "Abomination Swamp",
+   "biomes": [
+    "Swamp"
+   ]
+  },
+  {
+   "name": "Wolf Mountain",
+   "biomes": [
+    "Mountain"
+   ]
+  },
+  {
+   "name": "Drake Mountain",
+   "biomes": [
+    "Mountain"
+   ]
+  },
+  {
+   "name": "Fortress Mountain",
+   "biomes": [
+    "Mountain"
+   ]
+  },
+  {
+   "name": "Lox Plains",
+   "biomes": [
+    "Plains"
+   ]
+  },
+  {
+   "name": "Goblin Plains",
+   "biomes": [
+    "Plains"
+   ]
+  },
+  {
+   "name": "Death Plains",
+   "biomes": [
+    "Plains"
+   ]
+  },
+  {
+   "name": "Kalhygge Black Forest",
+   "biomes": [
+    "BlackForest"
+   ]
+  },
+  {
+   "name": "Rockless Mistlands",
+   "biomes": [
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "Trees Mistlands",
+   "biomes": [
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "Swords Mistlands",
+   "biomes": [
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "Hare Mistlands",
+   "biomes": [
+    "Mistlands"
+   ]
+  },
+  {
+   "name": "BroodSwarm Mistlands",
+   "biomes": [
+    "Mistlands"
+   ]
+  }
+ ]
+}

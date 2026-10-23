@@ -1,5 +1,5 @@
 import { ALT_BIOME_INFO, BIOME_NAMES } from './altBiomeInfo';
-import { BIOME_PATTERNS, type AltSector } from './biomePatterns';
+import { byStrokePriority, variantLook, type AltSector } from './biomePatterns';
 import PatternMotif from './PatternMotif';
 import { placeCard } from './mapCard';
 import './MapCard.css';
@@ -18,7 +18,8 @@ interface AltBiomeCardProps {
 }
 
 export default function AltBiomeCard({ sector, x, y, width, height }: AltBiomeCardProps) {
-  const alts = sector.alts.filter(a => ALT_BIOME_INFO[a]);
+  // Variants an admin switched off aren't mentioned.
+  const alts = byStrokePriority(sector.alts).filter(a => ALT_BIOME_INFO[a] && !variantLook(a).hidden);
   if (!alts.length) return null;
   const biome = BIOME_NAMES[sector.biome] ?? sector.biome;
 
@@ -29,13 +30,13 @@ export default function AltBiomeCard({ sector, x, y, width, height }: AltBiomeCa
       </div>
       {alts.map(name => {
         const info = ALT_BIOME_INFO[name];
-        const look = BIOME_PATTERNS[name];
+        const look = variantLook(name);
         return (
           <div className="alt-card-row" key={name}>
-            {/* The variant's shape over a wash of its tint; tint alone, or neutral, without a pattern. */}
-            <span className="alt-card-swatch" style={{ '--tint': look?.tint ?? '#6a7080' } as React.CSSProperties}>
-              {look?.pattern
-                ? <PatternMotif pattern={look.pattern} size={24} />
+            {/* The variant's shape over a wash of its map colour; colour alone, or neutral, without a pattern. */}
+            <span className="alt-card-swatch" style={{ '--tint': look.color ?? '#6a7080' } as React.CSSProperties}>
+              {look.def?.pattern
+                ? <PatternMotif pattern={look.def.pattern} size={24} />
                 : info.icon && <img src={info.icon} alt="" width={24} height={24} />}
             </span>
             <span className="alt-card-text">

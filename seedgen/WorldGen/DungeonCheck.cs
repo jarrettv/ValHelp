@@ -26,6 +26,7 @@ public static class DungeonCheck
         var stats = new Dictionary<string, (int n, int exact, Dictionary<string, (int ok, int bad)> keys)>();
         int shown = 0, layoutShown = 0;
         var layoutStats = new Dictionary<string, int>();
+        var campStats = new Dictionary<string, int[]>();
         var sw = System.Diagnostics.Stopwatch.StartNew();
         foreach (var e in doc.RootElement.EnumerateArray())
         {
@@ -33,6 +34,13 @@ public static class DungeonCheck
             if (!sim.Supports(prefab) || (only != null && prefab != only)) continue;
             float x = e.GetProperty("x").GetSingle(), z = e.GetProperty("z").GetSingle();
             float y = wg.GetHeight(x, z);
+            // Camps sampled with their whole zone: the zone's vegetation is in the
+            // objects too, so compare the layout and the marked pieces instead.
+            if (e.TryGetProperty("wholeZone", out _))
+            {
+                CheckCamp(e, prefab, sim.Simulate(prefab, new V3(x, y, z), seed), x, z, campStats);
+                continue;
+            }
             var truth = e.GetProperty("objects").EnumerateObject()
                 .Where(p => !Ignored.Contains(p.Name)).ToDictionary(p => p.Name, p => p.Value.GetInt32());
             var res = sim.Simulate(prefab, new V3(x, y, z), seed);
@@ -90,6 +98,9 @@ public static class DungeonCheck
             }
         }
         Console.WriteLine($"simulated in {sw.ElapsedMilliseconds} ms");
+        foreach (var (prefab, c) in campStats.OrderBy(s => s.Key))
+            Console.WriteLine($"{prefab}: layout {c[1]}/{c[0]}, generator seed {c[2]}/{c[0]}, marked pieces {c[3]}/{c[0]} " +
+                              $"({c[4]} in the game, {c[5]} simulated)");
         foreach (var (prefab, st) in stats.OrderBy(s => s.Key))
         {
             Console.WriteLine($"{prefab}: {st.exact}/{st.n} exact" + (layoutStats.ContainsKey(prefab) ? $", layout {layoutStats[prefab]}/{st.n}" : ""));
@@ -133,7 +144,66 @@ public static class DungeonCheck
             if (shown++ < 3) Console.WriteLine($"  {p.Name} {p.X},{p.Z}: {string.Join(", ", p.Items ?? Array.Empty<string>())}");
         }
         foreach (var (item, c) in ok) Console.WriteLine($"{item}: {c.ok}/{c.n} match the game");
+
+        // Maypoles: the simulated farm layouts' POIs against the oracle's whole-zone spawns.
+        var gameMarks = truth.Values.Where(t => t.WholeZone).SelectMany(t => t.Marks ?? Array.Empty<(string, float, float)>()).ToList();
+        if (truth.Values.Any(t => t.WholeZone))
+        {
+            var simMarks = pois.Where(p => p.Type == "Maypole").ToList();
+            int matched = gameMarks.Where(m => m.Item1 == "piece_maypole").Count(m => simMarks.Any(p => MathF.Abs(p.X - m.Item2) < 0.05f && MathF.Abs(p.Z - m.Item3) < 0.05f));
+            int farms = pois.Count(p => p.Prefab == "WoodFarm1");
+            Console.WriteLine($"Maypole POIs: {simMarks.Count} simulated, {gameMarks.Count(m => m.Item1 == "piece_maypole")} in the game, {matched} at the same spot " +
+                              $"({farms} farms, {pois.Count(p => p.Prefab == "WoodFarm1" && (p.Items ?? Array.Empty<string>()).Contains("Maypole"))} flagged)");
+            var simGran = pois.Where(p => p.Type == "Granary").ToList();
+            var gameGran = gameMarks.Where(m => m.Item1 == "northvillage_granary").ToList();
+            int gmatched = gameGran.Count(m => simGran.Any(p => MathF.Abs(p.X - m.Item2) < 0.05f && MathF.Abs(p.Z - m.Item3) < 0.05f));
+            Console.WriteLine($"Granary POIs: {simGran.Count} simulated, {gameGran.Count} in the game, {gmatched} at the same spot " +
+                              $"({pois.Count(p => p.Prefab == "NorthVillage")} villages)");
+        }
         return 0;
+    }
+
+    /// <summary>
+    /// One camp against the oracle's whole-zone spawn. Counts per prefab:
+    /// [n, layout exact, generator seed equal, marks equal, marks in game, marks simulated].
+    /// </summary>
+    static void CheckCamp(JsonElement e, string prefab, DungeonResult res, float x, float z, Dictionary<string, int[]> stats)
+    {
+        var c = stats.TryGetValue(prefab, out var prev) ? prev : stats[prefab] = new int[6];
+        c[0]++;
+        if (e.TryGetProperty("error", out var err)) { Console.WriteLine($"  {prefab}@{x},{z}: oracle {err}"); return; }
+        var game = e.TryGetProperty("rooms", out var gr)
+            ? gr.EnumerateArray().Select(r => (Name: r[0].GetString()!, Pos: new V3(r[1].GetSingle(), r[2].GetSingle(), r[3].GetSingle()))).ToList()
+            : new();
+        int first = -1;
+        for (int i = 0; i < Math.Max(game.Count, res.Rooms.Count); i++)
+            if (i >= game.Count || i >= res.Rooms.Count || game[i].Name != res.Rooms[i]
+                || V3.Distance(game[i].Pos, res.RoomPositions[i]) > 0.01f) { first = i; break; }
+        if (first < 0) c[1]++;
+        int gseed = e.TryGetProperty("dungeon", out var d) ? d.GetProperty("seed").GetInt32() : 0;
+        if (gseed == res.GeneratorSeed) c[2]++;
+
+        var gm = e.TryGetProperty("marks", out var mk)
+            ? mk.EnumerateArray().Select(m => (m[0].GetString()!, new V3(m[1].GetSingle(), m[2].GetSingle(), m[3].GetSingle()))).ToList()
+            : new();
+        // Marked rooms (granaries) come from the layout itself.
+        gm.AddRange(game.Where(r => DungeonSim.MarkedPrefabs.Contains(r.Name)));
+        // The game snaps pieces to the ground after placing them, so compare x/z.
+        bool marksOk = gm.Count == res.Marks.Count && gm.All(g => res.Marks.Any(s => s.Prefab == g.Item1
+            && MathF.Abs(s.Pos.x - g.Item2.x) < 0.05f && MathF.Abs(s.Pos.z - g.Item2.z) < 0.05f));
+        if (marksOk) c[3]++;
+        c[4] += gm.Count;
+        c[5] += res.Marks.Count;
+
+        if (first >= 0 || !marksOk)
+        {
+            var gp = d.ValueKind == JsonValueKind.Object ? d.GetProperty("pos").ToString() : "?";
+            Console.WriteLine($"  {prefab}@{x},{z}: rooms game {game.Count} sim {res.Rooms.Count}, first diff #{first}; " +
+                $"seed game {gseed} sim {res.GeneratorSeed}; pos game {gp} sim {res.GeneratorPosition}; marks game {gm.Count} sim {res.Marks.Count}");
+            if (first >= 0)
+                for (int i = Math.Max(0, first - 1); i < Math.Min(first + 2, Math.Max(game.Count, res.Rooms.Count)); i++)
+                    Console.WriteLine($"      #{i} game {(i < game.Count ? game[i].ToString() : "-")}  sim {(i < res.Rooms.Count ? (res.Rooms[i], res.RoomPositions[i]).ToString() : "-")}");
+        }
     }
 
     static int SeedGenSeed(string s) => SeedGen.ValheimSeedHash.GetStableHashCode(s);

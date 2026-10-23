@@ -105,12 +105,19 @@ export interface PoiSetting {
   lod?: number | null;       // 0-3, see LOD_BANDS
 }
 
+/// Override for one biome variant (biomePatterns.ts has the defaults).
+export interface AltBiomeSetting {
+  visible?: boolean | null;  // false hides it on the map and in the hover card
+  color?: string | null;     // stroke colour, #rrggbb
+}
+
 export interface PoiConfig {
   prefabs: Record<string, PoiSetting>;   // per-prefab overrides, keyed by prefab name
   icons: Record<string, number>;   // uploaded icon name -> version (updatedAt ms)
+  altBiomes: Record<string, AltBiomeSetting>;   // per-variant overrides, keyed by AltBiome.m_name
 }
 
-let poiConfig: PoiConfig = { prefabs: {}, icons: {} };
+let poiConfig: PoiConfig = { prefabs: {}, icons: {}, altBiomes: {} };
 let configVersion = 0;
 let configLoad: Promise<void> | null = null;
 const configListeners = new Set<() => void>();
@@ -136,7 +143,7 @@ export function loadPoiConfig(force = false): Promise<void> {
       .then(r => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
       .then((c: PoiConfig) => {
         configError = null;
-        setPoiConfig({ prefabs: c.prefabs ?? {}, icons: c.icons ?? {} });
+        setPoiConfig({ prefabs: c.prefabs ?? {}, icons: c.icons ?? {}, altBiomes: c.altBiomes ?? {} });
       })
       .catch(err => {
         console.warn('[poiIcons] config fetch failed; using code defaults', err);
@@ -218,6 +225,8 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
         default:             return null;
       }
     case 'Village':          return { icon: 'farm',           color: '#ffffff', lod: 2 };
+    // A farm's maypole (seedgen simulates the farm's layout; ~10% per yard).
+    case 'Maypole':          return { icon: 'maypole',        color: '#5a9a2e', lod: 2 };
     case 'AbandonedCabin':   return { icon: 'logcabin',       color: WOOD_BROWN, lod: 3 };
     case 'StoneHenge':       return { icon: 'stonehenge',     color: HENGE_RED, lod: 1 };
     case 'BoarRunestone':    return { icon: 'boar7',          color: '#c8a070', lod: 2 };
@@ -311,6 +320,8 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
       return poi.prefab === 'DN_hut01'
         ? { icon: 'northhut',     color: '#8a6a45', lod: 2 }
         : { icon: 'northvillage', color: '#8a6a45', lod: 2 };
+    // A Deep North village's granary room (seedgen simulates the village's layout).
+    case 'Granary':          return { icon: 'granary',        color: '#c9ad74', lod: 2 };
     case 'LumberCamp':       return { icon: 'northhut',       color: '#ffffff', lod: 3 };
     case 'BearCave':         return { icon: 'bearcave',       color: '#8a5a3a', lod: 2 };
     case 'FrozenShip':       return { icon: 'frozenship',     color: '#9fd8e8', lod: 3 };

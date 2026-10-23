@@ -731,6 +731,18 @@ function setPatternOverlay(o) {
   _patternRows = o.rows;
 }
 
+/// New colours for the current overlay (an admin changed a variant's look):
+/// replaces just the two LUTs, laid out as in setPatternOverlay.
+function setVariantLuts(lut, strokeLut) {
+  if (!gl || !altTex) return;
+  if (lutTex) gl.deleteTexture(lutTex);
+  if (strokeLutTex) gl.deleteTexture(strokeLutTex);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  lutTex = rawTexture(256, 4, gl.RGBA, lut);
+  strokeLutTex = rawTexture(256, 4, gl.RGBA, strokeLut);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+}
+
 function rawTexture(w, h, format, data) {
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -889,6 +901,7 @@ window.VectorMap = {
   setFog: setFog,
   setFogOpacity: setFogOpacity,
   setPatternOverlay: setPatternOverlay,
+  setVariantLuts: setVariantLuts,
   destroy: destroy,
   get ready() { return _ready; }
 };

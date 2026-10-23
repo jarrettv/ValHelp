@@ -26,7 +26,9 @@ public record ChestItem(string Item, int Count);
 public record LootSample(
     string Prefab, float X, float Z, int Beehives, ChestItem[][] Chests,
     IReadOnlyDictionary<string, int> Objects, IReadOnlyDictionary<string, int> Present,
-    IReadOnlyDictionary<string, int> Creatures, string[] Vegvisirs);
+    IReadOnlyDictionary<string, int> Creatures, string[] Vegvisirs,
+    // Camps the oracle built with their whole zone: where its marked pieces (maypoles) landed.
+    bool WholeZone = false, (string Prefab, float X, float Z)[]? Marks = null);
 
 /// <summary>
 /// Replicates Valheim's ZoneSystem.GenerateLocations to find POI positions from a world seed.
@@ -644,17 +646,20 @@ public static class LocationFinder
             if (ExtraPrefabs.TryGetValue(prefabName, out var extra))
             {
                 ChestItem[][]? extraChests = null;
-                if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out var extraSample)
+                LootSample? extraSample = null;
+                if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out extraSample)
                     && extraSample.Chests.Length > 0)
                     extraChests = extraSample.Chests;
+                var extraMarks = CampMarks(prefabName, new V3(x, y, z), worldSeed, wg, extraSample);
                 results.Add(new PoiLocation(extra.Name, extra.Type, x, z,
-                    Prefab: prefabName, Generated: placed, Biome: biome, Chests: extraChests));
+                    Prefab: prefabName, Items: WithMarkItems(null, extraMarks), Generated: placed, Biome: biome, Chests: extraChests));
+                AddMarkPois(results, extraMarks, placed, wg);
                 continue;
             }
 
             var friendly = FriendlyNames[prefabName];
             var cfg = AllLocations.FirstOrDefault(c => c.PrefabName == prefabName);
-            string type = cfg?.Type ?? (prefabName == "StartTemple" ? "Start" : "Boss Altar");
+            string type = TypeOf(prefabName);
 
             string[]? items = cfg?.StaticItems;
             ChestItem[][]? chests = null;
@@ -671,10 +676,13 @@ public static class LocationFinder
             }
             var dungeonFound = DungeonItems(prefabName, new V3(x, y, z), worldSeed, wg, sample);
             if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
+            var marks = CampMarks(prefabName, new V3(x, y, z), worldSeed, wg, sample);
+            items = WithMarkItems(items, marks);
 
             results.Add(new PoiLocation(friendly, type, x, z,
                 Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
                 Creatures: creatures, Vegvisirs: vegvisirs));
+            AddMarkPois(results, marks, placed, wg);
         }
 
         return results.Count > 0 ? results : null;
@@ -710,9 +718,19 @@ public static class LocationFinder
             var vegvisirs = e.TryGetProperty("vegvisirs", out var vv)
                 ? vv.EnumerateArray().Select(v => v.GetString() ?? "").Where(v => v != "").ToArray()
                 : Array.Empty<string>();
+            // Marked pieces the plugin listed, plus marked rooms from the camp's layout.
+            var marks = (e.TryGetProperty("marks", out var mk)
+                    ? mk.EnumerateArray().Select(m => (m[0].GetString() ?? "", m[1].GetSingle(), m[3].GetSingle()))
+                    : Enumerable.Empty<(string, float, float)>())
+                .Concat(e.TryGetProperty("rooms", out var rm)
+                    ? rm.EnumerateArray().Where(r => DungeonSim.MarkedPrefabs.Contains(r[0].GetString() ?? ""))
+                        .Select(r => (r[0].GetString()!, r[1].GetSingle(), r[3].GetSingle()))
+                    : Enumerable.Empty<(string, float, float)>())
+                .ToArray();
             map[LootKey(prefab, x, z)] = new LootSample(prefab, x, z,
                 e.GetProperty("beehives").GetInt32(), chests,
-                Counts(e, "objects"), Counts(e, "present"), Counts(e, "creatures"), vegvisirs);
+                Counts(e, "objects"), Counts(e, "present"), Counts(e, "creatures"), vegvisirs,
+                e.TryGetProperty("wholeZone", out _), marks);
         }
         return map;
     }
@@ -782,6 +800,80 @@ public static class LocationFinder
         foreach (var (obj, item) in finds)
             if (objects.TryGetValue(obj, out int n) && n > 0) items.Add($"{item} x{n}");
         return items;
+    }
+
+    /// <summary>
+    /// Pieces inside camps that we map as POIs of their own, by prefab (or room
+    /// name): name and type. A farm's maypole is a 10% roll in each of its yard
+    /// rooms (woodfarm_yard); a Deep North village's granary is one of its rooms,
+    /// drawn by weight like the rest (the game lists it as required, but camps
+    /// don't enforce that), holding the village's loot.
+    /// </summary>
+    static readonly Dictionary<string, (string Name, string Type, string Camp)> MarkedPieces = new()
+    {
+        ["piece_maypole"] = ("Maypole", "Maypole", "WoodFarm1"),
+        ["northvillage_granary"] = ("Granary", "Granary", "NorthVillage"),
+    };
+
+    /// <summary>Camps whose layout we simulate for <see cref="MarkedPieces"/> (checked against the oracle).</summary>
+    static readonly HashSet<string> CampPrefabs = new() { "WoodFarm1", "NorthVillage" };
+
+    /// <summary>
+    /// Where a camp's marked pieces stand: from the oracle when it built the
+    /// camp's zone (oracle jobs), otherwise from <see cref="DungeonSim"/>, which
+    /// lays the camp out on the zone's terrain as the game does.
+    /// </summary>
+    static List<(string Prefab, float X, float Z)> CampMarks(string prefab, V3 pos, int worldSeed, WorldGenerator? wg, LootSample? sample)
+    {
+        var marks = new List<(string, float, float)>();
+        if (!CampPrefabs.Contains(prefab)) return marks;
+        if (sample is { WholeZone: true })
+        {
+            marks.AddRange((sample.Marks ?? Array.Empty<(string, float, float)>()).Where(m => MarkedPieces.ContainsKey(m.Item1)));
+            return marks;
+        }
+        if (wg == null) return marks;
+        try
+        {
+            var res = new DungeonSim(DungeonCatalog.Instance, wg).Simulate(prefab, pos, worldSeed);
+            marks.AddRange(res.Marks.Where(m => MarkedPieces.ContainsKey(m.Prefab)).Select(m => (m.Prefab, m.Pos.x, m.Pos.z)));
+        }
+        catch (Exception) { /* a failed simulation just leaves the camp without its pieces */ }
+        return marks;
+    }
+
+    static string TypeOf(string prefab) =>
+        AllLocations.FirstOrDefault(c => c.PrefabName == prefab)?.Type ?? (prefab == "StartTemple" ? "Start" : "Boss Altar");
+
+    /// <summary>
+    /// Every prefab a POI can carry, with the type and name ReadFromWorldDb gives
+    /// it, and for marked pieces the camps they stand in. For the POI admin
+    /// catalogue (scripts/export_poi_catalog.py).
+    /// </summary>
+    public static IEnumerable<(string Prefab, string Type, string Name, string[] Inside)> KnownPrefabs()
+    {
+        foreach (var (prefab, name) in FriendlyNames) yield return (prefab, TypeOf(prefab), name, Array.Empty<string>());
+        foreach (var (prefab, (type, name)) in ExtraPrefabs) yield return (prefab, type, name, Array.Empty<string>());
+        foreach (var (prefab, (name, type, camp)) in MarkedPieces) yield return (prefab, type, name, new[] { camp });
+    }
+
+    /// <summary>The camp's items plus one per kind of marked piece in it ("Maypole").</summary>
+    static string[]? WithMarkItems(string[]? items, List<(string Prefab, float X, float Z)> marks)
+    {
+        foreach (var name in marks.Select(m => MarkedPieces[m.Prefab].Name).Distinct())
+            items = (items ?? Array.Empty<string>()).Append(name).ToArray();
+        return items;
+    }
+
+    /// <summary>Each marked piece as a POI of its own, where it stands inside the camp.</summary>
+    static void AddMarkPois(List<PoiLocation> results, List<(string Prefab, float X, float Z)> marks, bool placed, WorldGenerator? wg)
+    {
+        foreach (var m in marks)
+        {
+            var (name, type, _) = MarkedPieces[m.Prefab];
+            results.Add(new PoiLocation(name, type, m.X, m.Z,
+                Prefab: m.Prefab, Generated: placed, Biome: wg?.GetBiome(m.X, m.Z).ToString()));
+        }
     }
 
     // All location configs combined: prioritized first, then non-prioritized

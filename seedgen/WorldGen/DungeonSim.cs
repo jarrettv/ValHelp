@@ -20,6 +20,8 @@ public readonly record struct V3(float x, float y, float z)
         float dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
         return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
     }
+
+    public static readonly V3 Forward = new(0f, 0f, 1f);
 }
 
 /// <summary>UnityEngine.Quaternion, the managed operators verbatim.</summary>
@@ -60,6 +62,8 @@ public readonly record struct Quat(float x, float y, float z, float w)
 public sealed class DungeonResult
 {
     public Dictionary<string, int> Objects { get; } = new();
+    /// <summary>Where each <see cref="DungeonSim.MarkedPrefabs"/> object was spawned.</summary>
+    public List<(string Prefab, V3 Pos)> Marks { get; } = new();
     public List<string> Rooms { get; } = new();
     public List<V3> RoomPositions { get; } = new();
     public V3 GeneratorPosition { get; set; }
@@ -79,6 +83,10 @@ public sealed class DungeonResult
 /// Like the oracle plugin, the location is taken at identity rotation: with
 /// m_useCustomInteriorTransform the location's rotation cancels out of the
 /// dungeon's transform, and for the rest the game's rotation is unseeded.
+///
+/// Camps (CampRadial: farms) scatter their rooms over the ground instead, so
+/// they need the <see cref="WorldGenerator"/> for the zone's terrain; their
+/// layout doesn't depend on the location's rotation at all.
 /// </summary>
 public sealed class DungeonSim
 {
@@ -92,7 +100,13 @@ public sealed class DungeonSim
     }
 
     public bool Supports(string prefab) =>
-        _cat.Locations.TryGetValue(prefab, out var l) && l.Algorithm == 0;
+        _cat.Locations.TryGetValue(prefab, out var l) && (l.Algorithm == 0 || (l.Algorithm == 2 && _wg != null));
+
+    /// <summary>
+    /// What <see cref="DungeonResult.Marks"/> records (mapped as POIs of their own):
+    /// networked pieces by prefab, and rooms by name, at the room's position.
+    /// </summary>
+    public static readonly HashSet<string> MarkedPrefabs = new() { "piece_maypole", "northvillage_granary" };
 
     // ── ZoneSystem helpers ───────────────────────────────────────────────
 
@@ -113,6 +127,13 @@ public sealed class DungeonSim
         var rot = Quat.Identity;
         var zone = GetZone(pos);
         int seed = worldSeed + zone.x * 4271 + zone.y * 9187;
+        // PlaceLocations drops the location onto the zone's terrain collider first.
+        ZoneTerrain? terrain = null;
+        if (loc.Algorithm == 2)
+        {
+            terrain = new ZoneTerrain(_wg!, zone);
+            if (terrain.Raycast(pos.x, pos.z, pos.y, out float gy, out _)) pos = new V3(pos.x, gy, pos.z);
+        }
 
         // SpawnLocation: with a custom interior transform the generator is moved
         // to the zone's own interior slot, its rotation undoing the location's.
@@ -146,11 +167,11 @@ public sealed class DungeonSim
         {
             if (!active[nv.Node]) continue;
             result.Add(nv.Prefab);
-            if (nv.Node == loc.GeneratorNode && loc.Algorithm == 0)
+            if (nv.Node == loc.GeneratorNode && loc.Algorithm is 0 or 2)
             {
                 var dgPos = pos + rot * world[nv.Node].pos;
                 var dgRot = rot * world[nv.Node].rot;
-                var gen = new Generator(this, loc, dgPos, dgRot, flag ? vector2 : loc.OriginalPosition, worldSeed, result);
+                var gen = new Generator(this, loc, dgPos, dgRot, flag ? vector2 : loc.OriginalPosition, worldSeed, result, terrain);
                 gen.Generate();
             }
         }
@@ -286,13 +307,15 @@ public sealed class DungeonSim
         readonly List<PlacedRoom> _placed = new();
         readonly List<OpenConnection> _open = new();
         readonly List<OpenConnection> _doors = new();
+        readonly ZoneTerrain? _terrain;
         V3 _zoneCenter;
         int _seed;
 
-        public Generator(DungeonSim sim, CatalogLocation loc, V3 pos, Quat rot, V3 originalPosition, int worldSeed, DungeonResult result)
+        public Generator(DungeonSim sim, CatalogLocation loc, V3 pos, Quat rot, V3 originalPosition, int worldSeed, DungeonResult result,
+            ZoneTerrain? terrain = null)
         {
             _sim = sim; _loc = loc; _pos = pos; _rot = rot; _originalPosition = originalPosition;
-            _worldSeed = worldSeed; _result = result;
+            _worldSeed = worldSeed; _result = result; _terrain = terrain;
             _available = sim._cat.Rooms.Where(r => (r.ListTheme & loc.Themes) != 0 && r.ListEnabled).ToList();
         }
 
@@ -308,13 +331,128 @@ public sealed class DungeonSim
             _zoneCenter = GetZonePos(GetZone(_pos));
             _zoneCenter = new V3(_zoneCenter.x, _pos.y - _originalPosition.y, _zoneCenter.z);
             UnityRandom.InitState(_seed);
-            PlaceStartRoom();
-            PlaceRooms();
-            PlaceEndCaps();
-            PlaceDoors();
+            if (_loc.Algorithm == 2)
+                GenerateCampRadial();
+            else
+            {
+                PlaceStartRoom();
+                PlaceRooms();
+                PlaceEndCaps();
+                PlaceDoors();
+            }
             foreach (var r in _placed) { _result.Rooms.Add(r.Data.Name); _result.RoomPositions.Add(r.Pos); }
             _result.GeneratorPosition = _pos;
             _result.GeneratorSeed = _seed;
+        }
+
+        // ── CampRadial ──────────────────────────────────────────────────────
+
+        /// <summary>
+        /// GenerateCampRadial: darts thrown at random spots within a random radius;
+        /// a room sticks where the ground is gentle and dry and it doesn't overlap
+        /// anything, until enough have. Then the perimeter ring the same way.
+        /// </summary>
+        void GenerateCampRadial()
+        {
+            float num = UnityRandom.Range(_loc.CampRadiusMin, _loc.CampRadiusMax);
+            float num2 = (float)Math.Cos(MathF.PI / 180f * _loc.MaxTilt);
+            int num3 = UnityRandom.Range(_loc.MinRooms, _loc.MaxRooms);
+            int num4 = num3 * 20;
+            int num5 = 0;
+            for (int i = 0; i < num4; i++)
+            {
+                // Range(0, 360) is evaluated before Range(0f, r).
+                var q = Quat.EulerY(UnityRandom.Range(0, 360));
+                float dist = UnityRandom.Range(0f, num - _loc.PerimeterBuffer);
+                var p = _pos + (q * V3.Forward) * dist;
+                var room = GetRandomWeightedRoom(perimeter: false);
+                if (room == null) continue;
+                if (!GroundOk(ref p, num2)) continue;
+                var rot = GetCampRoomRotation(room, p);
+                if (!TestCollision(room, p, rot))
+                {
+                    PlaceRoom(room, p, rot, fromOrder: -1, skipPos: new V3(float.NaN, 0f, 0f));
+                    num5++;
+                    if (num5 >= num3) break;
+                }
+            }
+            if (_loc.PerimeterSections > 0) PlaceWall(num, _loc.PerimeterSections);
+        }
+
+        void PlaceWall(float radius, int sections)
+        {
+            float num = (float)Math.Cos(MathF.PI / 180f * _loc.MaxTilt);
+            int num2 = 0;
+            int num3 = sections * 20;
+            for (int i = 0; i < num3; i++)
+            {
+                var room = GetRandomWeightedRoom(perimeter: true);
+                if (room == null) continue;
+                var p = _pos + (Quat.EulerY(UnityRandom.Range(0, 360)) * V3.Forward) * radius;
+                var rot = GetCampRoomRotation(room, p);
+                if (!GroundOk(ref p, num)) continue;
+                if (!TestCollision(room, p, rot))
+                {
+                    PlaceRoom(room, p, rot, fromOrder: -1, skipPos: new V3(float.NaN, 0f, 0f));
+                    num2++;
+                    if (num2 >= sections) break;
+                }
+            }
+        }
+
+        /// <summary>GetGroundData then the tilt/altitude test: false = skip this dart.</summary>
+        bool GroundOk(ref V3 p, float minNormalY)
+        {
+            var normal = new V3(0f, 1f, 0f);
+            if (_terrain != null && _terrain.Raycast(p.x, p.z, p.y, out float y, out var n))
+            {
+                p = new V3(p.x, y, p.z);
+                normal = n;
+            }
+            return !(normal.y < minNormalY || p.y - 30f < _loc.MinAltitude);
+        }
+
+        Quat GetCampRoomRotation(CatalogRoom room, V3 pos)
+        {
+            if (room.FaceCenter)
+            {
+                var v = _pos - pos;
+                v = new V3(v.x, 0f, v.z);
+                if (v == V3.Zero) v = V3.Forward;
+                // Vector3.Normalize
+                float mag = (float)Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+                v = mag > 1E-05f ? new V3(v.x / mag, v.y / mag, v.z / mag) : V3.Zero;
+                // Utils.YawFromDirection, then Mathf.Round (banker's) to 22.5°.
+                float yaw = 57.29578f * (float)Math.Atan2(v.x, v.z);
+                while (yaw >= 360f) yaw -= 360f;
+                while (yaw < 0f) yaw += 360f;
+                float y = (float)Math.Round(yaw / 22.5f) * 22.5f;
+                return Quat.EulerY(y);
+            }
+            return Quat.EulerY(UnityRandom.Range(0, 16) * 22.5f);
+        }
+
+        CatalogRoom? GetRandomWeightedRoom(bool perimeter)
+        {
+            var temp = new List<CatalogRoom>();
+            float total = 0f;
+            foreach (var r in _available)
+            {
+                if (!r.Entrance && !r.EndCap && !r.Divider && r.Perimeter == perimeter)
+                {
+                    total += r.Weight;
+                    temp.Add(r);
+                }
+            }
+            if (temp.Count == 0) return null;
+            float pick = UnityRandom.Range(0f, total);
+            float acc = 0f;
+            foreach (var r in temp)
+            {
+                acc += r.Weight;
+                if (pick <= acc) return r;
+            }
+            return temp[0];
         }
 
         // Asset-side connections: GetComponentsInChildren on the untouched prefab.
@@ -452,7 +590,13 @@ public sealed class DungeonSim
             _sim.Randomize(t, active, i => pos + rot * (rootRotInv * (AssetWorld(room, i) - rootPos)),
                 _loc.Themes, locationBiome: false, pos);
             var enabledViews = EnabledNetViews(t).ToList();
-            foreach (var nv in enabledViews) if (active[nv.Node]) _result.Add(nv.Prefab);
+            foreach (var nv in enabledViews)
+            {
+                if (!active[nv.Node]) continue;
+                _result.Add(nv.Prefab);
+                if (MarkedPrefabs.Contains(nv.Prefab))
+                    _result.Marks.Add((nv.Prefab, pos + rot * (rootRotInv * (AssetWorld(room, nv.Node) - rootPos))));
+            }
             UnityRandom.SetState(saved.Item1, saved.Item2, saved.Item3, saved.Item4);
 
             // The instance is cloned from the prefab in its rolled state, with every
@@ -470,6 +614,7 @@ public sealed class DungeonSim
                 PlaceOrder = fromOrder + 1,
             };
             _placed.Add(placed);
+            if (MarkedPrefabs.Contains(room.Name)) _result.Marks.Add((room.Name, placed.Pos));
 
             // AddOpenConnections: the instance's active connections, minus entrances
             // and the one we came in through.

@@ -45,6 +45,7 @@ public sealed class DungeonCatalog
             MinPlaceOrder = r.GetProperty("minPlaceOrder").GetInt32(),
             Weight = r.GetProperty("weight").GetSingle(),
             Perimeter = r.GetProperty("perimeter").GetBoolean(),
+            FaceCenter = r.GetProperty("faceCenter").GetBoolean(),
             Tree = ReadTree(r),
         }).ToList();
         var locations = new Dictionary<string, CatalogLocation>();
@@ -71,6 +72,12 @@ public sealed class DungeonCatalog
                 AddBaseSeedToRandomSpawn = g.GetProperty("addBaseSeedToRandomSpawn").GetBoolean(),
                 OriginalPosition = ReadV3(g.GetProperty("originalPosition")),
                 DoorChance = g.GetProperty("doorChance").GetSingle(),
+                CampRadiusMin = g.GetProperty("campRadiusMin").GetSingle(),
+                CampRadiusMax = g.GetProperty("campRadiusMax").GetSingle(),
+                MaxTilt = g.GetProperty("maxTilt").GetSingle(),
+                MinAltitude = g.GetProperty("minAltitude").GetSingle(),
+                PerimeterSections = g.GetProperty("perimeterSections").GetInt32(),
+                PerimeterBuffer = g.GetProperty("perimeterBuffer").GetSingle(),
                 DoorTypes = g.GetProperty("doorTypes").EnumerateArray()
                     .Select(d => new DoorType(d[0].GetString()!, d[1].GetString()!, d[2].GetSingle())).ToArray(),
             };
@@ -121,6 +128,7 @@ public sealed class CatalogRoom
     public int MinPlaceOrder { get; init; }
     public float Weight { get; init; }
     public bool Perimeter { get; init; }
+    public bool FaceCenter { get; init; }      // camp rooms: turned to face the camp's centre
     public required PrefabTree Tree { get; init; }
     public override string ToString() => Name;
 }
@@ -145,6 +153,13 @@ public sealed class CatalogLocation
     public V3 OriginalPosition { get; init; }
     public float DoorChance { get; init; }
     public required DoorType[] DoorTypes { get; init; }
+    // CampRadial: rooms scattered within a random radius, then a ring of perimeter rooms.
+    public float CampRadiusMin { get; init; }
+    public float CampRadiusMax { get; init; }
+    public float MaxTilt { get; init; }          // degrees of ground slope a room may sit on
+    public float MinAltitude { get; init; }      // above the water line (30)
+    public int PerimeterSections { get; init; }
+    public float PerimeterBuffer { get; init; }
 }
 
 public readonly record struct DoorType(string Prefab, string ConnectionType, float Chance);
