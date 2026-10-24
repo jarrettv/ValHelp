@@ -16,7 +16,11 @@ public static class PoiCache
     // 2: infested mine / frost cave contents from DungeonSim.
     // 3: farm maypoles (DungeonSim lays farms out on the zone's terrain).
     // 4: Deep North village granaries.
-    public const int Version = 4;
+    // 5: vegvisirs inside infested mines and frost caves.
+    // 6: every location's contents (chests, enemies, finds) from DungeonSim.
+    // 7: contents: crypts left out (rotation), lava rolls and unreliable objects dropped.
+    // 8: wild beehives in contents.
+    public const int Version = 8;
 
     static readonly ConcurrentDictionary<string, object> s_locks = new();
 

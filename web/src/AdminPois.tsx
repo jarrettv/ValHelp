@@ -13,6 +13,8 @@ import { toast } from './components/toast';
 import { SPOILER_BIOMES } from './guides/vh/spoiler';
 import { biomeIconUrl } from './guides/vh/data';
 import AdminPoiIconReport from './AdminPoiIconReport';
+import { CardContentsEditor, hasCardContents } from './AdminPoiContents';
+import { usePoiContents } from './components/poiContents';
 import { BIOME_PATTERNS, variantLook, type AltSector } from './components/biomePatterns';
 import { ALT_BIOME_INFO } from './components/altBiomeInfo';
 import './AdminPois.css';
@@ -724,7 +726,7 @@ const fetchPois = async (seed: string): Promise<PoiMarker[]> => {
   return res.json();
 };
 
-const COLUMNS = 9;
+const COLUMNS = 10;
 
 const AdminPois: React.FC = () => {
   const { status } = useAuth();
@@ -736,6 +738,8 @@ const AdminPois: React.FC = () => {
   const [iconFilter, setIconFilter] = useState<IconStatus | 'all'>('all');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<Sort>(DEFAULT_SORT);
+  const contentsCatalog = usePoiContents();
+  const [cardOpen, setCardOpen] = useState<string | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [preview, setPreview] = useState<PrefabRow | null>(null);
 
@@ -888,6 +892,7 @@ const AdminPois: React.FC = () => {
                   <th>Dot</th>
                   <SortHeader label="LOD" k="lod" sort={sort} onSort={onSort} />
                   <SortHeader label="Count" k="count" sort={sort} onSort={onSort} className="apoi-num" />
+                  <th title="What the location's hover card shows">Card</th>
                 </tr>
               </thead>
               <tbody>
@@ -927,10 +932,26 @@ const AdminPois: React.FC = () => {
                       <td><DotColor row={r} run={run} /></td>
                       <td><LodPicker row={r} run={run} /></td>
                       <td className="apoi-num">{r.total.toLocaleString()}</td>
+                      <td>
+                        {hasCardContents(r.prefab, contentsCatalog) ? (
+                          <>
+                            <button className="apoi-link" aria-expanded={cardOpen === r.prefab}
+                                    onClick={() => setCardOpen(c => (c === r.prefab ? null : r.prefab))}>
+                              {cardOpen === r.prefab ? 'Close' : 'Contents'}
+                            </button>
+                            {getPoiConfig().contents[r.prefab] && <span className="apoi-tag" title="Has card choices">edited</span>}
+                          </>
+                        ) : <span className="apoi-muted">—</span>}
+                      </td>
                     </tr>
                     {editing === r.prefab && (
                       <tr className="apoi-edit-row">
                         <td colSpan={COLUMNS}><PrefabEditor row={r} run={run} /></td>
+                      </tr>
+                    )}
+                    {cardOpen === r.prefab && (
+                      <tr className="apoi-edit-row">
+                        <td colSpan={COLUMNS}><CardContentsEditor prefab={r.prefab} run={run} /></td>
                       </tr>
                     )}
                   </React.Fragment>

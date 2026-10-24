@@ -13,10 +13,11 @@ game's own bundles:
              draws from), with the Room settings and, per room, the objects the
              generator touches: RoomConnections, RandomSpawns, RandomObjects and
              ZNetViews, each on a node of the room's hierarchy (depth-first,
-             the order GetComponentsInChildren returns them).
-  locations  every location prefab with a DungeonGenerator: its settings, the
-             interior/generator transforms, and the location's own
-             RandomSpawns/ZNetViews.
+             the order GetComponentsInChildren returns them), plus its
+             Vegvisirs (static scenery, so not ZNetViews).
+  locations  every location prefab: its own RandomSpawns/RandomObjects/ZNetViews/
+             Vegvisirs (SpawnLocation rolls them), and for those with a
+             DungeonGenerator its settings and the interior/generator transforms.
 
 Floats are written exactly as the game stores them (float32), because the
 generator seeds each room's rolls from its integer-truncated position.
@@ -29,6 +30,7 @@ Format (positional arrays to keep it small; DungeonCatalog.cs reads it):
   randomSpawn  [node, chance, requireTheme, requireBiome, notInLava, minElevation, maxElevation, offObjectNode]
   randomObject [node, requireTheme, requireBiome, notInLava, minElevation, maxElevation, [[objectNode, weight], ...]]
   netView      [node, prefabName]   (Utils.GetPrefabName of the node's name)
+  vegvisir     [node, [locationName, ...]]   (Vegvisir.m_locations: the boss it reveals)
 
 Loading the bundles takes a couple of minutes.
 """
@@ -92,7 +94,7 @@ class Exporter:
     def hierarchy(self, root_go):
         """Depth-first pre-order nodes under (and including) root_go, with the
         components seedgen cares about. Node 0 is the root."""
-        nodes, conns, rspawns, robjects, nviews, keyed = [], [], [], [], [], {}
+        nodes, conns, rspawns, robjects, nviews, vegs, keyed = [], [], [], [], [], [], {}
         go_index = {}
 
         def v3(d):
@@ -121,7 +123,8 @@ class Exporter:
                 if c.type.name != "MonoBehaviour":
                     continue
                 sc = self.script_of(c)
-                if sc in ("RoomConnection", "RandomSpawn", "RandomObject", "ZNetView", "Room", "Location", "DungeonGenerator"):
+                if sc in ("RoomConnection", "RandomSpawn", "RandomObject", "ZNetView", "Vegvisir", "Room", "Location",
+                          "DungeonGenerator"):
                     t = c.read_typetree()
                     if sc == "RoomConnection":
                         conns.append({"node": idx, "type": t["m_type"], "entrance": bool(t["m_entrance"]),
@@ -142,6 +145,8 @@ class Exporter:
                                          "minElevation": t["m_minElevation"], "maxElevation": t["m_maxElevation"]})
                     elif sc == "ZNetView":
                         nviews.append({"node": idx})
+                    elif sc == "Vegvisir":
+                        vegs.append({"node": idx, "locations": [l["m_locationName"] for l in t["m_locations"]]})
                     else:
                         # First one wins: the prefab's own Room/Location sits on the root,
                         # and some rooms nest another room's prefab inside them.
@@ -166,7 +171,7 @@ class Exporter:
         # active-in-hierarchy rules walk up the chain). Pre-order is preserved,
         # so component order still matches GetComponentsInChildren.
         keep = {0}
-        refs = [c["node"] for c in conns] + [r["node"] for r in rspawns] + [r["offObject"] for r in rspawns]             + [r["node"] for r in robjects] + [o["node"] for r in robjects for o in r["objects"]]             + [v["node"] for v in nviews] + [i for i, _ in keyed.values()]
+        refs = [c["node"] for c in conns] + [r["node"] for r in rspawns] + [r["offObject"] for r in rspawns]             + [r["node"] for r in robjects] + [o["node"] for r in robjects for o in r["objects"]]             + [v["node"] for v in nviews] + [v["node"] for v in vegs] + [i for i, _ in keyed.values()]
         for n in refs:
             while n >= 0 and n not in keep:
                 keep.add(n)
@@ -187,9 +192,10 @@ class Exporter:
             r["node"] = remap[r["node"]]
             for o in r["objects"]: o["node"] = remap.get(o["node"], -1)
         for v in nviews: v["node"] = remap[v["node"]]
+        for v in vegs: v["node"] = remap[v["node"]]
         keyed = {k: (remap[i], t) for k, (i, t) in keyed.items()}
         go_index = {pid: remap[i] for pid, i in go_index.items() if i in remap}
-        return pruned, conns, rspawns, robjects, nviews, keyed, go_index
+        return pruned, conns, rspawns, robjects, nviews, vegs, keyed, go_index
 
 
 def prefab_name(name: str) -> str:
@@ -198,7 +204,7 @@ def prefab_name(name: str) -> str:
     return name[:min(cut)] if cut else name
 
 
-def compact(nodes, conns, rsp, rob, nv) -> dict:
+def compact(nodes, conns, rsp, rob, nv, vg) -> dict:
     def node(n):
         a = [n["parent"], 1 if n["active"] else 0] + n.get("pos", [0.0, 0.0, 0.0]) + n.get("rot", [0.0, 0.0, 0.0, 1.0])
         return a + n["scale"] if "scale" in n else a
@@ -211,6 +217,7 @@ def compact(nodes, conns, rsp, rob, nv) -> dict:
         "randomObjects": [[r["node"], r["requireTheme"], r["requireBiome"], int(r["notInLava"]), r["minElevation"],
                            r["maxElevation"], [[o["node"], o["weight"]] for o in r["objects"]]] for r in rob],
         "netViews": [[v["node"], prefab_name(nodes[v["node"]]["name"])] for v in nv],
+        "vegvisirs": [[v["node"], v["locations"]] for v in vg],
     }
 
 
@@ -265,7 +272,7 @@ def main():
         if go is None:
             print(f"  missing room prefab {name}", file=sys.stderr)
             continue
-        nodes, conns, rsp, rob, nv, keyed, _ = ex.hierarchy(go)
+        nodes, conns, rsp, rob, nv, vg, keyed, _ = ex.hierarchy(go)
         _, r = keyed["Room"]
         rooms.append({
             "name": name, "listEnabled": enabled, "listTheme": theme,
@@ -274,19 +281,22 @@ def main():
             "endCap": bool(r["m_endCap"]), "divider": bool(r["m_divider"]), "endCapPrio": r["m_endCapPrio"],
             "minPlaceOrder": r["m_minPlaceOrder"], "weight": r["m_weight"], "faceCenter": bool(r["m_faceCenter"]),
             "perimeter": bool(r["m_perimeter"]),
-            **compact(nodes, conns, rsp, rob, nv),
+            **compact(nodes, conns, rsp, rob, nv, vg),
         })
 
-    # Location prefabs with a DungeonGenerator.
+    # Every location prefab: SpawnLocation's own rolls decide what a plain
+    # location holds too (POI contents); dungeons add their generator.
     locations = {}
     for name, go in sorted(roots.items()):
         comps = {ex.script_of(c) for c in ex.components(go) if c.type.name == "MonoBehaviour"}
         if "Location" not in comps:
             continue
-        nodes, conns, rsp, rob, nv, keyed, go_index = ex.hierarchy(go)
-        if "DungeonGenerator" not in keyed:
-            continue
+        nodes, conns, rsp, rob, nv, vg, keyed, go_index = ex.hierarchy(go)
         li, lt = keyed["Location"]
+        if "DungeonGenerator" not in keyed:
+            locations[name] = {**compact(nodes, conns, rsp, rob, nv, vg),
+                               "useCustomInteriorTransform": False, "interiorNode": -1, "generatorNode": -1}
+            continue
         gi, g = keyed["DungeonGenerator"]
         interior = lt["m_interiorTransform"]["m_PathID"]
         # m_interiorTransform points at a Transform; map it to its GameObject node.
@@ -296,7 +306,7 @@ def main():
             if tr is not None:
                 interior_node = go_index.get(tr.read().m_GameObject.path_id, -1)
         locations[name] = {
-            **compact(nodes, conns, rsp, rob, nv),
+            **compact(nodes, conns, rsp, rob, nv, vg),
             "useCustomInteriorTransform": bool(lt["m_useCustomInteriorTransform"]),
             "interiorNode": interior_node, "generatorNode": gi,
             "generator": {
@@ -315,7 +325,9 @@ def main():
                               for d in g["m_doorTypes"]],
             },
         }
-    print(f"{len(rooms)} rooms, {len(locations)} dungeon locations: {', '.join(locations)}", file=sys.stderr)
+    dungeons = [n for n, l in locations.items() if "generator" in l]
+    print(f"{len(rooms)} rooms, {len(locations)} locations, {len(dungeons)} with a generator: {', '.join(dungeons)}",
+          file=sys.stderr)
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     # mtime=0 keeps the gzip byte-identical across re-exports of the same data.

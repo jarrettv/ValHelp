@@ -12,7 +12,8 @@ public record PoiLocation(
     string Name, string Type, float X, float Z,
     bool Checked = false, string? Prefab = null, string[]? Items = null,
     bool Generated = false, string? Biome = null, ChestItem[][]? Chests = null,
-    IReadOnlyDictionary<string, int>? Creatures = null, string[]? Vegvisirs = null);
+    IReadOnlyDictionary<string, int>? Creatures = null, string[]? Vegvisirs = null,
+    IReadOnlyDictionary<string, int>? Contents = null);
 
 /// <summary>One stack in one of a location's chests, as the game rolled it.</summary>
 public record ChestItem(string Item, int Count);
@@ -643,17 +644,26 @@ public static class LocationFinder
                 continue;
             }
 
+            LootSample? sample = null;
+            loot?.TryGetValue(LootKey(prefabName, x, z), out sample);
+            // One run of the game's spawn rolls for this instance: its contents for
+            // the POI card, a dungeon's finds, a camp's mapped pieces.
+            var sim = RotationDependent(prefabName) ? null : Simulate(prefabName, new V3(x, y, z), worldSeed, wg);
+            var contents = ContentsOf(prefabName, sim);
+            var marks = CampMarks(prefabName, sim, sample);
+            // Chests as the oracle rolled them. A camp's only count when it built
+            // the camp on its terrain (a plain spawn lays it out differently).
+            var chests = sample is { Chests.Length: > 0 } && (!CampPrefabs.Contains(prefabName) || sample.WholeZone)
+                ? sample.Chests : null;
+            string[]? vegvisirs = sim is { Vegvisirs.Count: > 0 } ? sim.Vegvisirs.Distinct().ToArray()
+                : sample is { Vegvisirs.Length: > 0 } ? sample.Vegvisirs : null;
+
             if (ExtraPrefabs.TryGetValue(prefabName, out var extra))
             {
-                ChestItem[][]? extraChests = null;
-                LootSample? extraSample = null;
-                if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out extraSample)
-                    && extraSample.Chests.Length > 0)
-                    extraChests = extraSample.Chests;
-                var extraMarks = CampMarks(prefabName, new V3(x, y, z), worldSeed, wg, extraSample);
                 results.Add(new PoiLocation(extra.Name, extra.Type, x, z,
-                    Prefab: prefabName, Items: WithMarkItems(null, extraMarks), Generated: placed, Biome: biome, Chests: extraChests));
-                AddMarkPois(results, extraMarks, placed, wg);
+                    Prefab: prefabName, Items: WithMarkItems(null, marks), Generated: placed, Biome: biome, Chests: chests,
+                    Vegvisirs: vegvisirs, Contents: contents));
+                AddMarkPois(results, marks, placed, wg);
                 continue;
             }
 
@@ -662,26 +672,20 @@ public static class LocationFinder
             string type = TypeOf(prefabName);
 
             string[]? items = cfg?.StaticItems;
-            ChestItem[][]? chests = null;
             IReadOnlyDictionary<string, int>? creatures = null;
-            string[]? vegvisirs = null;
-            LootSample? sample = null;
-            if (loot != null && loot.TryGetValue(LootKey(prefabName, x, z), out sample))
+            if (sample != null)
             {
                 var found = LootItems(sample);
                 if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
-                if (sample.Chests.Length > 0) chests = sample.Chests;
                 if (sample.Creatures.Count > 0) creatures = sample.Creatures;
-                if (sample.Vegvisirs.Length > 0) vegvisirs = sample.Vegvisirs;
             }
-            var dungeonFound = DungeonItems(prefabName, new V3(x, y, z), worldSeed, wg, sample);
+            var dungeonFound = DungeonItems(prefabName, sim, sample);
             if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
-            var marks = CampMarks(prefabName, new V3(x, y, z), worldSeed, wg, sample);
             items = WithMarkItems(items, marks);
 
             results.Add(new PoiLocation(friendly, type, x, z,
                 Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
-                Creatures: creatures, Vegvisirs: vegvisirs));
+                Creatures: creatures, Vegvisirs: vegvisirs, Contents: contents));
             AddMarkPois(results, marks, placed, wg);
         }
 
@@ -779,27 +783,81 @@ public static class LocationFinder
     };
 
     /// <summary>
-    /// Counts of the finds inside a dungeon, as "Black Core x4". From the oracle's
-    /// spawn when it generated this dungeon (oracle jobs), otherwise from
-    /// <see cref="DungeonSim"/>, which re-runs the game's generator from the room
-    /// catalog. A failed simulation just leaves the POI without dungeon items.
+    /// Counts of the finds inside a dungeon, as "Black Core x4", for the map.
+    /// From the oracle's spawn when it generated this dungeon (oracle jobs),
+    /// otherwise from the simulation.
     /// </summary>
-    static List<string> DungeonItems(string prefab, V3 pos, int worldSeed, WorldGenerator? wg, LootSample? sample)
+    static List<string> DungeonItems(string prefab, DungeonResult? sim, LootSample? sample)
     {
         var items = new List<string>();
         if (!DungeonFinds.TryGetValue(prefab, out var finds)) return items;
-        IReadOnlyDictionary<string, int>? objects = null;
         // The generator's own network object (DG_*) is only there if the oracle built the interior.
-        if (sample != null && sample.Objects.Keys.Any(k => k.StartsWith("DG_")))
-            objects = sample.Objects;
-        else
-        {
-            try { objects = new DungeonSim(DungeonCatalog.Instance, wg).Simulate(prefab, pos, worldSeed).Objects; }
-            catch (Exception) { return items; }
-        }
+        var objects = sample != null && sample.Objects.Keys.Any(k => k.StartsWith("DG_")) ? sample.Objects : sim?.Objects;
+        if (objects == null) return items;
         foreach (var (obj, item) in finds)
             if (objects.TryGetValue(obj, out int n) && n > 0) items.Add($"{item} x{n}");
         return items;
+    }
+
+    /// <summary>
+    /// Locations whose contents the simulation doesn't get right (checked with
+    /// <c>contents-check</c> against the oracle): their POIs carry no counts, and
+    /// the card falls back to what the location can hold.
+    /// </summary>
+    static readonly HashSet<string> UnpredictableContents = new()
+    {
+        // The frost troll remains (MineRock5) aren't spawned as network objects there.
+        "DN_gammeltrollFrac01", "DN_gammeltrollFrac02",
+    };
+
+    /// <summary>
+    /// Objects whose count the simulation gets wrong in an otherwise exact
+    /// location (contents-check against the oracle, rotated 90 degrees too); they
+    /// are left out of its contents.
+    /// </summary>
+    static readonly Dictionary<string, HashSet<string>> UncertainObjects = new()
+    {
+        ["TheHole01"] = new() { "HoleRock_rootWall1" },
+        ["MorkBorg"] = new() { "Morkhalla_Eye5_gemstone", "Morkhalla_Eye6_gemstone", "Morkhalla_Eye7_gemstone" },
+    };
+
+    /// <summary>
+    /// A dungeon whose rooms turn with the location: no custom interior transform,
+    /// so each room's position, and with it the seed of its rolls, depends on the
+    /// location's rotation, which the game picks from Unity's unseeded global
+    /// Random (ZoneSystem.PlaceLocations). Crypts, sunken crypts, burial chambers:
+    /// checked against the oracle spawning them rotated, none match. Camps
+    /// (CampRadial) and dungeons with an interior slot don't depend on it.
+    /// </summary>
+    static bool RotationDependent(string prefab) =>
+        DungeonCatalog.Instance.Locations.TryGetValue(prefab, out var l) && l.Algorithm == 0 && !l.UseCustomInteriorTransform;
+
+    /// <summary>
+    /// Re-runs the game's spawn of this location instance (<see cref="DungeonSim"/>):
+    /// SpawnLocation's rolls, plus the dungeon or camp generator. Null for a
+    /// location the room catalog doesn't have, or a failed simulation.
+    /// </summary>
+    static DungeonResult? Simulate(string prefab, V3 pos, int worldSeed, WorldGenerator? wg)
+    {
+        var sim = new DungeonSim(DungeonCatalog.Instance, wg);
+        if (!sim.Supports(prefab)) return null;
+        try { return sim.Simulate(prefab, pos, worldSeed); }
+        catch (Exception) { return null; }
+    }
+
+    /// <summary>
+    /// How many of each content object (chest, enemy spawner, pickup...) the
+    /// instance holds. Empty, not null, when its rolls left nothing: null means
+    /// "not simulated", and the card then lists what the location could hold.
+    /// </summary>
+    static IReadOnlyDictionary<string, int>? ContentsOf(string prefab, DungeonResult? sim)
+    {
+        if (sim == null || UnpredictableContents.Contains(prefab)) return null;
+        var kinds = DungeonCatalog.ContentKinds;
+        var unsure = UncertainObjects.GetValueOrDefault(prefab);
+        return sim.Objects.Where(o => o.Value > 0 && kinds.ContainsKey(o.Key) && !sim.Uncertain.Contains(o.Key)
+                                      && unsure?.Contains(o.Key) != true)
+            .ToDictionary(o => o.Key, o => o.Value);
     }
 
     /// <summary>
@@ -820,25 +878,17 @@ public static class LocationFinder
 
     /// <summary>
     /// Where a camp's marked pieces stand: from the oracle when it built the
-    /// camp's zone (oracle jobs), otherwise from <see cref="DungeonSim"/>, which
-    /// lays the camp out on the zone's terrain as the game does.
+    /// camp's zone (oracle jobs), otherwise from the simulation, which lays the
+    /// camp out on the zone's terrain as the game does.
     /// </summary>
-    static List<(string Prefab, float X, float Z)> CampMarks(string prefab, V3 pos, int worldSeed, WorldGenerator? wg, LootSample? sample)
+    static List<(string Prefab, float X, float Z)> CampMarks(string prefab, DungeonResult? sim, LootSample? sample)
     {
         var marks = new List<(string, float, float)>();
         if (!CampPrefabs.Contains(prefab)) return marks;
         if (sample is { WholeZone: true })
-        {
             marks.AddRange((sample.Marks ?? Array.Empty<(string, float, float)>()).Where(m => MarkedPieces.ContainsKey(m.Item1)));
-            return marks;
-        }
-        if (wg == null) return marks;
-        try
-        {
-            var res = new DungeonSim(DungeonCatalog.Instance, wg).Simulate(prefab, pos, worldSeed);
-            marks.AddRange(res.Marks.Where(m => MarkedPieces.ContainsKey(m.Prefab)).Select(m => (m.Prefab, m.Pos.x, m.Pos.z)));
-        }
-        catch (Exception) { /* a failed simulation just leaves the camp without its pieces */ }
+        else if (sim != null)
+            marks.AddRange(sim.Marks.Where(m => MarkedPieces.ContainsKey(m.Prefab)).Select(m => (m.Prefab, m.Pos.x, m.Pos.z)));
         return marks;
     }
 

@@ -2822,7 +2822,7 @@ var EXTRA_MINIBOSS = { LordReto: 1 };
 // they are not missing from the index. Kall Fimbulbringer genuinely drops
 // nothing — his CharacterDrop list is empty in the game files — so his tile
 // uses the FrozenKingDrop relic art.
-var SUPPLIED_TROPHY = { LordReto: 1, Bestiary_FrozenKing: 1 };
+var SUPPLIED_TROPHY = { LordReto: 1, Bestiary_FrozenKing: 1, Bestiary_Bat: 1 };
 // Animals that flee rather than fight. The game data has no passive flag —
 // Deer is filed under ForestMonsters and Hare under AnimalsVeg, and both carry
 // damage values — so the set is explicit.

@@ -102,8 +102,9 @@ worldgen error (large diffs, everywhere).
 
 ## Camps (farms)
 
-Farms (`WoodFarm1`) and Deep North villages (`NorthVillage`), the game's CampRadial
-generator, lay their rooms out on the zone's terrain, so on oracle jobs (or with
+Every camp the game's CampRadial generator builds (farms `WoodFarm1`, villages
+`WoodVillage1/2`, Deep North villages `NorthVillage`, Fuling camps `GoblinCamp2(_1)`,
+`AshlandRuins`, `FortressRuins`) lays its rooms out on the zone's terrain, so on oracle jobs (or with
 `VALHELP_LOOT_DUNGEONS=1`) the plugin builds each one's **whole zone** through
 `ZoneSystem.SpawnZone`, terrain first, the way a player's arrival does. Their
 `oracle.loot.json` entries carry `"wholeZone":true`, the generated `rooms` (a
@@ -121,3 +122,24 @@ dotnet run -- pois-check <db> <SeedName> <oracle.loot.json>        # the Maypole
 `VALHELP_LOOT_ONLY=WoodFarm1` (or `NorthVillage`) limits sampling to those. `VALHELP_LOG_GROUND=1`
 adds every `GetGroundData` probe made while a farm's zone generates (position
 and normal) as `ground`, for finding where the simulated terrain disagrees.
+
+## Location contents
+
+Seedgen fills each POI's `contents` (how many of each chest, enemy spawner,
+pickup...) by re-running the location's spawn rolls in `DungeonSim`, for every
+location, not just dungeons. To check that against the game, `VALHELP_LOOT_ALL=1`
+samples **every** location instance (camps with their whole zone), then:
+
+```
+dotnet run -- contents-check <data dir>...    # dir/seed<hash>/oracle.loot.json; per prefab, instances that match exactly
+```
+
+`VALHELP_LOOT_ROTATE=90` spawns every sampled location turned that far. The game
+picks a location's rotation from Unity's unseeded global Random, so this shows
+what depends on it: plain locations, camps and dungeons with an interior slot
+match unrotated; crypts and sunken crypts (no interior slot, rooms turn with the
+location) don't, and seedgen gives them no contents.
+
+A full sweep overruns a job's 10-minute server timeout, so split it with
+`VALHELP_LOOT_ONLY` (plain locations, camps, dungeons). Which objects count as
+contents, and what they hold, comes from `scripts/export_poi_contents.py`.

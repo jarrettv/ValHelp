@@ -64,6 +64,14 @@ public sealed class DungeonResult
     public Dictionary<string, int> Objects { get; } = new();
     /// <summary>Where each <see cref="DungeonSim.MarkedPrefabs"/> object was spawned.</summary>
     public List<(string Prefab, V3 Pos)> Marks { get; } = new();
+    /// <summary>Location names the dungeon's vegvisirs reveal, one per vegvisir left active in its rooms.</summary>
+    public List<string> Vegvisirs { get; } = new();
+    /// <summary>
+    /// Objects whose count may be off: rolled by a RandomSpawn/RandomObject that
+    /// also refuses lava (m_notInLava), in the Ashlands, where we don't model lava.
+    /// The roll still happens, so everything else stays exact.
+    /// </summary>
+    public HashSet<string> Uncertain { get; } = new();
     public List<string> Rooms { get; } = new();
     public List<V3> RoomPositions { get; } = new();
     public V3 GeneratorPosition { get; set; }
@@ -100,7 +108,7 @@ public sealed class DungeonSim
     }
 
     public bool Supports(string prefab) =>
-        _cat.Locations.TryGetValue(prefab, out var l) && (l.Algorithm == 0 || (l.Algorithm == 2 && _wg != null));
+        _cat.Locations.TryGetValue(prefab, out var l) && (l.Algorithm is -1 or 0 || (l.Algorithm == 2 && _wg != null));
 
     /// <summary>
     /// What <see cref="DungeonResult.Marks"/> records (mapped as POIs of their own):
@@ -161,7 +169,13 @@ public sealed class DungeonSim
         UnityRandom.InitState(seed);
         var active = tree.InitialActive();
         var world = WorldTransforms(tree, locals);
-        Randomize(tree, active, i => pos + rot * world[i].pos, dgThemes: null, locationBiome: true, pos);
+        Randomize(tree, active, i => pos + rot * world[i].pos, dgThemes: null, locationBiome: true, pos, result);
+        foreach (var vg in tree.Vegvisirs)
+        {
+            bool on = true;
+            for (int n = vg.Node; n >= 0 && on; n = tree.Nodes[n].Parent) on = active[n];
+            if (on) result.Vegvisirs.AddRange(vg.Locations);
+        }
 
         foreach (var nv in EnabledNetViews(tree))
         {
@@ -204,8 +218,19 @@ public sealed class DungeonSim
     /// RandomSpawn.Randomize then RandomObject.Randomize over the enabled ones,
     /// in order, mutating <paramref name="active"/> exactly as SetSpawned does.
     /// </summary>
-    void Randomize(PrefabTree t, bool[] active, Func<int, V3> worldPos, int? dgThemes, bool locationBiome, V3 locPos)
+    void Randomize(PrefabTree t, bool[] active, Func<int, V3> worldPos, int? dgThemes, bool locationBiome, V3 locPos,
+        DungeonResult result)
     {
+        bool? ashlands = null;
+        // m_notInLava isn't modelled: in the Ashlands, what such a roll spawns may be missing in the game.
+        void LavaUnsure(bool notInLava, int node)
+        {
+            if (!notInLava) return;
+            ashlands ??= _wg?.GetBiome(locPos.x, locPos.z) == Biome.AshLands;
+            if (ashlands != true) return;
+            foreach (var nv in t.NetViews)
+                if (t.IsAncestorOrSelf(node, nv.Node)) result.Uncertain.Add(nv.Prefab);
+        }
         var initial = t.InitialActive();
         // Prepare(): each RandomSpawn's child ZNetViews, enabled relative to it.
         var spawns = t.RandomSpawns.Where(r => r.Node != 0 && t.EnabledUpTo(initial, r.Node, 0)).ToArray();
@@ -220,7 +245,7 @@ public sealed class DungeonSim
                 locBiome ??= _wg?.GetBiome(locPos.x, locPos.z);
                 if (locBiome is Biome b && ((int)b & rs.RequireBiome) != (int)b) spawned = false;
             }
-            // m_notInLava (Ashlands only) is not modelled.
+            if (spawned) LavaUnsure(rs.NotInLava, rs.Node);
             var p = worldPos(rs.Node);
             if (p.y < rs.MinElevation || p.y > rs.MaxElevation) spawned = false;
             if (!spawned)
@@ -257,6 +282,7 @@ public sealed class DungeonSim
             var p = worldPos(ro.Node);
             if (!fail && (p.y < ro.MinElevation || p.y > ro.MaxElevation)) fail = true;
             int spawnObj = fail ? -1 : chosen;
+            if (spawnObj >= 0) LavaUnsure(ro.NotInLava, spawnObj);
             foreach (var o in ro.Objects)
             {
                 if (o.Node < 0 || o.Node == spawnObj) continue;
@@ -588,7 +614,7 @@ public sealed class DungeonSim
             var rootPos = t.Nodes[0].Pos;
             var rootRotInv = Quat.Inverse(t.Nodes[0].Rot);
             _sim.Randomize(t, active, i => pos + rot * (rootRotInv * (AssetWorld(room, i) - rootPos)),
-                _loc.Themes, locationBiome: false, pos);
+                _loc.Themes, locationBiome: false, pos, _result);
             var enabledViews = EnabledNetViews(t).ToList();
             foreach (var nv in enabledViews)
             {
@@ -602,6 +628,9 @@ public sealed class DungeonSim
             // The instance is cloned from the prefab in its rolled state, with every
             // ZNetView switched off first, so connections under them don't exist.
             foreach (var nv in enabledViews) active[nv.Node] = false;
+            // Vegvisirs are plain scenery: present when the rolls left their branch active.
+            foreach (var vg in t.Vegvisirs)
+                if (InstanceActive(t, active, vg.Node)) _result.Vegvisirs.AddRange(vg.Locations);
 
             // Instantiate(prefab, pos, rot, generator): stored local to the generator.
             var localPos = Quat.Inverse(_rot) * (pos - _pos);

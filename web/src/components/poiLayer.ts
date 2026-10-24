@@ -12,7 +12,11 @@
 //    (icon, colour, size), and each dot colour likewise; a frame is just
 //    drawImage calls, with one alpha change per LOD.
 
-import { type PoiMarker, type IconRule, resolvePoiIcon, lodStyle, getColoredIcon, getPoiConfig, DOT_PX, type LodStyle } from './poiIcons';
+import {
+  type PoiMarker, type IconRule, resolvePoiIcon, lodStyle, getColoredIcon, getPoiConfig, DOT_PX, type LodStyle,
+  adornAlpha, requestPoiRedraw,
+} from './poiIcons';
+import { type Adornment, adornDataKey, poiAdornments } from './poiAdorn';
 
 // Valheim minimap: 2048 texels, 12 world units per texel, half-pixel offset.
 const TEX_SIZE = 2048;
@@ -31,7 +35,15 @@ const MARGIN_PX = 40;          // draw markers this far past the edge (half an i
 const MIN_HIT_ALPHA = 0.4;     // a marker still fading in isn't clickable yet
 const SPATIAL_CELLS = 64;      // spatial index: 64x64 buckets over the map
 
-interface Item { poi: PoiMarker; rule: IconRule; lod: number; ux: number; uy: number }
+interface Item { poi: PoiMarker; rule: IconRule; lod: number; ux: number; uy: number; adorn?: Adornment[] }
+
+/// An adornment's size, as a fraction of its POI's icon.
+const ADORN_SIZE = 0.6;
+/// Adornment centres sit this fraction of their size inside the icon's edge
+/// (POI art rarely fills its square, so this keeps them snug against it).
+const ADORN_INSET = 0.1;
+/// The ring starts below the icon and runs clockwise.
+const ADORN_START = Math.PI / 2;
 
 /** One view of the map: unit map coordinates -> screen px is `u * size + pan`. */
 export interface View { size: number; panX: number; panY: number; scale: number; width: number; height: number }
@@ -45,17 +57,19 @@ export class PoiLayer {
   /** Clickable markers from the last frame, in draw order (topmost last). */
   private drawn: Drawn[] = [];
 
-  /** Resolve rules and rebuild the index when POIs, hidden icons or the admin config change. */
+  /** Resolve rules and rebuild the index when POIs, hidden icons, the admin config or the contents data change. */
   private prepare(pois: readonly PoiMarker[], hidden: ReadonlySet<string> | undefined) {
-    const key = [pois, hidden, getPoiConfig()];
-    if (key.every((k, i) => k === this.key[i])) return;
+    const key = [pois, hidden, getPoiConfig(), ...adornDataKey()];
+    if (key.length === this.key.length && key.every((k, i) => k === this.key[i])) return;
     this.key = key;
     const items: Item[] = [];
     for (const poi of pois) {
       const rule = resolvePoiIcon(poi);
       if (!rule || hidden?.has(rule.icon)) continue;
       const [ux, uy] = worldToUnit(poi.x, poi.z);
-      items.push({ poi, rule, lod: Math.max(0, Math.min(3, rule.lod ?? 0)), ux, uy });
+      const adorn = poiAdornments(poi);
+      items.push({ poi, rule, lod: Math.max(0, Math.min(3, rule.lod ?? 0)), ux, uy,
+                   adorn: adorn.length ? adorn : undefined });
     }
     // Stable sort, least important first: drawing in this order puts LOD 0 on top.
     items.sort((a, b) => b.lod - a.lod);
@@ -96,7 +110,9 @@ export class PoiLayer {
     let alpha = -1;
     const setAlpha = (a: number) => { if (a !== alpha) ctx.globalAlpha = alpha = a; };
 
-    // Dots under every icon, then icons; both least important first.
+    const adornA = adornAlpha(v.scale);
+
+    // Dots under every icon, then icons (each with its adornments); both least important first.
     for (const { it, x, y } of shown) {
       const st = styles[it.lod];
       if (st.dotAlpha <= 0) continue;
@@ -113,6 +129,10 @@ export class PoiLayer {
       setAlpha(st.iconAlpha * (it.rule.opacity ?? 1));
       ctx.drawImage(sprite.canvas, x - sprite.half, y - sprite.half, sprite.css, sprite.css);
       if (st.iconAlpha >= MIN_HIT_ALPHA) drawn.push({ poi: it.poi, x, y, r: st.iconSize / 2 });
+      if (it.adorn && adornA > 0) {
+        setAlpha(st.iconAlpha * adornA);
+        drawAdornments(ctx, it.adorn, x, y, st.iconSize, dpr);
+      }
     }
     setAlpha(1);
     this.drawn = drawn;
@@ -159,10 +179,42 @@ function bake(css: number, dpr: number, paint: (c: OffscreenCanvasRenderingConte
 const sprites = new WeakMap<HTMLImageElement, Map<string, Sprite>>();
 
 function spriteFor(icon: string, color: string, size: number, dpr: number): Sprite | null {
-  const img = getColoredIcon(icon, color);
+  return spriteOf(getColoredIcon(icon, color), size, dpr);
+}
+
+/// Item icons (/api/icon/<code>.png) for adornments; null until loaded, or for one the API lacks.
+const pngs = new Map<string, HTMLImageElement>();
+function itemIcon(code: string): HTMLImageElement | null {
+  let img = pngs.get(code);
+  if (!img) {
+    img = new Image();
+    img.onload = requestPoiRedraw;
+    img.src = `/api/icon/${encodeURIComponent(code)}.png`;
+    pngs.set(code, img);
+  }
+  return img.complete && img.naturalWidth > 0 ? img : null;
+}
+
+/// A POI's adornments, in a ring around its icon (centred on x, y, `size` px).
+function drawAdornments(ctx: CanvasRenderingContext2D, adorn: readonly Adornment[], x: number, y: number,
+                        size: number, dpr: number) {
+  const px = size * ADORN_SIZE;
+  const radius = size / 2 - px * ADORN_INSET;
+  // Neighbours just touch; a ring too full to fit spreads them evenly instead.
+  const step = Math.min((Math.PI * 2) / adorn.length, px / radius);
+  adorn.forEach((a, i) => {
+    const sprite = 'svg' in a ? spriteFor(a.svg, a.color, px, dpr) : spriteOf(itemIcon(a.png), px, dpr);
+    if (!sprite) return;
+    const t = ADORN_START + i * step;
+    const ax = x + Math.cos(t) * radius, ay = y + Math.sin(t) * radius;
+    ctx.drawImage(sprite.canvas, ax - sprite.half, ay - sprite.half, sprite.css, sprite.css);
+  });
+}
+
+function spriteOf(img: HTMLImageElement | null, size: number, dpr: number): Sprite | null {
   // `complete` is true once the data-URL Image has rasterized (or errored);
   // an empty src means the SVG text is still being fetched.
-  if (!img.complete || !img.src) return null;
+  if (!img || !img.complete || !img.src) return null;
   const px = Math.max(1, Math.round(size));
   const key = `${px}|${dpr}`;
   let bySize = sprites.get(img);

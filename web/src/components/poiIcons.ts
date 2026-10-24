@@ -17,6 +17,9 @@ export interface PoiMarker {
   chests?: { item: string; count: number }[][];  // each chest's contents
   creatures?: Record<string, number>;            // enemy spawners by creature (or "spawner:<name>")
   vegvisirs?: string[];                          // locations a vegvisir points to, e.g. "Dragonqueen"
+  // seedgen's simulation of the location's spawn: how many of each content
+  // object (chest, enemy spawner, pickup...; poiContents.ts says what they are).
+  contents?: Record<string, number>;
   x: number;
   z: number;
   generated?: boolean;
@@ -80,6 +83,24 @@ export function lodStyle(lod: number, scale: number, sizeScale = 1): LodStyle {
   return { dotAlpha: ramp(scale, band.dotFrom) * (1 - iconAlpha), iconAlpha, iconSize: capped * MINOR_SIZE_FACTOR };
 }
 
+// ── Adornments ──────────────────────────────────────────────────────────────
+// A deeper level past Close-up: over the last few zoom steps, a POI holding
+// starred contents (a vegvisir, say) gets a small icon per starred thing,
+// in a ring around its art. poiContents.ts says what's starred; poiAdorn.ts
+// what each adornment draws as.
+
+/// The maps' zoom limit and mouse-wheel step (WorldMap, EventMap).
+export const MAP_MAX_SCALE = 20;
+export const WHEEL_ZOOM_STEP = 1.15;
+/// Adornments show over the last this-many wheel steps before MAP_MAX_SCALE.
+const ADORN_STEPS = 5;
+export const ADORN_FROM = MAP_MAX_SCALE / WHEEL_ZOOM_STEP ** ADORN_STEPS;
+
+/// How visible adornments are at this zoom: fading in over the first step.
+export function adornAlpha(scale: number): number {
+  return Math.max(0, Math.min(1, (scale - ADORN_FROM) / (ADORN_FROM * (WHEEL_ZOOM_STEP - 1))));
+}
+
 function ramp(scale: number, from: number): number {
   if (from <= 0) return 1;
   return Math.max(0, Math.min(1, (scale - from) / (from * (LOD_FADE - 1))));
@@ -115,9 +136,11 @@ export interface PoiConfig {
   prefabs: Record<string, PoiSetting>;   // per-prefab overrides, keyed by prefab name
   icons: Record<string, number>;   // uploaded icon name -> version (updatedAt ms)
   altBiomes: Record<string, AltBiomeSetting>;   // per-variant overrides, keyed by AltBiome.m_name
+  /// What POI cards show: location prefab ("*" for all) -> card entry -> shown (poiContents.ts).
+  contents: Record<string, Record<string, boolean>>;
 }
 
-let poiConfig: PoiConfig = { prefabs: {}, icons: {}, altBiomes: {} };
+let poiConfig: PoiConfig = { prefabs: {}, icons: {}, altBiomes: {}, contents: {} };
 let configVersion = 0;
 let configLoad: Promise<void> | null = null;
 const configListeners = new Set<() => void>();
@@ -143,7 +166,7 @@ export function loadPoiConfig(force = false): Promise<void> {
       .then(r => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
       .then((c: PoiConfig) => {
         configError = null;
-        setPoiConfig({ prefabs: c.prefabs ?? {}, icons: c.icons ?? {}, altBiomes: c.altBiomes ?? {} });
+        setPoiConfig({ prefabs: c.prefabs ?? {}, icons: c.icons ?? {}, altBiomes: c.altBiomes ?? {}, contents: c.contents ?? {} });
       })
       .catch(err => {
         console.warn('[poiIcons] config fetch failed; using code defaults', err);
@@ -342,6 +365,9 @@ function iconUrl(name: string): string {
   return `${ICON_BASE}${name}.svg?v=${builtinVersion}${t ? `&t=${t}` : ''}`;
 }
 
+/// URL of a map icon's art (an upload if there is one), for use in the page.
+export const poiIconSrc = (name: string): string => iconUrl(name);
+
 // Dev only: poi-sync rewrote a built-in icon (an Inkscape save in web/poi-src).
 // A new URL misses every cache below, and the config bump redraws all maps.
 const devEdits = new Map<string, number>();
@@ -395,6 +421,11 @@ export function getColoredIcon(name: string, color: string): HTMLImageElement {
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(colored);
   }).catch(err => console.warn('[poiIcons] icon fetch failed', name, err));
   return img;
+}
+
+/// Redraw every map (data a layer draws from has landed, e.g. an adornment's icon).
+export function requestPoiRedraw() {
+  for (const cb of redrawSubscribers) cb();
 }
 
 /// Subscribe a redraw callback so the calling component gets a redraw kick once

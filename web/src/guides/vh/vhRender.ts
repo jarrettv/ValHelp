@@ -78,7 +78,7 @@ function scheduleServerSave() {
 }
 
 /** Codes whose icon we added to icons.db by hand; see docs/macros.md. */
-const SUPPLIED_ICONS: Record<string, true> = { LordReto: true, Bestiary_FrozenKing: true };
+const SUPPLIED_ICONS: Record<string, true> = { LordReto: true, Bestiary_FrozenKing: true, Bestiary_Bat: true };
 
 export function initVhState(items: VhItem[], defaults?: VhDefaults | null) {
   if (initialized) return;

@@ -19,6 +19,20 @@ public sealed class DungeonCatalog
     /// <summary>The catalog embedded in seedgen, loaded on first use.</summary>
     public static DungeonCatalog Instance => s_instance ??= LoadEmbedded();
 
+    /// <summary>
+    /// The objects a POI's contents count, by prefab: chest, pickup, item, enemy,
+    /// spawner, smash or beehive (scripts/export_poi_contents.py, which also writes
+    /// what they hold for the web).
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> ContentKinds => s_contentKinds.Value;
+
+    static readonly Lazy<Dictionary<string, string>> s_contentKinds = new(() =>
+    {
+        using var s = typeof(DungeonCatalog).Assembly.GetManifestResourceStream("contents.json")
+            ?? throw new InvalidOperationException("contents.json is not embedded");
+        return JsonSerializer.Deserialize<Dictionary<string, string>>(s)!;
+    });
+
     static DungeonCatalog LoadEmbedded()
     {
         using var s = typeof(DungeonCatalog).Assembly.GetManifestResourceStream("dungeons.json.gz")
@@ -52,7 +66,16 @@ public sealed class DungeonCatalog
         foreach (var p in root.GetProperty("locations").EnumerateObject())
         {
             var l = p.Value;
-            var g = l.GetProperty("generator");
+            if (!l.TryGetProperty("generator", out var g))
+            {
+                // A plain location: only its own spawn rolls.
+                locations[p.Name] = new CatalogLocation
+                {
+                    Name = p.Name, Tree = ReadTree(l), InteriorNode = -1, GeneratorNode = -1, Algorithm = -1,
+                    RequiredRooms = Array.Empty<string>(), DoorTypes = Array.Empty<DoorType>(),
+                };
+                continue;
+            }
             locations[p.Name] = new CatalogLocation
             {
                 Name = p.Name,
@@ -110,7 +133,11 @@ public sealed class DungeonCatalog
             x[6].EnumerateArray().Select(o => (o[0].GetInt32(), o[1].GetSingle())).ToArray())).ToArray();
         var views = e.GetProperty("netViews").EnumerateArray()
             .Select(x => new TreeNetView(x[0].GetInt32(), x[1].GetString()!)).ToArray();
-        return new PrefabTree(nodes, conns, spawns, objects, views);
+        var vegvisirs = e.TryGetProperty("vegvisirs", out var vg)
+            ? vg.EnumerateArray().Select(x => new TreeVegvisir(x[0].GetInt32(),
+                x[1].EnumerateArray().Select(l => l.GetString()!).ToArray())).ToArray()
+            : Array.Empty<TreeVegvisir>();
+        return new PrefabTree(nodes, conns, spawns, objects, views) { Vegvisirs = vegvisirs };
     }
 }
 
@@ -140,7 +167,7 @@ public sealed class CatalogLocation
     public bool UseCustomInteriorTransform { get; init; }
     public int InteriorNode { get; init; }
     public int GeneratorNode { get; init; }
-    public int Algorithm { get; init; }          // 0 Dungeon, 1 CampGrid, 2 CampRadial
+    public int Algorithm { get; init; }          // 0 Dungeon, 1 CampGrid, 2 CampRadial; -1 no generator
     public int MaxRooms { get; init; }
     public int MinRooms { get; init; }
     public int MinRequiredRooms { get; init; }
@@ -171,6 +198,8 @@ public readonly record struct TreeRandomSpawn(int Node, float Chance, int Requir
 public readonly record struct TreeRandomObject(int Node, int RequireTheme, int RequireBiome, bool NotInLava,
     int MinElevation, int MaxElevation, (int Node, float Weight)[] Objects);
 public readonly record struct TreeNetView(int Node, string Prefab);
+/// <summary>A Vegvisir (static scenery, no ZNetView) and the locations it reveals.</summary>
+public readonly record struct TreeVegvisir(int Node, string[] Locations);
 
 /// <summary>
 /// A prefab's hierarchy, cut down to the nodes that carry something the
@@ -184,6 +213,7 @@ public sealed class PrefabTree
     public TreeRandomSpawn[] RandomSpawns { get; }
     public TreeRandomObject[] RandomObjects { get; }
     public TreeNetView[] NetViews { get; }
+    public TreeVegvisir[] Vegvisirs { get; init; } = Array.Empty<TreeVegvisir>();
     /// <summary>Node index -> its ZNetView index, or -1.</summary>
     public int[] NetViewAt { get; }
     /// <summary>Last node index in each node's subtree (pre-order makes a subtree a contiguous range).</summary>

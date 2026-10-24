@@ -35,7 +35,7 @@ var _patternCols = 1, _patternRows = 1;
 // variant), 'pattern' is the older tint wash plus repeating pattern tiles.
 var VARIANT_STYLE = 'stroke';
 var strokeProg;
-var su_mvp, su_gridSize, su_altTex, su_distTex, su_strokeLut, su_cellPx, su_bandPx;
+var su_mvp, su_gridSize, su_altTex, su_distTex, su_strokeLut, su_cellPx, su_bandPx, su_alpha;
 var sa_pos;
 var distTex = null;       // per cell, distance to its sector's edge on land (see buildSectorDistance)
 var strokeLutTex = null;  // sector entry → up to 3 stroke colours (RGBA, 256x4, rows outermost first)
@@ -193,6 +193,7 @@ var STROKE_FRAG_SRC = [
   'uniform sampler2D u_strokeLut;',
   'uniform float u_cellPx;',   // device px per grid cell
   'uniform float u_bandPx;',   // device px per band
+  'uniform float u_alpha;',    // pulsing opacity (strokeAlpha)
   'varying vec2 v_uv;',
   'void main() {',
   // The cell grid runs south to north; the map runs north to south.
@@ -211,7 +212,7 @@ var STROKE_FRAG_SRC = [
   // and the outer one readable over any biome colour.
   '  float edge = px - band * u_bandPx;',
   '  float line = 1.0 - smoothstep(0.0, 1.5, edge);',
-  '  gl_FragColor = vec4(mix(c.rgb, vec3(0.0), 0.45 * line), 0.95);',
+  '  gl_FragColor = vec4(mix(c.rgb, vec3(0.0), 0.45 * line), u_alpha);',
   '}'
 ].join('\n');
 
@@ -439,8 +440,12 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
     renderForestFallback(mvp);
   }
 
+  _strokesDrawn = false;
   if (VARIANT_STYLE === 'stroke') {
-    if (altTex && distTex && strokeLutTex) renderStrokes(mvp, viewScale, dpr);
+    if (altTex && distTex && strokeLutTex) {
+      renderStrokes(mvp, viewScale, dpr);
+      _strokesDrawn = true;
+    }
   } else if (altTex && lutTex && atlasTex) {
     renderPatterns(mvp, viewScale);
   }
@@ -562,12 +567,30 @@ function renderPatterns(mvp, viewScale) {
 // zoomed far out a small sector is all stroke, which keeps it findable.
 var STROKE_BAND_PX = 4;
 
+// The strokes pulse between these opacities, one cycle every STROKE_PULSE_MS
+// (steady at the top with reduced motion). The maps keep redrawing while
+// isPulsing() says the last frame drew strokes.
+var STROKE_ALPHA_MIN = 0.5, STROKE_ALPHA_MAX = 1.0, STROKE_PULSE_MS = 1600;
+var _reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+var _strokesDrawn = false;
+
+function strokeAlpha() {
+  if (_reducedMotion && _reducedMotion.matches) return STROKE_ALPHA_MAX;
+  var t = (performance.now() % STROKE_PULSE_MS) / STROKE_PULSE_MS;
+  return STROKE_ALPHA_MIN + (STROKE_ALPHA_MAX - STROKE_ALPHA_MIN) * (0.5 - 0.5 * Math.cos(2 * Math.PI * t));
+}
+
+function isPulsing() {
+  return _strokesDrawn && !(_reducedMotion && _reducedMotion.matches);
+}
+
 function renderStrokes(mvp, viewScale, dpr) {
   gl.useProgram(strokeProg);
   gl.uniformMatrix3fv(su_mvp, false, mvp);
   gl.uniform1f(su_gridSize, gridSize);
   gl.uniform1f(su_cellPx, viewScale * dpr * gridSize / _altSize);
   gl.uniform1f(su_bandPx, STROKE_BAND_PX * dpr);
+  gl.uniform1f(su_alpha, strokeAlpha());
 
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, altTex);
@@ -798,6 +821,7 @@ function renderForestFallback(mvp) {
 function getGridSize() { return gridSize; }
 
 function destroy() {
+  _strokesDrawn = false;
   _ready = false;
   _texturesReady = false;
   for (var i = 0; i < fillLayers.length; i++) {
@@ -902,6 +926,7 @@ window.VectorMap = {
   setFogOpacity: setFogOpacity,
   setPatternOverlay: setPatternOverlay,
   setVariantLuts: setVariantLuts,
+  isPulsing: isPulsing,
   destroy: destroy,
   get ready() { return _ready; }
 };
@@ -951,6 +976,7 @@ function initShaders() {
   su_strokeLut = gl.getUniformLocation(strokeProg, 'u_strokeLut');
   su_cellPx = gl.getUniformLocation(strokeProg, 'u_cellPx');
   su_bandPx = gl.getUniformLocation(strokeProg, 'u_bandPx');
+  su_alpha = gl.getUniformLocation(strokeProg, 'u_alpha');
   sa_pos = gl.getAttribLocation(strokeProg, 'a_pos');
 
   // Fog program

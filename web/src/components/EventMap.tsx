@@ -3,7 +3,7 @@ import { Event as Ev, EventStatus, Player } from '../domain/event';
 import '../lib/vector-map.js';
 import './EventMap.css';
 import TimelineSlider from './TimelineSlider';
-import { PoiMarker as SharedPoiMarker, subscribeIconRedraw } from './poiIcons';
+import { PoiMarker as SharedPoiMarker, subscribeIconRedraw, MAP_MAX_SCALE, WHEEL_ZOOM_STEP } from './poiIcons';
 import { PoiLayer } from './poiLayer';
 import PoiLegend from './PoiLegend';
 import { EXTRA_ITEMS, fetchVhItems, iconUrl } from '../guides/vh/data';
@@ -16,6 +16,7 @@ declare global {
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
+      isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;
     };
@@ -628,6 +629,21 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     }
   }, [applyTransform]);
 
+  // Biome variant strokes pulse (vector-map.js): while they're drawn, redraw just
+  // the map at ~30 fps. Markers sit on their own canvas and don't change.
+  useEffect(() => {
+    let id = 0, last = 0;
+    const tick = (t: number) => {
+      id = requestAnimationFrame(tick);
+      const s = stateRef.current, area = mapAreaRef.current;
+      if (t - last < 33 || s.rafId || !s.ready || !area || !window.VectorMap?.isPulsing?.()) return;
+      last = t;
+      window.VectorMap.render(s.scale, s.panX, s.panY, area.clientWidth, area.clientHeight);
+    };
+    id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   const fitMap = useCallback(() => {
     const area = mapAreaRef.current;
     const s = stateRef.current;
@@ -799,9 +815,9 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
       if (s.imgW === 0) return;
       const rect = area!.getBoundingClientRect();
       const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      const factor = e.deltaY < 0 ? WHEEL_ZOOM_STEP : 1 / WHEEL_ZOOM_STEP;
       const minScale = Math.min(area!.clientWidth / s.imgW, area!.clientHeight / s.imgH) * 0.5;
-      const newScale = Math.min(Math.max(s.scale * factor, minScale), 20);
+      const newScale = Math.min(Math.max(s.scale * factor, minScale), MAP_MAX_SCALE);
       s.panX = mx - (mx - s.panX) * (newScale / s.scale);
       s.panY = my - (my - s.panY) * (newScale / s.scale);
       s.scale = newScale;
@@ -879,7 +895,7 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
         // Zoom
         const factor = dist / lastTouchDist;
         const minScale = Math.min(area!.clientWidth / s.imgW, area!.clientHeight / s.imgH) * 0.5;
-        const newScale = Math.min(Math.max(s.scale * factor, minScale), 20);
+        const newScale = Math.min(Math.max(s.scale * factor, minScale), MAP_MAX_SCALE);
         s.panX = mx - (mx - s.panX) * (newScale / s.scale);
         s.panY = my - (my - s.panY) * (newScale / s.scale);
         s.scale = newScale;

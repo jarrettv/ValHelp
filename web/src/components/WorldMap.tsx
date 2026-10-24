@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import '../lib/vector-map.js';
 import './WorldMap.css';
-import { PoiMarker, subscribeIconRedraw, usePoiConfigVersion } from './poiIcons';
+import { PoiMarker, subscribeIconRedraw, usePoiConfigVersion, MAP_MAX_SCALE, WHEEL_ZOOM_STEP } from './poiIcons';
 import { PoiLayer } from './poiLayer';
 import { loadPatternOverlay, variantLuts, type PatternOverlay, type AltSector } from './biomePatterns';
 import AltBiomeCard from './AltBiomeCard';
@@ -14,6 +14,7 @@ declare global {
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
+      isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;
     };
@@ -111,6 +112,21 @@ const WorldMap: React.FC<WorldMapProps> = ({
       stateRef.current.rafId = requestAnimationFrame(applyTransform);
     }
   }, [applyTransform]);
+
+  // Biome variant strokes pulse (vector-map.js): while they're drawn, redraw just
+  // the map at ~30 fps. Markers sit on their own canvas and don't change.
+  useEffect(() => {
+    let id = 0, last = 0;
+    const tick = (t: number) => {
+      id = requestAnimationFrame(tick);
+      const s = stateRef.current, area = mapAreaRef.current;
+      if (t - last < 33 || s.rafId || !s.ready || !area || !window.VectorMap?.isPulsing?.()) return;
+      last = t;
+      window.VectorMap.render(s.scale, s.panX, s.panY, area.clientWidth, area.clientHeight);
+    };
+    id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   const fitMap = useCallback(() => {
     const area = mapAreaRef.current;
@@ -257,9 +273,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
       if (s.imgW === 0) return;
       const rect = area!.getBoundingClientRect();
       const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      const factor = e.deltaY < 0 ? WHEEL_ZOOM_STEP : 1 / WHEEL_ZOOM_STEP;
       const minScale = Math.min(area!.clientWidth / s.imgW, area!.clientHeight / s.imgH) * 0.5;
-      const newScale = Math.min(Math.max(s.scale * factor, minScale), 20);
+      const newScale = Math.min(Math.max(s.scale * factor, minScale), MAP_MAX_SCALE);
       s.panX = mx - (mx - s.panX) * (newScale / s.scale);
       s.panY = my - (my - s.panY) * (newScale / s.scale);
       s.scale = newScale;
@@ -355,7 +371,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         const mx = midX - rect.left, my = midY - rect.top;
         const factor = lastTouchDist > 0 ? dist / lastTouchDist : 1;
         const minScale = Math.min(area!.clientWidth / s.imgW, area!.clientHeight / s.imgH) * 0.5;
-        const newScale = Math.min(Math.max(s.scale * factor, minScale), 20);
+        const newScale = Math.min(Math.max(s.scale * factor, minScale), MAP_MAX_SCALE);
         s.panX = mx - (mx - s.panX) * (newScale / s.scale) + (midX - lastTouchMidX);
         s.panY = my - (my - s.panY) * (newScale / s.scale) + (midY - lastTouchMidY);
         s.scale = newScale;

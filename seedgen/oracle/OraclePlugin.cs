@@ -432,7 +432,9 @@ public class OraclePlugin : BaseUnityPlugin
             var inst = kv.Value;
             if (inst.m_location == null) continue;
             string name = inst.m_location.m_prefab.Name ?? "";
-            if (!LootPrefabs.Contains(name) && !name.StartsWith("WoodHouse")
+            // Dev probes: VALHELP_LOOT_ALL=1 samples every location (to check
+            // seedgen's simulated POI contents against), camps with their zone.
+            if (!s_all && !LootPrefabs.Contains(name) && !name.StartsWith("WoodHouse")
                 && !(dungeons && (DungeonPrefabs.Contains(name) || ZonePrefabs.Contains(name)))) continue;
             // Dev probes: VALHELP_LOOT_ONLY=Prefab1,Prefab2 samples just those.
             if (s_only != null && !s_only.Contains(name)) continue;
@@ -440,7 +442,7 @@ public class OraclePlugin : BaseUnityPlugin
             int seed = wg.GetSeed() + kv.Key.x * 4271 + kv.Key.y * 9187;
             // Per-location cost, so the price of each dungeon type can be weighed.
             var one = Stopwatch.StartNew();
-            if (ZonePrefabs.Contains(name))
+            if (ZonePrefabs.Contains(name) && (dungeons || s_all))
             {
                 // Camps lay out their rooms on the zone's terrain (slope and height
                 // per room), so build the whole zone the way a player's arrival
@@ -462,7 +464,7 @@ public class OraclePlugin : BaseUnityPlugin
                   .Append($"\"zone\":[{kv.Key.x},{kv.Key.y}],\"ms\":{one.ElapsedMilliseconds},\"wholeZone\":true,{zres}}}");
                 continue;
             }
-            string result = Sample(inst, seed, Quaternion.identity, out string objects);
+            string result = Sample(inst, seed, s_rotation, out string objects);
             long ms = one.ElapsedMilliseconds;
             string rotField = "";
             if (checkRotation)
@@ -633,7 +635,22 @@ public class OraclePlugin : BaseUnityPlugin
     /// terrain included, on oracle jobs or with VALHELP_LOOT_DUNGEONS=1: their
     /// layout depends on the ground, which SpawnLocation alone never sees.
     /// </summary>
-    static readonly HashSet<string> ZonePrefabs = new HashSet<string> { "WoodFarm1", "NorthVillage" };
+    // Every location built by DungeonGenerator's camp algorithm (CampRadial).
+    static readonly HashSet<string> ZonePrefabs = new HashSet<string>
+    {
+        "WoodFarm1", "NorthVillage", "WoodVillage1", "WoodVillage2", "GoblinCamp2", "GoblinCamp2_1",
+        "AshlandRuins", "FortressRuins",
+    };
+
+    static readonly bool s_all = Environment.GetEnvironmentVariable("VALHELP_LOOT_ALL") == "1";
+
+    // Dev probes: VALHELP_LOOT_ROTATE=90 spawns every sampled location turned that
+    // many degrees. The game picks a location's rotation from Unity's unseeded
+    // global Random, so comparing against seedgen (which assumes none) shows
+    // which contents depend on it.
+    static readonly Quaternion s_rotation = Quaternion.Euler(0f,
+        float.TryParse(Environment.GetEnvironmentVariable("VALHELP_LOOT_ROTATE"), NumberStyles.Float,
+            CultureInfo.InvariantCulture, out var deg) ? deg : 0f, 0f);
 
     /// <summary>Pieces whose positions the loot dump lists (seedgen maps them as POIs).</summary>
     static readonly HashSet<string> MarkedPrefabs = new HashSet<string> { "piece_maypole" };

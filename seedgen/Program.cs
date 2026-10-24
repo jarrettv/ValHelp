@@ -4,6 +4,16 @@ using SeedGen;
 // compare DungeonSim with an oracle dump (see WorldGen/DungeonCheck.cs).
 if (args.Length > 0 && args[0] == "dungeon-check") return Vh.World.DungeonCheck.Run(args[1..]);
 if (args.Length > 0 && args[0] == "pois-check") return Vh.World.DungeonCheck.RunPois(args[1..]);
+if (args.Length > 0 && args[0] == "contents-check") return Vh.World.DungeonCheck.RunContents(args[1..]);
+// Dev: `pois-json <db> <SeedName> [oracle.loot.json]` prints the POIs a job would serve.
+if (args.Length > 0 && args[0] == "pois-json")
+{
+    int seed = SeedGen.ValheimSeedHash.GetStableHashCode(args[2]);
+    var loot = args.Length > 3 ? Vh.World.LocationFinder.LoadLoot(args[3]) : null;
+    var pois = Vh.World.LocationFinder.ReadFromWorldDb(args[1], seed, out _, new Vh.World.WorldGenerator(seed, 2), loot);
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(pois, SeedGen.Json.CamelCase));
+    return 0;
+}
 // Dev: `prefab-types` prints every POI prefab with its type and name (scripts/export_poi_catalog.py).
 if (args.Length > 0 && args[0] == "prefab-types")
 {

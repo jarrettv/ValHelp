@@ -45,6 +45,10 @@ public static class DungeonCheck
                 .Where(p => !Ignored.Contains(p.Name)).ToDictionary(p => p.Name, p => p.Value.GetInt32());
             var res = sim.Simulate(prefab, new V3(x, y, z), seed);
             var got = res.Objects.Where(p => !Ignored.Contains(p.Key)).ToDictionary(p => p.Key, p => p.Value);
+            // Vegvisirs (the oracle lists each revealed location once).
+            if (e.TryGetProperty("vegvisirs", out var gvs))
+                foreach (var v in gvs.EnumerateArray()) truth["vegvisir:" + v.GetString()] = 1;
+            foreach (var v in res.Vegvisirs.Distinct()) got["vegvisir:" + v] = 1;
             if (e.TryGetProperty("rooms", out var gr))
             {
                 var game = gr.EnumerateArray().Select(r => (r[0].GetString()!, new V3(r[1].GetSingle(), r[2].GetSingle(), r[3].GetSingle()))).ToList();
@@ -107,6 +111,8 @@ public static class DungeonCheck
             foreach (var k in new[] { "Pickable_BlackCoreStand", "blackmarble_altar_crystal", "TreasureChest_dvergrtown",
                          "Pickable_MountainCaveRandom", "Pickable_MountainCaveCrystal", "TreasureChest_mountaincave" })
                 if (st.keys.TryGetValue(k, out var kv)) Console.WriteLine($"    {k}: {kv.ok}/{kv.ok + kv.bad}");
+            foreach (var (k, kv) in st.keys.Where(k => k.Key.StartsWith("vegvisir:")))
+                Console.WriteLine($"    {k}: {kv.ok}/{kv.ok + kv.bad}");
         }
         return 0;
     }
@@ -141,9 +147,14 @@ public static class DungeonCheck
                 var c = ok.GetValueOrDefault(item);
                 ok[item] = (c.ok + (got == want ? 1 : 0), c.n + 1);
             }
-            if (shown++ < 3) Console.WriteLine($"  {p.Name} {p.X},{p.Z}: {string.Join(", ", p.Items ?? Array.Empty<string>())}");
+            var vv = ok.GetValueOrDefault("Vegvisirs");
+            bool vvOk = (p.Vegvisirs ?? Array.Empty<string>()).OrderBy(v => v).SequenceEqual(t.Vegvisirs.OrderBy(v => v));
+            ok["Vegvisirs"] = (vv.ok + (vvOk ? 1 : 0), vv.n + 1);
+            if (shown++ < 3) Console.WriteLine($"  {p.Name} {p.X},{p.Z}: {string.Join(", ", p.Items ?? Array.Empty<string>())}" +
+                                               $"{(p.Vegvisirs is { Length: > 0 } pv ? $"; vegvisir → {string.Join(", ", pv)}" : "")}");
         }
         foreach (var (item, c) in ok) Console.WriteLine($"{item}: {c.ok}/{c.n} match the game");
+        Console.WriteLine($"  ({pois.Count(p => p.Type is "InfestedMine" or "MountainCave" && p.Vegvisirs is { Length: > 0 })} mines/frost caves with a vegvisir)");
 
         // Maypoles: the simulated farm layouts' POIs against the oracle's whole-zone spawns.
         var gameMarks = truth.Values.Where(t => t.WholeZone).SelectMany(t => t.Marks ?? Array.Empty<(string, float, float)>()).ToList();
@@ -204,6 +215,74 @@ public static class DungeonCheck
                 for (int i = Math.Max(0, first - 1); i < Math.Min(first + 2, Math.Max(game.Count, res.Rooms.Count)); i++)
                     Console.WriteLine($"      #{i} game {(i < game.Count ? game[i].ToString() : "-")}  sim {(i < res.Rooms.Count ? (res.Rooms[i], res.RoomPositions[i]).ToString() : "-")}");
         }
+    }
+
+    /// <summary>
+    ///     dotnet run -- contents-check dir...
+    /// Every location the oracle sampled (dir/seed&lt;hash&gt;/oracle.loot.json, as
+    /// seedgen's data folder lays them out) against DungeonSim: the counts of
+    /// each content object (DungeonCatalog.ContentKinds) and whether a vegvisir
+    /// is there. Per prefab, how many instances match exactly.
+    /// </summary>
+    public static int RunContents(string[] args)
+    {
+        var kinds = DungeonCatalog.ContentKinds;
+        var stats = new SortedDictionary<string, (int n, int exact, Dictionary<string, int> bad)>();
+        var unsupported = new SortedDictionary<string, int>();
+        int shown = 0;
+        var files = args.SelectMany(d => Directory.GetDirectories(d, "seed*"))
+            .Select(d => Path.Combine(d, "oracle.loot.json")).Where(File.Exists).ToList();
+        foreach (var file in files)
+        {
+            int seed = int.Parse(Path.GetFileName(Path.GetDirectoryName(file))!["seed".Length..]);
+            var wg = new WorldGenerator(seed, 2);
+            var sim = new DungeonSim(DungeonCatalog.Instance, wg);
+            using var doc = JsonDocument.Parse(File.ReadAllText(file));
+            foreach (var e in doc.RootElement.EnumerateArray())
+            {
+                string prefab = e.GetProperty("prefab").GetString()!;
+                if (e.TryGetProperty("wholeZone", out _) || !e.TryGetProperty("objects", out var objs)) continue;
+                if (!sim.Supports(prefab)) { unsupported[prefab] = unsupported.GetValueOrDefault(prefab) + 1; continue; }
+                float x = e.GetProperty("x").GetSingle(), z = e.GetProperty("z").GetSingle();
+                var res = sim.Simulate(prefab, new V3(x, wg.GetHeight(x, z), z), seed);
+                // Objects seedgen leaves out of a POI's contents (lava rolls) aren't compared.
+                var truth = objs.EnumerateObject().Where(p => kinds.ContainsKey(p.Name) && !res.Uncertain.Contains(p.Name))
+                    .ToDictionary(p => p.Name, p => p.Value.GetInt32());
+                var got = res.Objects.Where(p => kinds.ContainsKey(p.Key) && !res.Uncertain.Contains(p.Key)).ToDictionary(p => p.Key, p => p.Value);
+                // The oracle reports a dungeon's vegvisirs, but for a plain location only the
+                // RandomSpawn'd ones ("present"); an always-there vegvisir can't be compared.
+                bool dungeon = e.TryGetProperty("rooms", out _);
+                bool gameVeg = (e.TryGetProperty("vegvisirs", out var vv) && vv.GetArrayLength() > 0)
+                    || (e.TryGetProperty("present", out var pr) && pr.EnumerateObject().Any(p => p.Name.Contains("Vegvisir")));
+                if (gameVeg) truth["(vegvisir)"] = 1;
+                if (res.Vegvisirs.Count > 0 && (dungeon || gameVeg || !AlwaysVegvisir(prefab))) got["(vegvisir)"] = 1;
+                var st = stats.TryGetValue(prefab, out var prev) ? prev : (n: 0, exact: 0, bad: new Dictionary<string, int>());
+                var diff = truth.Keys.Union(got.Keys).Where(k => truth.GetValueOrDefault(k) != got.GetValueOrDefault(k)).ToList();
+                foreach (var k in diff) st.bad[k] = st.bad.GetValueOrDefault(k) + 1;
+                stats[prefab] = (st.n + 1, st.exact + (diff.Count == 0 ? 1 : 0), st.bad);
+                if (diff.Count > 0 && shown++ < 8)
+                    Console.WriteLine($"  {prefab} @{x},{z} seed {seed}: " +
+                        string.Join(", ", diff.Select(k => $"{k} game {truth.GetValueOrDefault(k)} sim {got.GetValueOrDefault(k)}")));
+            }
+        }
+        Console.WriteLine($"{files.Count} seeds");
+        foreach (var (prefab, st) in stats)
+            Console.WriteLine($"{prefab}: {st.exact}/{st.n} exact" +
+                (st.bad.Count > 0 ? "  off: " + string.Join(", ", st.bad.OrderByDescending(b => b.Value).Take(5).Select(b => $"{b.Key} {b.Value}")) : ""));
+        if (unsupported.Count > 0) Console.WriteLine("not simulated: " + string.Join(", ", unsupported.Select(u => $"{u.Key} {u.Value}")));
+        return 0;
+    }
+
+    /// <summary>A plain location whose vegvisir sits under no RandomSpawn (always there).</summary>
+    static bool AlwaysVegvisir(string prefab)
+    {
+        var t = DungeonCatalog.Instance.Locations[prefab].Tree;
+        return t.Vegvisirs.Any(v =>
+        {
+            for (int n = v.Node; n >= 0; n = t.Nodes[n].Parent)
+                if (t.RandomSpawns.Any(r => r.Node == n) || t.RandomObjects.Any(r => r.Objects.Any(o => o.Node == n))) return false;
+            return true;
+        });
     }
 
     static int SeedGenSeed(string s) => SeedGen.ValheimSeedHash.GetStableHashCode(s);

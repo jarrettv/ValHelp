@@ -20,6 +20,7 @@ namespace ValHelpApi.ModuleWorlds;
 ///   GET    api/poi/icons/{name}.svg       public — an uploaded icon
 ///   PUT    api/admin/poi/settings         admin  — upsert one override (all-null deletes it)
 ///   PUT    api/admin/poi/altbiomes        admin  — upsert one variant's override (all-null deletes it)
+///   PUT    api/admin/poi/contents         admin  — show/hide one entry of a location's POI card (null deletes it)
 ///   DELETE api/admin/poi/settings         admin  — drop every override (back to the code defaults)
 ///   PUT    api/admin/poi/icons/{name}     admin  — upload/replace an icon
 ///   DELETE api/admin/poi/icons/{name}     admin
@@ -36,6 +37,8 @@ public static class WorldsPoiConfig
     static readonly Regex IconNamePattern = new(@"^[a-z0-9][a-z0-9_\-]{0,39}$", RegexOptions.Compiled);
     static readonly Regex AltBiomePattern = new(@"^[A-Za-z0-9 \-]{1,60}$", RegexOptions.Compiled);
     static readonly Regex ColorPattern = new(@"^#[0-9a-fA-F]{6}$", RegexOptions.Compiled);
+    /// <summary>POI card entry: an object prefab, "vegvisir", or "item:&lt;code&gt;" for one item of a chest.</summary>
+    static readonly Regex ContentKeyPattern = new(@"^[A-Za-z0-9_:# \-\(\)]{1,100}$", RegexOptions.Compiled);
     const int MaxSvgBytes = 64 * 1024;
 
     internal static void Map(WebApplication app)
@@ -47,6 +50,7 @@ public static class WorldsPoiConfig
         admin.MapPut("settings", PutSetting);
         admin.MapDelete("settings", DeleteAllSettings);
         admin.MapPut("altbiomes", PutAltBiome);
+        admin.MapPut("contents", PutContent);
         admin.MapPut("icons/{name}", PutIcon);
         admin.MapDelete("icons/{name}", DeleteIcon);
 
@@ -75,7 +79,9 @@ public static class WorldsPoiConfig
 
     public record SettingDto(bool? Visible, string? Icon, string? Color, int? Lod);
     public record AltBiomeDto(bool? Visible, string? Color);
-    public record ConfigResp(Dictionary<string, SettingDto> Prefabs, Dictionary<string, long> Icons, Dictionary<string, AltBiomeDto> AltBiomes);
+    /// <param name="Contents">Location prefab ("*" for every location) -> card entry -> shown.</param>
+    public record ConfigResp(Dictionary<string, SettingDto> Prefabs, Dictionary<string, long> Icons, Dictionary<string, AltBiomeDto> AltBiomes,
+        Dictionary<string, Dictionary<string, bool>> Contents);
 
     public static async Task<Ok<ConfigResp>> GetConfig(AppDbContext db, HttpContext ctx)
     {
@@ -85,13 +91,16 @@ public static class WorldsPoiConfig
             .Select(i => new { i.Name, i.UpdatedAt })
             .ToListAsync();
 
-        var prefabs = settings.ToDictionary(s => s.Prefab, s => new SettingDto(s.Visible, s.Icon, s.Color, s.Lod));
+        // A row may hold only card choices (Contents), or be the all-locations "*" row.
+        var prefabs = settings.Where(s => s.HasMapOverride)
+            .ToDictionary(s => s.Prefab, s => new SettingDto(s.Visible, s.Icon, s.Color, s.Lod));
 
         // Tiny and admin-edited: always revalidate so changes show up on next load.
         ctx.Response.Headers.CacheControl = "no-cache";
         return TypedResults.Ok(new ConfigResp(prefabs,
             icons.ToDictionary(i => i.Name, i => new DateTimeOffset(i.UpdatedAt).ToUnixTimeMilliseconds()),
-            alts.ToDictionary(a => a.Name, a => new AltBiomeDto(a.Visible, a.Color))));
+            alts.ToDictionary(a => a.Name, a => new AltBiomeDto(a.Visible, a.Color)),
+            settings.Where(s => s.Contents is { Count: > 0 }).ToDictionary(s => s.Prefab, s => s.Contents!)));
     }
 
     public static async Task<Results<ContentHttpResult, NotFound>> GetIcon(AppDbContext db, HttpContext ctx, string name)
@@ -122,10 +131,12 @@ public static class WorldsPoiConfig
         var row = await db.PoiSettings.FirstOrDefaultAsync(s => s.Prefab == req.Prefab);
         if (req.Visible == null && req.Icon == null && req.Color == null && req.Lod == null)
         {
-            // Nothing overridden any more: back to the code default.
+            // Nothing overridden any more: back to the code default (the card choices stay).
             if (row != null)
             {
-                db.PoiSettings.Remove(row);
+                row.Visible = null; row.Icon = null; row.Color = null; row.Lod = null;
+                row.UpdatedAt = DateTime.UtcNow;
+                if (row.Contents is not { Count: > 0 }) db.PoiSettings.Remove(row);
                 await db.SaveChangesAsync();
             }
             return TypedResults.NoContent();
@@ -178,17 +189,53 @@ public static class WorldsPoiConfig
         return TypedResults.Ok(new AltBiomeDto(row.Visible, row.Color));
     }
 
+    public record ContentReq(string Prefab, string Key, bool? Visible);
+
+    /// <summary>
+    /// Show or hide one entry (a chest, enemy, find, vegvisir, or one chest item) on
+    /// the POI card of a location prefab, or of every location with Prefab "*".
+    /// Visible null drops the override.
+    /// </summary>
+    public static async Task<Results<NoContent, BadRequest<string>, ForbidHttpResult>> PutContent(
+        ClaimsPrincipal user, AppDbContext db, ContentReq req)
+    {
+        if (!IsAdmin(user)) return TypedResults.Forbid();
+        if (req.Prefab == null || (req.Prefab != "*" && !PrefabPattern.IsMatch(req.Prefab))) return TypedResults.BadRequest("Invalid prefab");
+        if (req.Key == null || !ContentKeyPattern.IsMatch(req.Key)) return TypedResults.BadRequest("Invalid key");
+
+        var row = await db.PoiSettings.FirstOrDefaultAsync(s => s.Prefab == req.Prefab);
+        if (row == null)
+        {
+            if (req.Visible == null) return TypedResults.NoContent();
+            row = new PoiSetting { Prefab = req.Prefab };
+            db.PoiSettings.Add(row);
+        }
+        // A new dictionary, so EF sees the jsonb column change.
+        var contents = new Dictionary<string, bool>(row.Contents ?? new());
+        if (req.Visible == null) contents.Remove(req.Key);
+        else contents[req.Key] = req.Visible.Value;
+        row.Contents = contents.Count > 0 ? contents : null;
+        row.UpdatedAt = DateTime.UtcNow;
+        if (row.Contents == null && !row.HasMapOverride) db.PoiSettings.Remove(row);
+        await db.SaveChangesAsync();
+        return TypedResults.NoContent();
+    }
+
     public record ResetResp(int Removed, string[] PrunedIcons);
 
     /// <summary>
-    /// Reset every prefab to its code default and drop uploaded icons the deploy
-    /// now ships itself, e.g. after a deploy folds the overrides into code.
+    /// Reset every prefab's map look to its code default and drop uploaded icons
+    /// the deploy now ships itself, e.g. after a deploy folds the overrides into
+    /// code. The POI card choices (Contents) are kept.
     /// </summary>
     public static async Task<Results<Ok<ResetResp>, ForbidHttpResult>> DeleteAllSettings(
         ClaimsPrincipal user, AppDbContext db, IWebHostEnvironment env)
     {
         if (!IsAdmin(user)) return TypedResults.Forbid();
-        var removed = await db.PoiSettings.ExecuteDeleteAsync();
+        var removed = await db.PoiSettings.Where(s => s.Contents == null).ExecuteDeleteAsync();
+        removed += await db.PoiSettings.Where(s => s.Visible != null || s.Icon != null || s.Color != null || s.Lod != null)
+            .ExecuteUpdateAsync(u => u.SetProperty(s => s.Visible, (bool?)null).SetProperty(s => s.Icon, (string?)null)
+                .SetProperty(s => s.Color, (string?)null).SetProperty(s => s.Lod, (int?)null));
         var pruned = await PruneRedundant(db, env);
         return TypedResults.Ok(new ResetResp(removed, pruned));
     }
@@ -331,7 +378,16 @@ public class PoiSetting
     public string? Color { get; set; }
     /// <summary>Level of detail 0-3: zoom at which the POI turns from a dot into its icon.</summary>
     public int? Lod { get; set; }
+    /// <summary>
+    /// What the location's POI card shows (jsonb): card entry -> shown. Entries are
+    /// an object prefab (e.g. "TreasureChest_dvergrtown"), "vegvisir", or
+    /// "item:&lt;code&gt;"; web/src/components/poiContents.ts has the defaults. The
+    /// row with Prefab "*" holds the choices for every location.
+    /// </summary>
+    public Dictionary<string, bool>? Contents { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public bool HasMapOverride => Visible != null || Icon != null || Color != null || Lod != null;
 }
 
 public class AltBiomeSetting
