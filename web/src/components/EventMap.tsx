@@ -629,20 +629,23 @@ const EventMap: React.FC<EventMapProps> = ({ event, onClose }) => {
     }
   }, [applyTransform]);
 
-  // Biome variant strokes pulse (vector-map.js): while they're drawn, redraw just
-  // the map at ~30 fps. Markers sit on their own canvas and don't change.
+  // Biome variant strokes pulse (vector-map.js), and so do adornment glows
+  // (poiLayer.ts): while either is drawn, redraw just that canvas at ~30 fps.
   useEffect(() => {
     let id = 0, last = 0;
     const tick = (t: number) => {
       id = requestAnimationFrame(tick);
       const s = stateRef.current, area = mapAreaRef.current;
-      if (t - last < 33 || s.rafId || !s.ready || !area || !window.VectorMap?.isPulsing?.()) return;
+      if (t - last < 33 || s.rafId || !s.ready || !area) return;
+      const map = !!window.VectorMap?.isPulsing?.(), markers = poiLayerRef.current.isAnimating();
+      if (!map && !markers) return;
       last = t;
-      window.VectorMap.render(s.scale, s.panX, s.panY, area.clientWidth, area.clientHeight);
+      if (map) window.VectorMap.render(s.scale, s.panX, s.panY, area.clientWidth, area.clientHeight);
+      if (markers) drawMarkers();
     };
     id = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(id);
-  }, []);
+  }, [drawMarkers]);
 
   const fitMap = useCallback(() => {
     const area = mapAreaRef.current;

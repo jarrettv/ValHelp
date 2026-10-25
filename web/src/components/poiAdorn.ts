@@ -12,18 +12,33 @@ import { type PoiMarker, requestPoiRedraw } from './poiIcons';
 import { contentStarred, creatureIcon, getPoiContents, itemKey, VEGVISIR_KEY, type ContentObject } from './poiContents';
 
 /// Map art (an /img/Poi SVG, tinted) or an item icon (/api/icon/<code>.png).
+/// `glow`: its light's colour, when not the POI's dot colour.
 export type Adornment =
-  | { key: string; svg: string; color: string }
-  | { key: string; png: string };
+  | { key: string; svg: string; color: string; glow?: string }
+  | { key: string; png: string; glow?: string };
+
+/// Glow colours of their own, by card entry.
+const GLOW_COLORS: Record<string, string> = {
+  [VEGVISIR_KEY]: '#ff3030',                  // red
+  Pickable_BlackCoreStand: '#ff5ec8',         // black core: pink
+  blackmarble_altar_crystal: '#2ee6d0',       // sealbreaker fragment: teal
+  Charred_altar_bellfragment: '#3ee05a',      // bell fragment: green
+  'item:OnionSeeds': '#ffd83a',               // onion seeds: yellow
+};
 
 const VEGVISIR_COLOR = '#f0c75e';   // the card's gold
 const BEEHIVE_COLOR = '#e8b030';
 const CHEST_ICON = 'chest_hildir1';
 /// One adornment per copy, up to this many (a chest of 400 coins stays readable).
 const MAX_COPIES = 8;
+/// Entries that adorn once however many there are (a stack of seeds is one find).
+const ONE_COPY = new Set(['item:OnionSeeds']);
 
+/// One adornment per copy (capped), each with its entry's own glow colour if it has one.
 function copies(art: Adornment, n: number): Adornment[] {
-  return Array.from({ length: Math.min(n, MAX_COPIES) }, (_, i) => ({ ...art, key: `${art.key}#${i}` }));
+  const glow = GLOW_COLORS[art.key];
+  const max = ONE_COPY.has(art.key) ? 1 : MAX_COPIES;
+  return Array.from({ length: Math.min(n, max) }, (_, i) => ({ ...art, ...(glow ? { glow } : {}), key: `${art.key}#${i}` }));
 }
 
 /// Creature id -> its trophy's item code, once items.json has loaded.
@@ -65,7 +80,8 @@ export function poiAdornments(poi: PoiMarker): Adornment[] {
   const prefab = poi.prefab;
   const out: Adornment[] = [];
   if (poi.vegvisirs?.length && contentStarred(prefab, VEGVISIR_KEY))
-    poi.vegvisirs.forEach((v, i) => out.push({ key: `${VEGVISIR_KEY}#${i}:${v}`, svg: 'vegvisir', color: VEGVISIR_COLOR }));
+    poi.vegvisirs.forEach((v, i) => out.push({ key: `${VEGVISIR_KEY}#${i}:${v}`, svg: 'vegvisir', color: VEGVISIR_COLOR,
+                                               glow: GLOW_COLORS[VEGVISIR_KEY] }));
 
   const counted = Object.entries(poi.contents ?? {}).filter(([, n]) => n > 0);
   const cat = counted.length || poi.chests?.length ? getPoiContents() : null;

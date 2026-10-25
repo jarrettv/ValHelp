@@ -63,8 +63,17 @@ export const LOD_FADE = 1.25;
 
 const BASE_WORLD_SIZE = 24;   // icon size per unit of map scale (matches vhcli)
 const MAX_SCREEN_PX = 32;     // icons never grow past this (before ICON_SCALE)
-/// Every map icon draws this much larger than the sizes above.
+/// Every map icon draws this much larger than the sizes above, and larger
+/// again with a mouse than on a touch screen (where the map is small).
 const ICON_SCALE = 1.25;
+const DESKTOP_ICON_BOOST = 1.25;
+const TOUCH_ICON_BOOST = 1.1;
+const touchQuery = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)') : null;
+let iconBoost = touchQuery?.matches ? TOUCH_ICON_BOOST : DESKTOP_ICON_BOOST;
+touchQuery?.addEventListener?.('change', e => {
+  iconBoost = e.matches ? TOUCH_ICON_BOOST : DESKTOP_ICON_BOOST;
+  requestPoiRedraw();
+});
 /// LOD 1-3 icons draw at this fraction of a LOD 0 icon, so even at full zoom
 /// they stay smaller than bosses, traders and the start.
 const MINOR_SIZE_FACTOR = 0.75;
@@ -76,7 +85,8 @@ export interface LodStyle { dotAlpha: number; iconAlpha: number; iconSize: numbe
 /// partly on while an icon fades in over its dot.
 export function lodStyle(lod: number, scale: number, sizeScale = 1): LodStyle {
   const l = Math.max(0, Math.min(3, lod));
-  const capped = Math.min(MAX_SCREEN_PX, BASE_WORLD_SIZE * scale * sizeScale) * ICON_SCALE;
+  const capped = Math.min(MAX_SCREEN_PX, BASE_WORLD_SIZE * scale * sizeScale) * ICON_SCALE * iconBoost
+    * (1 + (ICON_ZOOM_GROWTH - 1) * adornProgress(scale));
   if (l === 0) return { dotAlpha: 0, iconAlpha: 1, iconSize: capped };
   const band = LOD_BANDS[l];
   const iconAlpha = ramp(scale, band.iconFrom);
@@ -93,8 +103,24 @@ export function lodStyle(lod: number, scale: number, sizeScale = 1): LodStyle {
 export const MAP_MAX_SCALE = 20;
 export const WHEEL_ZOOM_STEP = 1.15;
 /// Adornments show over the last this-many wheel steps before MAP_MAX_SCALE.
-const ADORN_STEPS = 5;
+const ADORN_STEPS = 11;
 export const ADORN_FROM = MAP_MAX_SCALE / WHEEL_ZOOM_STEP ** ADORN_STEPS;
+/// Over the last this-many steps, adornments grow and spread out from the POI.
+const ADORN_GROW_STEPS = 4;
+const ADORN_GROW_FROM = MAP_MAX_SCALE / WHEEL_ZOOM_STEP ** ADORN_GROW_STEPS;
+
+/// How far into the growing stage this zoom is: 0 before it, 1 at full zoom.
+export function adornGrowth(scale: number): number {
+  return Math.max(0, Math.min(1, Math.log(scale / ADORN_GROW_FROM) / Math.log(MAP_MAX_SCALE / ADORN_GROW_FROM)));
+}
+
+/// Past the size cap, icons grow again over the adornment zooms, to this much at full zoom.
+const ICON_ZOOM_GROWTH = 1.6;
+
+/// How far through the adornment zooms this is: 0 where they start, 1 at full zoom (even per wheel step).
+export function adornProgress(scale: number): number {
+  return Math.max(0, Math.min(1, Math.log(scale / ADORN_FROM) / Math.log(MAP_MAX_SCALE / ADORN_FROM)));
+}
 
 /// How visible adornments are at this zoom: fading in over the first step.
 export function adornAlpha(scale: number): number {
