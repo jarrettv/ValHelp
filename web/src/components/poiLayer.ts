@@ -41,18 +41,14 @@ interface Item { poi: PoiMarker; rule: IconRule; lod: number; ux: number; uy: nu
 /// at full zoom (they grow over the last steps, adornGrowth in poiIcons.ts).
 const ADORN_SIZE = 0.6;
 const ADORN_SIZE_MAX = 0.85;
-/// The ring's radius is this much past snug against the icon, and moves out by
-/// a further fraction of the icon (ADORN_SPREAD) steadily over the adornment
-/// zooms; full grown, neighbours leave a gap of ADORN_GAP of their size.
-const ADORN_RING = 1.2;
-const ADORN_SPREAD = 0.35;
-const ADORN_GAP = 0.25;
 /// Adornment centres sit this fraction of their size inside the icon's edge
-/// (POI art rarely fills its square, so this keeps them snug against it).
+/// (POI art rarely fills its square, so this keeps them snug against it), and
+/// drift out by this fraction of the icon over the adornment zooms.
 const ADORN_INSET = 0.1;
-/// The angle between neighbours: what spaces them a gap apart when full grown.
-const FULL_STEP = (ADORN_SIZE_MAX * (1 + ADORN_GAP)) / ((0.5 - ADORN_SIZE_MAX * ADORN_INSET) * ADORN_RING + ADORN_SPREAD);
-/// The ring starts below the icon and runs clockwise.
+const ADORN_SPREAD = 0.15;
+/// Neighbours sit this far apart round the ring, starting below the icon and
+/// running clockwise (more than fit go evenly round, overlapping if need be).
+const ADORN_STEP = Math.PI / 2;
 const ADORN_START = Math.PI / 2;
 
 /** One view of the map: unit map coordinates -> screen px is `u * size + pan`. */
@@ -214,17 +210,17 @@ function itemIcon(code: string): HTMLImageElement | null {
 }
 
 /// A POI's adornments, in a ring around its icon (centred on x, y, `size` px),
-/// each on a glow in its own colour or the POI's dot colour. `grow`: 0-1, how far into the last
-/// zoom steps (bigger). `spread`: 0-1 through the adornment zooms (further out, at the
-/// same angles, so they move straight out from the centre). `pulse`: 0-1, the glow's breath.
+/// each on a glow in its own colour or the POI's dot colour. `grow`: 0-1, how far
+/// into the last zoom steps (bigger). `spread`: 0-1 through the adornment zooms
+/// (further out). `pulse`: 0-1, the glow's breath.
+///
+/// The angles never change, so zooming only moves adornments straight out from
+/// the centre. The radius depends only on the zoom, never on how many there are.
 function drawAdornments(ctx: CanvasRenderingContext2D, adorn: readonly Adornment[], x: number, y: number,
                         size: number, grow: number, spread: number, color: string, pulse: number, dpr: number) {
   const px = size * (ADORN_SIZE + (ADORN_SIZE_MAX - ADORN_SIZE) * grow);
-  const radius = (size / 2 - px * ADORN_INSET) * ADORN_RING + size * ADORN_SPREAD * spread;
-  // Each keeps its angle at every zoom, so growing only moves it straight out
-  // from the POI. The angles are what puts full-grown neighbours a gap apart
-  // (or, too many for that, evenly round); smaller and nearer in, they still clear.
-  const step = Math.min((Math.PI * 2) / adorn.length, FULL_STEP);
+  const step = Math.min((Math.PI * 2) / adorn.length, ADORN_STEP);
+  const radius = size / 2 - px * ADORN_INSET + size * ADORN_SPREAD * spread;
   const glowCss = glowSprite(px, color, dpr).css;
   const gs = glowCss * (GLOW_SCALE_MIN + (GLOW_SCALE_MAX - GLOW_SCALE_MIN) * pulse), gh = gs / 2;
   const alpha = ctx.globalAlpha;
