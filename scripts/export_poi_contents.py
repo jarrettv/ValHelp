@@ -24,13 +24,13 @@ what those objects are, from the game's own prefabs:
              vegvisir stones reveal.
   names      display names for the item and creature codes used above.
 
-Also writes seedgen/WorldGen/Data/contents.json ({prefab: kind}), the objects
+Also writes seedgen/Vh.WorldGen/Data/contents.json ({prefab: kind}), the objects
 seedgen counts per POI.
 
     python scripts/export_poi_contents.py
 
 Re-run after a game update, after export_dungeon_rooms.py (it reads the
-dungeon rooms from seedgen/WorldGen/Data/dungeons.json.gz).
+dungeon rooms from seedgen/Vh.WorldGen/Data/dungeons.json.gz).
 """
 from __future__ import annotations
 
@@ -47,8 +47,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from export_dungeon_rooms import DEFAULT_DATA, ROOT, UnityPy, Exporter, prefab_name  # noqa: E402
 
 OUT = os.path.join(ROOT, "web", "public", "data", "vh", "poi-contents.json")
-SEEDGEN_OUT = os.path.join(ROOT, "seedgen", "WorldGen", "Data", "contents.json")
-DUNGEONS = os.path.join(ROOT, "seedgen", "WorldGen", "Data", "dungeons.json.gz")
+SEEDGEN_OUT = os.path.join(ROOT, "seedgen", "Vh.WorldGen", "Data", "contents.json")
+DUNGEONS = os.path.join(ROOT, "seedgen", "Vh.WorldGen", "Data", "dungeons.json.gz")
 # Smashables the game gives no name.
 SMASH_NAMES = {"Charred_altar_bellfragment": "Bell fragment altar"}
 

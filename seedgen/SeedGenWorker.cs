@@ -98,6 +98,7 @@ public sealed class SeedGenWorker(
 
             logger.LogInformation("Job #{Id}: generating textures + BVEC", job.Id);
             artifacts.GenerateAll(job.Seed, seedHash, job.WorldGenVersion, outDir, wg);
+            ArtifactCache.MarkCurrent(outDir);
 
             logger.LogInformation("Job #{Id} done: {Count} POIs at {Dir}, {Secs:F1}s",
                 job.Id, pois.Count, outDir, sw.Elapsed.TotalSeconds);

@@ -32,6 +32,7 @@ public static class AdminActivate
             b.Navigation(p => p.SpeedRuns).IsRequired(false);
             b.OwnsMany(p => p.Feedback);
             b.OwnsMany(p => p.Worlds);
+            b.OwnsMany(p => p.PinnedWorlds);
         });
 
         modelBuilder.Entity<Avatar>()

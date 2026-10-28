@@ -11,7 +11,8 @@ import { EXTRA_ITEMS, fetchVhItems, iconUrl } from '../guides/vh/data';
 declare global {
   interface Window {
     VectorMap: {
-      init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string) => Promise<void>;
+      init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string,
+             urls?: { biomes?: string; mask?: string }) => Promise<void>;
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;

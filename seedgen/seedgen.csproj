@@ -8,11 +8,12 @@
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
   </ItemGroup>
-  <!-- Dungeon room catalog for WorldGen/DungeonSim.cs, exported from the game by
-       scripts/export_dungeon_rooms.py. -->
+  <!-- Terrain generation shared with the browser build; its tests run against the game. -->
   <ItemGroup>
-    <EmbeddedResource Include="WorldGen/Data/dungeons.json.gz" LogicalName="dungeons.json.gz" />
-    <EmbeddedResource Include="WorldGen/Data/contents.json" LogicalName="contents.json" />
+    <ProjectReference Include="Vh.WorldGen/Vh.WorldGen.csproj" />
+    <Compile Remove="Vh.WorldGen*/**" />
+    <Content Remove="Vh.WorldGen*/**" />
+    <None Remove="Vh.WorldGen*/**" />
   </ItemGroup>
   <!-- oracle/ is a separate net472 BepInEx plugin, built against the game's own
        assemblies (see oracle/README.md). Neither its sources nor its generated

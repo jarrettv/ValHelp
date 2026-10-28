@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Valheim's terrain generation (heights, biomes, forest), reimplemented to
+       match the game bit for bit. Pure computation with no dependencies, so the
+       same code runs in seedgen (server) and in the browser (WebAssembly).
+       Checked against the game itself by Vh.WorldGen.Tests. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>Vh.World</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <!-- The game's location and alt-biome placement rules (scripts/export_location_rules.py). -->
+  <ItemGroup>
+    <EmbeddedResource Include="Data/locations.json" LogicalName="locations.json" />
+    <!-- Location contents (Contents/): the dungeon/location room catalog
+         (scripts/export_dungeon_rooms.py) and which objects count as contents
+         (scripts/export_poi_contents.py). -->
+    <EmbeddedResource Include="Data/dungeons.json.gz" LogicalName="dungeons.json.gz" />
+    <EmbeddedResource Include="Data/contents.json" LogicalName="contents.json" />
+  </ItemGroup>
+</Project>

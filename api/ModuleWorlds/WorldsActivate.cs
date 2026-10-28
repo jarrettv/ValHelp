@@ -11,6 +11,8 @@ public static class WorldsActivate
         WorldsEndpoints.Map(app);
         WorldsPoiConfig.Map(app);
         WorldsPublic.Map(app);
+        WorldsPins.Map(app);
+        WorldsEvents.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,5 +28,7 @@ public static class WorldsActivate
                 c => c.Aggregate(0, (h, kv) => HashCode.Combine(h, kv.Key.GetHashCode(), kv.Value)),
                 c => c.ToDictionary(kv => kv.Key, kv => kv.Value)));
         modelBuilder.Entity<PublicWorld>().HasKey(w => w.Seed);
+        modelBuilder.Entity<WorldEvent>().HasKey(e => e.Id);
+        modelBuilder.Entity<WorldEvent>().Property(e => e.Data).HasColumnType("jsonb");
     }
 }

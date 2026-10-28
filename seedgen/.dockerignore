@@ -1,0 +1,8 @@
+# Build context for the seedgen image: only the sources it compiles.
+**/bin/
+**/obj/
+Vh.WorldGen.Tests/
+Vh.WorldGen.Wasm/
+oracle/obj/
+# ...except the oracle plugin, built on the host (see oracle/README.md).
+!oracle/bin/Release/ValHelpOracle.dll

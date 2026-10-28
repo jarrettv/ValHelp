@@ -263,7 +263,9 @@ var OVERLAY_ALPHA = { mist: 0.6, lava: 0.5 };
 
 // ── Public API ───────────────────────────────────────────────────────
 
-function init(canvasEl, worldName, baseUrl, forestUrl) {
+// urls: optional { biomes, mask } overriding the seed's endpoints (e.g. blob: URLs
+// of a map generated in the browser, /auth/worldgen).
+function init(canvasEl, worldName, baseUrl, forestUrl, urls) {
   canvas = canvasEl;
 
   gl = canvas.getContext('webgl', { stencil: true, antialias: false, alpha: false });
@@ -275,13 +277,13 @@ function init(canvasEl, worldName, baseUrl, forestUrl) {
   var base = baseUrl || ('/api/map-data/' + encodeURIComponent(worldName));
 
   // Fetch binary geometry + textures in parallel
-  var biomesP = fetch(base + '/biomes?v=9')
+  var biomesP = fetch((urls && urls.biomes) || (base + '/biomes?v=10'))
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); });
 
   // forestUrl override lets callers source the static forest tile from a different endpoint
   // than the seed-specific biomes/mask (e.g. /api/track/map/_/forest).
   var forestP = loadImage(forestUrl || (base + '/forest'));
-  var maskP = loadImage(base + '/mask');
+  var maskP = loadImage((urls && urls.mask) || (base + '/mask'));
 
   return Promise.all([biomesP, forestP, maskP])
     .then(function(results) {

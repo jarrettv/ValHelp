@@ -145,7 +145,8 @@ public sealed class DungeonSim
 
         // SpawnLocation: with a custom interior transform the generator is moved
         // to the zone's own interior slot, its rotation undoing the location's.
-        var locals = tree.Nodes.Select(n => (n.Pos, n.Rot)).ToArray();
+        var locals = new (V3 Pos, Quat Rot)[tree.Nodes.Length];
+        for (int i = 0; i < locals.Length; i++) locals[i] = (tree.Nodes[i].Pos, tree.Nodes[i].Rot);
         locals[0] = (V3.Zero, Quat.Identity);   // asset root is zeroed for the spawn
         V3 vector = V3.Zero, vector2 = V3.Zero;
         bool hasInterior = loc.InteriorNode >= 0 && loc.GeneratorNode >= 0;

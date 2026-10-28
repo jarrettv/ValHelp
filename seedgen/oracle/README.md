@@ -66,6 +66,7 @@ Collected into the seed's artifact dir and served from
 | `oracle.biome.u8.gz` | gzip `uint8[2048²]` — dense `Heightmap.BiomeIndex` |
 | `oracle.forest.f32.gz` | gzip `float32[2048²]` — `GetForestFactor` |
 | `oracle.perlin.f32.gz` | gzip `float32[256·256·3]` — `(x, y, PerlinNoise(x,y))` triples |
+| `oracle.rivers.bin.gz` | gzip binary — the river network: lakes, rivers, streams and every river point per 64 m cell (`WriteRivers` documents the layout) |
 
 Layout matches the game: row-major, `index = i*2048 + j`, `i` the north axis so
 row 0 is the **south** edge, `world = (k − 1024)·12 + 6`.
@@ -75,6 +76,24 @@ has to reproduce the input generator — one less thing to get subtly wrong. Inp
 deliberately mix fine fractional steps with the large magnitudes worldgen actually
 feeds Perlin (coords offset by up to ±10000), so it exercises integer-boundary and
 precision-loss behaviour rather than just `[0,1)`.
+
+## Regression tests
+
+`seedgen/Vh.WorldGen` (the terrain code shared by seedgen and the browser build)
+is checked against these dumps bit for bit by `seedgen/Vh.WorldGen.Tests`:
+
+```
+scripts/oracle_fixtures.sh JVModsFun NewDNTest ...   # boot the game per seed, save its dumps
+dotnet test seedgen/Vh.WorldGen.Tests                 # Perlin, river network, 2048² height/biome/forest
+dotnet build seedgen/Vh.WorldGen.Wasm -c Release && node seedgen/Vh.WorldGen.Wasm/check-oracle.mjs
+```
+
+The fixtures (`Vh.WorldGen.Tests/oracle-fixtures/`, gitignored) record the game
+version; re-make them after a Valheim update. Matching took modelling how the
+game's code runs under Mono, not just what it says: float expressions in Unity
+code are evaluated in double and rounded only when stored, and in one place
+(`GetDeepNorthHeight`) a float local is read back unrounded. Comments in
+`WorldGenerator.cs`, `Vector2.cs`, `UnityRandom.cs` and `FastNoise.cs` mark each case.
 
 ## Compare
 

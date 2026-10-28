@@ -30,7 +30,7 @@ public static class AdminEndpointsFeedback
 
         var entries = users
             .SelectMany(u => (u.Prefs?.Feedback ?? new List<UserPrefsFeedback>())
-                .Select(f => new FeedbackEntry(u.Id, u.Username, u.AvatarUrl, f.Page, f.Msg, f.At)))
+                .Select(f => new FeedbackEntry(u.Id, u.Username, u.AvatarUrl, f.Page, f.Msg, f.At, f.Kind ?? "feedback")))
             .OrderByDescending(e => e.At)
             .ToList();
 
@@ -38,5 +38,5 @@ public static class AdminEndpointsFeedback
     }
 
     public record FeedbackEntry(
-        int UserId, string Username, string AvatarUrl, string Page, string Msg, DateTime At);
+        int UserId, string Username, string AvatarUrl, string Page, string Msg, DateTime At, string Kind);
 }

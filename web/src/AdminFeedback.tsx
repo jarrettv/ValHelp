@@ -12,6 +12,7 @@ interface FeedbackEntry {
   page: string;
   msg: string;
   at: string;
+  kind: 'feedback' | 'feature';
 }
 
 const fetchFeedback = async (): Promise<FeedbackEntry[]> => {
@@ -47,6 +48,7 @@ const AdminFeedback: React.FC = () => {
           <thead>
             <tr style={{ borderBottom: '1px solid #444' }}>
               <th style={{ textAlign: 'left', padding: '6px 8px', color: '#8cf' }}>User</th>
+              <th style={{ textAlign: 'left', padding: '6px 8px', color: '#8cf' }}>Kind</th>
               <th style={{ textAlign: 'left', padding: '6px 8px', color: '#8cf' }}>Page</th>
               <th style={{ textAlign: 'left', padding: '6px 8px', color: '#8cf' }}>Message</th>
               <th style={{ textAlign: 'left', padding: '6px 8px', color: '#8cf', whiteSpace: 'nowrap' }}>When</th>
@@ -62,6 +64,13 @@ const AdminFeedback: React.FC = () => {
                     )}
                     {f.username}
                   </Link>
+                </td>
+                <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                  <span style={{
+                    padding: '1px 7px', borderRadius: '8px', fontSize: '11px', fontWeight: 700,
+                    background: f.kind === 'feature' ? 'rgba(127,214,164,0.16)' : 'rgba(136,187,255,0.14)',
+                    color: f.kind === 'feature' ? '#7fd6a4' : '#88bbff',
+                  }}>{f.kind === 'feature' ? 'Feature request' : 'Feedback'}</span>
                 </td>
                 <td style={{ padding: '6px 8px', fontSize: '12px' }}>
                   <Link to={f.page} style={{ color: '#88bbff' }}>{f.page}</Link>

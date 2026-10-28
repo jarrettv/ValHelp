@@ -14,6 +14,32 @@ if (args.Length > 0 && args[0] == "pois-json")
     Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(pois, SeedGen.Json.CamelCase));
     return 0;
 }
+// Dev: `grid-dump <SeedName> <dir> [worldGenVersion]` writes our height.f32 / biome.u8 / forest.f32
+// in the oracle's layout (scripts/compare_oracle.py --ours <dir>).
+if (args.Length > 0 && args[0] == "grid-dump")
+{
+    int seed = SeedGen.ValheimSeedHash.GetStableHashCode(args[1]);
+    var grid = Vh.World.WorldGrid.GenerateParallel(seed, args.Length > 3 ? int.Parse(args[3]) : 2);
+    Directory.CreateDirectory(args[2]);
+    File.WriteAllBytes(Path.Combine(args[2], "height.f32"), System.Runtime.InteropServices.MemoryMarshal.AsBytes(grid.Height.AsSpan()).ToArray());
+    File.WriteAllBytes(Path.Combine(args[2], "biome.u8"), grid.Biome);
+    File.WriteAllBytes(Path.Combine(args[2], "forest.f32"), System.Runtime.InteropServices.MemoryMarshal.AsBytes(grid.Forest.AsSpan()).ToArray());
+    return 0;
+}
+// Dev: `map-bvec <SeedName> <file>` writes the seed's compressed vector map, as a job does
+// (timings to stdout), to compare with the browser build's (Vh.WorldGen.Wasm).
+if (args.Length > 0 && args[0] == "map-bvec")
+{
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    var wg = new Vh.World.WorldGenerator(SeedGen.ValheimSeedHash.GetStableHashCode(args[1]), 2);
+    long tGen = sw.ElapsedMilliseconds;
+    var (map, mask, height) = (Vh.Rendering.MapArtifacts.NewMap(), Vh.Rendering.MapArtifacts.NewRgba(), Vh.Rendering.MapArtifacts.NewRgba());
+    Vh.Rendering.MapArtifacts.FillTextures(wg, map, mask, height);
+    long tTex = sw.ElapsedMilliseconds;
+    File.WriteAllBytes(args[2], Vh.Rendering.MapArtifacts.Bvec(map, mask, height));
+    Console.WriteLine($"generator {tGen} ms, textures {tTex - tGen} ms, bvec {sw.ElapsedMilliseconds - tTex} ms");
+    return 0;
+}
 // Dev: `prefab-types` prints every POI prefab with its type and name (scripts/export_poi_catalog.py).
 if (args.Length > 0 && args[0] == "prefab-types")
 {

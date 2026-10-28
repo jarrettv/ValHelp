@@ -2,8 +2,30 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-10-27
+
+* **Generate any seed on the [world map](/worlds), in your own browser.** Type a seed into the world picker and it's built on your device in about half a minute on a desktop (longer on a phone): terrain, biomes, forests, every location the game would place, and what each one holds, matched against the game's own world generation. Only the seed name is sent to us.
+* **Your worlds stay on your device.** Up to four generated worlds are kept in the browser and reopen in a second or two. The picker splits the public worlds from the ones **on this device**, and a green badge marks a world that was made locally.
+* **Log in to pin a world to your account**, up to four. A pinned world follows you to your other browsers and phones, which build it themselves the first time you open it.
+* **Got an idea or a bug?** The map has a **Feedback** button for feedback and feature requests (you'll need to log in to send).
+* **The map can go full screen.** The button in the top-right corner hides the site's menu bar so the map fills the window, and keeps your zoom when you do. Press Escape to bring the menu back.
+* We now count how the map is used — seeds generated, how far people zoom, which markers they click, hover and filter, phone or desktop — to know what to improve. It's anonymous: a random id per browser tab and no IP addresses, and these numbers stay with us.
+
+## 2026-10-24
+
+* **Every point of interest on the [world map](/worlds) now says what's inside.** Hover a marker (or tap it on a phone) and its card lists the finds, chests and enemies, worked out from the game's own layout code for that exact spot: vegvisirs, Black Cores, Sealbreaker and bell fragments, how many of each, and the odds for each chest item. Where the game decides at random when you arrive, as in most burial chambers, the card says what *could* be there instead.
+* **The things worth the trip glow on the map.** Zoom in close and vegvisirs, Black Cores, Sealbreaker fragments, bell fragments and onion seeds appear as small glowing icons around their marker, one per item, so a crypt with two Black Cores shows two. They spread out the further you zoom.
+* **Smoother zooming**, and markers grow as you get close, so the icons stay readable at the deepest zoom.
+
+## 2026-10-22
+
+* **Maypoles and granaries are on the map.** A farm can raise a maypole in its yard, and Deep North villages have granaries; both now get their own markers, predicted from the game's own building layout and checked against the real thing.
+
 ## 2026-10-19
 
+* **Biome variants are on the [world map](/worlds).** Valheim 1.0 lays variants over whole patches of a biome, such as Mushroom and Dandelion Meadows or Wolf Mountain, which change what grows, spawns and gets built there. Each patch is shaded with its own pattern, and hovering it (or tapping, on a phone) shows which variant it is and what it changes.
+* **More map icons**: eleven more point-of-interest types got their own icon instead of a plain dot.
+* **The map works better on phones.** A tap opens a marker's card or a biome variant's, since there's no hover on a touch screen.
 * **The [Deep North guide](/guides/articles/deep-north) explains Jotun Invasions**, checked against the game files. It covers where an invasion can land after you break the Black Ice in Mörkhalla, why you can't predict the spot, the three-at-once limit, and what you'll find when you get there.
 
 ## 2026-10-15

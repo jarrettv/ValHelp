@@ -27,11 +27,13 @@ spawns, locations and weather. Extracted from the game's `AltBiomeList` asset an
 5. **When it runs:** at every world load, on the server and on each client. The result isn't
    saved; the game's `*_biomedatacache.bin` holds only the grid's biome and height.
 
-**Deterministic.** The shuffle uses an unseeded `System.Random`, but in practice placement is
-stable. Two separate server boots of the same seed placed all 71 variant sectors identically
-(NewDNTest, 2026-10-17). Treat the game as the source of truth: the oracle plugin writes
+**Deterministic.** Each biome's sectors are shuffled by `Utils.Shuffle` (assembly_utils:
+Fisher-Yates on Unity's RNG, `Random.Range(0, n + 1)`), seeded just before with
+`biome + hash(variant name) + world seed`. A decompiler shows the call as
+`ShuffleClass.Shuffle`, which would use an unseeded `System.Random`; the IL says otherwise.
+Ported in `seedgen/Vh.WorldGen/Locations/BiomeData.cs` and checked against the game
+(`Vh.WorldGen.Tests`, `AltBiomes_match_game`); the oracle plugin still writes
 `oracle.altbiomes.json` on every job (`DumpAltBiomes` in `seedgen/oracle/OraclePlugin.cs`).
-Don't port the shuffle.
 
 Defaults for every variant unless noted: enabled, average height 30 to 10000 m, no
 map-quadrant limits.

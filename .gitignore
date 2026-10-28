@@ -164,3 +164,7 @@ screenshots/done/*
 !screenshots/done/.gitkeep
 .claude/settings.local.json
 **/.claude/settings.local.json
+# Worldgen oracle ground truth (scripts/oracle_fixtures.sh); large, regenerated per game build.
+seedgen/Vh.WorldGen.Tests/oracle-fixtures/
+# Browser worldgen build (scripts/build_worldgen_wasm.sh).
+web/public/worldgen/

@@ -28,17 +28,24 @@ jobs:
           cd web
           npm install
 
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      # Browser worldgen (seedgen/Vh.WorldGen.Wasm, AOT-compiled) into web/public/worldgen/,
+      # which the web build copies into the site. Its output is gitignored, so it's built here.
+      - name: Build browser worldgen (WebAssembly)
+        run: |
+          dotnet workload install wasm-tools-net9
+          bash scripts/build_worldgen_wasm.sh
+
       - name: Build with npm
         run: |
           cd web
           mkdir -p ../api/wwwroot
           npm run build
           cp -r dist/* ../api/wwwroot/
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.x'
 
       - name: Build with dotnet
         run: dotnet build api/ValHelpApi.csproj --configuration Release

@@ -22,7 +22,7 @@ game's own bundles:
 Floats are written exactly as the game stores them (float32), because the
 generator seeds each room's rolls from its integer-truncated position.
 
-    python scripts/export_dungeon_rooms.py            # -> seedgen/WorldGen/Data/dungeons.json.gz
+    python scripts/export_dungeon_rooms.py            # -> seedgen/Vh.WorldGen/Data/dungeons.json.gz
 
 Format (positional arrays to keep it small; DungeonCatalog.cs reads it):
   node         [parent, active, px, py, pz, qx, qy, qz, qw (, sx, sy, sz)]  local transform
@@ -50,7 +50,7 @@ except ImportError:  # pragma: no cover
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_DATA = r"C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data"
-OUT = os.path.join(ROOT, "seedgen", "WorldGen", "Data", "dungeons.json.gz")
+OUT = os.path.join(ROOT, "seedgen", "Vh.WorldGen", "Data", "dungeons.json.gz")
 
 
 def soft_ref_paths(data_dir: str) -> dict[str, str]:

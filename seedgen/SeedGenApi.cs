@@ -83,6 +83,7 @@ public static class SeedGenApi
 
         // Re-generate BVEC from textures
         artifacts.GenerateAll(seed, seedHash, worldGen, dir, wg);
+        ArtifactCache.MarkCurrent(dir);
 
         return Results.Ok(new { seed, status = "done", poisCount, message = "BVEC + POIs regenerated" });
     }
@@ -120,7 +121,7 @@ public static class SeedGenApi
         => Results.Ok(new { status = "ok", worker = worker.IsRunning });
 
     static IResult GetArtifact(int worldGen, int seedHash, string file, HttpContext ctx,
-        IOptions<SeedGenOptions> options)
+        IOptions<SeedGenOptions> options, ArtifactGenerator artifacts)
     {
         if (!AllowedFiles.Contains(file))
             return Results.NotFound();
@@ -128,6 +129,8 @@ public static class SeedGenApi
         var path = Path.Combine(options.Value.SeedDir(worldGen, seedHash), file);
         if (file == "pois")
             PoiCache.EnsureCurrent(options.Value.SeedDir(worldGen, seedHash), seedHash, worldGen);
+        if (ArtifactCache.Files.Contains(file))
+            ArtifactCache.EnsureCurrent(options.Value.SeedDir(worldGen, seedHash), seedHash, worldGen, artifacts);
         if (!File.Exists(path))
             return Results.NotFound();
 

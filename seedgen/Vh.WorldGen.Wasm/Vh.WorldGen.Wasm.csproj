@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <!-- Vh.WorldGen compiled to WebAssembly, for generating maps in the browser
+       (in a Web Worker). Exports in Exports.cs. Its output is checked against the
+       game by check-oracle.mjs, the same fixtures as Vh.WorldGen.Tests. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Ahead-of-time compile to native WebAssembly on publish (needs the
+         wasm-tools-net9 workload). Interpreted, worldgen runs ~110x slower. -->
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Vh.WorldGen/Vh.WorldGen.csproj" />
+  </ItemGroup>
+</Project>

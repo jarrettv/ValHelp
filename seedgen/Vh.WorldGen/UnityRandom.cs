@@ -8,7 +8,10 @@ namespace Vh.Numerics;
 /// </summary>
 public static class UnityRandom
 {
-    private static uint s0, s1, s2, s3;
+    // Unity's RNG is one global state; here it's one per thread, so worlds can be
+    // generated (and tests run) in parallel. Each sequence the game draws (a
+    // generator's construction, a location type's placement) runs on one thread.
+    [ThreadStatic] private static uint s0, s1, s2, s3;
 
     /// <summary>
     /// Initialize state using MT19937-style expansion (matches Unity's InitState).
@@ -37,22 +40,21 @@ public static class UnityRandom
         return s3;
     }
 
+    /// <summary>Unity's native GetFloat: [0, 1], by multiplying by the reciprocal (not dividing).</summary>
+    static float GetFloat(uint raw) => (float)(raw & 0x7FFFFF) * (1.0f / 8388607.0f);
+
     /// <summary>Returns a float in [0, 1]. Matches Unity's Random.value.</summary>
-    public static float Value()
-    {
-        uint raw = NextUint();
-        return (raw & 0x7FFFFF) / 8388607.0f;
-    }
+    public static float Value() => GetFloat(NextUint());
 
     /// <summary>
-    /// Core float range implementation matching Unity's native RangedRandom.
-    /// Verified against BepInEx capture: (min-max) * t + max where t = (raw &amp; 0x7FFFFF) / 0x7FFFFF.
+    /// Unity's native RangedRandom, <c>min * t + (1 - t) * max</c> in float. The same
+    /// value as <c>(min - max) * t + max</c> on paper, but rounded differently: the
+    /// game's river widths (Range(20, 20) = 20.000002) show this is the form it uses.
     /// </summary>
     private static float RangedRandomInternal(float min, float max)
     {
-        uint raw = NextUint();
-        float t = (raw & 0x7FFFFF) / 8388607.0f;
-        return (min - max) * t + max;
+        float t = GetFloat(NextUint());
+        return min * t + (1.0f - t) * max;
     }
 
     /// <summary>Matches UnityEngine.Random.Range(float, float).</summary>

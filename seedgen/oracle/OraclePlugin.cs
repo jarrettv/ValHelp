@@ -157,6 +157,8 @@ public class OraclePlugin : BaseUnityPlugin
         // the job its loot.
         try { DumpDrops(Path.Combine(dir, "oracle.drops.json")); }
         catch (Exception ex) { Log($"{Tag} drops failed: {ex}"); }
+        try { DumpLocations(Path.Combine(dir, "oracle.locations.json")); }
+        catch (Exception ex) { Log($"{Tag} locations failed: {ex}"); }
         try { DumpAltBiomes(Path.Combine(dir, "oracle.altbiomes.json")); }
         catch (Exception ex) { Log($"{Tag} altbiomes failed: {ex}"); }
         if (Environment.GetEnvironmentVariable("VALHELP_ALTBIOMES_ONLY") == "1")
@@ -207,6 +209,77 @@ public class OraclePlugin : BaseUnityPlugin
     {
         System.Console.WriteLine(msg);
         System.Console.Out.Flush();
+    }
+
+    /// <summary>
+    /// Ground truth for porting location placement (ZoneSystem.GenerateLocations):
+    /// every location type's rules in the order the game processes them
+    /// (m_locations, before its stable prioritized-first sort), the alt-biome
+    /// rules placement consults, and every placed instance with its position as
+    /// float bits (exact). Written before loot sampling touches anything.
+    /// </summary>
+    static void DumpLocations(string path)
+    {
+        var zs = ZoneSystem.instance;
+        var inv = CultureInfo.InvariantCulture;
+        string F(float v) => v.ToString("R", inv);
+        string S(string v) => v == null ? "null" : "\"" + Escape(v) + "\"";
+        string B(bool v) => v ? "true" : "false";
+        string L(IEnumerable<string> xs) => "[" + string.Join(",", (xs ?? Enumerable.Empty<string>()).Select(S).ToArray()) + "]";
+        int Bits(float v) => BitConverter.ToInt32(BitConverter.GetBytes(v), 0);
+        // Disabled entries can have an empty prefab reference, whose Name throws.
+        string Prefab(ZoneSystem.ZoneLocation l)
+        {
+            try { return l.m_prefab.Name; } catch { return l.m_prefabName; }
+        }
+
+        var sb = new StringBuilder("{\n\"locations\":[\n");
+        for (int i = 0; i < zs.m_locations.Count; i++)
+        {
+            var l = zs.m_locations[i];
+            if (i > 0) sb.Append(",\n");
+            sb.Append($"{{\"name\":{S(l.m_name)},\"prefab\":{S(Prefab(l))},\"enable\":{B(l.m_enable)},")
+              .Append($"\"biome\":{(int)l.m_biome},\"biomeArea\":{(int)l.m_biomeArea},\"quantity\":{l.m_quantity},")
+              .Append($"\"prioritized\":{B(l.m_prioritized)},\"centerFirst\":{B(l.m_centerFirst)},\"unique\":{B(l.m_unique)},")
+              .Append($"\"group\":{S(l.m_group)},\"minDistanceFromSimilar\":{F(l.m_minDistanceFromSimilar)},")
+              .Append($"\"groupMax\":{S(l.m_groupMax)},\"maxDistanceFromSimilar\":{F(l.m_maxDistanceFromSimilar)},")
+              .Append($"\"interiorRadius\":{F(l.m_interiorRadius)},\"exteriorRadius\":{F(l.m_exteriorRadius)},")
+              .Append($"\"minTerrainDelta\":{F(l.m_minTerrainDelta)},\"maxTerrainDelta\":{F(l.m_maxTerrainDelta)},")
+              .Append($"\"minimumVegetation\":{F(l.m_minimumVegetation)},\"maximumVegetation\":{F(l.m_maximumVegetation)},")
+              .Append($"\"surroundCheckVegetation\":{B(l.m_surroundCheckVegetation)},\"surroundCheckDistance\":{F(l.m_surroundCheckDistance)},")
+              .Append($"\"surroundCheckLayers\":{l.m_surroundCheckLayers},\"surroundBetterThanAverage\":{F(l.m_surroundBetterThanAverage)},")
+              .Append($"\"inForest\":{B(l.m_inForest)},\"forestTresholdMin\":{F(l.m_forestTresholdMin)},\"forestTresholdMax\":{F(l.m_forestTresholdMax)},")
+              .Append($"\"minDistanceFromCenter\":{F(l.m_minDistanceFromCenter)},\"maxDistanceFromCenter\":{F(l.m_maxDistanceFromCenter)},")
+              .Append($"\"minDistance\":{F(l.m_minDistance)},\"maxDistance\":{F(l.m_maxDistance)},")
+              .Append($"\"minAltitude\":{F(l.m_minAltitude)},\"maxAltitude\":{F(l.m_maxAltitude)},")
+              .Append($"\"altBiomeParent\":{S(l.AltBiomeParent)}}}");
+        }
+        sb.Append("\n],\n\"altBiomes\":[\n");
+        for (int i = 0; i < AltBiomeList.m_altBiomes.Count; i++)
+        {
+            var a = AltBiomeList.m_altBiomes[i];
+            if (i > 0) sb.Append(",\n");
+            sb.Append($"{{\"name\":{S(a.m_name)},\"enabled\":{B(a.m_enabled)},\"biome\":{(int)a.m_biome},")
+              .Append($"\"minDistanceFromCenter\":{F(a.m_minDistanceFromCenter)},\"minAmountSpawned\":{a.m_minAmountSpawned},\"maxAmountSpawned\":{a.m_maxAmountSpawned},")
+              .Append($"\"chance\":{F(a.m_chance)},\"requireNeighbor\":{(int)a.m_requireNeighbor},\"notNeighbor\":{(int)a.m_notNeighbor},")
+              .Append($"\"incompatibleAltBiomes\":{L(a.m_incompatibleAltBiomes)},\"minEdgeSize\":{a.m_minEdgeSize},\"maxEdgeSize\":{a.m_maxEdgeSize},")
+              .Append($"\"minAvgHeight\":{F(a.m_minAvgHeight)},\"maxAvgHeight\":{F(a.m_maxAvgHeight)},")
+              .Append($"\"belowWorldX\":{F(a.m_belowWorldX)},\"aboveWorldX\":{F(a.m_aboveWorldX)},")
+              .Append($"\"belowWorldY\":{F(a.m_belowWorldY)},\"aboveWorldY\":{F(a.m_aboveWorldY)},")
+              .Append($"\"blockLocationNames\":{L(a.m_blockLocationNames)},")
+              .Append($"\"addLocations\":{L(a.m_addLocations == null ? null : a.m_addLocations.Select(z => z.m_name))}}}");
+        }
+        sb.Append("\n],\n\"instances\":[\n");
+        int n = 0;
+        foreach (var kv in zs.m_locationInstances)
+        {
+            var p = kv.Value.m_position;
+            if (n++ > 0) sb.Append(",\n");
+            sb.Append($"[{S(Prefab(kv.Value.m_location))},{Bits(p.x)},{Bits(p.y)},{Bits(p.z)}]");
+        }
+        sb.Append("\n]\n}\n");
+        File.WriteAllText(path, sb.ToString());
+        Log($"{Tag} locations: {zs.m_locations.Count} types, {AltBiomeList.m_altBiomes.Count} alt biomes, {n} instances");
     }
 
     /// <summary>
@@ -303,7 +376,52 @@ public class OraclePlugin : BaseUnityPlugin
         WriteGz(Path.Combine(dir, "oracle.height.f32.gz"), height);
         WriteGz(Path.Combine(dir, "oracle.biome.u8.gz"), biome);
         WriteGz(Path.Combine(dir, "oracle.forest.f32.gz"), forest);
+        WriteRivers(wg, Path.Combine(dir, "oracle.rivers.bin.gz"));
         WriteMeta(Path.Combine(dir, "oracle.json"), seed);
+    }
+
+    /// <summary>
+    /// The river network WorldGenerator builds at construction (lakes, rivers,
+    /// streams, and the per-grid river points heights are carved from), so a
+    /// height mismatch along a river can be traced to the stage that differs.
+    /// Little-endian: lakes (n, then x,y), rivers and streams (n, then p0, p1,
+    /// center, widthMin, widthMax, curveWidth, curveWavelength), river grids
+    /// (n, then per grid sorted by y then x: x, y, count, then p.x, p.y, w in the
+    /// game's order). Ints are int32, the rest float32.
+    /// </summary>
+    static void WriteRivers(WorldGenerator wg, string path)
+    {
+        var t = Traverse.Create(wg);
+        var lakes = t.Field("m_lakes").GetValue<List<Vector2>>() ?? new List<Vector2>();
+        var rivers = t.Field("m_rivers").GetValue<List<WorldGenerator.River>>() ?? new List<WorldGenerator.River>();
+        var streams = t.Field("m_streams").GetValue<List<WorldGenerator.River>>() ?? new List<WorldGenerator.River>();
+        var points = t.Field("m_riverPoints").GetValue<Dictionary<Vector2i, WorldGenerator.RiverPoint[]>>();
+
+        var ms = new MemoryStream();
+        var w = new BinaryWriter(ms);
+        w.Write(lakes.Count);
+        foreach (var l in lakes) { w.Write(l.x); w.Write(l.y); }
+        foreach (var list in new[] { rivers, streams })
+        {
+            w.Write(list.Count);
+            foreach (var r in list)
+            {
+                w.Write(r.p0.x); w.Write(r.p0.y); w.Write(r.p1.x); w.Write(r.p1.y);
+                w.Write(r.center.x); w.Write(r.center.y);
+                w.Write(r.widthMin); w.Write(r.widthMax); w.Write(r.curveWidth); w.Write(r.curveWavelength);
+            }
+        }
+        var keys = points.Keys.OrderBy(k => k.y).ThenBy(k => k.x).ToList();
+        w.Write(keys.Count);
+        foreach (var k in keys)
+        {
+            var arr = points[k];
+            w.Write(k.x); w.Write(k.y); w.Write(arr.Length);
+            foreach (var rp in arr) { w.Write(rp.p.x); w.Write(rp.p.y); w.Write(rp.w); }
+        }
+        w.Flush();
+        WriteGz(path, ms.ToArray());
+        Log($"{Tag} rivers: {lakes.Count} lakes, {rivers.Count} rivers, {streams.Count} streams, {keys.Count} river grids");
     }
 
     /// <summary>

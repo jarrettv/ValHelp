@@ -1,0 +1,52 @@
+/* Worldgen dev page (AdminWorldgen.tsx), in the admin pages' palette (AdminPois.css). */
+.awg-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.awg-page > * { flex-shrink: 0; }
+.awg-page h1 { margin: 0; }
+.awg-sub { margin: 0; color: #999; font-size: 0.9rem; }
+.awg-muted { color: #999; }
+
+.awg-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.awg-controls input {
+  background: #1a1a2e; border: 1px solid #444; border-radius: 4px;
+  color: #eee; padding: 4px 8px; width: 10rem;
+}
+.awg-controls button {
+  background: #2a2a44; border: 1px solid #555; border-radius: 4px;
+  color: #eee; padding: 4px 10px; cursor: pointer;
+}
+.awg-controls button:disabled { opacity: 0.5; cursor: default; }
+.awg-controls > * { flex: 0 0 auto; width: auto; margin: 0; }
+.awg-link { color: #8ab4f8; font-size: 0.9rem; }
+
+.awg-progress {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;
+  background: #15152a; border: 1px solid #333; border-radius: 6px; padding: 0.5rem 0.75rem;
+}
+.awg-stages { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; list-style: none; font-size: 0.9rem; }
+.awg-stage.todo { color: #666; }
+.awg-stage.active { color: #f0c75e; }
+.awg-stage.done { color: #8fc99a; }
+.awg-stage.done::before { content: '✓ '; }
+.awg-pct { font-variant-numeric: tabular-nums; }
+.awg-elapsed { font-variant-numeric: tabular-nums; color: #ccc; }
+
+.awg-summary { font-size: 0.9rem; line-height: 1.5; }
+.awg-ok { color: #8fc99a; }
+.awg-warn { color: #f0a35e; }
+.awg-error { color: #ff8080; }
+
+.awg-map {
+  position: relative;
+  display: flex;
+  height: min(75vh, 900px);
+  border: 1px solid #333;
+  border-radius: 6px;
+  overflow: hidden;
+}

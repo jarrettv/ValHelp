@@ -9,7 +9,8 @@ import AltBiomeCard from './AltBiomeCard';
 declare global {
   interface Window {
     VectorMap: {
-      init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string) => Promise<void>;
+      init: (canvas: HTMLCanvasElement, worldName: string, baseUrl?: string, forestUrl?: string,
+             urls?: { biomes?: string; mask?: string }) => Promise<void>;
       render: (viewScale: number, panX: number, panY: number, canvasW: number, canvasH: number) => void;
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
@@ -26,6 +27,9 @@ interface WorldMapProps {
   baseUrl: string;          // e.g. `/api/worlds/${seed}` — supplies biomes/mask/pois
   forestUrl?: string;       // override for the static forest tile (default `${baseUrl}/forest`)
   poisUrl?: string;         // optional override; defaults to `${baseUrl}/pois`
+  /// Overrides for the vector map and mask (e.g. blob: URLs of a map generated in
+  /// the browser); `altBiomes: false` skips the biome variant overlay.
+  assets?: { biomes?: string; mask?: string; altBiomes?: boolean };
   className?: string;
   /// A click on a POI marker (poi, and where in the map's own pixels), or on
   /// empty map (null).
@@ -38,10 +42,12 @@ interface WorldMapProps {
   hiddenIcons?: ReadonlySet<string>;
   /// Called once after the /pois fetch resolves so the parent can populate a legend.
   onPoisLoaded?: (pois: PoiMarker[]) => void;
+  /// The zoom after each redraw, relative to the whole map fitted in view (1).
+  onZoom?: (zoom: number) => void;
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({
-  seed, baseUrl, forestUrl, poisUrl, className, onPoiClick, onPoiHover, hiddenIcons, onPoisLoaded,
+  seed, baseUrl, forestUrl, poisUrl, assets, className, onPoiClick, onPoiHover, hiddenIcons, onPoisLoaded, onZoom,
 }) => {
   const mapAreaRef = useRef<HTMLDivElement>(null);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,6 +62,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [hover, setHover] = useState<{ sector: AltSector; x: number; y: number } | null>(null);
   const onPoiHoverRef = useRef(onPoiHover);
   onPoiHoverRef.current = onPoiHover;
+  const onZoomRef = useRef(onZoom);
+  onZoomRef.current = onZoom;
   // Mirror hiddenIcons into a ref so drawMarkers (memoized with empty deps) sees the
   // current value without rebuilding the callback chain on every prop change.
   const hiddenIconsRef = useRef<ReadonlySet<string> | undefined>(hiddenIcons);
@@ -105,6 +113,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
     const { scale, panX, panY } = stateRef.current;
     window.VectorMap.render(scale, panX, panY, area.clientWidth, area.clientHeight);
     drawMarkers();
+    const { imgW, imgH } = stateRef.current;
+    if (onZoomRef.current && imgW > 0) onZoomRef.current(scale / Math.min(area.clientWidth / imgW, area.clientHeight / imgH));
   }, [drawMarkers]);
 
   const scheduleUpdate = useCallback(() => {
@@ -152,12 +162,13 @@ const WorldMap: React.FC<WorldMapProps> = ({
         const glCanvas = glCanvasRef.current;
         if (!glCanvas) return;
 
-        await window.VectorMap.init(glCanvas, seed, baseUrl, forestUrl);
+        await window.VectorMap.init(glCanvas, seed, baseUrl, forestUrl,
+          assets ? { biomes: assets.biomes, mask: assets.mask } : undefined);
         if (cancelled) return;
 
         // Biome variant patterns (Mushroom, ...): optional, seeds made before
         // they were recorded just don't get them.
-        loadPatternOverlay(baseUrl)
+        (assets?.altBiomes === false ? Promise.resolve(null) : loadPatternOverlay(baseUrl))
           .then(o => {
             if (cancelled || !o) return;
             overlayRef.current = o;
@@ -200,14 +211,26 @@ const WorldMap: React.FC<WorldMapProps> = ({
       stateRef.current.ready = false;
       setMapReady(false);
     };
-  }, [seed, baseUrl, forestUrl, poisUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [seed, baseUrl, forestUrl, poisUrl, assets]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Resize
+  // Resize (the window, or the page around the map, e.g. the site header hidden):
+  // keep the same point in the middle and the same zoom.
   useEffect(() => {
-    const onResize = () => { if (stateRef.current.ready) fitMap(); };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [fitMap]);
+    const area = mapAreaRef.current;
+    if (!area) return;
+    let w = area.clientWidth, h = area.clientHeight;
+    const ro = new ResizeObserver(() => {
+      const nw = area.clientWidth, nh = area.clientHeight;
+      if (nw === w && nh === h) return;
+      const s = stateRef.current;
+      s.panX += (nw - w) / 2;
+      s.panY += (nh - h) / 2;
+      w = nw; h = nh;
+      if (s.ready) scheduleUpdate();
+    });
+    ro.observe(area);
+    return () => ro.disconnect();
+  }, [scheduleUpdate]);
 
   // Biome variant colours or visibility edited (or the config arrived after the
   // overlay): rebuild just the colour tables.

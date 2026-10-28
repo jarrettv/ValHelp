@@ -166,6 +166,9 @@ public static class AdminEndpointsAuth
             return TypedResults.Problem("Invalid page", statusCode: 400);
         }
 
+        var kind = (req.Kind ?? "feedback").Trim().ToLowerInvariant();
+        if (kind is not ("feedback" or "feature")) return TypedResults.Problem("Invalid kind", statusCode: 400);
+
         var userId = UserId(user);
         var currentUser = await db.Users.SingleOrDefaultAsync(u => u.Id == userId);
         if (currentUser == null) return TypedResults.Problem("User not found", statusCode: 404);
@@ -174,7 +177,7 @@ public static class AdminEndpointsAuth
         var kept = existing.Count >= MaxFeedbackEntries
             ? existing[(existing.Count - MaxFeedbackEntries + 1)..]
             : existing;
-        currentUser.Prefs.Feedback = [.. kept, new UserPrefsFeedback(page, msg, DateTime.UtcNow)];
+        currentUser.Prefs.Feedback = [.. kept, new UserPrefsFeedback(page, msg, DateTime.UtcNow, kind)];
         await db.SaveChangesAsync();
         return TypedResults.Ok();
     }
@@ -330,7 +333,7 @@ public static class AdminEndpointsAuth
         int PublicPlayedIn, int PrivatePlayedIn,
         int TrophiesLogged, int BestScore);
 
-    public record FeedbackReq(string Page, string Msg);
+    public record FeedbackReq(string Page, string Msg, string? Kind = null);
 
     public record PrefsItemsReq(string Code, string[] Items);
 

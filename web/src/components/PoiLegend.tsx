@@ -119,10 +119,17 @@ interface PoiLegendProps {
   pois: PoiMarker[];
   hiddenIcons: ReadonlySet<string>;
   onToggle: (icon: string) => void;
+  /// One call per user action (a group toggle flips many icons), for usage logging.
+  onAction?: (a: LegendAction) => void;
   className?: string;
 }
 
-export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: PoiLegendProps) {
+export type LegendAction =
+  | { action: 'panel'; open: boolean }
+  | { action: 'show_all' }
+  | { action: 'group' | 'type'; target: string; hide: boolean };
+
+export default function PoiLegend({ pois, hiddenIcons, onToggle, onAction, className }: PoiLegendProps) {
   const configVersion = usePoiConfigVersion();
   // eslint-disable-next-line react-hooks/exhaustive-deps -- configVersion invalidates resolvePoiIcon's overrides
   const groups = useMemo(() => buildLegend(pois), [pois, configVersion]);
@@ -133,7 +140,7 @@ export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: Po
   const allIcons = groups.flatMap(g => g.entries.map(e => e.icon));
   const hiddenCount = allIcons.filter(i => hiddenIcons.has(i)).length;
 
-  const toggleOpen = () => { setOpen(o => { writeOpen(!o); return !o; }); };
+  const toggleOpen = () => { onAction?.({ action: 'panel', open: !open }); setOpen(o => { writeOpen(!o); return !o; }); };
   // Flip only the icons whose state differs from the target.
   const setIcons = (icons: string[], hide: boolean) => {
     for (const i of icons) if (hiddenIcons.has(i) !== hide) onToggle(i);
@@ -162,7 +169,7 @@ export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: Po
         <LayersIcon />
         <span className="poi-legend-title">Markers</span>
         {hiddenCount > 0 && (
-          <button className="poi-legend-link" onClick={() => setIcons(allIcons, false)}>Show all</button>
+          <button className="poi-legend-link" onClick={() => { onAction?.({ action: 'show_all' }); setIcons(allIcons, false); }}>Show all</button>
         )}
         <button className="poi-legend-close" onClick={toggleOpen} aria-expanded="true" title="Collapse">
           <Chevron open={false} />
@@ -177,7 +184,7 @@ export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: Po
           return (
             <div key={g.key} className={`poi-legend-group ${state}`}>
               <div className="poi-legend-row">
-                <button className="poi-legend-toggle" onClick={() => setIcons(icons, state !== 'off')}
+                <button className="poi-legend-toggle" onClick={() => { onAction?.({ action: 'group', target: g.label, hide: state !== 'off' }); setIcons(icons, state !== 'off'); }}
                         aria-pressed={state !== 'off'} title={state === 'off' ? `Show ${g.label}` : `Hide ${g.label}`}>
                   <span className="poi-legend-group-icon">
                     <LegendSwatch icon={g.entries[0].icon} color={g.entries[0].color} />
@@ -196,7 +203,7 @@ export default function PoiLegend({ pois, hiddenIcons, onToggle, className }: Po
                 <div className="poi-legend-items">
                   {g.entries.map(e => (
                     <button key={e.icon} className={`poi-legend-item ${hiddenIcons.has(e.icon) ? 'off' : ''}`}
-                            onClick={() => onToggle(e.icon)} aria-pressed={!hiddenIcons.has(e.icon)}>
+                            onClick={() => { onAction?.({ action: 'type', target: e.label, hide: !hiddenIcons.has(e.icon) }); onToggle(e.icon); }} aria-pressed={!hiddenIcons.has(e.icon)}>
                       <LegendSwatch icon={e.icon} color={e.color} />
                       <span className="poi-legend-label">{e.label}</span>
                       <span className="poi-legend-count">{e.count}</span>

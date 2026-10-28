@@ -1,0 +1,91 @@
+/* Feedback button and panel over the world map (positioned by the host). */
+.wfb { position: relative; }
+.wfb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: 36px;
+  margin: 0;
+  padding: 0 12px;
+  background: rgba(18, 22, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  color: #f2f4f8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+.wfb-pill:hover { background: rgba(32, 38, 50, 0.95); }
+.wfb-pill svg { width: 16px; height: 16px; color: #aab4c8; }
+@media (max-width: 600px) {
+  .wfb-pill { width: 36px; padding: 0; justify-content: center; }
+  .wfb-pill-label { display: none; }
+}
+
+.wfb-panel {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  box-sizing: border-box;
+  padding: 12px;
+  background: rgba(18, 22, 30, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #e6e9ef;
+  font-size: 14px;
+}
+.wfb-panel p { margin: 0 0 4px; color: #cad3dd; line-height: 1.45; }
+.wfb-panel a { color: #8fb3ff; }
+.wfb-kinds { display: flex; gap: 4px; margin-bottom: 8px; padding: 3px; background: rgba(255, 255, 255, 0.06); border-radius: 8px; }
+.wfb-kinds button {
+  flex: 1;
+  width: auto;
+  margin: 0;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #aab4c8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.wfb-kinds button.on { background: #5b6eae; color: #fff; }
+.wfb-panel textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+}
+.wfb-panel textarea:focus { outline: none; border-color: #8fb3ff; }
+.wfb-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.wfb-count { color: #8a93a6; font-size: 12px; }
+.wfb-error { flex: 1; color: #ff8a80; font-size: 12px; }
+.wfb-btn {
+  width: auto;
+  margin: 0 0 0 auto;
+  padding: 7px 16px;
+  background: #5b6eae;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.wfb-btn:disabled { opacity: 0.45; cursor: default; }
+.wfb-sent { display: flex; align-items: center; gap: 8px; }
+.wfb-sent p { margin: 0; }

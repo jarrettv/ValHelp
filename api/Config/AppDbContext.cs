@@ -37,6 +37,7 @@ public class AppDbContext : DbContext
     public DbSet<PoiIcon> PoiIcons { get; set; }
     public DbSet<AltBiomeSetting> AltBiomeSettings { get; set; }
     public DbSet<PublicWorld> PublicWorlds { get; set; }
+    public DbSet<WorldEvent> WorldEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

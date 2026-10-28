@@ -646,50 +646,88 @@ public static class LocationFinder
 
             LootSample? sample = null;
             loot?.TryGetValue(LootKey(prefabName, x, z), out sample);
-            // One run of the game's spawn rolls for this instance: its contents for
-            // the POI card, a dungeon's finds, a camp's mapped pieces.
-            var sim = RotationDependent(prefabName) ? null : Simulate(prefabName, new V3(x, y, z), worldSeed, wg);
-            var contents = ContentsOf(prefabName, sim);
-            var marks = CampMarks(prefabName, sim, sample);
-            // Chests as the oracle rolled them. A camp's only count when it built
-            // the camp on its terrain (a plain spawn lays it out differently).
-            var chests = sample is { Chests.Length: > 0 } && (!CampPrefabs.Contains(prefabName) || sample.WholeZone)
-                ? sample.Chests : null;
-            string[]? vegvisirs = sim is { Vegvisirs.Count: > 0 } ? sim.Vegvisirs.Distinct().ToArray()
-                : sample is { Vegvisirs.Length: > 0 } ? sample.Vegvisirs : null;
-
-            if (ExtraPrefabs.TryGetValue(prefabName, out var extra))
-            {
-                results.Add(new PoiLocation(extra.Name, extra.Type, x, z,
-                    Prefab: prefabName, Items: WithMarkItems(null, marks), Generated: placed, Biome: biome, Chests: chests,
-                    Vegvisirs: vegvisirs, Contents: contents));
-                AddMarkPois(results, marks, placed, wg);
-                continue;
-            }
-
-            var friendly = FriendlyNames[prefabName];
-            var cfg = AllLocations.FirstOrDefault(c => c.PrefabName == prefabName);
-            string type = TypeOf(prefabName);
-
-            string[]? items = cfg?.StaticItems;
-            IReadOnlyDictionary<string, int>? creatures = null;
-            if (sample != null)
-            {
-                var found = LootItems(sample);
-                if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
-                if (sample.Creatures.Count > 0) creatures = sample.Creatures;
-            }
-            var dungeonFound = DungeonItems(prefabName, sim, sample);
-            if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
-            items = WithMarkItems(items, marks);
-
-            results.Add(new PoiLocation(friendly, type, x, z,
-                Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
-                Creatures: creatures, Vegvisirs: vegvisirs, Contents: contents));
-            AddMarkPois(results, marks, placed, wg);
+            AddInstance(results, prefabName, x, y, z, placed, worldSeed, wg, sample, biome);
         }
 
         return results.Count > 0 ? results : null;
+    }
+
+    /// <summary>
+    /// The POI for one location instance: its contents (one run of the game's
+    /// spawn rolls), a dungeon's finds and vegvisirs, a camp's mapped pieces (as
+    /// extra POIs), plus whatever the oracle's loot sample adds.
+    /// </summary>
+    static void AddInstance(List<PoiLocation> results, string prefabName, float x, float y, float z, bool placed,
+        int worldSeed, WorldGenerator? wg, LootSample? sample, string? biome)
+    {
+        // One run of the game's spawn rolls for this instance: its contents for
+        // the POI card, a dungeon's finds, a camp's mapped pieces.
+        var sim = RotationDependent(prefabName) ? null : Simulate(prefabName, new V3(x, y, z), worldSeed, wg);
+        var contents = ContentsOf(prefabName, sim);
+        var marks = CampMarks(prefabName, sim, sample);
+        // Chests as the oracle rolled them. A camp's only count when it built
+        // the camp on its terrain (a plain spawn lays it out differently).
+        var chests = sample is { Chests.Length: > 0 } && (!CampPrefabs.Contains(prefabName) || sample.WholeZone)
+            ? sample.Chests : null;
+        string[]? vegvisirs = sim is { Vegvisirs.Count: > 0 } ? sim.Vegvisirs.Distinct().ToArray()
+            : sample is { Vegvisirs.Length: > 0 } ? sample.Vegvisirs : null;
+
+        if (ExtraPrefabs.TryGetValue(prefabName, out var extra))
+        {
+            results.Add(new PoiLocation(extra.Name, extra.Type, x, z,
+                Prefab: prefabName, Items: WithMarkItems(null, marks), Generated: placed, Biome: biome, Chests: chests,
+                Vegvisirs: vegvisirs, Contents: contents));
+            AddMarkPois(results, marks, placed, wg);
+            return;
+        }
+
+        var friendly = FriendlyNames[prefabName];
+        var cfg = AllLocations.FirstOrDefault(c => c.PrefabName == prefabName);
+        string type = TypeOf(prefabName);
+
+        string[]? items = cfg?.StaticItems;
+        IReadOnlyDictionary<string, int>? creatures = null;
+        if (sample != null)
+        {
+            var found = LootItems(sample);
+            if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
+            if (sample.Creatures.Count > 0) creatures = sample.Creatures;
+        }
+        var dungeonFound = DungeonItems(prefabName, sim, sample);
+        if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
+        items = WithMarkItems(items, marks);
+
+        results.Add(new PoiLocation(friendly, type, x, z,
+            Prefab: prefabName, Items: items, Generated: placed, Biome: biome, Chests: chests,
+            Creatures: creatures, Vegvisirs: vegvisirs, Contents: contents));
+        AddMarkPois(results, marks, placed, wg);
+    }
+
+    /// <summary>
+    /// POIs for locations placed by our own <see cref="Locations.LocationPlacer"/>
+    /// (no saved world, no oracle loot): the same per-instance contents as
+    /// <see cref="ReadFromWorldDb"/> gives the game's. Prefabs this finder doesn't
+    /// map come out as type "Unknown" with their prefab name.
+    /// </summary>
+    public static List<PoiLocation> FromPlaced(IEnumerable<Locations.PlacedLocation> placed, int worldSeed, WorldGenerator wg)
+    {
+        var results = new List<PoiLocation>();
+        foreach (var p in placed) AddPlaced(results, p, worldSeed, wg);
+        return results;
+    }
+
+    /// <summary>One placed location's POI(s) (see <see cref="FromPlaced"/>), for callers that
+    /// work in slices (the browser reports progress between them).</summary>
+    public static void AddPlaced(List<PoiLocation> results, Locations.PlacedLocation p, int worldSeed, WorldGenerator wg)
+    {
+        string prefab = p.Rule.Prefab;
+        string biome = wg.GetBiome(p.X, p.Z).ToString();
+        if (!FriendlyNames.ContainsKey(prefab) && !ExtraPrefabs.ContainsKey(prefab))
+        {
+            results.Add(new PoiLocation("Unknown location", "Unknown", p.X, p.Z, Prefab: prefab, Biome: biome));
+            return;
+        }
+        AddInstance(results, prefab, p.X, p.Y, p.Z, placed: false, worldSeed, wg, sample: null, biome);
     }
 
     /// <summary>Loot lookup key: prefab plus position rounded to 0.1 units.</summary>

@@ -95,6 +95,13 @@ public class WorldGenerator
         }
     }
 
+    // The river network built at construction, as the game's GetLakes() and the
+    // oracle's river dump expose it (Vh.WorldGen.Tests compares them).
+    public IReadOnlyList<Vector2> GetLakes() => m_lakes;
+    public IReadOnlyList<River> GetRivers() => m_rivers;
+    public IReadOnlyList<River> GetStreams() => m_streams;
+    public IReadOnlyDictionary<Vector2i, RiverPoint[]> GetRiverPoints() => m_riverPoints;
+
     private void Pregenerate()
     {
         FindLakes();
@@ -289,28 +296,38 @@ public class WorldGenerator
 
     public float GetBiomeHeight(Biome biome, float wx, float wy, out float maskR, out float maskG, out float maskB, out float maskA, bool preGeneration = false, bool riverPreDN = true)
     {
-        maskR = 0; maskG = 0; maskB = 0; maskA = 0;
+        // The game's mask starts as Color.black: (0, 0, 0, 1). Alpha is the vegetation
+        // mask location placement checks; the Deep North, Ashlands and Mistlands set their own.
+        maskR = 0; maskG = 0; maskB = 0; maskA = 1;
+        // In double, rounded once: rounding each gap to float first is off by an ulp near the gaps.
         float num = preGeneration
             ? GetHeightMultiplier()
-            : GetHeightMultiplier() * (float)CreateAshlandsGap(wx, wy) * (float)CreateDeepNorthGap(wx, wy);
+            : (float)((double)GetHeightMultiplier() * CreateAshlandsGap(wx, wy) * CreateDeepNorthGap(wx, wy));
 
         if (DUtils.Length(wx, wy) > 10500f)
             return -2f * GetHeightMultiplier();
 
         switch (biome)
         {
-            case Biome.Swamp: return GetMarshHeight(wx, wy) * num;
-            case Biome.DeepNorth: return (preGeneration ? GetDeepNorthHeightPregenerate(wx, wy, riverPreDN) : GetDeepNorthHeight(wx, wy)) * num;
-            case Biome.Mountain: return GetSnowMountainHeight(wx, wy) * num;
-            case Biome.BlackForest: return GetForestHeight(wx, wy) * num;
-            case Biome.Ocean: return GetOceanHeight(wx, wy) * num;
-            case Biome.AshLands: return (preGeneration ? GetAshlandsHeightPregenerate(wx, wy) : GetAshlandsHeight(wx, wy, out maskA)) * num;
-            case Biome.Plains: return GetPlainsHeight(wx, wy) * num;
-            case Biome.Meadows: return GetMeadowsHeight(wx, wy) * num;
-            case Biome.Mistlands: return (preGeneration ? GetForestHeight(wx, wy) : GetMistlandsHeight(wx, wy, out maskA)) * num;
+            case Biome.Swamp: return Scale(GetMarshHeight(wx, wy), num);
+            case Biome.DeepNorth:
+                if (preGeneration) return Scale(GetDeepNorthHeightPregenerate(wx, wy, riverPreDN), num);
+                maskA = 0;   // the game's new Color(0, num9, 0, 0)
+                return Scale(GetDeepNorthHeight(wx, wy), num);
+            case Biome.Mountain: return Scale(GetSnowMountainHeight(wx, wy), num);
+            case Biome.BlackForest: return Scale(GetForestHeight(wx, wy), num);
+            case Biome.Ocean: return Scale(GetOceanHeight(wx, wy), num);
+            case Biome.AshLands: return Scale(preGeneration ? GetAshlandsHeightPregenerate(wx, wy) : GetAshlandsHeight(wx, wy, out maskA), num);
+            case Biome.Plains: return Scale(GetPlainsHeight(wx, wy), num);
+            case Biome.Meadows: return Scale(GetMeadowsHeight(wx, wy), num);
+            case Biome.Mistlands: return Scale(preGeneration ? GetForestHeight(wx, wy) : GetMistlandsHeight(wx, wy, out maskA), num);
             default: return 0f;
         }
     }
+
+    /// <summary>The game's <c>(float)((double)h * (double)mult + (double)0f)</c>: the
+    /// added zero turns a -0 (negative height, zero multiplier) into +0.</summary>
+    static float Scale(float h, float mult) => (float)((double)h * (double)mult + 0.0);
 
     // === Per-biome height functions (exact port) ===
 
@@ -410,7 +427,11 @@ public class WorldGenerator
     private float GetDeepNorthHeight(float wx, float wy)
     {
         float wx2 = wx, wy2 = wy;
-        float num = GetBaseHeight(wx, wy, menuTerrain: false) + 0.1f;
+        // The game's `float num = GetBaseHeight(...) + 0.1f` reaches num8 below unrounded:
+        // Mono keeps the float sum in a double register, so num8 sees the double. Using
+        // the rounded float there is off by an ulp on ~2.5% of Deep North cells.
+        double numD = (double)GetBaseHeight(wx, wy, menuTerrain: false) + (double)0.1f;
+        float num = (float)numD;
         wx = (float)((double)wx + 100000.0 + (double)m_offset3);
         wy = (float)((double)wy + 100000.0 + (double)m_offset3);
         double num2 = wx, num3 = wy;
@@ -420,7 +441,7 @@ public class WorldGenerator
         num5 = (float)((double)num5 + (double)num4 * 0.10000000149011612);
         float num6 = 0.15f;
         float num7 = (float)((double)num5 - (double)num6);
-        float num8 = (float)DUtils.Clamp01((double)num / 0.4000000059604645);
+        float num8 = (float)DUtils.Clamp01(numD / 0.4000000059604645);
         if (num7 > 0f)
             num5 = (float)((double)num5 - (double)num7 * ((1.0 - (double)num8) * 0.75));
         num5 = AddRivers(wx2, wy2, num5);
@@ -657,14 +678,15 @@ public class WorldGenerator
             float sqr = Vector2.SqrMagnitude(rp.p - vector);
             if (sqr < rp.w2)
             {
+                // In double, rounded once per step, as the game does.
                 float dist = (float)Math.Sqrt(sqr);
-                float w = 1.0f - dist / rp.w;
+                float w = (float)(1.0 - (double)dist / (double)rp.w);
                 if (w > weight) weight = w;
-                num += rp.w * w;
-                num2 += w;
+                num = (float)((double)num + (double)rp.w * (double)w);
+                num2 = (float)((double)num2 + (double)w);
             }
         }
-        if (num2 > 0f) width = num / num2;
+        if (num2 > 0f) width = (float)((double)num / (double)num2);
     }
 
     private float GetPregenerationHeight(float wx, float wy, bool riverPreGen)
@@ -818,7 +840,8 @@ public class WorldGenerator
         {
             len -= step;
             float angle = UnityRandom.Range(0f, MathF.PI * 2f);
-            Vector2 point = start + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * len;
+            // Mathf.Sin/Cos: the double functions, rounded (MathF's float ones can differ by an ulp).
+            Vector2 point = start + new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle)) * len;
             float h = GetPregenerationHeight(point.x, point.y, riverPreGen);
             if (h > minHeight && h < maxHeight)
             {
@@ -942,15 +965,16 @@ public class WorldGenerator
 
     private bool InsideRiverGrid(Vector2i grid, Vector2 p, float r)
     {
-        Vector2 gridCenter = new(grid.x * 64f, grid.y * 64f);
+        Vector2 gridCenter = new((float)((double)grid.x * 64.0), (float)((double)grid.y * 64.0));
         Vector2 diff = p - gridCenter;
-        return Math.Abs(diff.x) < r + 32f && Math.Abs(diff.y) < r + 32f;
+        return Math.Abs(diff.x) < (float)((double)r + 32.0) && Math.Abs(diff.y) < (float)((double)r + 32.0);
     }
 
     private Vector2i GetRiverGrid(float wx, float wy)
     {
-        int x = (int)MathF.Floor((wx + 32f) / 64f);
-        int y = (int)MathF.Floor((wy + 32f) / 64f);
+        // The game's: in double, rounded to float, then floored.
+        int x = (int)Math.Floor((float)(((double)wx + 32.0) / 64.0));
+        int y = (int)Math.Floor((float)(((double)wy + 32.0) / 64.0));
         return new Vector2i(x, y);
     }
 }

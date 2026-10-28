@@ -3,7 +3,8 @@ WORKDIR /src
 COPY seedgen.csproj ./
 COPY *.cs ./
 COPY WorldGen/ ./WorldGen/
-COPY Rendering/ ./Rendering/
+COPY Vh.WorldGen/ ./Vh.WorldGen/
+
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app
 

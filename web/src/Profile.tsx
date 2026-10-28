@@ -189,6 +189,24 @@ export default function Profile() {
                 </Link>
               </li>
             )}
+            {isAdmin && (
+              <li>
+                <Link to="/auth/worldgen">
+                  <span className="tool-icon" aria-hidden="true">🗺️</span>
+                  <span>Worldgen in the browser</span>
+                  <small>Generate a seed&apos;s map on this machine (dev)</small>
+                </Link>
+              </li>
+            )}
+            {isAdmin && (
+              <li>
+                <Link to="/auth/events">
+                  <span className="tool-icon" aria-hidden="true">📈</span>
+                  <span>World usage</span>
+                  <small>Seeds generated, devices, zoom depth and POI clicks</small>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

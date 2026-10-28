@@ -41,13 +41,20 @@ public class UserPrefs
 
     public List<UserPrefsWorld>? Worlds { get; set; }
 
+    /// <summary>Worlds pinned to the account: seeds only, regenerated in each browser
+    /// (api ModuleWorlds/WorldsPins.cs).</summary>
+    public List<UserPrefsPin>? PinnedWorlds { get; set; }
+
     public string? Blocked { get; set; }
 
 }
 
 public record UserPrefsItems(string[] Items, DateTime? At);
 
-public record UserPrefsFeedback(string Page, string Msg, DateTime At);
+/// <param name="Kind">"feedback" or "feature" (a feature request); null on entries from before kinds existed.</param>
+public record UserPrefsFeedback(string Page, string Msg, DateTime At, string? Kind = null);
+
+public record UserPrefsPin(string Seed, DateTime At);
 
 public class UserPrefsWorld
 {

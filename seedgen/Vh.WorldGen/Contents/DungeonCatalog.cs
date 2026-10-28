@@ -30,7 +30,9 @@ public sealed class DungeonCatalog
     {
         using var s = typeof(DungeonCatalog).Assembly.GetManifestResourceStream("contents.json")
             ?? throw new InvalidOperationException("contents.json is not embedded");
-        return JsonSerializer.Deserialize<Dictionary<string, string>>(s)!;
+        // JsonDocument rather than Deserialize<T>: no reflection, so trimming (WebAssembly) can't break it.
+        using var doc = JsonDocument.Parse(s);
+        return doc.RootElement.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString() ?? "");
     });
 
     static DungeonCatalog LoadEmbedded()
@@ -189,17 +191,20 @@ public sealed class CatalogLocation
     public float PerimeterBuffer { get; init; }
 }
 
-public readonly record struct DoorType(string Prefab, string ConnectionType, float Chance);
+// Records, not record structs: the WebAssembly build's AOT compiler can't
+// precompile LINQ and other generics over value types, and falls back to its
+// interpreter (dungeon contents ran ~15x slower than native).
+public sealed record DoorType(string Prefab, string ConnectionType, float Chance);
 
-public readonly record struct TreeNode(int Parent, bool Active, V3 Pos, Quat Rot, V3 Scale);
-public readonly record struct TreeConnection(int Node, string Type, bool Entrance, bool AllowDoor, bool DoorOnlyIfOther);
-public readonly record struct TreeRandomSpawn(int Node, float Chance, int RequireTheme, int RequireBiome, bool NotInLava,
+public sealed record TreeNode(int Parent, bool Active, V3 Pos, Quat Rot, V3 Scale);
+public sealed record TreeConnection(int Node, string Type, bool Entrance, bool AllowDoor, bool DoorOnlyIfOther);
+public sealed record TreeRandomSpawn(int Node, float Chance, int RequireTheme, int RequireBiome, bool NotInLava,
     int MinElevation, int MaxElevation, int OffObject);
-public readonly record struct TreeRandomObject(int Node, int RequireTheme, int RequireBiome, bool NotInLava,
+public sealed record TreeRandomObject(int Node, int RequireTheme, int RequireBiome, bool NotInLava,
     int MinElevation, int MaxElevation, (int Node, float Weight)[] Objects);
-public readonly record struct TreeNetView(int Node, string Prefab);
+public sealed record TreeNetView(int Node, string Prefab);
 /// <summary>A Vegvisir (static scenery, no ZNetView) and the locations it reveals.</summary>
-public readonly record struct TreeVegvisir(int Node, string[] Locations);
+public sealed record TreeVegvisir(int Node, string[] Locations);
 
 /// <summary>
 /// A prefab's hierarchy, cut down to the nodes that carry something the
@@ -247,5 +252,10 @@ public sealed class PrefabTree
         return true;
     }
 
-    public bool[] InitialActive() => Nodes.Select(n => n.Active).ToArray();
+    public bool[] InitialActive()
+    {
+        var a = new bool[Nodes.Length];
+        for (int i = 0; i < a.Length; i++) a[i] = Nodes[i].Active;
+        return a;
+    }
 }

@@ -37,7 +37,7 @@
   left: 12px;
   z-index: 20;
 }
-.worlds-view-close {
+.worlds-view-max {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -55,7 +55,8 @@
   align-items: center;
   justify-content: center;
 }
-.worlds-view-close:hover {
+.worlds-view-max svg { width: 20px; height: 20px; }
+.worlds-view-max:hover {
   background: rgba(255,255,255,0.2);
   border-color: rgba(255,255,255,0.4);
 }
@@ -105,3 +106,65 @@
   max-width: min(60vw, 520px);
 }
 
+
+/* ── Generating in the browser / not on this device ─── */
+.worlds-pending-msg.worlds-gen {
+  width: min(420px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 20px 22px;
+}
+.worlds-gen p { margin: 8px 0 14px; color: #a6adb5; font-size: 14px; line-height: 1.45; }
+.worlds-gen-title { font-size: 16px; font-weight: 700; color: #e6edf3; }
+.worlds-gen-seed { font-family: 'SF Mono', ui-monospace, monospace; color: #7fd6a4; }
+.worlds-gen-muted { color: #8a93a6; font-size: 12.5px; }
+.worlds-gen p.worlds-gen-muted { margin: 12px 0 0; font-size: 12.5px; }
+.worlds-gen-btn {
+  width: auto;
+  margin: 0;
+  padding: 10px 18px;
+  background: #5b6eae;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.worlds-gen-btn:hover { background: #6b7fc0; }
+.worlds-gen-btn:disabled { opacity: 0.5; cursor: default; }
+.worlds-gen-btn.small { padding: 5px 12px; font-size: 13px; }
+.worlds-gen-bar {
+  height: 8px;
+  margin: 14px 0 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.worlds-gen-bar > div { height: 100%; background: linear-gradient(90deg, #5b6eae, #7fd6a4); transition: width 0.25s; }
+.worlds-gen-stage { display: flex; gap: 8px; font-size: 13.5px; color: #cad3dd; }
+.worlds-gen-time { margin-left: auto; color: #8a93a6; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.worlds-gen-list { list-style: none; margin: 0; padding: 0; }
+.worlds-gen-list li { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+
+.worlds-notice {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: calc(100vw - 32px);
+  padding: 8px 14px;
+  background: rgba(60, 46, 12, 0.92);
+  border: 1px solid #6b5520;
+  border-radius: 8px;
+  color: #f0d080;
+  font-size: 13px;
+}
+
+/* Feedback button: top-right, left of the close button. */
+.worlds-feedback {
+  position: absolute;
+  top: 12px;
+  right: 56px;
+  z-index: 19;
+}

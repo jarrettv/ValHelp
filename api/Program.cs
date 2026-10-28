@@ -24,6 +24,7 @@ builder.Services.AddHostedService<EventsStatusUpdater>();
 builder.Services.AddHostedService<EventsSeedMaker>();
 builder.Services.AddHostedService<TrackLogTracker>();
 builder.Services.AddHostedService<TrackHuntTracker>();
+WorldsEvents.AddRateLimit(builder.Services);
 
 builder.Services.AddCors(options =>
 {
@@ -41,6 +42,7 @@ app.UseCors("AllowLocalhost5173");
 app.MapStaticAssets().ShortCircuit();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())

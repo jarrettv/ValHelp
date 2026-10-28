@@ -1,0 +1,35 @@
+.aev-page { padding: 1rem; color: #e6edf3; }
+.aev-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.aev-head h2, .aev-head h3 { margin: 0; }
+.aev-days { display: flex; gap: 4px; margin-left: auto; }
+.aev-days button {
+  width: auto; margin: 0; padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 6px;
+  color: #cad3dd; font-size: 13px; cursor: pointer;
+}
+.aev-days button.on { background: #5b6eae; border-color: #5b6eae; color: #fff; }
+.aev-head select { margin-left: auto; width: auto; }
+.aev-muted { color: #8a93a6; }
+.aev-mono { font-family: 'SF Mono', ui-monospace, monospace; font-size: 12.5px; }
+.aev-nowrap { white-space: nowrap; }
+
+.aev-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 16px 0; }
+.aev-stats > div { padding: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; }
+.aev-stats b { display: block; font-size: 22px; }
+.aev-stats span { color: #8a93a6; font-size: 12.5px; }
+
+.aev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.aev-card { margin-bottom: 10px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; overflow-x: auto; }
+.aev-card h3 { margin: 0 0 8px; font-size: 14px; color: #8cf; }
+.aev-bars { list-style: none; margin: 0; padding: 0; }
+.aev-bars li { display: grid; grid-template-columns: minmax(0, 9em) 1fr auto; align-items: center; gap: 8px; padding: 2px 0; font-size: 13px; }
+.aev-bar-key { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aev-bar { height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 4px; overflow: hidden; }
+.aev-bar > span { display: block; height: 100%; background: #5b6eae; }
+.aev-bar-n { color: #aab4c8; font-variant-numeric: tabular-nums; }
+
+.aev-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.aev-table th { text-align: left; padding: 5px 8px; color: #8cf; border-bottom: 1px solid #444; white-space: nowrap; }
+.aev-table td { padding: 5px 8px; border-bottom: 1px solid #2a2a3a; vertical-align: top; }
+.aev-table a { color: #88bbff; }
+.aev-data { max-width: 40em; word-break: break-all; color: #aab4c8; }
