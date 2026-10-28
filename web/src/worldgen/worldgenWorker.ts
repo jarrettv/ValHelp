@@ -27,6 +27,8 @@ interface Exports {
   LocationsRun(budgetMs: number): number;
   LocationsCurrent(): string;
   LocationsJson(): string;
+  AltBiomesJson(): string;
+  AltBiomeGrid(): MemoryView;
   ContentsStart(): void;
   ContentsRun(budgetMs: number): number;
   PoisJson(): string;
@@ -109,6 +111,9 @@ async function generate(seedName: string) {
   // Locations: the game's placement, in slices so progress can be reported between them.
   progress('locations', 0);
   const rulesVersion = ex.LocationsStart();
+  // Biome variants (from the sectors placement just built): as seedgen serves them, the grid gzipped.
+  const altBiomes = ex.AltBiomesJson();
+  const altBiomeGrid = await new Response(new Blob([take(ex.AltBiomeGrid())]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
   for (let f = 0; f < 1;) {
     f = ex.LocationsRun(LOCATION_SLICE_MS);
     progress('locations', f, ex.LocationsCurrent());
@@ -126,7 +131,7 @@ async function generate(seedName: string) {
   const pois = JSON.parse(ex.PoisJson());
   lap('contents');
 
-  post({ type: 'done', seed: seedName, seedHash: seed, bvec: bvec.buffer as ArrayBuffer, mask, timings, pois, rulesVersion },
+  post({ type: 'done', seed: seedName, seedHash: seed, bvec: bvec.buffer as ArrayBuffer, mask, timings, pois, rulesVersion, altBiomes, altBiomeGrid },
     [bvec.buffer as ArrayBuffer]);
 }
 

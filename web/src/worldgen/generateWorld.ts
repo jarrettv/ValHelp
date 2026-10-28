@@ -9,6 +9,7 @@ export interface GenerateProgress { stage: WorldgenStage; fraction: number; deta
 export interface GeneratedWorld {
   seed: string; seedHash: number; bvec: ArrayBuffer; mask: Blob; pois: PoiMarker[];
   timings: Partial<Record<WorldgenStage, number>>; rulesVersion: string;
+  altBiomes: string; altBiomeGrid: Blob;
 }
 
 let worker: Worker | null = null;
@@ -29,7 +30,8 @@ export function generateWorld(seed: string, onProgress: (p: GenerateProgress) =>
       settled = true;
       busy = null;
       if (m.type === 'error') rej(new Error(m.message));
-      else res({ seed: m.seed, seedHash: m.seedHash, bvec: m.bvec, mask: m.mask, pois: m.pois, timings: m.timings, rulesVersion: m.rulesVersion });
+      else res({ seed: m.seed, seedHash: m.seedHash, bvec: m.bvec, mask: m.mask, pois: m.pois, timings: m.timings, rulesVersion: m.rulesVersion,
+        altBiomes: m.altBiomes, altBiomeGrid: m.altBiomeGrid });
     };
     w.onerror = e => {
       settled = true;

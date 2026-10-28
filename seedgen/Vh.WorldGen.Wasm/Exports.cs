@@ -61,6 +61,7 @@ public static partial class Exports
     static byte[]? s_map, s_mask, s_height;
     static WorldGrid? s_grid;
     static Vh.World.Locations.LocationPlacer? s_placer;
+    static Vh.World.Locations.BiomeData? s_biomes;
 
     /// <summary>Build the seed's generator (lakes, rivers, streams; the slow first second) and blank textures.</summary>
     [JSExport]
@@ -73,6 +74,7 @@ public static partial class Exports
         s_height = Vh.Rendering.MapArtifacts.NewRgba();
         s_grid = WorldGrid.CreateEmpty();
         s_placer = null;
+        s_biomes = null;
     }
 
     /// <summary>Fill texture rows rowFrom..rowTo (of 2048).</summary>
@@ -101,10 +103,20 @@ public static partial class Exports
     {
         var (rules, alts, version) = Vh.World.Locations.LocationRule.LoadEmbedded();
         var wg = s_last!.Value.Wg;
-        var biomes = Vh.World.Locations.BiomeData.Build(s_grid!, wg.GetSeed(), alts);
+        var biomes = s_biomes = Vh.World.Locations.BiomeData.Build(s_grid!, wg.GetSeed(), alts);
         s_placer = new Vh.World.Locations.LocationPlacer(wg, biomes, rules);
         return version;
     }
+
+    /// <summary>The biome variants, after LocationsStart: the sectors that carry one
+    /// (seedgen's oracle.altbiomes.json, what /api/worlds/{seed}/altbiomes serves).</summary>
+    [JSExport]
+    public static string AltBiomesJson() => Vh.World.Locations.AltBiomeExport.Json(s_biomes!);
+
+    /// <summary>Which of those sectors each minimap cell is in (oracle.altbiomes.u8, before gzip).</summary>
+    [JSExport]
+    [return: JSMarshalAs<JSType.MemoryView>]
+    public static ArraySegment<byte> AltBiomeGrid() => Vh.World.Locations.AltBiomeExport.Grid(s_biomes!);
 
     /// <summary>Place for up to <paramref name="budgetMs"/>; returns progress 0-1 (1 when done).</summary>
     [JSExport]

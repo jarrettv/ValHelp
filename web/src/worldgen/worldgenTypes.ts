@@ -21,5 +21,7 @@ export type WorldgenMessage =
   | { type: 'done'; seed: string; seedHash: number; bvec: ArrayBuffer; mask: Blob; timings: Partial<Record<WorldgenStage, number>>;
       /** The POIs as seedgen serves them (names, types, contents, vegvisirs, marks); rulesVersion:
        *  the game version the placement rules are from. */
-      pois: PoiMarker[]; rulesVersion: string }
+      pois: PoiMarker[]; rulesVersion: string;
+      /** Biome variants as seedgen serves them: the sectors (JSON) and the gzipped sector grid. */
+      altBiomes: string; altBiomeGrid: Blob }
   | { type: 'error'; message: string };

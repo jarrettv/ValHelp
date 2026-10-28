@@ -13,8 +13,9 @@ import type { WorldgenStage } from './worldgenTypes';
 export const LOCAL_WORLD_LIMIT = 4;
 
 /** Bump when the worldgen output changes: older stored worlds stay listed and are
- *  regenerated when opened. 2: forest mask made opaque (format 1 lost the forest). */
-const FORMAT = 2;
+ *  regenerated when opened. 2: forest mask made opaque (format 1 lost the forest).
+ *  3: biome variants kept. */
+const FORMAT = 3;
 
 const DB_NAME = 'vh-worlds';
 const DB_VERSION = 1;
@@ -36,9 +37,12 @@ export interface LocalWorldData {
   bvec: ArrayBuffer;
   mask: Blob;
   pois: PoiMarker[];
+  /** Biome variants as seedgen serves them (/altbiomes JSON, /altbiomegrid gzipped). */
+  altBiomes: string;
+  altBiomeGrid: Blob;
 }
 
-interface StoredData { seed: string; bvec: ArrayBuffer; mask: Blob; pois: Blob /* gzipped JSON */ }
+interface StoredData { seed: string; bvec: ArrayBuffer; mask: Blob; pois: Blob /* gzipped JSON */; altBiomes: string; altBiomeGrid: Blob }
 
 let dbP: Promise<IDBDatabase> | null = null;
 function db(): Promise<IDBDatabase> {
@@ -101,7 +105,7 @@ export async function getLocalWorld(seed: string): Promise<{ meta: LocalWorldMet
   if (meta.format !== FORMAT) return 'stale';
   const pois = JSON.parse(await gunzip(data.pois)) as PoiMarker[];
   touch(seed).catch(() => {});
-  return { meta, data: { bvec: data.bvec, mask: data.mask, pois } };
+  return { meta, data: { bvec: data.bvec, mask: data.mask, pois, altBiomes: data.altBiomes, altBiomeGrid: data.altBiomeGrid } };
 }
 
 async function touch(seed: string) {
@@ -116,6 +120,7 @@ async function touch(seed: string) {
 export interface SaveWorld {
   seed: string; seedHash: number; bvec: ArrayBuffer; mask: Blob; pois: PoiMarker[];
   timings: Partial<Record<WorldgenStage, number>>; rulesVersion: string;
+  altBiomes: string; altBiomeGrid: Blob;
 }
 
 export async function saveLocalWorld(w: SaveWorld): Promise<LocalWorldMeta> {
@@ -123,13 +128,13 @@ export async function saveLocalWorld(w: SaveWorld): Promise<LocalWorldMeta> {
   const now = Date.now();
   const meta: LocalWorldMeta = {
     seed: w.seed, seedHash: w.seedHash, createdAt: now, openedAt: now, pois: w.pois.length,
-    bytes: w.bvec.byteLength + w.mask.size + pois.size,
+    bytes: w.bvec.byteLength + w.mask.size + pois.size + w.altBiomes.length + w.altBiomeGrid.size,
     totalMs: Object.values(w.timings).reduce((a, b) => a + (b ?? 0), 0),
     timings: w.timings, rulesVersion: w.rulesVersion, format: FORMAT,
   };
   const d = await db();
   const tx = d.transaction(['meta', 'data'], 'readwrite');
-  tx.objectStore('data').put({ seed: w.seed, bvec: w.bvec, mask: w.mask, pois } satisfies StoredData);
+  tx.objectStore('data').put({ seed: w.seed, bvec: w.bvec, mask: w.mask, pois, altBiomes: w.altBiomes, altBiomeGrid: w.altBiomeGrid } satisfies StoredData);
   tx.objectStore('meta').put(meta);
   await committed(tx);
   changed();

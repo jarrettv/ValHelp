@@ -28,8 +28,9 @@ interface WorldMapProps {
   forestUrl?: string;       // override for the static forest tile (default `${baseUrl}/forest`)
   poisUrl?: string;         // optional override; defaults to `${baseUrl}/pois`
   /// Overrides for the vector map and mask (e.g. blob: URLs of a map generated in
-  /// the browser); `altBiomes: false` skips the biome variant overlay.
-  assets?: { biomes?: string; mask?: string; altBiomes?: boolean };
+  /// the browser). `altBiomes`: false skips the biome variant overlay; URLs of its two
+  /// files (sectors JSON, gzipped grid) replace the seed's.
+  assets?: { biomes?: string; mask?: string; altBiomes?: false | { sectors: string; grid: string } };
   className?: string;
   /// A click on a POI marker (poi, and where in the map's own pixels), or on
   /// empty map (null).
@@ -168,7 +169,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
         // Biome variant patterns (Mushroom, ...): optional, seeds made before
         // they were recorded just don't get them.
-        (assets?.altBiomes === false ? Promise.resolve(null) : loadPatternOverlay(baseUrl))
+        (assets?.altBiomes === false ? Promise.resolve(null) : loadPatternOverlay(baseUrl, assets?.altBiomes))
           .then(o => {
             if (cancelled || !o) return;
             overlayRef.current = o;

@@ -21,7 +21,7 @@ interface Result {
   seedHash: number;
   bvec: ArrayBuffer;
   timings: Partial<Record<WorldgenStage, number>>;
-  urls: { biomes: string; mask: string; pois: string };
+  urls: { biomes: string; mask: string; pois: string; altSectors: string; altGrid: string };
   pois: PoiMarker[];
   rulesVersion: string;
 }
@@ -81,6 +81,8 @@ export default function AdminWorldgen() {
             biomes: URL.createObjectURL(new Blob([m.bvec])),
             mask: URL.createObjectURL(m.mask),
             pois: URL.createObjectURL(new Blob([JSON.stringify(m.pois)], { type: 'application/json' })),
+            altSectors: URL.createObjectURL(new Blob([m.altBiomes], { type: 'application/json' })),
+            altGrid: URL.createObjectURL(m.altBiomeGrid),
           },
         });
       }
@@ -134,7 +136,9 @@ export default function AdminWorldgen() {
     }
   }
 
-  const assets = useMemo(() => result && { biomes: result.urls.biomes, mask: result.urls.mask, altBiomes: false }, [result]);
+  const assets = useMemo(() => result && {
+    biomes: result.urls.biomes, mask: result.urls.mask, altBiomes: { sectors: result.urls.altSectors, grid: result.urls.altGrid },
+  }, [result]);
 
   if (status?.id !== 1) return <div style={{ padding: '1rem' }}>Admin access required.</div>;
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
@@ -148,7 +148,7 @@ type LocalState =
   | { kind: 'full'; worlds: LocalWorldMeta[] }
   | { kind: 'generating'; progress: GenerateProgress; started: number }
   | { kind: 'error'; message: string }
-  | { kind: 'ready'; urls: { biomes: string; mask: string; pois: string }; saveError?: string };
+  | { kind: 'ready'; urls: { biomes: string; mask: string; pois: string; altSectors: string; altGrid: string }; saveError?: string };
 
 const STAGES: WorldgenStage[] = ['runtime', 'generator', 'textures', 'vectors', 'mask', 'locations', 'contents'];
 /** Rough share of the total time per stage, for one overall progress bar. */
@@ -171,11 +171,13 @@ function LocalWorld({ seed, isOwner, pins, autoGenerate }: { seed: string; isOwn
   const cancelRef = useRef<(() => void) | null>(null);
   const urlsRef = useRef<string[]>([]);
 
-  function show(bvec: ArrayBuffer, mask: Blob, pois: PoiMarker[], saveError?: string) {
+  function show(w: { bvec: ArrayBuffer; mask: Blob; pois: PoiMarker[]; altBiomes: string; altBiomeGrid: Blob }, saveError?: string) {
     const urls = {
-      biomes: URL.createObjectURL(new Blob([bvec])),
-      mask: URL.createObjectURL(mask),
-      pois: URL.createObjectURL(new Blob([JSON.stringify(pois)], { type: 'application/json' })),
+      biomes: URL.createObjectURL(new Blob([w.bvec])),
+      mask: URL.createObjectURL(w.mask),
+      pois: URL.createObjectURL(new Blob([JSON.stringify(w.pois)], { type: 'application/json' })),
+      altSectors: URL.createObjectURL(new Blob([w.altBiomes], { type: 'application/json' })),
+      altGrid: URL.createObjectURL(w.altBiomeGrid),
     };
     urlsRef.current = Object.values(urls);
     setState({ kind: 'ready', urls, saveError });
@@ -206,7 +208,7 @@ function LocalWorld({ seed, isOwner, pins, autoGenerate }: { seed: string; isOwn
       let saveError: string | undefined;
       try { await saveLocalWorld(w); }
       catch (e) { saveError = e instanceof Error ? e.message : String(e); }
-      show(w.bvec, w.mask, w.pois, saveError);
+      show(w, saveError);
     } catch (e) {
       cancelRef.current = null;
       const message = e instanceof Error ? e.message : String(e);
@@ -222,7 +224,7 @@ function LocalWorld({ seed, isOwner, pins, autoGenerate }: { seed: string; isOwn
       .then(w => {
         if (!alive) return;
         if (w === 'stale') start();   // made by an older version: regenerate in place
-        else if (w) show(w.data.bvec, w.data.mask, w.data.pois);
+        else if (w) show(w.data);
         else if (autoGenerate) start();
         else setState({ kind: 'offer' });
       })
@@ -244,7 +246,7 @@ function LocalWorld({ seed, isOwner, pins, autoGenerate }: { seed: string; isOwn
     baseUrl: `/api/worlds/${encodeURIComponent(seed)}`,
     forestUrl: `/api/track/map/${encodeURIComponent(seed)}/forest`,
     poisUrl: state.urls.pois,
-    assets: { biomes: state.urls.biomes, mask: state.urls.mask, altBiomes: false },
+    assets: { biomes: state.urls.biomes, mask: state.urls.mask, altBiomes: { sectors: state.urls.altSectors, grid: state.urls.altGrid } },
   } : null, [state, seed]);
 
   let overlay: ReactNode = null;
@@ -316,7 +318,7 @@ function FullOverlay({ seed, worlds, onFreed }: { seed: string; worlds: LocalWor
 
 export type WorldSource = 'public' | 'server' | 'local' | 'pinned';
 
-interface MapProps { baseUrl: string; forestUrl: string; poisUrl?: string; assets?: { biomes?: string; mask?: string; altBiomes?: boolean } }
+interface MapProps { baseUrl: string; forestUrl: string; poisUrl?: string; assets?: ComponentProps<typeof WorldMap>['assets'] }
 
 function WorldView({ seed, source, isOwner, map, overlay, notice }: {
   seed: string; source: WorldSource; isOwner: boolean; map: MapProps | null; overlay: ReactNode; notice?: string;

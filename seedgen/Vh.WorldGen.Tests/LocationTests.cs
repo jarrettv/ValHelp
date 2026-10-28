@@ -63,6 +63,33 @@ public class LocationTests
             string.Join("\n  ", diff.Take(5)));
     }
 
+    /// <summary>What the web map's variant overlay reads (AltBiomeExport), against the game's own
+    /// oracle.altbiomes.json and .u8.gz: same sectors and variants, and the sector grid byte for byte.</summary>
+    [Theory, MemberData(nameof(Fixtures))]
+    public void AltBiomeExport_matches_oracle(string fixture)
+    {
+        var s = Load(fixture);
+        static string Canon(JsonElement e) => string.Join('\n', e.EnumerateArray().Select(x =>
+            $"{x.GetProperty("index").GetInt32()} {x.GetProperty("biome").GetString()} {x.GetProperty("edge").GetInt32()} " +
+            $"{x.GetProperty("cx").GetSingle():R} {x.GetProperty("cy").GetSingle():R} " +
+            $"{string.Join(",", x.GetProperty("min").EnumerateArray().Select(v => v.GetSingle().ToString("R")))} " +
+            $"{string.Join(",", x.GetProperty("max").EnumerateArray().Select(v => v.GetSingle().ToString("R")))} " +
+            string.Join(",", x.GetProperty("alts").EnumerateArray().Select(v => v.GetString()))));
+        using var game = JsonDocument.Parse(File.ReadAllText(Path.Combine(s.Fixture.Dir, "oracle.altbiomes.json")));
+        using var ours = JsonDocument.Parse(AltBiomeExport.Json(s.Biomes));
+        Assert.Equal(Canon(game.RootElement), Canon(ours.RootElement));
+
+        using var gz = new System.IO.Compression.GZipStream(File.OpenRead(Path.Combine(s.Fixture.Dir, "oracle.altbiomes.u8.gz")),
+            System.IO.Compression.CompressionMode.Decompress);
+        using var ms = new MemoryStream();
+        gz.CopyTo(ms);
+        var gameGrid = ms.ToArray();
+        var grid = AltBiomeExport.Grid(s.Biomes);
+        int diff = 0;
+        for (int i = 0; i < grid.Length; i++) if (grid[i] != gameGrid[i]) diff++;
+        Assert.True(gameGrid.Length == grid.Length && diff == 0, $"{s.Fixture}: sector grid differs in {diff} cells");
+    }
+
     /// <summary>Placement itself, given the game's alt biomes, so an alt-biome difference can't hide a placement bug.</summary>
     [Theory, MemberData(nameof(Fixtures))]
     public void Locations_match_game(string fixture)

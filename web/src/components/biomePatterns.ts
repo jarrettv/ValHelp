@@ -171,9 +171,11 @@ export function variantLuts(sectors: AltSector[], slotOf: Map<string, number>): 
 
 /// Everything VectorMap.setPatternOverlay needs for one seed (plus its sectors,
 /// for the hover card), or null when the seed has no variant data (generated
-/// before it was recorded).
-export async function loadPatternOverlay(baseUrl: string): Promise<PatternOverlay | null> {
-  const [sectorsRes, gridRes] = await Promise.all([fetch(`${baseUrl}/altbiomes`), fetch(`${baseUrl}/altbiomegrid`)]);
+/// before it was recorded). `urls` overrides where the two files come from (e.g.
+/// blob: URLs of a world generated in the browser).
+export async function loadPatternOverlay(baseUrl: string, urls?: { sectors: string; grid: string }): Promise<PatternOverlay | null> {
+  const [sectorsRes, gridRes] = await Promise.all([
+    fetch(urls?.sectors ?? `${baseUrl}/altbiomes`), fetch(urls?.grid ?? `${baseUrl}/altbiomegrid`)]);
   if (!sectorsRes.ok || !gridRes.ok || !gridRes.body) return null;
   const sectors: AltSector[] = await sectorsRes.json();
   const grid = new Uint8Array(await new Response(gridRes.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
