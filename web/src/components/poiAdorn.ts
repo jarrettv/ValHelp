@@ -24,6 +24,8 @@ const GLOW_COLORS: Record<string, string> = {
   blackmarble_altar_crystal: '#2ee6d0',       // sealbreaker fragment: teal
   Charred_altar_bellfragment: '#3ee05a',      // bell fragment: green
   'item:OnionSeeds': '#ffd83a',               // onion seeds: yellow
+  goblin_totempole: '#ff2bff',                // fuling totem: magenta
+  'item:GoblinTotem': '#ff2bff',              // ...and one rolled in a chest
 };
 
 const VEGVISIR_COLOR = '#f0c75e';   // the card's gold

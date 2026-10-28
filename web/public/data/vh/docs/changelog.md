@@ -2,6 +2,10 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-10-28
+
+* **Updated for Valheim 1.0.21.** [OvenPancake]@"Oven Pancake", [KaleChips]@"Kale Chips" and [BakedPoteitr]@"Baked Poteitr" are now mixed at the [piece_preptable]@"Prep Table" instead of a level 6–7 cauldron, so they're on the Prep Table tab of the [food guide](/guides/food) and no longer need the Smoker. Upgrading the [HelmetDNMage]@"Headdress of the Caller" no longer costs a Moose trophy per level.
+
 ## 2026-10-27
 
 * **Generate any seed on the [world map](/worlds), in your own browser.** Type a seed into the world picker and it's built on your device in about half a minute on a desktop (longer on a phone): terrain, biomes, forests, every location the game would place, and what each one holds, matched against the game's own world generation. Only the seed name is sent to us.
