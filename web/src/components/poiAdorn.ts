@@ -33,14 +33,20 @@ const BEEHIVE_COLOR = '#e8b030';
 const CHEST_ICON = 'chest_hildir1';
 /// One adornment per copy, up to this many (a chest of 400 coins stays readable).
 const MAX_COPIES = 8;
-/// Entries that adorn once however many there are (a stack of seeds is one find).
-const ONE_COPY = new Set(['item:OnionSeeds']);
+/// Entries that adorn once however many there are (a stack of seeds is one find),
+/// by the find they share: a cave's loose tetras and its tetra spawners are one.
+const ONE_COPY: Record<string, string> = {
+  'item:OnionSeeds': 'onionseeds',
+  Fish4_cave: 'tetra',
+  Spawner_Fish4: 'tetra',
+};
 
 /// One adornment per copy (capped), each with its entry's own glow colour if it has one.
 function copies(art: Adornment, n: number): Adornment[] {
   const glow = GLOW_COLORS[art.key];
-  const max = ONE_COPY.has(art.key) ? 1 : MAX_COPIES;
-  return Array.from({ length: Math.min(n, max) }, (_, i) => ({ ...art, ...(glow ? { glow } : {}), key: `${art.key}#${i}` }));
+  const one = ONE_COPY[art.key];
+  if (one) return [{ ...art, ...(glow ? { glow } : {}), key: one }];
+  return Array.from({ length: Math.min(n, MAX_COPIES) }, (_, i) => ({ ...art, ...(glow ? { glow } : {}), key: `${art.key}#${i}` }));
 }
 
 /// Creature id -> its trophy's item code, once items.json has loaded.
@@ -101,5 +107,6 @@ export function poiAdornments(poi: PoiMarker): Adornment[] {
     for (const { item, count } of chest)
       if (contentStarred(prefab, itemKey(item))) totals.set(item, (totals.get(item) ?? 0) + count);
   for (const [item, n] of totals) out.push(...copies({ key: itemKey(item), png: item }, n));
-  return out;
+  // A shared find adorns once, however many of its entries the POI holds.
+  return out.filter((a, i) => out.findIndex(b => b.key === a.key) === i);
 }

@@ -17,6 +17,7 @@ import {
   adornAlpha, adornGrowth, adornProgress, requestPoiRedraw,
 } from './poiIcons';
 import { type Adornment, adornDataKey, poiAdornments } from './poiAdorn';
+import { contentVisible, VEGVISIR_KEY } from './poiContents';
 
 // Valheim minimap: 2048 texels, 12 world units per texel, half-pixel offset.
 const TEX_SIZE = 2048;
@@ -56,9 +57,26 @@ export interface View { size: number; panX: number; panY: number; scale: number;
 
 interface Drawn { poi: PoiMarker; x: number; y: number; r: number }
 
+/// A vegvisir's arrow toward the boss location it reveals, drawn with the
+/// adornments: the game pins the instance of that location closest to the
+/// vegvisir (ZoneSystem.FindClosestLocation). `dist`: world units to the boss.
+interface VegvisirLink { it: Item; ux1: number; uy1: number; dist: number; dark: boolean }
+/// Black on the pale snow biomes, white elsewhere.
+const VEGVISIR_ARROW_LIGHT = '#ffffff';
+const VEGVISIR_ARROW_DARK = '#000000';
+const DARK_ARROW_BIOMES = new Set(['Mountain', 'DeepNorth']);
+const VEGVISIR_ARROW_DASH = [2, 5];
+/// Arrow length in screen px past the vegvisir's icon (it's drawn from the centre): grows with the distance to
+/// the boss (whatever the zoom), within these bounds, and never past the boss.
+const ARROW_MIN_PX = 36;
+const ARROW_MAX_PX = 260;
+const ARROW_PX_PER_UNIT = 0.02;   // 5 km -> +100 px
+const ARROW_HEAD_PX = 9;
+
 export class PoiLayer {
   private items: Item[] = [];
   private buckets: number[][] = [];
+  private links: VegvisirLink[] = [];
   private key: unknown[] = [];
   /** Clickable markers from the last frame, in draw order (topmost last). */
   private drawn: Drawn[] = [];
@@ -84,6 +102,7 @@ export class PoiLayer {
     // Stable sort, least important first: drawing in this order puts LOD 0 on top.
     items.sort((a, b) => b.lod - a.lod);
     this.items = items;
+    this.links = vegvisirLinks(pois, items);
     this.buckets = Array.from({ length: SPATIAL_CELLS * SPATIAL_CELLS }, () => []);
     items.forEach((it, i) => this.buckets[cellOf(it.uy) * SPATIAL_CELLS + cellOf(it.ux)].push(i));
   }
@@ -124,6 +143,21 @@ export class PoiLayer {
     const pulse = glowPulse(performance.now());
     let animating = false;
 
+    // Vegvisir -> boss arrows for the vegvisirs in view, from the vegvisir's centre.
+    const arrows: { l: VegvisirLink; x: number; y: number; ux: number; uy: number; len: number }[] = [];
+    const arrowed = new Set<Item>();
+    if (adornA > 0) for (const l of this.links) {
+      const x = l.it.ux * v.size + v.panX, y = l.it.uy * v.size + v.panY;
+      if (x < 0 || x > v.width || y < 0 || y > v.height) continue;
+      const dx = l.ux1 * v.size + v.panX - x, dy = l.uy1 * v.size + v.panY - y;
+      const span = Math.hypot(dx, dy);
+      const edge = styleOf(l.it).iconSize / 2;   // the vegvisir's icon covers this much of it
+      const len = Math.min(span, edge + Math.min(ARROW_MAX_PX, ARROW_MIN_PX + l.dist * ARROW_PX_PER_UNIT));
+      if (len < edge + ARROW_HEAD_PX) continue;   // the boss is right there
+      arrows.push({ l, x, y, ux: dx / span, uy: dy / span, len });
+      arrowed.add(l.it);
+    }
+
     // Dots under every icon, then icons (each with its adornments); both least important first.
     for (const { it, x, y } of shown) {
       const st = styles[it.lod];
@@ -133,11 +167,12 @@ export class PoiLayer {
       ctx.drawImage(dot.canvas, x - dot.half, y - dot.half, dot.css, dot.css);
       if (st.dotAlpha >= MIN_HIT_ALPHA) drawn.push({ poi: it.poi, x, y, r: DOT_HIT_PX });
     }
-    for (const { it, x, y } of shown) {
+    // The arrows go over every icon but their vegvisirs', which draw last.
+    const drawIcon = ({ it, x, y }: { it: Item; x: number; y: number }) => {
       const st = styleOf(it);
-      if (st.iconAlpha <= 0) continue;
+      if (st.iconAlpha <= 0) return;
       const sprite = spriteFor(it.rule.icon, it.rule.color, st.iconSize, dpr);
-      if (!sprite) continue;   // still loading; its onload redraws
+      if (!sprite) return;   // still loading; its onload redraws
       setAlpha(st.iconAlpha * (it.rule.opacity ?? 1));
       ctx.drawImage(sprite.canvas, x - sprite.half, y - sprite.half, sprite.css, sprite.css);
       if (st.iconAlpha >= MIN_HIT_ALPHA) drawn.push({ poi: it.poi, x, y, r: st.iconSize / 2 });
@@ -146,7 +181,16 @@ export class PoiLayer {
         drawAdornments(ctx, it.adorn, x, y, st.iconSize, adornG, adornP, it.rule.color, pulse, dpr);
         animating = true;
       }
+    };
+    for (const s of shown) if (!arrowed.has(s.it)) drawIcon(s);
+    if (arrows.length) {
+      setAlpha(adornA);
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 1.5;
+      for (const a of arrows)
+        drawArrow(ctx, a.x, a.y, a.ux, a.uy, 0, a.len, a.l.dark ? VEGVISIR_ARROW_DARK : VEGVISIR_ARROW_LIGHT);
     }
+    for (const s of shown) if (arrowed.has(s.it)) drawIcon(s);
     setAlpha(1);
     this.drawn = drawn;
     this.animating = animating && !reducedMotion();
@@ -166,6 +210,54 @@ export class PoiLayer {
     }
     return best;
   }
+}
+
+/// Each shown POI's vegvisirs, to the nearest location of the prefab each names
+/// (bosses hidden on the map still count: the game reveals them all the same).
+function vegvisirLinks(pois: readonly PoiMarker[], items: readonly Item[]): VegvisirLink[] {
+  const byPrefab = new Map<string, PoiMarker[]>();
+  for (const p of pois) if (p.prefab) {
+    let list = byPrefab.get(p.prefab);
+    if (!list) byPrefab.set(p.prefab, list = []);
+    list.push(p);
+  }
+  const links: VegvisirLink[] = [];
+  for (const it of items) {
+    const { poi } = it;
+    if (!poi.vegvisirs?.length || !contentVisible(poi.prefab, VEGVISIR_KEY, null)) continue;
+    for (const name of poi.vegvisirs) {
+      let best: PoiMarker | null = null, bestD = Infinity;
+      for (const t of byPrefab.get(name) ?? []) {
+        const d = (t.x - poi.x) ** 2 + (t.z - poi.z) ** 2;
+        if (d < bestD) { best = t; bestD = d; }
+      }
+      if (!best) continue;
+      const [ux1, uy1] = worldToUnit(best.x, best.z);
+      links.push({ it, ux1, uy1, dist: Math.sqrt(bestD), dark: DARK_ARROW_BIOMES.has(poi.biome ?? '') });
+    }
+  }
+  return links;
+}
+
+/// A dotted shaft from `start` to `start + len` px along (ux, uy) from (x, y), ending in a solid head.
+function drawArrow(ctx: CanvasRenderingContext2D, x: number, y: number, ux: number, uy: number,
+                   start: number, len: number, color: string) {
+  const tipX = x + ux * (start + len), tipY = y + uy * (start + len);
+  const baseX = tipX - ux * ARROW_HEAD_PX, baseY = tipY - uy * ARROW_HEAD_PX;
+  ctx.strokeStyle = ctx.fillStyle = color;
+  ctx.setLineDash(VEGVISIR_ARROW_DASH);
+  ctx.beginPath();
+  ctx.moveTo(x + ux * start, y + uy * start);
+  ctx.lineTo(baseX, baseY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  const w = ARROW_HEAD_PX * 0.55;
+  ctx.beginPath();
+  ctx.moveTo(tipX, tipY);
+  ctx.lineTo(baseX - uy * w, baseY + ux * w);
+  ctx.lineTo(baseX + uy * w, baseY - ux * w);
+  ctx.closePath();
+  ctx.fill();
 }
 
 function cellOf(u: number): number {

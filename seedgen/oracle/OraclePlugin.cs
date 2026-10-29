@@ -738,6 +738,8 @@ public class OraclePlugin : BaseUnityPlugin
         "Grave1", "TrollCave02", "GoblinCamp2", "StoneTowerRuins04",
         // Vegvisirs here are RandomSpawns (30-40%), so whether one exists is per instance.
         "Ruin2", "SwampRuin1", "SwampRuin2", "StoneHenge3", "StoneHenge4", "StoneHenge5",
+        // Mountain cabins: their chests' onion seeds adorn the map.
+        "AbandonedLogCabin02", "AbandonedLogCabin03", "AbandonedLogCabin04",
     };
 
     /// <summary>
