@@ -79,6 +79,12 @@ public static class UnityRandom
         return min;
     }
 
+    /// <summary>Advances the state by <paramref name="n"/> draws (any Random call that draws once).</summary>
+    public static void Skip(int n)
+    {
+        for (int i = 0; i < n; i++) NextUint();
+    }
+
     /// <summary>Expose NextUint for testing.</summary>
     public static uint NextUintPublic() => NextUint();
 

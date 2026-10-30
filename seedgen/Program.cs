@@ -5,6 +5,9 @@ using SeedGen;
 if (args.Length > 0 && args[0] == "dungeon-check") return Vh.World.DungeonCheck.Run(args[1..]);
 if (args.Length > 0 && args[0] == "pois-check") return Vh.World.DungeonCheck.RunPois(args[1..]);
 if (args.Length > 0 && args[0] == "contents-check") return Vh.World.DungeonCheck.RunContents(args[1..]);
+// Dev: `chests-check <dir> [seeds]` places each seed*/ dir's world as the browser does
+// (no saved world, no oracle) and compares the POIs' simulated chests with its oracle.loot.json.
+if (args.Length > 0 && args[0] == "chests-check") return Vh.World.DungeonCheck.RunChests(args[1..]);
 // Dev: `pois-json <db> <SeedName> [oracle.loot.json]` prints the POIs a job would serve.
 if (args.Length > 0 && args[0] == "pois-json")
 {

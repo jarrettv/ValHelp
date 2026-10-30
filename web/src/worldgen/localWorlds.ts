@@ -14,8 +14,8 @@ export const LOCAL_WORLD_LIMIT = 4;
 
 /** Bump when the worldgen output changes: older stored worlds stay listed and are
  *  regenerated when opened. 2: forest mask made opaque (format 1 lost the forest).
- *  3: biome variants kept. */
-const FORMAT = 3;
+ *  3: biome variants kept. 4: plain locations' chests rolled (axe heads). */
+const FORMAT = 4;
 
 const DB_NAME = 'vh-worlds';
 const DB_VERSION = 1;

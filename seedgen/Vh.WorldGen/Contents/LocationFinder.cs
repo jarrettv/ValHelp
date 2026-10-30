@@ -667,8 +667,10 @@ public static class LocationFinder
         var marks = CampMarks(prefabName, sim, sample);
         // Chests as the oracle rolled them. A camp's only count when it built
         // the camp on its terrain (a plain spawn lays it out differently).
+        // Without a sample, as the simulation rolled them (plain locations).
         var chests = sample is { Chests.Length: > 0 } && (!CampPrefabs.Contains(prefabName) || sample.WholeZone)
-            ? sample.Chests : null;
+            ? sample.Chests
+            : sample == null && sim is { Chests.Count: > 0 } ? sim.Chests.ToArray() : null;
         string[]? vegvisirs = sim is { Vegvisirs.Count: > 0 } ? sim.Vegvisirs.Distinct().ToArray()
             : sample is { Vegvisirs.Length: > 0 } ? sample.Vegvisirs : null;
 
@@ -692,6 +694,11 @@ public static class LocationFinder
             var found = LootItems(sample);
             if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
             if (sample.Creatures.Count > 0) creatures = sample.Creatures;
+        }
+        else if (chests != null)
+        {
+            var found = ChestFinds(chests).ToList();
+            if (found.Count > 0) items = (items ?? Array.Empty<string>()).Concat(found).ToArray();
         }
         var dungeonFound = DungeonItems(prefabName, sim, sample);
         if (dungeonFound.Count > 0) items = (items ?? Array.Empty<string>()).Concat(dungeonFound).ToArray();
@@ -786,15 +793,21 @@ public static class LocationFinder
         var items = new List<string>();
         // Also check the spawned objects: plugin builds before the 1.0 fix counted 0 beehives.
         if (s.Beehives > 0 || s.Objects.ContainsKey("Beehive")) items.Add("Beehive");
-        foreach (var c in s.Chests.SelectMany(x => x))
-        {
-            if (c.Item == "AxeHead1") items.Add("Mysterious Axe Head");
-            else if (c.Item == "AxeHead2") items.Add("Curious Axe Head");
-        }
+        items.AddRange(ChestFinds(s.Chests));
         if (s.Objects.ContainsKey("Spawner_Troll")) items.Add("Troll");
         if (s.Objects.ContainsKey("goblin_totempole")) items.Add("GoblinTotem");
         if (s.Present.Keys.Any(k => k.Contains("Vegvisir"))) items.Add("Vegvisir");
         return items;
+    }
+
+    /// <summary>Chest items we surface as POI items (map icons).</summary>
+    static IEnumerable<string> ChestFinds(ChestItem[][] chests)
+    {
+        foreach (var c in chests.SelectMany(x => x))
+        {
+            if (c.Item == "AxeHead1") yield return "Mysterious Axe Head";
+            else if (c.Item == "AxeHead2") yield return "Curious Axe Head";
+        }
     }
 
     // Declared before DungeonFinds: static initializers run in text order.

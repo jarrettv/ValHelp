@@ -31,6 +31,15 @@ Format (positional arrays to keep it small; DungeonCatalog.cs reads it):
   randomObject [node, requireTheme, requireBiome, notInLava, minElevation, maxElevation, [[objectNode, weight], ...]]
   netView      [node, prefabName]   (Utils.GetPrefabName of the node's name)
   vegvisir     [node, [locationName, ...]]   (Vegvisir.m_locations: the boss it reveals)
+  awake        [node, kind, arg]   what each component's Awake draws from Unity's
+               global Random when SpawnLocation instantiates it, in component order:
+               kind 0 = arg fixed draws, 1 = WearNTear (2, +1 with the location's
+               random initial damage), 2 = Container rolling chests[arg],
+               3 = not modelled (later chests in the location can't be predicted)
+  chest        [dropMin, dropMax, dropChance, oneOfEach, [[item, stackMin, stackMax, weight, maxStack], ...]]
+               Container.m_defaultItems; stackMin/Max already clamped as
+               DropTable.AddItemToList does (>= 1, <= the item's max stack);
+               maxStack for Inventory.AddItem merging repeats into one stack
 
 Loading the bundles takes a couple of minutes.
 """
@@ -68,11 +77,58 @@ def asset_id(ref) -> str:
     return "".join("%08x" % a[k] for k in ("v3", "v2", "v1", "v0"))
 
 
+# Components whose Awake/OnEnable never touches UnityEngine.Random (checked in
+# the decompiled 1.0 code). Any other MonoBehaviour that isn't modelled in
+# awake_op() makes the chests after it unpredictable (kind 3).
+NO_DRAW = {
+    "ZNetView", "Piece", "RandomSpawn", "RandomObject", "SimpleMeshCombine", "RandomPieceRotation", "Door",
+    "DropOnDestroyed", "SpawnOnDamaged", "MusicLocation", "Destructible", "StaticPhysics", "HoverText",
+    "SpawnArea", "Chair", "AutoJumpLedge", "ZSyncTransform", "ZSyncAnimation", "EffectArea", "LightLod",
+    "TimedDestruction", "Vegvisir", "Location", "RoomConnection", "Room", "DungeonGenerator", "LocationProxy",
+}
+FIXED_DRAWS = {"CreatureSpawner": 1, "Floating": 1, "LightFlicker": 1, "ZSFX": 1}
+
+
 class Exporter:
     def __init__(self, env):
         self.env = env
         # Script class name per MonoBehaviour, filled lazily.
         self._script = {}
+        # GameObject path ID -> (name, ItemDrop max stack), set by main() for chest tables.
+        self.item_of = lambda pid: (None, 1)
+        # Unmodelled components (kind 3) by script, reported at the end.
+        self.unmodelled = {}
+
+    def awake_op(self, sc: str, t: dict, comps, chests: list):
+        """(kind, arg) for one component's Awake on instantiation, or None (no draws)."""
+        if sc in NO_DRAW:
+            return None
+        if sc in FIXED_DRAWS:
+            return (0, FIXED_DRAWS[sc])
+        if sc == "WearNTear":
+            return (1, 0)
+        if sc == "Container":
+            dt = t["m_defaultItems"]
+            drops = []
+            for d in dt["m_drops"]:
+                name, max_stack = self.item_of(d["m_item"]["m_PathID"])
+                # AddItemToList: Range(max(1, min), min(maxStack, max) + 1); the
+                # resource-rate ScaleDrops is the same single Range at 1x.
+                drops.append([name or "?", max(1, d["m_stackMin"]), min(max_stack, d["m_stackMax"]), d["m_weight"], max_stack])
+            chests.append([dt["m_dropMin"], dt["m_dropMax"], dt["m_dropChance"], int(bool(dt["m_oneOfEach"])), drops])
+            return (2, len(chests) - 1)
+        if sc == "Pickable":     # InvokeRepeating("UpdateRespawn", Range(1, 5), ...)
+            return (0, 1) if t.get("m_respawnTimeMinutes", 0) > 0 else None
+        if sc == "PickableItem":  # SetupRandomPrefab: Range over the list, then ScaleDrops' Range
+            return (0, 2) if not t["m_itemPrefab"]["m_PathID"] and t.get("m_randomItemPrefabs") else None
+        if sc == "Aoe":
+            return (0, 1) if t.get("m_ttlMax", 0) > 0 else None
+        if sc == "LodFadeInOut":
+            # Invoke("FadeIn", Range) when a camera is over 20 m away and the object has a LODGroup:
+            # always, for a zone spawned around a player (and on the dedicated server the oracle runs).
+            return (0, 1) if any(c.type.name == "LODGroup" for c in comps) else None
+        self.unmodelled[sc] = self.unmodelled.get(sc, 0) + 1
+        return (3, 0)
 
     def script_of(self, mb_reader) -> str:
         key = (mb_reader.assets_file.name, mb_reader.path_id)
@@ -91,10 +147,12 @@ class Exporter:
             except Exception:
                 continue
 
-    def hierarchy(self, root_go):
+    def hierarchy(self, root_go, with_awake=False):
         """Depth-first pre-order nodes under (and including) root_go, with the
-        components seedgen cares about. Node 0 is the root."""
+        components seedgen cares about. Node 0 is the root. with_awake: also each
+        component's Awake draws and the chests' tables (locations' own objects)."""
         nodes, conns, rspawns, robjects, nviews, vegs, keyed = [], [], [], [], [], [], {}
+        awake, chests = [], []
         go_index = {}
 
         def v3(d):
@@ -123,6 +181,14 @@ class Exporter:
                 if c.type.name != "MonoBehaviour":
                     continue
                 sc = self.script_of(c)
+                if with_awake and sc not in NO_DRAW and sc:
+                    try:
+                        op = self.awake_op(sc, c.read_typetree(), comps, chests)
+                    except Exception as e:
+                        print(f"  {go.m_Name}: {sc}: {e}", file=sys.stderr)
+                        op = (3, 0)
+                    if op:
+                        awake.append({"node": idx, "kind": op[0], "arg": op[1]})
                 if sc in ("RoomConnection", "RandomSpawn", "RandomObject", "ZNetView", "Vegvisir", "Room", "Location",
                           "DungeonGenerator"):
                     t = c.read_typetree()
@@ -171,7 +237,7 @@ class Exporter:
         # active-in-hierarchy rules walk up the chain). Pre-order is preserved,
         # so component order still matches GetComponentsInChildren.
         keep = {0}
-        refs = [c["node"] for c in conns] + [r["node"] for r in rspawns] + [r["offObject"] for r in rspawns]             + [r["node"] for r in robjects] + [o["node"] for r in robjects for o in r["objects"]]             + [v["node"] for v in nviews] + [v["node"] for v in vegs] + [i for i, _ in keyed.values()]
+        refs = [c["node"] for c in conns] + [r["node"] for r in rspawns] + [r["offObject"] for r in rspawns]             + [r["node"] for r in robjects] + [o["node"] for r in robjects for o in r["objects"]]             + [v["node"] for v in nviews] + [v["node"] for v in vegs] + [i for i, _ in keyed.values()]             + [a["node"] for a in awake]
         for n in refs:
             while n >= 0 and n not in keep:
                 keep.add(n)
@@ -193,9 +259,10 @@ class Exporter:
             for o in r["objects"]: o["node"] = remap.get(o["node"], -1)
         for v in nviews: v["node"] = remap[v["node"]]
         for v in vegs: v["node"] = remap[v["node"]]
+        for a in awake: a["node"] = remap[a["node"]]
         keyed = {k: (remap[i], t) for k, (i, t) in keyed.items()}
         go_index = {pid: remap[i] for pid, i in go_index.items() if i in remap}
-        return pruned, conns, rspawns, robjects, nviews, vegs, keyed, go_index
+        return pruned, conns, rspawns, robjects, nviews, vegs, keyed, go_index, (awake, chests)
 
 
 def prefab_name(name: str) -> str:
@@ -204,7 +271,7 @@ def prefab_name(name: str) -> str:
     return name[:min(cut)] if cut else name
 
 
-def compact(nodes, conns, rsp, rob, nv, vg) -> dict:
+def compact(nodes, conns, rsp, rob, nv, vg, aw=None) -> dict:
     def node(n):
         a = [n["parent"], 1 if n["active"] else 0] + n.get("pos", [0.0, 0.0, 0.0]) + n.get("rot", [0.0, 0.0, 0.0, 1.0])
         return a + n["scale"] if "scale" in n else a
@@ -218,6 +285,7 @@ def compact(nodes, conns, rsp, rob, nv, vg) -> dict:
                            r["maxElevation"], [[o["node"], o["weight"]] for o in r["objects"]]] for r in rob],
         "netViews": [[v["node"], prefab_name(nodes[v["node"]]["name"])] for v in nv],
         "vegvisirs": [[v["node"], v["locations"]] for v in vg],
+        **({"awake": [[a["node"], a["kind"], a["arg"]] for a in aw[0]], "chests": aw[1]} if aw else {}),
     }
 
 
@@ -255,6 +323,22 @@ def main():
                         roots.setdefault(go.m_Name, go)
                     break
 
+    max_stack = {}
+
+    def item_of(pid):
+        """A DropTable's item PPtr -> (prefab name, ItemDrop m_maxStackSize)."""
+        name = go_names.get(pid)
+        if name not in max_stack:
+            ms = 1
+            go = roots.get(name)
+            for c in (ex.components(go) if go is not None else []):
+                if c.type.name == "MonoBehaviour" and ex.script_of(c) == "ItemDrop":
+                    ms = c.read_typetree()["m_itemData"]["m_shared"]["m_maxStackSize"]
+                    break
+            max_stack[name] = ms
+        return name, max_stack[name]
+    ex.item_of = item_of
+
     # DungeonDB.m_roomLists, in order; RoomList GameObjects live in the same file.
     db = dbs[0]
     dbt = db.read_typetree()
@@ -272,7 +356,7 @@ def main():
         if go is None:
             print(f"  missing room prefab {name}", file=sys.stderr)
             continue
-        nodes, conns, rsp, rob, nv, vg, keyed, _ = ex.hierarchy(go)
+        nodes, conns, rsp, rob, nv, vg, keyed, _, _ = ex.hierarchy(go)
         _, r = keyed["Room"]
         rooms.append({
             "name": name, "listEnabled": enabled, "listTheme": theme,
@@ -291,10 +375,11 @@ def main():
         comps = {ex.script_of(c) for c in ex.components(go) if c.type.name == "MonoBehaviour"}
         if "Location" not in comps:
             continue
-        nodes, conns, rsp, rob, nv, vg, keyed, go_index = ex.hierarchy(go)
+        nodes, conns, rsp, rob, nv, vg, keyed, go_index, aw = ex.hierarchy(go, with_awake=True)
         li, lt = keyed["Location"]
         if "DungeonGenerator" not in keyed:
-            locations[name] = {**compact(nodes, conns, rsp, rob, nv, vg),
+            locations[name] = {**compact(nodes, conns, rsp, rob, nv, vg, aw),
+                               "applyRandomDamage": bool(lt["m_applyRandomDamage"]),
                                "useCustomInteriorTransform": False, "interiorNode": -1, "generatorNode": -1}
             continue
         gi, g = keyed["DungeonGenerator"]
@@ -306,7 +391,8 @@ def main():
             if tr is not None:
                 interior_node = go_index.get(tr.read().m_GameObject.path_id, -1)
         locations[name] = {
-            **compact(nodes, conns, rsp, rob, nv, vg),
+            **compact(nodes, conns, rsp, rob, nv, vg, aw),
+            "applyRandomDamage": bool(lt["m_applyRandomDamage"]),
             "useCustomInteriorTransform": bool(lt["m_useCustomInteriorTransform"]),
             "interiorNode": interior_node, "generatorNode": gi,
             "generator": {
@@ -329,6 +415,9 @@ def main():
     print(f"{len(rooms)} rooms, {len(locations)} locations, {len(dungeons)} with a generator: {', '.join(dungeons)}",
           file=sys.stderr)
 
+    if ex.unmodelled:
+        print("Awake not modelled (chests spawned after these are unpredictable): "
+              + ", ".join(f"{k} {v}" for k, v in sorted(ex.unmodelled.items(), key=lambda kv: -kv[1])), file=sys.stderr)
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     # mtime=0 keeps the gzip byte-identical across re-exports of the same data.
     with gzip.GzipFile(args.out, "wb", mtime=0) as f:

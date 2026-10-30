@@ -229,7 +229,9 @@ public static class DungeonCheck
         var kinds = DungeonCatalog.ContentKinds;
         var stats = new SortedDictionary<string, (int n, int exact, Dictionary<string, int> bad)>();
         var unsupported = new SortedDictionary<string, int>();
-        int shown = 0;
+        // Chests: prefab -> (samples, exact, unpredictable).
+        var chestStats = new SortedDictionary<string, (int n, int exact, int unknown)>();
+        int shown = 0, chestShown = 0;
         var files = args.SelectMany(d => Directory.GetDirectories(d, "seed*"))
             .Select(d => Path.Combine(d, "oracle.loot.json")).Where(File.Exists).ToList();
         foreach (var file in files)
@@ -245,6 +247,21 @@ public static class DungeonCheck
                 if (!sim.Supports(prefab)) { unsupported[prefab] = unsupported.GetValueOrDefault(prefab) + 1; continue; }
                 float x = e.GetProperty("x").GetSingle(), z = e.GetProperty("z").GetSingle();
                 var res = sim.Simulate(prefab, new V3(x, wg.GetHeight(x, z), z), seed);
+                if (DungeonCatalog.Instance.Locations[prefab] is { Algorithm: -1, Tree.Chests.Length: > 0 })
+                {
+                    static string Key(IEnumerable<IEnumerable<ChestItem>> chests) => string.Join(" | ", chests
+                        .Select(c => string.Join(",", c.Select(i => $"{i.Item}x{i.Count}").OrderBy(k => k, StringComparer.Ordinal)))
+                        .OrderBy(k => k, StringComparer.Ordinal));
+                    string truthChests = Key(e.GetProperty("chests").EnumerateArray()
+                        .Select(c => c.EnumerateArray().Select(i => new ChestItem(i[0].GetString()!, i[1].GetInt32()))));
+                    var cs = chestStats.GetValueOrDefault(prefab);
+                    if (res.Chests == null) cs.unknown++;
+                    else if (Key(res.Chests) == truthChests) cs.exact++;
+                    else if (chestShown++ < 8)
+                        Console.WriteLine($"  {prefab} @{x},{z} seed {seed}: chests game [{truthChests}] sim [{Key(res.Chests)}]");
+                    cs.n++;
+                    chestStats[prefab] = cs;
+                }
                 // Objects seedgen leaves out of a POI's contents (lava rolls) aren't compared.
                 var truth = objs.EnumerateObject().Where(p => kinds.ContainsKey(p.Name) && !res.Uncertain.Contains(p.Name))
                     .ToDictionary(p => p.Name, p => p.Value.GetInt32());
@@ -270,6 +287,52 @@ public static class DungeonCheck
             Console.WriteLine($"{prefab}: {st.exact}/{st.n} exact" +
                 (st.bad.Count > 0 ? "  off: " + string.Join(", ", st.bad.OrderByDescending(b => b.Value).Take(5).Select(b => $"{b.Key} {b.Value}")) : ""));
         if (unsupported.Count > 0) Console.WriteLine("not simulated: " + string.Join(", ", unsupported.Select(u => $"{u.Key} {u.Value}")));
+        Console.WriteLine("chests:");
+        foreach (var (prefab, cs) in chestStats)
+            Console.WriteLine($"  {prefab}: {cs.exact}/{cs.n} exact" + (cs.unknown > 0 ? $", {cs.unknown} unpredictable" : ""));
+        return 0;
+    }
+
+    /// <summary>
+    /// The browser's path end to end: place the seed's locations, build POIs
+    /// without a saved world or oracle (chests from DungeonSim), and compare each
+    /// POI's chests with the oracle sample at the same spot.
+    /// </summary>
+    public static int RunChests(string[] args)
+    {
+        var dirs = Directory.GetDirectories(args[0], "seed*").Where(d => File.Exists(Path.Combine(d, "oracle.loot.json")))
+            .OrderBy(d => d, StringComparer.Ordinal).Take(args.Length > 1 ? int.Parse(args[1]) : int.MaxValue).ToList();
+        var (rules, alts, _) = Locations.LocationRule.LoadEmbedded();
+        var stats = new SortedDictionary<string, (int n, int exact, int none)>();
+        int shown = 0;
+        static string Key(IEnumerable<IEnumerable<ChestItem>>? chests) => chests == null ? "" : string.Join(" | ", chests
+            .Select(c => string.Join(",", c.Select(i => $"{i.Item}x{i.Count}").OrderBy(k => k, StringComparer.Ordinal)))
+            .Where(c => c != "").OrderBy(k => k, StringComparer.Ordinal));
+        foreach (var dir in dirs)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            int seed = int.Parse(Path.GetFileName(dir)["seed".Length..]);
+            var wg = new WorldGenerator(seed, 2);
+            var grid = WorldGrid.GenerateParallel(seed, 2);
+            var placed = new Locations.LocationPlacer(wg, Locations.BiomeData.Build(grid, seed, alts), rules).RunToEnd();
+            var pois = LocationFinder.FromPlaced(placed, seed, wg);
+            var loot = LocationFinder.LoadLoot(Path.Combine(dir, "oracle.loot.json"))!;
+            int matched = 0;
+            foreach (var poi in pois)
+            {
+                if (poi.Prefab == null || !loot.TryGetValue(LocationFinder.LootKey(poi.Prefab, poi.X, poi.Z), out var s)) continue;
+                if (DungeonCatalog.Instance.Locations.GetValueOrDefault(poi.Prefab) is not { Algorithm: -1, Tree.Chests.Length: > 0 }) continue;
+                matched++;
+                string truth = Key(s.Chests), got = Key(poi.Chests);
+                var st = stats.GetValueOrDefault(poi.Prefab);
+                st.n++;
+                if (truth == got) st.exact++;
+                else if (shown++ < 8) Console.WriteLine($"  {poi.Prefab} @{poi.X},{poi.Z} seed {seed}: game [{truth}] browser [{got}]");
+                stats[poi.Prefab] = st;
+            }
+            Console.WriteLine($"seed {seed}: {placed.Count} placed, {matched} chest locations matched to oracle samples ({sw.ElapsedMilliseconds} ms)");
+        }
+        foreach (var (prefab, st) in stats) Console.WriteLine($"  {prefab}: {st.exact}/{st.n} exact");
         return 0;
     }
 

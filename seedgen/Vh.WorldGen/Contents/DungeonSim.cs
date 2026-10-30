@@ -72,6 +72,15 @@ public sealed class DungeonResult
     /// The roll still happens, so everything else stays exact.
     /// </summary>
     public HashSet<string> Uncertain { get; } = new();
+    /// <summary>
+    /// Each chest's items as its Container rolled them in Awake, in spawn order
+    /// (plain locations only: dungeons' and camps' chests sit in their rooms).
+    /// Null when an object spawned before a chest draws from Random in a way
+    /// we don't model, so the location's chests can't be predicted.
+    /// </summary>
+    public List<ChestItem[]>? Chests { get; set; } = new();
+    /// <summary>An unmodelled Awake drew from Random: chests rolled from here on are unknown.</summary>
+    internal bool RandomLost { get; set; }
     public List<string> Rooms { get; } = new();
     public List<V3> RoomPositions { get; } = new();
     public V3 GeneratorPosition { get; set; }
@@ -178,10 +187,12 @@ public sealed class DungeonSim
             if (on) result.Vegvisirs.AddRange(vg.Locations);
         }
 
+        if (loc.Algorithm != -1) result.Chests = null;
         foreach (var nv in EnabledNetViews(tree))
         {
             if (!active[nv.Node]) continue;
             result.Add(nv.Prefab);
+            if (loc.Algorithm == -1) AwakeAll(tree, loc, active, nv.Node, result);
             if (nv.Node == loc.GeneratorNode && loc.Algorithm is 0 or 2)
             {
                 var dgPos = pos + rot * world[nv.Node].pos;
@@ -192,6 +203,99 @@ public sealed class DungeonSim
         }
         result.Seed = seed;
         return result;
+    }
+
+    /// <summary>
+    /// The Random draws of every Awake that <c>Object.Instantiate</c> runs for one
+    /// ZNetView object SpawnLocation creates: its active nodes in pre-order, each
+    /// one's components in order. Containers roll their chests here, so the
+    /// draws of everything spawned before a chest decide what it holds.
+    /// </summary>
+    static void AwakeAll(PrefabTree t, CatalogLocation loc, bool[] active, int root, DungeonResult result)
+    {
+        var ops = t.Awake;
+        for (int j = root, end = t.SubtreeEnd[root]; j <= end; j++)
+        {
+            int k = t.AwakeAt[j];
+            if (k == ops.Length || !t.EnabledUpTo(active, j, root)) continue;
+            for (; k < ops.Length && ops[k].Node == j; k++)
+            {
+                var op = ops[k];
+                switch (op.Kind)
+                {
+                    case AwakeKind.Fixed:
+                        UnityRandom.Skip(op.Arg);
+                        break;
+                    case AwakeKind.WearNTear:
+                        // Random initial damage (when the location applies it), cover and snow timers.
+                        UnityRandom.Skip(loc.ApplyRandomDamage ? 3 : 2);
+                        break;
+                    case AwakeKind.Container:
+                        if (result.RandomLost) result.Chests = null;
+                        else result.Chests?.Add(RollChest(t.Chests[op.Arg]));
+                        break;
+                    default:
+                        result.RandomLost = true;
+                        break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// DropTable.GetDropListItems, as Container.AddDefaultItems calls it (resource
+    /// rate 1x), each drop then going through Inventory.AddItem: a stackable item
+    /// first tops up the stacks of it already there, the rest is a new stack.
+    /// </summary>
+    static ChestItem[] RollChest(ChestTable t)
+    {
+        if (t.Drops.Length == 0 || UnityRandom.Value() > t.DropChance) return Array.Empty<ChestItem>();
+        var drops = new List<ChestDrop>(t.Drops);
+        float num = 0f;
+        foreach (var d in drops) num += d.Weight;
+        int num2 = UnityRandom.Range(t.DropMin, t.DropMax + 1);
+        var items = new List<(string Item, int Count, int Max)>();
+        void Add(ChestDrop d)
+        {
+            int n = UnityRandom.Range(d.StackMin, d.StackMax + 1);
+            if (d.MaxStack > 1)
+            {
+                for (int k = 0; k < items.Count && n > 0; k++)
+                {
+                    if (items[k].Item != d.Item) continue;
+                    int room = d.MaxStack - items[k].Count;
+                    if (room <= 0) continue;
+                    int put = Math.Min(room, n);
+                    items[k] = (d.Item, items[k].Count + put, d.MaxStack);
+                    n -= put;
+                }
+                if (n == 0) return;
+            }
+            items.Add((d.Item, n, d.MaxStack));
+        }
+        for (int i = 0; i < num2; i++)
+        {
+            float num3 = UnityRandom.Range(0f, num);
+            bool flag = false;
+            float num4 = 0f;
+            foreach (var d in drops)
+            {
+                num4 += d.Weight;
+                if (num3 <= num4)
+                {
+                    flag = true;
+                    Add(d);
+                    if (t.OneOfEach)
+                    {
+                        drops.Remove(d);
+                        num -= d.Weight;
+                    }
+                    break;
+                }
+            }
+            if (!flag && drops.Count > 0) Add(drops[0]);
+        }
+        return items.Select(x => new ChestItem(x.Item, x.Count)).ToArray();
     }
 
     /// <summary>World pos/rot of every node, composed down from the root.</summary>

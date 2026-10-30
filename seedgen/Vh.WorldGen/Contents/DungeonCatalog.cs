@@ -74,6 +74,7 @@ public sealed class DungeonCatalog
                 locations[p.Name] = new CatalogLocation
                 {
                     Name = p.Name, Tree = ReadTree(l), InteriorNode = -1, GeneratorNode = -1, Algorithm = -1,
+                    ApplyRandomDamage = l.TryGetProperty("applyRandomDamage", out var rd0) && rd0.GetBoolean(),
                     RequiredRooms = Array.Empty<string>(), DoorTypes = Array.Empty<DoorType>(),
                 };
                 continue;
@@ -82,6 +83,7 @@ public sealed class DungeonCatalog
             {
                 Name = p.Name,
                 Tree = ReadTree(l),
+                ApplyRandomDamage = l.TryGetProperty("applyRandomDamage", out var rd) && rd.GetBoolean(),
                 UseCustomInteriorTransform = l.GetProperty("useCustomInteriorTransform").GetBoolean(),
                 InteriorNode = l.GetProperty("interiorNode").GetInt32(),
                 GeneratorNode = l.GetProperty("generatorNode").GetInt32(),
@@ -139,7 +141,16 @@ public sealed class DungeonCatalog
             ? vg.EnumerateArray().Select(x => new TreeVegvisir(x[0].GetInt32(),
                 x[1].EnumerateArray().Select(l => l.GetString()!).ToArray())).ToArray()
             : Array.Empty<TreeVegvisir>();
-        return new PrefabTree(nodes, conns, spawns, objects, views) { Vegvisirs = vegvisirs };
+        var awake = e.TryGetProperty("awake", out var aw)
+            ? aw.EnumerateArray().Select(x => new TreeAwake(x[0].GetInt32(), (AwakeKind)x[1].GetInt32(), x[2].GetInt32())).ToArray()
+            : Array.Empty<TreeAwake>();
+        var chests = e.TryGetProperty("chests", out var ch)
+            ? ch.EnumerateArray().Select(x => new ChestTable(x[0].GetInt32(), x[1].GetInt32(), x[2].GetSingle(), x[3].GetInt32() != 0,
+                x[4].EnumerateArray().Select(d => new ChestDrop(d[0].GetString()!, d[1].GetInt32(), d[2].GetInt32(), d[3].GetSingle(),
+                    d.GetArrayLength() > 4 ? d[4].GetInt32() : 1))
+                    .ToArray())).ToArray()
+            : Array.Empty<ChestTable>();
+        return new PrefabTree(nodes, conns, spawns, objects, views, awake) { Vegvisirs = vegvisirs, Chests = chests };
     }
 }
 
@@ -166,6 +177,8 @@ public sealed class CatalogLocation
 {
     public required string Name { get; init; }
     public required PrefabTree Tree { get; init; }
+    /// <summary>Location.m_applyRandomDamage: its WearNTear pieces spawn damaged (one more draw each).</summary>
+    public bool ApplyRandomDamage { get; init; }
     public bool UseCustomInteriorTransform { get; init; }
     public int InteriorNode { get; init; }
     public int GeneratorNode { get; init; }
@@ -206,6 +219,26 @@ public sealed record TreeNetView(int Node, string Prefab);
 /// <summary>A Vegvisir (static scenery, no ZNetView) and the locations it reveals.</summary>
 public sealed record TreeVegvisir(int Node, string[] Locations);
 
+/// <summary>What a component's Awake draws from Unity's global Random when it is instantiated.</summary>
+public enum AwakeKind
+{
+    /// <summary>Arg draws, always.</summary>
+    Fixed = 0,
+    /// <summary>WearNTear: 2 draws, 3 when the location applies random initial damage.</summary>
+    WearNTear = 1,
+    /// <summary>Container: rolls <see cref="PrefabTree.Chests"/>[Arg].</summary>
+    Container = 2,
+    /// <summary>Not modelled: chests the location rolls after it can't be predicted.</summary>
+    Unknown = 3,
+}
+
+public sealed record TreeAwake(int Node, AwakeKind Kind, int Arg);
+/// <summary>A Container's m_defaultItems DropTable.</summary>
+public sealed record ChestTable(int DropMin, int DropMax, float DropChance, bool OneOfEach, ChestDrop[] Drops);
+/// <summary>One DropData; the stack range is already clamped as DropTable.AddItemToList does.
+/// MaxStack: the item's m_maxStackSize (Inventory.AddItem merges repeats up to it).</summary>
+public sealed record ChestDrop(string Item, int StackMin, int StackMax, float Weight, int MaxStack);
+
 /// <summary>
 /// A prefab's hierarchy, cut down to the nodes that carry something the
 /// generator touches. Node 0 is the prefab root; nodes are in depth-first
@@ -219,14 +252,23 @@ public sealed class PrefabTree
     public TreeRandomObject[] RandomObjects { get; }
     public TreeNetView[] NetViews { get; }
     public TreeVegvisir[] Vegvisirs { get; init; } = Array.Empty<TreeVegvisir>();
+    /// <summary>Each component's Awake draws, by node in pre-order, then component order (locations only).</summary>
+    public TreeAwake[] Awake { get; }
+    /// <summary>Node index -> index of its first <see cref="Awake"/> entry (entries of one node are contiguous); Awake.Length if none.</summary>
+    public int[] AwakeAt { get; }
+    public ChestTable[] Chests { get; init; } = Array.Empty<ChestTable>();
     /// <summary>Node index -> its ZNetView index, or -1.</summary>
     public int[] NetViewAt { get; }
     /// <summary>Last node index in each node's subtree (pre-order makes a subtree a contiguous range).</summary>
     public int[] SubtreeEnd { get; }
 
-    public PrefabTree(TreeNode[] nodes, TreeConnection[] conns, TreeRandomSpawn[] spawns, TreeRandomObject[] objects, TreeNetView[] views)
+    public PrefabTree(TreeNode[] nodes, TreeConnection[] conns, TreeRandomSpawn[] spawns, TreeRandomObject[] objects, TreeNetView[] views,
+        TreeAwake[]? awake = null)
     {
         Nodes = nodes; Connections = conns; RandomSpawns = spawns; RandomObjects = objects; NetViews = views;
+        Awake = awake ?? Array.Empty<TreeAwake>();
+        AwakeAt = Enumerable.Repeat(Awake.Length, nodes.Length).ToArray();
+        for (int i = Awake.Length - 1; i >= 0; i--) AwakeAt[Awake[i].Node] = i;
         NetViewAt = Enumerable.Repeat(-1, nodes.Length).ToArray();
         for (int i = 0; i < views.Length; i++) NetViewAt[views[i].Node] = i;
         SubtreeEnd = new int[nodes.Length];
