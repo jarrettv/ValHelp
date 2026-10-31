@@ -24,24 +24,26 @@ interface LegendGroup {
 // Groups in display order. Icons are listed in their order within the group;
 // anything unlisted (new art, admin-uploaded icons) lands in "Other".
 const GROUPS: { key: string; label: string; icons: string[] }[] = [
-  { key: 'finds',    label: 'Finds',            icons: ['vegvisir', 'egg'] },
-  { key: 'dungeons', label: 'Dungeons & caves', icons: ['chamber', 'trollcave', 'sunkencrypt', 'mountaincave', 'infestedmine', 'fortress', 'morkhalla', 'bearcave'] },
-  { key: 'camps',    label: 'Camps & ruins',    icons: ['greydwarfnest', 'totem', 'camp', 'stonetower', 'boar7', 'dvergrtower', 'dvergrhouse', 'putridhole', 'tormentelite', 'surtlingspawner', 'northhut'] },
+  { key: 'npcs',     label: 'Bosses & traders', icons: ['boss', 'quest', 'haldor', 'hildir', 'bogwitch', 'cauldron', 'forgeofpotential'] },
   { key: 'wrecks',   label: 'Shipwrecks',       icons: ['shipwreck', 'shipwrecksnow', 'frozenship'] },
-  { key: 'npcs',     label: 'Bosses & traders', icons: ['boss', 'haldor', 'hildir', 'bogwitch', 'cauldron'] },
+  { key: 'dungeons', label: 'Dungeons & caves', icons: ['chamber', 'trollcave', 'bearcave', 'sunkencrypt', 'mountaincave', 'infestedmine', 'putridhole', 'fortress', 'morkhalla', 'thehole'] },
+  { key: 'mats',    label: 'Materials',            icons: ['boar7', 'greydwarfnest', 'rocky', 'surtlingspawner',  'egg', 'tarpit', 'giantskull', 'giantswords', 'viaduct', 'leviathanlava', 'tormentelite', 'gammeltrolfrac', 'barrel'] },
+  { key: 'camps',    label: 'Buildings & camps',    icons: ['woodhouse6', 'woodhouse2', 'farm', 'pier', 'stonetowersnow', 'logcabin', 'goblincamp', 'stonetower', 'harbour','excavationskull', 'dvergrtower', 'dvergrhouse', 'memorial', 'northhut', 'northvillage'] },
+
 ];
 
 const LABELS: Record<string, string> = {
   vegvisir: 'Vegvisirs', egg: 'Drake nests',
   chamber: 'Burial chambers', trollcave: 'Troll caves', sunkencrypt: 'Sunken crypts',
   mountaincave: 'Frost caves', infestedmine: 'Infested mines', fortress: 'Charred fortresses',
-  morkhalla: 'Mörkhalla', bearcave: 'Bear caves',
+  morkhalla: 'Mörkhalla', bearcave: 'Bear caves', putridhole: 'Putrid holes', thehole: 'Winding tunnels',
   greydwarfnest: 'Greydwarf nests', totem: 'Fuling camps', camp: 'Camps', stonetower: 'Stone towers',
   boar7: 'Boar runestones', dvergrtower: 'Dvergr towers', dvergrhouse: 'Dvergr houses',
-  putridhole: 'Putrid holes', tormentelite: 'Places of mystery', surtlingspawner: 'Geysers',
+  tormentelite: 'Places of mystery', surtlingspawner: 'Geysers',
   northhut: 'North huts',
   shipwreck: 'Shipwrecks', shipwrecksnow: 'Snowy shipwrecks', frozenship: 'Frozen ships',
-  boss: 'Boss altars', haldor: 'Haldor', hildir: 'Hildir', bogwitch: 'Bog Witch', cauldron: 'Traders',
+  boss: 'Boss altars', quest: "Hildir's quests", haldor: 'Haldor', hildir: 'Hildir', bogwitch: 'Bog Witch', cauldron: 'Traders',
+  forgeofpotential: 'Forge of Potential',
 };
 
 function groupOf(icon: string) {
