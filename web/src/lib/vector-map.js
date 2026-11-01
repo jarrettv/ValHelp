@@ -18,7 +18,7 @@ var a_pos;
 
 // ── Forest texture shader ────────────────────────────────────────────
 var forestProg;
-var fu_mvp, fu_forestTex, fu_maskTex, fu_gridSize, fu_tileScale;
+var fu_mvp, fu_forestTex, fu_ashTex, fu_maskTex, fu_gridSize, fu_tileScale;
 var fa_pos;
 
 // ── Biome variant pattern shader ─────────────────────────────────────
@@ -48,6 +48,7 @@ var foga_pos;
 
 // ── Textures ─────────────────────────────────────────────────────────
 var forestTex = null;  // tiled forest pattern
+var ashTex = null;     // tiled Ashlands (burnt) tree pattern; forestTex stands in when missing
 var maskTex = null;    // forestMaskTexCache (R=forest, G=mist, B=lava)
 var fogTex = null;     // fog of war overlay (alpha = fogged)
 var _texturesReady = false;
@@ -97,15 +98,28 @@ var FOREST_VERT_SRC = [
 var FOREST_FRAG_SRC = [
   'precision mediump float;',
   'uniform sampler2D u_forestTex;',
+  'uniform sampler2D u_ashTex;',
   'uniform sampler2D u_maskTex;',
   'uniform float u_tileScale;',
   'varying vec2 v_uv;',
   'void main() {',
   // Sample mask: R = forest density
-  '  float density = texture2D(u_maskTex, v_uv).r;',
+  '  vec4 mask = texture2D(u_maskTex, v_uv);',
+  '  float density = mask.r;',
   '  if (density < 0.01) discard;',
-  // Sample tiled forest texture
   '  vec2 tileUV = v_uv * u_tileScale;',
+  // Ashlands (WorldGenerator.IsAshlands: over 12000 m from (0, 4000), +-100 m wobble, inside an
+  // ocean gap, so a plain circle is exact for trees). Map is 2048 px x 12 m, north up.
+  '  vec2 world = vec2(v_uv.x - 0.5, 0.5 - v_uv.y) * 24576.0;',
+  '  if (length(world - vec2(0.0, 4000.0)) > 12000.0) {',
+  // None under the lava overlay (B = lava, traced at 0.1 in BiomeExtractor); trees grow up to 0.2
+  '    if (mask.b >= 0.1) discard;',
+  // Burnt trees: drawn in their own colours at full strength, so they read on the dark red ground
+  '    vec4 aSample = texture2D(u_ashTex, tileUV);',
+  '    gl_FragColor = vec4(aSample.rgb, density * aSample.a);',
+  '    return;',
+  '  }',
+  // Sample tiled forest texture
   '  vec4 fSample = texture2D(u_forestTex, tileUV);',
   // Luminance from forest texture (use max channel like topo renderer)
   '  float fLum = max(max(fSample.r, fSample.g), fSample.b);',
@@ -257,7 +271,9 @@ var FOG_FRAG_SRC = [
 
 var TYPE_NAMES = ['depth', 'land', 'elevation', 'biome', 'forest', 'mist', 'lava'];
 var COORD_SCALE = 32;
-var EVENODD_TYPES = { biome: true, land: true, elevation: true };
+// Marching-squares rings don't have consistent winding, so holes need even-odd
+// (nonzero filled e.g. mountains enclosed by mistlands).
+var EVENODD_TYPES = { biome: true, land: true, elevation: true, mist: true, lava: true };
 var OVERLAY_ALPHA = { mist: 0.6, lava: 0.5 };
 // forest no longer here — rendered with texture shader
 
@@ -283,20 +299,23 @@ function init(canvasEl, worldName, baseUrl, forestUrl, urls) {
   // forestUrl override lets callers source the static forest tile from a different endpoint
   // than the seed-specific biomes/mask (e.g. /api/track/map/_/forest).
   var forestP = loadImage(forestUrl || (base + '/forest'));
+  var ashP = loadImage((forestUrl || (base + '/forest')) + '_ashlands');
   var maskP = loadImage((urls && urls.mask) || (base + '/mask'));
 
-  return Promise.all([biomesP, forestP, maskP])
+  return Promise.all([biomesP, forestP, maskP, ashP])
     .then(function(results) {
       var buf = results[0];
       var forestImg = results[1];
       var maskImg = results[2];
+      var ashImg = results[3];
 
       return parseBinaryAuto(buf).then(function(data) {
-        return { data: data, forestImg: forestImg, maskImg: maskImg, bufSize: buf.byteLength };
+        return { data: data, forestImg: forestImg, maskImg: maskImg, ashImg: ashImg, bufSize: buf.byteLength };
       });
     })
     .then(function(r) {
       var data = r.data, forestImg = r.forestImg, maskImg = r.maskImg;
+      if (r.ashImg) ashTex = createTexture(r.ashImg, true);
       buildGPUBuffers(data);
 
       // Upload textures
@@ -426,6 +445,11 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, maskTex);
     gl.uniform1i(fu_maskTex, 1);
+
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, ashTex || forestTex);
+    gl.uniform1i(fu_ashTex, 2);
+    gl.activeTexture(gl.TEXTURE0);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -836,6 +860,7 @@ function destroy() {
     if (quadVBO) gl.deleteBuffer(quadVBO);
     if (mapQuadVBO) gl.deleteBuffer(mapQuadVBO);
     if (forestTex) gl.deleteTexture(forestTex);
+    if (ashTex) gl.deleteTexture(ashTex);
     if (maskTex) gl.deleteTexture(maskTex);
     if (fogTex) gl.deleteTexture(fogTex);
     if (altTex) gl.deleteTexture(altTex);
@@ -854,6 +879,7 @@ function destroy() {
   quadVBO = null;
   mapQuadVBO = null;
   forestTex = null;
+  ashTex = null;
   maskTex = null;
   fogTex = null;
   altTex = null;
@@ -948,6 +974,7 @@ function initShaders() {
   if (!forestProg) return false;
   fu_mvp = gl.getUniformLocation(forestProg, 'u_mvp');
   fu_forestTex = gl.getUniformLocation(forestProg, 'u_forestTex');
+  fu_ashTex = gl.getUniformLocation(forestProg, 'u_ashTex');
   fu_maskTex = gl.getUniformLocation(forestProg, 'u_maskTex');
   fu_gridSize = gl.getUniformLocation(forestProg, 'u_gridSize');
   fu_tileScale = gl.getUniformLocation(forestProg, 'u_tileScale');

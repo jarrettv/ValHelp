@@ -195,14 +195,17 @@ public static class TrackEndpoints
         if (asset == "biomes")
             return await GetTrackMapBvec(seed, db, ctx, memoryCache, config);
 
-        if (asset == "forest")
+        if (asset is "forest" or "forest_ashlands")
         {
-            // Static forest tile texture — same for all seeds
-            var forestPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "forest.png");
+            // Static forest tile textures (forest_ashlands: burnt trees) — same for all seeds
+            var forestPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", asset + ".png");
             if (!File.Exists(forestPath))
                 return Results.NotFound();
-            ctx.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
-            return Results.File(forestPath, "image/png");
+            // Revalidate every time (a 304 while unchanged): the files get redrawn and keep their names
+            ctx.Response.Headers.CacheControl = "public, no-cache";
+            var modified = File.GetLastWriteTimeUtc(forestPath);
+            return Results.File(forestPath, "image/png", lastModified: modified,
+                entityTag: new Microsoft.Net.Http.Headers.EntityTagHeaderValue($"\"{modified.Ticks:x}\""));
         }
 
         var map = await db.TrackMaps

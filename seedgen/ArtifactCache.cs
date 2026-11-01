@@ -13,7 +13,8 @@ public static class ArtifactCache
     /// <summary>Bump whenever ArtifactGenerator's output changes.</summary>
     // 1 (no art.ver): before the oracle regression tests.
     // 2: heights bit-exact with the game (Ashlands FastNoise in double, rivers, Deep North).
-    public const int Version = 2;
+    // 3: Deep North trees in the forest mask.
+    public const int Version = 3;
 
     public static readonly HashSet<string> Files = ["mapTexCache", "forestMaskTexCache", "heightTexCache", "bvec"];
 

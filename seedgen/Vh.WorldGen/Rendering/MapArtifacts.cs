@@ -54,6 +54,10 @@ public static class MapArtifacts
                 map[idx3 + 2] = cb;
 
                 var m = MinimapGenerator.GetMaskColor(wg, wx, wy, biomeHeight, biome);
+                if (biome == Biome.DeepNorth && biomeHeight >= 30f)
+                    m.r = DeepNorthTrees(wx, wy);
+                else if (biome == Biome.AshLands)
+                    m.r = AshlandsTrees(biomeHeight, m.b);
                 int idx4 = (i * Size + j) * 4;
                 mask[idx4] = Q4(m.r);
                 mask[idx4 + 1] = Q4(m.g);
@@ -79,6 +83,26 @@ public static class MapArtifacts
         var raw = BiomeExtractor.ExtractBinary(mapTd, Size, Size, heightTd, Size, Size, maskTd, Size, Size,
             BiomeExtractor.ExtractionMode.V4HiFi);
         return BvecCompressor.CompressV3(raw);
+    }
+
+    /// <summary>Tree density for the forest channel in the Deep North. The game's minimap draws
+    /// none there, but its vegetation (_LocationList_DeepNorth) puts snowy firs and pines wherever
+    /// the forest factor is under 1.15 (as Meadows' InForest). Its thin scatter of small firs out
+    /// to 2.0 is left clear, and the forest is drawn a little lighter than elsewhere.</summary>
+    static float DeepNorthTrees(float wx, float wy)
+    {
+        float ff = WorldGenerator.GetForestFactor(new Vector3(wx, 0f, wy));
+        return ff < 1.15f ? 0.75f : 0f;
+    }
+
+    /// <summary>Tree density for the forest channel in the Ashlands, which the game's minimap leaves
+    /// bare. Its trees (_LocationList_Ashlands: AshlandsTree1/3/6) ignore the forest factor: they
+    /// stand 1-12 m above sea level where the vegetation mask, which is the lava amount, is at most
+    /// 0.2. The mask's lava channel is the game's cheap version of it, close enough for a map.</summary>
+    static float AshlandsTrees(float height, float lava)
+    {
+        float alt = height - 30f;
+        return alt >= 1f && alt <= 12f && lava <= 0.2f ? 0.75f : 0f;
     }
 
     static byte Q4(float f) => (byte)(Math.Clamp((int)(f * 15f + 0.5f), 0, 15) * 17);
