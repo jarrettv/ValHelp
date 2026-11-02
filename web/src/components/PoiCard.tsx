@@ -86,7 +86,7 @@ export default function PoiCard({ poi, x, y, width, height, pinned, onClose }: P
   const trophies = useMemo(() => {
     const codes = new Map<string, string>(), names = new Map<string, string>();
     for (const i of items ?? []) if (i.trophyDrop?.id) {
-      codes.set(i.trophyDrop.id, i.code);
+      if (i.hasIcon !== false) codes.set(i.trophyDrop.id, i.code);   // no art: no icon request (a 404)
       names.set(i.trophyDrop.id, i.trophyDrop.creature ?? '');
     }
     return { codes, names };

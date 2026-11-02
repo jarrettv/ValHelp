@@ -62,7 +62,7 @@ function trophyOf(creature: string | undefined): string | undefined {
     trophiesLoading = true;
     fetchVhItems().then(items => {
       trophies = new Map();
-      for (const i of items) if (i.trophyDrop?.id) trophies.set(i.trophyDrop.id, i.code);
+      for (const i of items) if (i.trophyDrop?.id && i.hasIcon !== false) trophies.set(i.trophyDrop.id, i.code);
       requestPoiRedraw();
     }).catch(() => { trophiesLoading = false; });
   }

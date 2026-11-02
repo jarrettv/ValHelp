@@ -21,8 +21,18 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 // One fetch per page load, shared by the hook and non-React callers (map canvas).
 let vhItemsLoad: Promise<VhItem[]> | null = null;
+/** Codes whose icon we added to icons.db by hand; see docs/macros.md. */
+const SUPPLIED_ICONS: Record<string, true> = { LordReto: true, Bestiary_FrozenKing: true, Bestiary_Bat: true };
+
 export function fetchVhItems(): Promise<VhItem[]> {
   vhItemsLoad ??= fetchJson<VhItem[]>(`${VH_DATA_BASE}/items.json`)
+    .then(items => {
+      // Art we supply ourselves for creatures the extractor ships without a trophy:
+      // items.json reports hasIcon:false for these, but the icon is in icons.db
+      // under the same code. Flipped here so every page and the map agree.
+      for (const it of items) if (SUPPLIED_ICONS[it.code]) it.hasIcon = true;
+      return items;
+    })
     .catch(err => { vhItemsLoad = null; throw err; });
   return vhItemsLoad;
 }
