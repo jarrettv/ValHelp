@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Map tree sprite: fir-1. 256 x 256; the tree's foot (where it meets the ground) is at
+     (128, 218), which the map places on the tree's spot. Draw the shadow in the sprite. -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="fir-1.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="3.3242188"
+     inkscape:cx="128"
+     inkscape:cy="128"
+     inkscape:window-width="2400"
+     inkscape:window-height="1261"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg11" />
+  <defs
+     id="defs5">
+    <radialGradient
+       id="shadow">
+      <stop
+         offset="0.35"
+         stop-color="#1d2a3a"
+         stop-opacity="0.38"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#1d2a3a"
+         stop-opacity="0"
+         id="stop2" />
+    </radialGradient>
+    <!-- snow: lit from the west, blue in its own shade -->
+    <linearGradient
+       id="snow"
+       x1="0"
+       x2="1"
+       y1="0"
+       y2="0.3">
+      <stop
+         offset="0"
+         stop-color="#ffffff"
+         id="stop3" />
+      <stop
+         offset="0.5"
+         stop-color="#e6edf4"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#aebfd0"
+         id="stop5" />
+    </linearGradient>
+    <!-- the curled leader: drawn twice below, outline then snow -->
+    <path
+       id="leader"
+       d="M 137.3,94.0 L 137.6,83.7 L 139.1,80.1 L 141.4,77.6 L 145.0,75.7 L 148.8,75.6 L 152.0,76.9 L 155.2,80.2 L 157.2,81.1 L 159.3,81.3 L 161.4,80.6 L 163.0,79.1 L 164.0,77.2 L 164.1,75.0 L 163.4,72.9 L 160.8,69.1 L 157.4,66.0 L 153.3,63.7 L 147.9,62.2 L 143.2,62.1 L 138.5,62.9 L 134.1,64.6 L 129.4,67.6 L 124.4,73.1 L 120.7,80.5 L 118.8,90.6 L 119.4,97.6 L 121.4,100.6 L 124.4,102.6 L 128.0,103.3 L 131.6,102.6 L 134.6,100.6 L 136.6,97.6 Z" />
+  </defs>
+  <!-- shadow, to the south-east of the foot -->
+  <!-- trunk -->
+  <rect
+     x="123"
+     y="196"
+     width="10"
+     height="18.585194"
+     fill="#3a2c24"
+     id="rect5"
+     style="stroke-width:0.87999" />
+  <!-- needles: the tree under the snow, showing below each cushion -->
+  <path
+     d="M 163.5,202.0 C 174.9,196.0 172.9,192.2 159.2,191.6 L 160.2,182.3 C 170.2,176.3 168.2,172.5 155.7,171.8 L 156.1,162.5 C 164.5,156.5 162.4,152.7 151.4,152.1 L 152.3,142.8 C 159.1,136.8 156.9,133.0 147.3,132.3 L 146.4,123.0 C 151.0,117.0 148.7,113.2 141.4,112.6 L 142.0,103.3 C 144.9,97.9 142.4,94.8 136.9,94.1 L 120.1,94.1 C 113.6,94.8 111.1,97.9 114.0,103.3 L 114.6,112.6 C 107.3,113.2 105.0,117.0 109.6,123.0 L 108.7,132.3 C 99.1,133.0 96.9,136.8 103.7,142.8 L 104.6,152.1 C 93.6,152.7 91.5,156.5 99.9,162.5 L 100.3,171.8 C 87.8,172.5 85.8,176.3 95.8,182.3 L 96.8,191.6 C 83.1,192.2 81.1,196.0 92.5,202.0 Z"
+     fill="#22302c"
+     stroke="#1a2421"
+     stroke-width="1.5"
+     id="path5" />
+  <!-- leader and hanging lump: outlines (their snow goes on after the column's) -->
+  <use
+     href="#leader"
+     fill="none"
+     stroke="#6f8499"
+     stroke-width="3.2"
+     stroke-linejoin="round"
+     id="use5" />
+  <!-- the column's snow: one cushion per scallop -->
+  <path
+     d="M 157.8,202.0 C 162.3,195.2 160.9,187.7 154.2,179.0 L 155.0,182.3 C 158.9,175.5 157.4,167.9 151.3,159.2 L 151.6,162.5 C 154.7,155.7 153.2,148.2 147.7,139.5 L 148.4,142.8 C 150.8,136.0 149.1,128.4 144.2,119.7 L 143.4,123.0 C 144.9,116.2 143.2,108.7 139.2,100.0 L 139.7,103.3 C 140.4,97.1 138.6,90.2 135.6,81.6 L 121.5,81.6 C 117.4,90.2 115.6,97.1 116.3,103.3 L 116.8,100.0 C 112.8,108.7 111.1,116.2 112.6,123.0 L 111.8,119.7 C 106.9,128.4 105.2,136.0 107.6,142.8 L 108.3,139.5 C 102.8,148.2 101.3,155.7 104.4,162.5 L 104.7,159.2 C 98.6,167.9 97.1,175.5 101.0,182.3 L 101.8,179.0 C 95.1,187.7 93.7,195.2 98.2,202.0 Z"
+     fill="url(#snow)"
+     stroke="#6f8499"
+     stroke-width="1.6"
+     stroke-linejoin="round"
+     id="path6" />
+  <!-- the leader's snow, curled over by its weight, and the lump hanging off the tip -->
+  <use
+     href="#leader"
+     fill="url(#snow)"
+     id="use6" />
+  <!-- creases between cushions and highlights on their lit side -->
+  <path
+     d="M 103.6,182.3 Q 128.0,187.3 152.4,182.3"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path7" />
+  <ellipse
+     cx="115.1"
+     cy="176.3"
+     rx="8.0"
+     ry="2.6"
+     fill="#ffffff"
+     id="ellipse7" />
+  <path
+     d="M 106.7,162.5 Q 128.0,167.5 149.3,162.5"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path8" />
+  <ellipse
+     cx="116.7"
+     cy="156.5"
+     rx="7.0"
+     ry="2.6"
+     fill="#ffffff"
+     id="ellipse8" />
+  <path
+     d="M 109.6,142.8 Q 128.0,147.8 146.4,142.8"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path9" />
+  <ellipse
+     cx="118.2"
+     cy="136.8"
+     rx="6.1"
+     ry="2.6"
+     fill="#ffffff"
+     id="ellipse9" />
+  <path
+     d="M 114.0,123.0 Q 128.0,128.0 142.0,123.0"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path10" />
+  <ellipse
+     cx="120.6"
+     cy="117.0"
+     rx="4.6"
+     ry="2.6"
+     fill="#ffffff"
+     id="ellipse10" />
+  <path
+     d="M 117.4,103.3 Q 128.0,108.3 138.6,103.3"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path11" />
+  <ellipse
+     cx="122.4"
+     cy="97.3"
+     rx="3.5"
+     ry="2.6"
+     fill="#ffffff"
+     id="ellipse11" />
+</svg>

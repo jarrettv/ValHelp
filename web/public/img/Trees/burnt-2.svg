@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Map tree sprite: burnt dead tree, leaning. 256 x 256; the tree's foot (where it meets the ground) is at
+     (128, 218), which the map places on the tree's spot. Draw the shadow in the sprite. -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="burnt-2.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.6621094"
+     inkscape:cx="-61.668625"
+     inkscape:cy="56.855464"
+     inkscape:window-width="2400"
+     inkscape:window-height="1261"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <defs
+     id="defs2">
+    <radialGradient
+       id="shadow">
+      <stop
+         offset="0.35"
+         stop-color="#000"
+         stop-opacity="0.35"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#000"
+         stop-opacity="0"
+         id="stop2" />
+    </radialGradient>
+  </defs>
+  <!-- ash shadow -->
+  <!-- ember-lit rim on the west side of the trunk -->
+  <polygon
+     points="116.0,218.0 107.0,22.0 110.0,22.0 126.0,218.0"
+     fill="#82361f"
+     id="polygon2" />
+  <!-- trunk -->
+  <polygon
+     points="120.0,218.0 108.5,22.0 111.5,22.0 137.0,218.0"
+     fill="#211a1c"
+     id="polygon3" />
+  <!-- branches, each with two twigs -->
+  <path
+     d="M 119.89589,133.71669 93.550176,109.57403 m -9.325499,-2.7074 8.553466,1.05017 m 0.772033,1.05559 1.787662,-14.174505"
+     stroke="#211a1c"
+     stroke-width="5.5"
+     stroke-linecap="round"
+     fill="none"
+     id="path3"
+     sodipodi:nodetypes="cccccc" />
+  <path
+     d="m 119.8,129 24.82432,-21.82515 M 117.24947,93.337015 130.65852,82.951821 m 4.94113,30.239479 -1.28766,-13.17696"
+     stroke="#211a1c"
+     stroke-width="5.1"
+     stroke-linecap="round"
+     fill="none"
+     id="path4"
+     sodipodi:nodetypes="cccccc" />
+  <path
+     d="M 113.08931,77.945711 95.846886,71.33208 M 111.79048,58.697532 100.27979,51.911516 m -4.432904,19.119741 -4.423854,-8.378613"
+     stroke="#211a1c"
+     stroke-width="4.4"
+     stroke-linecap="round"
+     fill="none"
+     id="path5"
+     sodipodi:nodetypes="cccccc" />
+  <path
+     d="m 114.7,72.9 19.96298,-13.920212 m -16.24441,9.3255 6.69753,-19.821387 M 112.70294,40.32879 124.54736,29.945241"
+     stroke="#211a1c"
+     stroke-width="3.9"
+     stroke-linecap="round"
+     fill="none"
+     id="path6"
+     sodipodi:nodetypes="cccccc" />
+  <path
+     d="M 112.5,49.1 92.83866,35.950999 m 8.72385,4.512338 -4.69506,-12.305758 m 14.02056,7.492597 -9.83701,-12.095064"
+     stroke="#211a1c"
+     stroke-width="3.4"
+     stroke-linecap="round"
+     fill="none"
+     id="path7"
+     sodipodi:nodetypes="cccccc" />
+  <!-- smouldering embers -->
+  <circle
+     cx="118.1"
+     cy="110.6"
+     r="3.2"
+     fill="#ff8529"
+     id="circle7" />
+  <circle
+     cx="118.4"
+     cy="113.7"
+     r="3.2"
+     fill="#ff8529"
+     id="circle8" />
+</svg>

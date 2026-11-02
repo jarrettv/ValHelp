@@ -21,7 +21,8 @@ public static class PoiCache
     // 7: contents: crypts left out (rotation), lava rolls and unreliable objects dropped.
     // 8: wild beehives in contents.
     // 9: terrain heights bit-exact with the game (camp layouts and lava checks read them).
-    public const int Version = 9;
+    // 10: POI adornments (plain locations' chests rolled, vegvisir arrows).
+    public const int Version = 10;
 
     static readonly ConcurrentDictionary<string, object> s_locks = new();
 

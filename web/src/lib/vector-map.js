@@ -1,6 +1,6 @@
 // vector-map.js — WebGL vector map renderer
 // Parses BVEC binary → triangle-fan GPU buffers → stencil-based polygon fill + GL_LINES contours.
-// Forest overlay uses the actual tiled forest texture sampled on the GPU.
+// Trees are drawn procedurally on the GPU from the forest mask (see FOREST_FRAG_SRC).
 // Pan/zoom updates a projection matrix uniform — GPU renders everything in <1ms.
 
 (function() {
@@ -16,9 +16,9 @@ var prog;
 var u_mvp, u_color;
 var a_pos;
 
-// ── Forest texture shader ────────────────────────────────────────────
+// ── Forest (tree sprites) shader ────────────────────────────────────
 var forestProg;
-var fu_mvp, fu_forestTex, fu_ashTex, fu_maskTex, fu_gridSize, fu_tileScale;
+var fu_mvp, fu_maskTex, fu_trees, fu_variants, fu_sprite, fu_gridSize, fu_px, fu_density, fu_alpha, fu_clustering;
 var fa_pos;
 
 // ── Biome variant pattern shader ─────────────────────────────────────
@@ -47,8 +47,9 @@ var fogu_mvp, fogu_fogTex, fogu_opacity, fogu_gridSize;
 var foga_pos;
 
 // ── Textures ─────────────────────────────────────────────────────────
-var forestTex = null;  // tiled forest pattern
-var ashTex = null;     // tiled Ashlands (burnt) tree pattern; forestTex stands in when missing
+var treeTex = null;    // tree sprite atlas for the current zoom (one of treeTexes)
+var treeTexes = [];    // the atlas at TREE_SLOT_SIZES (see loadTreeAtlas)
+var treeVariants = [0, 0, 0];
 var maskTex = null;    // forestMaskTexCache (R=forest, G=mist, B=lava)
 var fogTex = null;     // fog of war overlay (alpha = fogged)
 var _texturesReady = false;
@@ -79,7 +80,7 @@ var FRAG_SRC = [
   '}'
 ].join('\n');
 
-// Forest texture shader — samples tiled forest tex modulated by mask density
+// Vertex shader for the full-map quad (trees, biome variant patterns, strokes)
 var FOREST_VERT_SRC = [
   'precision highp float;',
   'attribute vec2 a_pos;',
@@ -95,41 +96,96 @@ var FOREST_VERT_SRC = [
   '}'
 ].join('\n');
 
+// Trees, stamped from SVG sprites (public/img/Trees, see TREE_SPRITES) by the forest mask
+// (R = tree density): the map is cut into CELL-unit cells, each with at most one tree at a
+// hashed spot, and a cell gets its tree when its hash is under the density at the tree's own
+// foot (times a grove noise, for clustering). So trees are whole, never cut by a fading edge.
+// Zoomed out to where a tree is a few pixels, they fade into a flat tint of about the same
+// cover. Style by region: leafy, Deep North firs, Ashlands burnt trees (both regions are
+// circles whose edges lie in ocean gaps).
 var FOREST_FRAG_SRC = [
+  '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+  'precision highp float;',
+  '#else',
   'precision mediump float;',
-  'uniform sampler2D u_forestTex;',
-  'uniform sampler2D u_ashTex;',
+  '#endif',
   'uniform sampler2D u_maskTex;',
-  'uniform float u_tileScale;',
+  'uniform sampler2D u_trees;',  // sprite atlas (no mipmaps): row = style (leafy, fir, burnt), column = variant
+  'uniform vec3 u_variants;',    // sprites per style; 0 = none loaded (flat tint only)
+  'uniform float u_sprite;',     // map units a sprite spans
+  'uniform float u_gridSize;',
+  'uniform float u_px;',         // map units per device pixel
+  'uniform float u_density;',    // multiplies the mask's tree density
+  'uniform vec3 u_alpha;',      // per style: opacity
+  'uniform vec3 u_clustering;',  // per style: 0 = trees spread evenly, 1 = groves with clearings
   'varying vec2 v_uv;',
+  'varying vec2 v_gridPos;',
+  'const float CELL = 1.6;',     // map units (12 m) per cell: ~19 m between trees
+  'const float GROVE = 6.0;',    // map units across a grove/clearing patch (~70 m)
+  'vec4 hash4(vec2 c) {',
+  '  vec4 p = fract(c.xyxy * vec4(0.1031, 0.1030, 0.0973, 0.1099));',
+  '  p += dot(p, p.wzxy + 33.33);',
+  '  return fract((p.xxyz + p.yzzw) * p.zywx);',
+  '}',
+  // 0 = leafy, 1 = Deep North, 2 = Ashlands. The map is 2048 units x 12 m, north up.
+  'float region(vec2 g) {',
+  '  vec2 w = vec2(g.x / u_gridSize - 0.5, 0.5 - g.y / u_gridSize) * 24576.0;',
+  '  if (length(w - vec2(0.0, 4000.0)) > 12000.0) return 2.0;',
+  '  if (length(w + vec2(0.0, 4000.0)) > 12000.0) return 1.0;',
+  '  return 0.0;',
+  '}',
+  'float pick(vec3 v, float reg) { return reg > 1.5 ? v.z : reg > 0.5 ? v.y : v.x; }',
+  // Smooth value noise in 0-1, two octaves, for where the groves are.
+  'float vnoise(vec2 x) {',
+  '  vec2 i = floor(x), f = fract(x);',
+  '  f = f * f * (3.0 - 2.0 * f);',
+  '  float a = hash4(i + 1234.0).x, b = hash4(i + vec2(1235.0, 1234.0)).x;',
+  '  float c = hash4(i + vec2(1234.0, 1235.0)).x, d = hash4(i + 1235.0).x;',
+  '  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+  '}',
+  'float grove(vec2 g, float reg) {',
+  '  float n = 0.65 * vnoise(g / GROVE) + 0.35 * vnoise(g / GROVE * 2.3 + 17.0);',
+  // Twice the noise averages ~1, so clustering moves trees around without thinning the forest.
+  '  return mix(1.0, smoothstep(0.2, 0.8, n) * 2.0, pick(u_clustering, reg));',
+  '}',
+  // Premultiplied "over": colour rgb at opacity a onto acc.
+  'vec4 over(vec4 acc, vec3 rgb, float a) { return vec4(rgb * a + acc.rgb * (1.0 - a), a + acc.a * (1.0 - a)); }',
   'void main() {',
-  // Sample mask: R = forest density
-  '  vec4 mask = texture2D(u_maskTex, v_uv);',
-  '  float density = mask.r;',
-  '  if (density < 0.01) discard;',
-  '  vec2 tileUV = v_uv * u_tileScale;',
-  // Ashlands (WorldGenerator.IsAshlands: over 12000 m from (0, 4000), +-100 m wobble, inside an
-  // ocean gap, so a plain circle is exact for trees). Map is 2048 px x 12 m, north up.
-  '  vec2 world = vec2(v_uv.x - 0.5, 0.5 - v_uv.y) * 24576.0;',
-  '  if (length(world - vec2(0.0, 4000.0)) > 12000.0) {',
-  // None under the lava overlay (B = lava, traced at 0.1 in BiomeExtractor); trees grow up to 0.2
-  '    if (mask.b >= 0.1) discard;',
-  // Burnt trees: drawn in their own colours at full strength, so they read on the dark red ground
-  '    vec4 aSample = texture2D(u_ashTex, tileUV);',
-  '    gl_FragColor = vec4(aSample.rgb, density * aSample.a);',
-  '    return;',
+  '  vec4 m = texture2D(u_maskTex, v_uv);',
+  '  float reg = region(v_gridPos);',
+  // Zoomed out, the trees' average cover as a flat tint (lod 0); zoomed in, the trees themselves.
+  '  float lod = u_variants.x > 0.0 ? smoothstep(0.8, 2.5, 0.5 / u_px) : 0.0;',
+  '  vec3 flatC = reg > 1.5 ? vec3(0.12, 0.09, 0.10) : reg > 0.5 ? vec3(0.22, 0.30, 0.27) : vec3(0.40, 0.36, 0.30);',
+  '  float flatA = clamp(m.r * u_density * grove(v_gridPos, reg), 0.0, 1.0) * (reg > 1.5 ? 0.35 : 0.3) * pick(u_alpha, reg);',
+  '  if (reg > 1.5 && m.b >= 0.1) flatA = 0.0;',
+  '  vec4 acc = vec4(0.0);',
+  '  if (lod > 0.0) {',
+  '    vec2 c0 = floor(v_gridPos / CELL);',
+  // Rows north to south, so a tree further south is drawn over the ones behind it.
+  '    for (int dy = -1; dy <= 2; dy++) {',
+  '      for (int dx = -1; dx <= 1; dx++) {',
+  '        vec2 c = c0 + vec2(float(dx), float(dy));',
+  '        vec4 h = hash4(c);',
+  '        vec2 foot = (c + 0.5 + (h.xy - 0.5) * 0.7) * CELL;',
+  '        vec4 mc = texture2D(u_maskTex, foot / u_gridSize);',
+  '        float rg = region(foot);',
+  '        float on = 1.0 - step(mc.r * u_density * grove(foot, rg), hash4(c + 711.0).x);',
+  '        if (rg > 1.5) on *= step(mc.b, 0.02);',             // keep clear of the lava overlay
+  '        float n = pick(u_variants, rg);',
+  '        on *= step(0.5, n);',
+  '        float variant = min(floor(h.z * n), n - 1.0);',
+  '        float s = 0.8 + 0.4 * h.w;',
+  // The sprite's foot point (128, 218 of 256) on the tree's spot.
+  '        vec2 t = (v_gridPos - foot) / (u_sprite * s) + vec2(0.5, 218.0 / 256.0);',
+  '        on *= step(0.0, t.x) * step(t.x, 1.0) * step(0.0, t.y) * step(t.y, 1.0);',
+  '        vec4 sp = texture2D(u_trees, (vec2(variant, rg) + clamp(t, 0.01, 0.99)) / 4.0);',
+  '        acc = over(acc, sp.rgb, sp.a * on * pick(u_alpha, rg));',
+  '      }',
+  '    }',
   '  }',
-  // Sample tiled forest texture
-  '  vec4 fSample = texture2D(u_forestTex, tileUV);',
-  // Luminance from forest texture (use max channel like topo renderer)
-  '  float fLum = max(max(fSample.r, fSample.g), fSample.b);',
-  // Posterize to 8 levels (matches topo renderer)
-  '  fLum = floor(fLum * 7.0 + 0.5) / 7.0;',
-  // Forest color (0.919, 0.822, 0.676) * 0.8
-  '  vec3 forestColor = vec3(0.7352, 0.6576, 0.5408) * fLum;',
-  // Blend factor: density * texAlpha * 0.5 (matches topo renderer)
-  '  float blend = density * fSample.a * 0.5;',
-  '  gl_FragColor = vec4(forestColor, blend);',
+  '  vec4 res = mix(vec4(flatC * flatA, flatA), acc, lod);',
+  '  if (res.a < 0.002) discard;',
+  '  gl_FragColor = vec4(res.rgb / res.a, res.a);',
   '}'
 ].join('\n');
 
@@ -280,7 +336,8 @@ var OVERLAY_ALPHA = { mist: 0.6, lava: 0.5 };
 // ── Public API ───────────────────────────────────────────────────────
 
 // urls: optional { biomes, mask } overriding the seed's endpoints (e.g. blob: URLs
-// of a map generated in the browser, /auth/worldgen).
+// of a map generated in the browser, /auth/worldgen). forestUrl is unused (trees used
+// to be a texture tile); kept so callers needn't change.
 function init(canvasEl, worldName, baseUrl, forestUrl, urls) {
   canvas = canvasEl;
 
@@ -296,38 +353,28 @@ function init(canvasEl, worldName, baseUrl, forestUrl, urls) {
   var biomesP = fetch((urls && urls.biomes) || (base + '/biomes?v=10'))
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); });
 
-  // forestUrl override lets callers source the static forest tile from a different endpoint
-  // than the seed-specific biomes/mask (e.g. /api/track/map/_/forest).
-  var forestP = loadImage(forestUrl || (base + '/forest'));
-  var ashP = loadImage((forestUrl || (base + '/forest')) + '_ashlands');
   var maskP = loadImage((urls && urls.mask) || (base + '/mask'));
+  var treesP = loadTreeAtlas();
 
-  return Promise.all([biomesP, forestP, maskP, ashP])
+  return Promise.all([biomesP, maskP, treesP])
     .then(function(results) {
       var buf = results[0];
-      var forestImg = results[1];
-      var maskImg = results[2];
-      var ashImg = results[3];
+      var maskImg = results[1];
 
       return parseBinaryAuto(buf).then(function(data) {
-        return { data: data, forestImg: forestImg, maskImg: maskImg, ashImg: ashImg, bufSize: buf.byteLength };
+        return { data: data, maskImg: maskImg, bufSize: buf.byteLength };
       });
     })
     .then(function(r) {
-      var data = r.data, forestImg = r.forestImg, maskImg = r.maskImg;
-      if (r.ashImg) ashTex = createTexture(r.ashImg, true);
+      var data = r.data, maskImg = r.maskImg;
       buildGPUBuffers(data);
+      uploadTreeAtlas();
 
-      // Upload textures
-      if (forestImg) {
-        forestTex = createTexture(forestImg, true);  // tiled → repeat wrap
-        console.log('[VectorMap] forest texture: ' + forestImg.width + 'x' + forestImg.height);
-      }
       if (maskImg) {
         maskTex = createTexture(maskImg, false);  // mask → clamp
         console.log('[VectorMap] mask texture: ' + maskImg.width + 'x' + maskImg.height);
       }
-      _texturesReady = !!(forestTex && maskTex);
+      _texturesReady = !!maskTex;
 
       // Build the exact map quad now that gridSize is known
       initMapQuad();
@@ -431,24 +478,30 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
 
   gl.disable(gl.STENCIL_TEST);
 
-  // ── Forest texture overlay ────────────────────────────────────────
+  // ── Trees (procedural, from the forest mask) ─────────────────────
   if (_texturesReady) {
     gl.useProgram(forestProg);
     gl.uniformMatrix3fv(fu_mvp, false, mvp);
     gl.uniform1f(fu_gridSize, gridSize);
-    gl.uniform1f(fu_tileScale, 150.0);
+    gl.uniform1f(fu_px, 1 / (viewScale * dpr));
+    gl.uniform1f(fu_density, TREE_DENSITY);
+    gl.uniform3f(fu_alpha, TREE_ALPHA.regular, TREE_ALPHA.deepNorth, TREE_ALPHA.ashlands);
+    gl.uniform3f(fu_clustering, TREE_CLUSTERING.regular, TREE_CLUSTERING.deepNorth, TREE_CLUSTERING.ashlands);
+    // The atlas whose slots are nearest the size a sprite is drawn at (but not smaller).
+    var spritePx = TREE_SPRITE_UNITS * viewScale * dpr;
+    treeTex = treeTexes[0] || null;
+    for (var ti = treeTexes.length - 1; ti >= 0; ti--) {
+      if (TREE_SLOT_SIZES[ti] >= spritePx) { treeTex = treeTexes[ti]; break; }
+    }
+    gl.uniform3f(fu_variants, treeTex ? treeVariants[0] : 0, treeTex ? treeVariants[1] : 0, treeTex ? treeVariants[2] : 0);
+    gl.uniform1f(fu_sprite, TREE_SPRITE_UNITS);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, forestTex);
-    gl.uniform1i(fu_forestTex, 0);
-
-    gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, maskTex);
-    gl.uniform1i(fu_maskTex, 1);
-
-    gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, ashTex || forestTex);
-    gl.uniform1i(fu_ashTex, 2);
+    gl.uniform1i(fu_maskTex, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, treeTex);
+    gl.uniform1i(fu_trees, 1);
     gl.activeTexture(gl.TEXTURE0);
 
     gl.enable(gl.BLEND);
@@ -462,7 +515,7 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
 
     gl.disable(gl.BLEND);
   } else {
-    // Fallback: draw forest as flat stencil fill if textures unavailable
+    // Fallback: draw forest as flat stencil fill if the mask is unavailable
     renderForestFallback(mvp);
   }
 
@@ -527,6 +580,26 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
 // (stronger, to be findable); the pattern fades in as it becomes big enough
 // to read. Clipped to land: a sector also covers its biome's cells below sea
 // level, which would otherwise put mushrooms on the sea.
+// Trees: TREE_DENSITY scales the forest mask's density (a cell's chance of a tree, at most
+// one per cell), TREE_ALPHA (per region) their opacity, TREE_CLUSTERING (0-1, per region) how much they
+// gather into groves with clearings between (GROVE in the shader sets the patch size).
+var TREE_DENSITY = 0.85;
+var TREE_ALPHA = { regular: 0.55, deepNorth: 0.85, ashlands: 0.85 };
+var TREE_CLUSTERING = { regular: 0.1, deepNorth: 0.2, ashlands: 0.6 };
+
+// Tree sprites: public/img/Trees/<name>.svg, 256 x 256 with the tree's foot at (128, 218),
+// spanning TREE_SPRITE_UNITS map units (12 m each), so 1 map unit = 116 px of the SVG. Each
+// tree picks one of its region's sprites at random; up to 4 per region.
+var TREE_SPRITE_BASE = '/img/Trees/';
+var TREE_SPRITES = {
+  regular: ['leafy-1', 'leafy-2'],
+  deepNorth: ['fir-1', 'fir-2'],
+  ashlands: ['burnt-1', 'burnt-2'],
+};
+var TREE_SPRITE_UNITS = 2.2;
+// Atlas resolutions, one per zoom band, so the GPU never mip-maps across the cells' seams.
+var TREE_SLOT_SIZES = [256, 128, 64, 32];
+
 var PATTERN_TILE_PX = 80;     // on-screen size of one pattern tile
 var PATTERN_MIN_TILE = 8;     // map units (1 = 24 m); reached from ~10x zoom. Variant sectors are
                               // only ~8-20 units across, so keep a few clusters in even the smallest
@@ -859,9 +932,8 @@ function destroy() {
   if (gl) {
     if (quadVBO) gl.deleteBuffer(quadVBO);
     if (mapQuadVBO) gl.deleteBuffer(mapQuadVBO);
-    if (forestTex) gl.deleteTexture(forestTex);
-    if (ashTex) gl.deleteTexture(ashTex);
     if (maskTex) gl.deleteTexture(maskTex);
+    treeTexes.forEach(function(t) { gl.deleteTexture(t); });
     if (fogTex) gl.deleteTexture(fogTex);
     if (altTex) gl.deleteTexture(altTex);
     if (lutTex) gl.deleteTexture(lutTex);
@@ -878,9 +950,9 @@ function destroy() {
   contourLayers = [];
   quadVBO = null;
   mapQuadVBO = null;
-  forestTex = null;
-  ashTex = null;
   maskTex = null;
+  treeTex = null;
+  treeTexes = [];
   fogTex = null;
   altTex = null;
   lutTex = null;
@@ -918,7 +990,7 @@ function setFogOpacity(opacity) {
 }
 
 // initFromData — same as init() but accepts pre-parsed data (same shape as parseBinary output)
-// + texture images, instead of fetching from URLs. All rendering code is identical.
+// + the mask image (forestImg is unused), instead of fetching from URLs. All rendering code is identical.
 // data = { layers: [{ type: 'biome'|'land'|..., r, g, b, polygons: [Float32Array, ...] }, ...],
 //          contours: [{ major: bool, lines: [Float32Array, ...] }, ...] }
 function initFromData(canvasEl, data, forestImg, maskImg) {
@@ -933,13 +1005,11 @@ function initFromData(canvasEl, data, forestImg, maskImg) {
   gridSize = data.gridSize || 512;
   buildGPUBuffers(data);
 
-  if (forestImg) {
-    forestTex = createTexture(forestImg, true);
-  }
   if (maskImg) {
     maskTex = createTexture(maskImg, false);
   }
-  _texturesReady = !!(forestTex && maskTex);
+  _texturesReady = !!maskTex;
+  loadTreeAtlas().then(function() { if (gl) uploadTreeAtlas(); });
 
   initMapQuad();
   _ready = true;
@@ -973,11 +1043,15 @@ function initShaders() {
   forestProg = linkProgram(FOREST_VERT_SRC, FOREST_FRAG_SRC);
   if (!forestProg) return false;
   fu_mvp = gl.getUniformLocation(forestProg, 'u_mvp');
-  fu_forestTex = gl.getUniformLocation(forestProg, 'u_forestTex');
-  fu_ashTex = gl.getUniformLocation(forestProg, 'u_ashTex');
   fu_maskTex = gl.getUniformLocation(forestProg, 'u_maskTex');
   fu_gridSize = gl.getUniformLocation(forestProg, 'u_gridSize');
-  fu_tileScale = gl.getUniformLocation(forestProg, 'u_tileScale');
+  fu_px = gl.getUniformLocation(forestProg, 'u_px');
+  fu_density = gl.getUniformLocation(forestProg, 'u_density');
+  fu_alpha = gl.getUniformLocation(forestProg, 'u_alpha');
+  fu_trees = gl.getUniformLocation(forestProg, 'u_trees');
+  fu_variants = gl.getUniformLocation(forestProg, 'u_variants');
+  fu_sprite = gl.getUniformLocation(forestProg, 'u_sprite');
+  fu_clustering = gl.getUniformLocation(forestProg, 'u_clustering');
   fa_pos = gl.getAttribLocation(forestProg, 'a_pos');
 
   // Biome variant pattern program (shares the forest vertex shader)
@@ -1066,6 +1140,46 @@ function initMapQuad() {
 }
 
 // ── Texture loading ──────────────────────────────────────────────────
+
+// The tree sprites drawn into a 4 x 4 grid of slots: row = region (regular, Deep North,
+// Ashlands), column = variant; sprites that fail to load are skipped. Drawn once per slot size
+// in TREE_SLOT_SIZES (the SVG rendered at each size, sharper than scaling one down); the
+// renderer picks the size nearest a tree's size on screen. Shared by every map.
+var _treeAtlasP = null;
+var _treeAtlas = null;
+function loadTreeAtlas() {
+  if (_treeAtlasP) return _treeAtlasP;
+  var rows = [TREE_SPRITES.regular, TREE_SPRITES.deepNorth, TREE_SPRITES.ashlands];
+  _treeAtlasP = Promise.all(rows.map(function(names) {
+    return Promise.all(names.slice(0, 4).map(function(n) { return loadImage(TREE_SPRITE_BASE + n + '.svg'); }));
+  })).then(function(imgRows) {
+    var counts = [];
+    var canvases = TREE_SLOT_SIZES.map(function(px) {
+      var c = document.createElement('canvas');
+      c.width = c.height = px * 4;
+      var ctx = c.getContext('2d');
+      counts = imgRows.map(function(imgs, row) {
+        var col = 0;
+        imgs.forEach(function(img) {
+          if (!img) return;
+          ctx.drawImage(img, col * px, row * px, px, px);
+          col++;
+        });
+        return col;
+      });
+      return c;
+    });
+    _treeAtlas = { canvases: canvases, counts: counts };
+    return _treeAtlas;
+  });
+  return _treeAtlasP;
+}
+
+function uploadTreeAtlas() {
+  if (!_treeAtlas || treeTexes.length) return;
+  treeTexes = _treeAtlas.canvases.map(function(c) { return createTexture(c, false); });
+  treeVariants = _treeAtlas.counts;
+}
 
 function loadImage(url) {
   return new Promise(function(resolve) {

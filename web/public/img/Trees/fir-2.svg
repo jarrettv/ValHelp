@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Map tree sprite: fir-2. 256 x 256; the tree's foot (where it meets the ground) is at
+     (128, 218), which the map places on the tree's spot. Draw the shadow in the sprite. -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="fir-2.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="3.3242188"
+     inkscape:cx="128"
+     inkscape:cy="128"
+     inkscape:window-width="2400"
+     inkscape:window-height="1261"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13" />
+  <defs
+     id="defs5">
+    <radialGradient
+       id="shadow">
+      <stop
+         offset="0.35"
+         stop-color="#1d2a3a"
+         stop-opacity="0.38"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#1d2a3a"
+         stop-opacity="0"
+         id="stop2" />
+    </radialGradient>
+    <!-- snow: lit from the west, blue in its own shade -->
+    <linearGradient
+       id="snow"
+       x1="0"
+       x2="1"
+       y1="0"
+       y2="0.3">
+      <stop
+         offset="0"
+         stop-color="#ffffff"
+         id="stop3" />
+      <stop
+         offset="0.5"
+         stop-color="#e6edf4"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#aebfd0"
+         id="stop5" />
+    </linearGradient>
+    <!-- the curled leader: drawn twice below, outline then snow -->
+    <path
+       id="leader"
+       d="M 135.8,73.7 L 135.1,63.7 L 132.4,55.6 L 128.0,49.1 L 121.9,44.1 L 116.5,41.7 L 111.6,40.9 L 105.7,41.2 L 101.0,42.8 L 94.7,47.3 L 93.4,50.6 L 94.7,53.9 L 96.3,55.0 L 99.8,55.0 L 101.4,53.9 L 105.0,52.1 L 109.5,51.9 L 113.3,53.1 L 116.7,55.9 L 118.7,58.8 L 120.0,62.7 L 120.2,73.7 L 120.8,76.7 L 122.5,79.2 L 125.0,80.9 L 128.0,81.5 L 131.0,80.9 L 133.5,79.2 L 135.2,76.7 Z" />
+  </defs>
+  <!-- shadow, to the south-east of the foot -->
+  <!-- trunk -->
+  <rect
+     x="123"
+     y="196"
+     width="10"
+     height="14.6745"
+     fill="#3a2c24"
+     id="rect5"
+     style="stroke-width:0.781945" />
+  <!-- needles: the tree under the snow, showing below each cushion -->
+  <path
+     d="M 154.8,202.0 C 163.7,196.6 162.6,193.0 152.3,192.0 L 157.4,184.2 C 167.1,178.8 165.7,175.2 154.4,174.2 L 149.3,166.4 C 156.1,161.0 155.0,157.4 146.8,156.4 L 150.0,148.6 C 156.9,143.2 155.6,139.6 147.1,138.6 L 144.1,130.8 C 149.0,125.4 147.9,121.8 141.6,120.8 L 142.3,113.0 C 146.4,107.6 145.1,104.0 139.5,103.0 L 142.0,95.2 C 145.6,89.8 144.0,86.2 138.4,85.2 L 136.5,77.4 C 138.6,73.5 137.4,70.6 133.3,71.1 L 121.6,71.1 C 118.5,70.6 117.4,73.5 119.5,77.4 L 117.6,85.2 C 112.0,86.2 110.4,89.8 114.0,95.2 L 116.5,103.0 C 110.9,104.0 109.6,107.6 113.7,113.0 L 114.4,120.8 C 108.1,121.8 107.0,125.4 111.9,130.8 L 108.9,138.6 C 100.4,139.6 99.1,143.2 106.0,148.6 L 109.2,156.4 C 101.0,157.4 99.9,161.0 106.7,166.4 L 101.6,174.2 C 90.3,175.2 88.9,178.8 98.6,184.2 L 103.7,192.0 C 93.4,193.0 92.3,196.6 101.2,202.0 Z"
+     fill="#22302c"
+     stroke="#1a2421"
+     stroke-width="1.5"
+     id="path5" />
+  <!-- leader and hanging lump: outlines (their snow goes on after the column's) -->
+  <use
+     href="#leader"
+     fill="none"
+     stroke="#6f8499"
+     stroke-width="3.2"
+     stroke-linejoin="round"
+     id="use5" />
+  <!-- the column's snow: one cushion per scallop -->
+  <path
+     d="M 150.5,202.0 C 154.1,195.9 153.3,189.1 148.4,181.5 L 152.7,184.2 C 156.6,178.1 155.6,171.3 150.2,163.7 L 145.8,166.4 C 148.6,160.3 147.8,153.5 143.8,145.9 L 146.5,148.6 C 149.2,142.5 148.2,135.7 144.0,128.1 L 141.5,130.8 C 143.4,124.7 142.6,117.9 139.4,110.3 L 140.0,113.0 C 141.5,106.9 140.5,100.1 137.7,92.5 L 139.7,95.2 C 140.9,89.1 139.7,82.3 136.8,74.7 L 135.2,77.4 C 135.8,72.8 134.9,66.8 132.4,60.6 L 122.5,60.6 C 121.1,66.8 120.2,72.8 120.8,77.4 L 119.2,74.7 C 116.3,82.3 115.1,89.1 116.3,95.2 L 118.3,92.5 C 115.5,100.1 114.5,106.9 116.0,113.0 L 116.6,110.3 C 113.4,117.9 112.6,124.7 114.5,130.8 L 112.0,128.1 C 107.8,135.7 106.8,142.5 109.5,148.6 L 112.2,145.9 C 108.2,153.5 107.4,160.3 110.2,166.4 L 105.8,163.7 C 100.4,171.3 99.4,178.1 103.3,184.2 L 107.6,181.5 C 102.7,189.1 101.9,195.9 105.5,202.0 Z"
+     fill="url(#snow)"
+     stroke="#6f8499"
+     stroke-width="1.6"
+     stroke-linejoin="round"
+     id="path6" />
+  <!-- the leader's snow, curled over by its weight, and the lump hanging off the tip -->
+  <use
+     href="#leader"
+     fill="url(#snow)"
+     id="use6" />
+  <!-- creases between cushions and highlights on their lit side -->
+  <path
+     d="M 105.7,184.2 Q 128.0,189.2 150.3,184.2"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path7" />
+  <path
+     d="M 111.9,166.4 Q 128.0,171.4 144.1,166.4"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path8" />
+  <path
+     d="M 111.3,148.6 Q 128.0,153.6 144.7,148.6"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path9" />
+  <path
+     d="M 115.8,130.8 Q 128.0,135.8 140.2,130.8"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path10" />
+  <path
+     d="M 117.2,113.0 Q 128.0,118.0 138.8,113.0"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path11" />
+  <path
+     d="M 117.4,95.2 Q 128.0,100.2 138.6,95.2"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path12" />
+  <path
+     d="M 121.5,77.4 Q 128.0,82.4 134.5,77.4"
+     stroke="#9bb0c4"
+     stroke-width="1.6"
+     fill="none"
+     id="path13" />
+</svg>
