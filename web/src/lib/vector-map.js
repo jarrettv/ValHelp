@@ -350,10 +350,13 @@ function init(canvasEl, worldName, baseUrl, forestUrl, urls) {
   var base = baseUrl || ('/api/map-data/' + encodeURIComponent(worldName));
 
   // Fetch binary geometry + textures in parallel
-  var biomesP = fetch((urls && urls.biomes) || (base + '/biomes?v=10'))
+  // ?v= changes the URL whenever browsers may hold an outdated copy: map files used to be cached
+  // for a year as immutable, but seedgen now rebuilds them in place (11/2: trees in the Deep North
+  // and Ashlands; it sends no-cache with an ETag from then on).
+  var biomesP = fetch((urls && urls.biomes) || (base + '/biomes?v=11'))
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); });
 
-  var maskP = loadImage((urls && urls.mask) || (base + '/mask'));
+  var maskP = loadImage((urls && urls.mask) || (base + '/mask?v=2'));
   var treesP = loadTreeAtlas();
 
   return Promise.all([biomesP, maskP, treesP])

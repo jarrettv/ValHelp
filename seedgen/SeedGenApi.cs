@@ -144,8 +144,9 @@ public static class SeedGenApi
         }
 
         ctx.Response.Headers.ETag = etag;
-        // pois changes in place on a regen: always revalidate (a cheap 304 via the ETag).
-        ctx.Response.Headers.CacheControl = file == "pois"
+        // pois and the map artifacts change in place on a regen (or an ArtifactCache/PoiCache
+        // version bump): always revalidate (a cheap 304 via the ETag).
+        ctx.Response.Headers.CacheControl = file == "pois" || ArtifactCache.Files.Contains(file)
             ? "public, no-cache"
             : "public, max-age=31536000, immutable";
 
