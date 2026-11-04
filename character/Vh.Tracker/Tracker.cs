@@ -279,7 +279,7 @@ public sealed class Tracker
             { new ByteArrayContent(gz), "file", Path.GetFileName(file.Path) + ".gz" },
             { new StringContent(file.Time.ToString("o")), "fileTime" },
         };
-        foreach (var h in hints) form.Add(new ByteArrayContent(h.Bytes), h.Field, h.Name);
+        foreach (var h in hints.Concat(Saves.WorldClocks(file.Time))) form.Add(new ByteArrayContent(h.Bytes), h.Field, h.Name);
         using var req = new HttpRequestMessage(HttpMethod.Post, config.Server + "/api/char/upload") { Content = form };
         req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         try

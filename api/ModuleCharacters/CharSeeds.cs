@@ -21,7 +21,8 @@ public static class CharSeeds
     /// <summary>New seeds a user's tracked worlds may queue for generation per day.</summary>
     public const int SeedgenPerDay = 5;
 
-    public record Hints(List<WorldMeta> Fwls, Dictionary<string, int> SeedHashByName);
+    /// <summary>ClockByName: world clock (seconds) by world name, as of the uploaded save.</summary>
+    public record Hints(List<WorldMeta> Fwls, Dictionary<string, int> SeedHashByName, Dictionary<string, double> ClockByName);
 
     public static void Resolve(CharacterProfile? prev, CharacterProfile cur, Dictionary<long, CharWorld> worlds,
         Hints hints, Func<int, string?> knownSeed)

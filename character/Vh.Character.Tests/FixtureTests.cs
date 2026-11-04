@@ -59,4 +59,21 @@ public class FixtureTests
         Assert.Equal(WorldFile.StableHash("tracktest"), seed);
         Assert.Equal(1, version);
     }
+
+    /// <summary>Every local world save starts with its data version and clock; day = clock / 1200.</summary>
+    [Fact]
+    public void WorldSavesStartWithTheirClock()
+    {
+        var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", "IronGate", "Valheim", "worlds_local");
+        if (!Directory.Exists(dir)) return;
+        var saves = Directory.EnumerateFiles(dir, "*.db").Concat(Directory.EnumerateFiles(dir, "_main.*.db2", SearchOption.AllDirectories));
+        foreach (var path in saves)
+        {
+            var head = new byte[12];
+            using (var fs = File.OpenRead(path)) fs.ReadExactly(head);
+            var (version, clock) = WorldFile.ParseDbHeader(head);
+            Assert.InRange(version, 30, 60);
+            Assert.InRange(clock, 0, 1e9);
+        }
+    }
 }

@@ -32,6 +32,19 @@ public static class WorldFile
     public static (int Seed, int Version) ParseMinimapMeta(byte[] meta) =>
         (BitConverter.ToInt32(meta, 0), BitConverter.ToInt32(meta, 4));
 
+    /// <summary>
+    /// The start of a world save (&lt;name&gt;.db, 1.0 &lt;name&gt;/_main.N.db2): data version, then
+    /// the world clock (ZNet.m_netTime, seconds; .db only from SupportNetTime).
+    /// </summary>
+    public static (int Version, double NetTime) ParseDbHeader(byte[] head)
+    {
+        if (head.Length < 12) throw new InvalidDataException("World save header too short");
+        return (BitConverter.ToInt32(head, 0), BitConverter.ToDouble(head, 4));
+    }
+
+    /// <summary>EnvMan.m_dayLengthSec: the world clock runs this many seconds a day.</summary>
+    public const double DayLengthSeconds = 1200;
+
     /// <summary>string.GetStableHashCode: the int seed the game derives from the seed name.</summary>
     public static int StableHash(string s)
     {

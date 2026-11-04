@@ -41,7 +41,7 @@ public static class CharRead
     public record WorldItem(long Id, long Uid, string? Name, string? Seed, bool NeedsSeed, bool ViewerPlays);
     /// <summary>One save. X/Z: the logout point in the world the save was made in; Explored: its explored cells.</summary>
     public record SnapshotItem(long Id, DateTime FileTime, int Session, float Axis, bool Rewind, long? WorldId,
-        float? X, float? Z, int? Explored);
+        float? X, float? Z, int? Explored, double? WorldSeconds);
     public record CharacterResp(long Id, string Name, Owner Owner, bool IsMine, WorldItem[] Worlds, SnapshotItem[] Snapshots,
         CharEndpoints.LatestOut? Latest);
 
@@ -56,7 +56,7 @@ public static class CharRead
         var snapshots = await db.Database.SqlQuery<SnapshotItem>($"""
             SELECT s.id, s.file_time, s.session, s.axis_seconds AS axis, s.rewind, s.world_id,
                    (w.e->'logout'->>'x')::real AS x, (w.e->'logout'->>'z')::real AS z,
-                   (w.e->>'explored')::int AS explored
+                   (w.e->>'explored')::int AS explored, s.world_seconds
             FROM char_snapshots s
             LEFT JOIN char_worlds cw ON cw.id = s.world_id
             LEFT JOIN LATERAL (

@@ -21,6 +21,8 @@ export interface CharWorld { id: number; uid: number; name: string | null; seed:
 export interface CharSnapshot {
   id: number; fileTime: string; session: number; axis: number; rewind: boolean; worldId: number | null;
   x: number | null; z: number | null; explored: number | null;
+  /** The world's clock at this save (local worlds only). */
+  worldSeconds: number | null;
 }
 interface CharResp {
   id: number; name: string; isMine: boolean;
@@ -264,7 +266,15 @@ function TrackView({ char, world, initialIndex, onWorld }: {
   } : null, [seed]);
   const ready = status.data?.status === 'done' && map && fog;
 
-  const worldSnaps = snaps.filter(s => s.worldId === world.id);
+  // In-game day (EnvMan: 1200 s a day) at this save, or the last save in this
+  // world that had a world save written with it.
+  const day = useMemo(() => {
+    for (let i = index; i >= 0; i--) {
+      const s = snaps[i];
+      if (s.worldId === world.id && s.worldSeconds != null) return Math.floor(s.worldSeconds / 1200);
+    }
+    return null;
+  }, [snaps, index, world.id]);
   const explored = at.data?.explored ?? null;
 
   return (
@@ -317,9 +327,8 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         {expanded && (
           <dl className="ct-facts">
             <dt>Save</dt><dd>{new Date(snap.fileTime).toLocaleString()}</dd>
-            <dt>Played</dt><dd>{formatPlay(snap.axis)} · session {snap.session}</dd>
+            <dt>Played</dt><dd>{formatPlay(snap.axis)} · session {snap.session}{day != null && <> · day {day}</>}</dd>
             {explored != null && <><dt>Explored</dt><dd>{exploredKm2(explored)!.toFixed(1)} km² ({pctOfWorld(exploredKm2(explored)!)})</dd></>}
-            <dt>Saves here</dt><dd>{worldSnaps.length} of {snaps.length}</dd>
           </dl>
         )}
         {snap.worldId !== world.id && snap.worldId != null && (

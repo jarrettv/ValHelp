@@ -74,6 +74,9 @@ START TRANSACTION;
       data jsonb NOT NULL
   );
   CREATE INDEX IF NOT EXISTS ix_char_snapshots_character ON char_snapshots (character_id, file_time);
+  -- The clock (seconds) of the world the save was made in, from the world save
+  -- written with it (local worlds only); in-game day = world_seconds / 1200.
+  ALTER TABLE char_snapshots ADD COLUMN IF NOT EXISTS world_seconds double precision;
 
   -- Explored-map tiles that changed in a snapshot: tile = ty * 32 + tx over the
   -- 2048x2048 grid, 64x64 cells each, bit-packed rows (512 bytes). others is the

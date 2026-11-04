@@ -14,6 +14,7 @@ namespace ValHelpApi.ModuleCharacters;
 ///   fileTime  when the game wrote it (ISO 8601), i.e. the file's mtime
 ///   fwl       0..n world files (.fwl or _main.N.fwl2) from worlds_local
 ///   meta      0..n worlds_local/&lt;name&gt;/cacheMinimapMeta, the part's file name = &lt;name&gt;
+///   clock     0..n first 12 bytes (version, clock) of a world save written with this one, file name = world name
 ///
 /// The watcher sends a save only when its content changed; a save identical to
 /// the character's latest, or older than it, is acknowledged without storing.
@@ -125,6 +126,7 @@ public static class CharUpload
             AxisSeconds = timing.AxisSeconds,
             Rewind = timing.Rewind,
             WorldId = activeUid is { } a ? worlds[a].Id : null,
+            WorldSeconds = activeUid is { } u && worlds[u].Name is { } wn && hints.ClockByName.TryGetValue(wn, out var clock) ? clock : null,
             Data = CharSnapshotJson.ToJson(profile),
         };
         db.Add(snap);
@@ -160,6 +162,7 @@ public static class CharUpload
     {
         var fwls = new List<WorldMeta>();
         var metas = new Dictionary<string, int>();
+        var clocks = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         foreach (var f in form.Files)
         {
             if (f.Length == 0 || f.Length > MaxSmallFile) continue;
@@ -169,13 +172,18 @@ public static class CharUpload
             {
                 if (f.Name == "fwl") fwls.Add(WorldFile.Parse(bytes));
                 else if (f.Name == "meta" && bytes.Length >= 8) metas[f.FileName] = WorldFile.ParseMinimapMeta(bytes).Seed;
+                else if (f.Name == "clock" && bytes.Length >= 12)
+                {
+                    var t = WorldFile.ParseDbHeader(bytes).NetTime;
+                    if (t >= 0 && t < 1e10) clocks[f.FileName] = t;
+                }
             }
             catch (Exception ex) when (ex is InvalidDataException or EndOfStreamException)
             {
                 logger.LogInformation("Skipping unreadable world hint {Name}: {Error}", f.FileName, ex.Message);
             }
         }
-        return new CharSeeds.Hints(fwls, metas);
+        return new CharSeeds.Hints(fwls, metas, clocks);
     }
 
     static byte[] Gunzip(byte[] gz, long max)

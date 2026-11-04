@@ -27,6 +27,8 @@ public static class Saves
 {
     const string SteamAppId = "892970";
     const int MaxHintBytes = 64 << 10;
+    /// <summary>A world save this close to a character save is taken as written with it.</summary>
+    static readonly TimeSpan SameSave = TimeSpan.FromMinutes(15);
 
     static string ValheimDir => System.IO.Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", "IronGate", "Valheim");
@@ -119,6 +121,49 @@ public static class Saves
             }
         }
         return hints;
+    }
+
+    /// <summary>
+    /// The clock of each local world as of a character save: the first 12 bytes
+    /// (version, seconds) of the world save, or world backup, written closest to it
+    /// within 15 minutes; none otherwise (the site shows no day rather than a wrong one).
+    /// </summary>
+    public static List<HintFile> WorldClocks(DateTime saveTime)
+    {
+        var best = new Dictionary<string, (string Path, TimeSpan Off)>(StringComparer.OrdinalIgnoreCase);
+        void Consider(string world, string path)
+        {
+            var off = (File.GetLastWriteTimeUtc(path) - saveTime).Duration();
+            if (off <= SameSave && (!best.TryGetValue(world, out var b) || off < b.Off)) best[world] = (path, off);
+        }
+        foreach (var dir in WorldDirs())
+        {
+            foreach (var db in Directory.EnumerateFiles(dir, "*.db"))
+                Consider(WorldName(System.IO.Path.GetFileNameWithoutExtension(db)), db);
+            foreach (var world in Directory.EnumerateDirectories(dir))
+                foreach (var db2 in Directory.EnumerateFiles(world, "_main.*.db2"))
+                    Consider(WorldName(System.IO.Path.GetFileName(world)), db2);
+        }
+        var hints = new List<HintFile>();
+        foreach (var (world, (path, _)) in best)
+        {
+            try
+            {
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                var head = new byte[12];
+                if (fs.Read(head) == 12) hints.Add(new HintFile("clock", world, head));
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+        return hints;
+    }
+
+    /// <summary>"name_backup_auto-20261103-183546" is a backup of world "name".</summary>
+    static string WorldName(string fileOrDir)
+    {
+        int i = fileOrDir.IndexOf("_backup_", StringComparison.OrdinalIgnoreCase);
+        return i < 0 ? fileOrDir : fileOrDir[..i];
     }
 
     static void Add(List<HintFile> hints, string field, string name, string path)

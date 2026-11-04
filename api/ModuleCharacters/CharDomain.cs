@@ -74,6 +74,8 @@ public class CharSnapshot
     public bool Rewind { get; set; }
     /// <summary>The world played since the previous snapshot, when it can be told.</summary>
     public long? WorldId { get; set; }
+    /// <summary>The world's clock at this save (local worlds), from the world save written with it.</summary>
+    public double? WorldSeconds { get; set; }
     /// <summary>Parsed profile without the fog bitmaps (CharSnapshotData as JSON).</summary>
     public string Data { get; set; } = "{}";
 }
