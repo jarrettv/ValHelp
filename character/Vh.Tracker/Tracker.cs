@@ -342,7 +342,8 @@ public sealed class Tracker
             SetStatus($"Approve code {start.UserCode} in your browser");
             Notify?.Invoke("Link ValHelp Tracker", $"Sign in on the page that opened and confirm the code {start.UserCode}.", false);
             Log.Write($"Linking with code {start.UserCode}");
-            Native.Open(start.VerifyUrl);
+            // The site's own address, not the API's idea of it (behind a dev proxy that's another port).
+            Native.Open($"{config.Server}/link?code={Uri.EscapeDataString(start.UserCode)}");
 
             var until = DateTime.UtcNow.AddSeconds(start.ExpiresIn);
             var body = JsonSerializer.Serialize(new TokenReq(start.DeviceCode), TrackerJson.Default.TokenReq);
