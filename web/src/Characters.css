@@ -306,7 +306,32 @@
 .ct-facts dd { margin: 0; word-break: break-word; }
 .ct-note { color: #ffd28a; margin: 6px 0 0; font-size: 12px; }
 /* Spoiler toggle (the site's eye button) at the end of the timeline. */
-.nav-eye-btn.ct-spoiler { flex-shrink: 0; }
+/* "Reveal map": labelled and pulsing blue on desktop until used; just the eye on phones. */
+.nav-eye-btn.ct-spoiler {
+  flex-shrink: 0;
+  width: auto;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ecbff;
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
+  animation: ct-reveal-pulse 2s ease-in-out infinite;
+}
+.nav-eye-btn.ct-spoiler:hover:not(:disabled) { background: rgba(59, 130, 246, 0.28); color: #fff; }
+.nav-eye-btn.ct-spoiler.on, .nav-eye-btn.ct-spoiler:disabled { animation: none; }
+@keyframes ct-reveal-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55); }
+  50% { box-shadow: 0 0 12px 3px rgba(59, 130, 246, 0.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-eye-btn.ct-spoiler { animation: none; }
+}
+@media (max-width: 640px) {
+  .nav-eye-btn.ct-spoiler { width: 34px; padding: 0; }
+  .ct-spoiler-label { display: none; }
+}
 .nav-eye-btn.ct-spoiler.on { color: #f87171; border-color: #f87171; background: rgba(248, 113, 113, 0.12); }
 .nav-eye-btn.ct-spoiler:disabled { opacity: 0.4; cursor: default; }
 
