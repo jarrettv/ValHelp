@@ -48,8 +48,8 @@ interface WorldMapProps {
   onPoisLoaded?: (pois: PoiMarker[]) => void;
   /// The zoom after each redraw, relative to the whole map fitted in view (1).
   onZoom?: (zoom: number) => void;
-  /// Fog of war over the map (see VectorMap.setFog); a new object redraws it.
-  fog?: { image: TexImageSource } | null;
+  /// Fog of war over the map (see VectorMap.setFog), at `opacity` (default 1); a new object redraws it.
+  fog?: { image: TexImageSource; opacity?: number } | null;
   /// Only the POIs this accepts are drawn (e.g. the explored ones under fog).
   poiFilter?: ((poi: PoiMarker) => boolean) | null;
   /// Draws on top of the POIs each frame; `view.size` is the whole map's size in
@@ -287,7 +287,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   // Fog of war and the POIs it hides.
   useEffect(() => {
     if (!mapReady) return;
-    window.VectorMap.setFog(fog?.image ?? null, 1);
+    window.VectorMap.setFog(fog?.image ?? null, fog?.opacity ?? 1);
     scheduleUpdate();
   }, [fog, mapReady, scheduleUpdate]);
   useEffect(() => {

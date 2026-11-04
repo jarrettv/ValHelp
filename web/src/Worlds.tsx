@@ -9,6 +9,7 @@ import { usePublicWorlds } from './components/publicWorlds';
 import { usePinnedWorlds } from './components/pinnedWorlds';
 import PoiCard from './components/PoiCard';
 import WorldsFeedback from './components/WorldsFeedback';
+import { MaximizeButton, useMapMaximized } from './components/MapMaximize';
 import { generateWorld, type GenerateProgress } from './worldgen/generateWorld';
 import { LOCAL_WORLD_LIMIT, deleteLocalWorld, getLocalWorld, listLocalWorlds, saveLocalWorld, type LocalWorldMeta } from './worldgen/localWorlds';
 import { STAGE_LABELS, type WorldgenStage } from './worldgen/worldgenTypes';
@@ -364,22 +365,10 @@ function WorldView({ seed, source, isOwner, map, overlay, notice }: {
 
   function close() { navigate('/'); }
 
-  // Maximize: hide the site header (body.map-open, index.css) so the map fills the window.
-  // Remembered per browser; Escape restores.
-  const [maximized, setMaximized] = useState(readMaximized);
-  useEffect(() => {
-    document.body.classList.toggle('map-open', maximized);
-    try { localStorage.setItem(MAXIMIZED_KEY, maximized ? '1' : '0'); } catch { /* storage unavailable */ }
-    if (!maximized) return () => document.body.classList.remove('map-open');
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !(e.target instanceof HTMLElement && e.target.closest('input, textarea, .seed-control, .wfb'))) setMaximized(false);
-    };
-    document.addEventListener('keydown', onKey);
-    return () => { document.removeEventListener('keydown', onKey); document.body.classList.remove('map-open'); };
-  }, [maximized]);
+  const [maximized, setMaximized] = useMapMaximized();
   function toggleMaximized() {
     track('maximize', seed, { on: !maximized });
-    setMaximized(m => !m);
+    setMaximized();
   }
   function toggleIcon(icon: string) {
     setHiddenIcons(prev => {
@@ -394,11 +383,7 @@ function WorldView({ seed, source, isOwner, map, overlay, notice }: {
 
   return (
     <div className="worlds-view-fullscreen" ref={viewRef}>
-      <button className="worlds-view-max" onClick={toggleMaximized} aria-pressed={maximized}
-              title={maximized ? 'Restore (show the site menu)' : 'Maximize (hide the site menu)'}
-              aria-label={maximized ? 'Restore' : 'Maximize'}>
-        {maximized ? <RestoreIcon /> : <MaximizeIcon />}
-      </button>
+      <MaximizeButton maximized={maximized} onClick={toggleMaximized} />
       <WorldsFeedback seed={seed} className="worlds-feedback" />
 
       <SeedControl seed={seed} source={source} isOwner={isOwner} onOpen={open}
@@ -446,22 +431,6 @@ function WorldView({ seed, source, isOwner, map, overlay, notice }: {
     </div>
   );
 }
-
-const MAXIMIZED_KEY = 'vh-worlds-maximized';
-function readMaximized(): boolean {
-  try { return localStorage.getItem(MAXIMIZED_KEY) === '1'; } catch { return false; }
-}
-
-const MaximizeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M4 9V4h5" /><path d="M20 9V4h-5" /><path d="M4 15v5h5" /><path d="M20 15v5h-5" />
-  </svg>
-);
-const RestoreIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 4v5H4" /><path d="M15 4v5h5" /><path d="M9 20v-5H4" /><path d="M15 20v-5h5" />
-  </svg>
-);
 
 // ── POI hover tally ──────────────────────────────────────────────────────────
 // People hover many POIs, so hovers aren't sent one by one: a hover counts once

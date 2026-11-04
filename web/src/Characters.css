@@ -332,6 +332,15 @@
   cursor: pointer;
 }
 
+/* Markers legend (spoilers on): bottom left, above the timeline. */
+.ct-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 76px;
+  z-index: 11;
+  max-width: min(60vw, 520px);
+}
+
 /* Timeline */
 .ct-timeline {
   position: absolute;

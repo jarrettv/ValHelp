@@ -7,6 +7,10 @@ import { Fog, parseTiles } from './components/charFog';
 import CharTimeline, { formatPlay } from './components/CharTimeline';
 import { EyeIcon } from './components/SpoilerMenu';
 import { WorldIcon } from './Layout';
+import PoiLegend from './components/PoiLegend';
+import WorldsFeedback from './components/WorldsFeedback';
+import { MaximizeButton, useMapMaximized } from './components/MapMaximize';
+import './Worlds.css';
 import { Bars, Equipped, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex, type RunLatest } from './components/RunParts';
 import './Characters.css';
 
@@ -46,6 +50,8 @@ const PIN_GLYPH: Record<string, string> = {
   Hildir1: '🛍', Hildir2: '🛍', Hildir3: '🛍', Memorial: '🪦',
 };
 const PATH_COLOR = '#ffb347';
+/** With spoilers on, the unexplored stays faintly veiled so the explored still reads. */
+const SPOILER_FOG = 0.1;
 
 /** /characters/:id, the first address of this page (the tracker opened it): now /runs/:id. */
 export function CharacterRedirect() {
@@ -250,15 +256,22 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     }
   }, [path, pins, snap.worldId, world.id]);
 
-  function toggleSpoilers() {
-    if (!spoilers) {
-      const yours = world.viewerPlays
-        ? char.isMine ? 'This is your world.' : 'You have a character in this world too.'
-        : null;
-      if (yours && !window.confirm(`${yours} Spoilers show the whole map and every location, explored or not. Show them?`)) return;
-    }
-    setSpoilers(s => !s);
+  // Spoilers: the fog thins to a veil, every location shows, and the markers
+  // legend (as on the world map) lets them be filtered.
+  function toggleSpoilers() { setSpoilers(s => !s); }
+  const [pois, setPois] = useState<PoiMarker[]>([]);
+  const [hiddenIcons, setHiddenIcons] = useState<Set<string>>(new Set());
+  function toggleIcon(icon: string) {
+    setHiddenIcons(prev => {
+      const next = new Set(prev);
+      if (next.has(icon)) next.delete(icon); else next.add(icon);
+      return next;
+    });
   }
+  const [maximized, setMaximized] = useMapMaximized();
+  const shownFog = useMemo(
+    () => (fogImage ? { image: fogImage.image, opacity: spoilers ? SPOILER_FOG : 1 } : null),
+    [fogImage, spoilers]);
 
   const seed = world.seed;
   const map = useMemo(() => seed ? {
@@ -282,7 +295,8 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     <div className="ct-view">
       {ready ? (
         <WorldMap seed={seed!} baseUrl={map.baseUrl} forestUrl={map.forestUrl} className="ct-map"
-          fog={spoilers ? null : fogImage} poiFilter={poiFilter} drawOverlay={drawOverlay} fitTo={fitTo}
+          fog={shownFog} poiFilter={poiFilter} drawOverlay={drawOverlay} fitTo={fitTo}
+          hiddenIcons={spoilers ? hiddenIcons : undefined} onPoisLoaded={setPois}
           overlayVersion={drawOverlay} />
       ) : (
         <div className="ct-pending">
@@ -338,6 +352,12 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         )}
         {snap.rewind && <p className="ct-note">This save was restored from a backup (play time went back).</p>}
       </div>
+
+      <MaximizeButton maximized={maximized} onClick={() => setMaximized()} />
+      {seed && <WorldsFeedback seed={seed} className="worlds-feedback" />}
+      {ready && spoilers && (
+        <PoiLegend pois={pois} hiddenIcons={hiddenIcons} onToggle={toggleIcon} className="ct-legend" />
+      )}
 
       <div className="ct-timeline">
         <CharTimeline snapshots={snaps} index={index} onChange={setIndex} worldId={world.id}>
