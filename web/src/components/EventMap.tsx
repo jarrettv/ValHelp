@@ -19,6 +19,8 @@ declare global {
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
       /// Fog of war: alpha 255 fogged, 0 clear (row 0 = north). null clears it.
       setFog: (img: TexImageSource | null, opacity?: number) => void;
+      /// White outline around the clear part of the fog, CSS px (0 = none).
+      setFogStroke: (px: number) => void;
       isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;

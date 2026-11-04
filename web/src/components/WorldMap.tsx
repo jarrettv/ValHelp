@@ -18,6 +18,8 @@ declare global {
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
       /// Fog of war: alpha 255 fogged, 0 clear (row 0 = north). null clears it.
       setFog: (img: TexImageSource | null, opacity?: number) => void;
+      /// White outline around the clear part of the fog, CSS px (0 = none).
+      setFogStroke: (px: number) => void;
       isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;
@@ -48,8 +50,9 @@ interface WorldMapProps {
   onPoisLoaded?: (pois: PoiMarker[]) => void;
   /// The zoom after each redraw, relative to the whole map fitted in view (1).
   onZoom?: (zoom: number) => void;
-  /// Fog of war over the map (see VectorMap.setFog), at `opacity` (default 1); a new object redraws it.
-  fog?: { image: TexImageSource; opacity?: number } | null;
+  /// Fog of war over the map (see VectorMap.setFog), at `opacity` (default 1), with a white
+  /// outline `strokePx` wide around the explored part; a new object redraws it.
+  fog?: { image: TexImageSource; opacity?: number; strokePx?: number } | null;
   /// Only the POIs this accepts are drawn (e.g. the explored ones under fog).
   poiFilter?: ((poi: PoiMarker) => boolean) | null;
   /// Draws on top of the POIs each frame; `view.size` is the whole map's size in
@@ -288,6 +291,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   useEffect(() => {
     if (!mapReady) return;
     window.VectorMap.setFog(fog?.image ?? null, fog?.opacity ?? 1);
+    window.VectorMap.setFogStroke(fog?.strokePx ?? 0);
     scheduleUpdate();
   }, [fog, mapReady, scheduleUpdate]);
   useEffect(() => {

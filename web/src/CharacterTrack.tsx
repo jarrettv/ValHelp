@@ -50,8 +50,9 @@ const PIN_GLYPH: Record<string, string> = {
   Hildir1: '🛍', Hildir2: '🛍', Hildir3: '🛍', Memorial: '🪦',
 };
 const PATH_COLOR = '#ffb347';
-/** With spoilers on, the unexplored stays faintly veiled so the explored still reads. */
-const SPOILER_FOG = 0.1;
+/** With spoilers on, the unexplored stays veiled and the explored is outlined, so it still reads. */
+const SPOILER_FOG = 0.3;
+const SPOILER_STROKE_PX = 1.5;
 
 /** /characters/:id, the first address of this page (the tracker opened it): now /runs/:id. */
 export function CharacterRedirect() {
@@ -270,7 +271,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
   }
   const [maximized, setMaximized] = useMapMaximized();
   const shownFog = useMemo(
-    () => (fogImage ? { image: fogImage.image, opacity: spoilers ? SPOILER_FOG : 1 } : null),
+    () => (fogImage ? { image: fogImage.image, opacity: spoilers ? SPOILER_FOG : 1, strokePx: spoilers ? SPOILER_STROKE_PX : 0 } : null),
     [fogImage, spoilers]);
 
   const seed = world.seed;

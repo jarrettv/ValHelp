@@ -43,7 +43,7 @@ var _altSize = 2048;
 
 // ── Fog shader ───────────────────────────────────────────────────────
 var fogProg;
-var fogu_mvp, fogu_fogTex, fogu_opacity, fogu_gridSize;
+var fogu_mvp, fogu_fogTex, fogu_opacity, fogu_gridSize, fogu_stroke;
 var foga_pos;
 
 // ── Textures ─────────────────────────────────────────────────────────
@@ -54,6 +54,7 @@ var maskTex = null;    // forestMaskTexCache (R=forest, G=mist, B=lava)
 var fogTex = null;     // fog of war overlay (alpha = fogged)
 var _texturesReady = false;
 var _fogOpacity = 1.0;
+var _fogStrokePx = 0;   // white outline around the clear (explored) area, CSS px; 0 = none
 
 // GPU buffers
 var fillLayers = [];
@@ -305,11 +306,24 @@ var FOG_FRAG_SRC = [
   'uniform sampler2D u_fogTex;',
   'uniform float u_opacity;',
   'uniform float u_gridSize;',
+  'uniform float u_stroke;',   // outline width in texture units (0 = none)
   'varying vec2 v_uv;',
+  'float clearNear(float r) {',
+  '  float d = r * 0.7071;',
+  '  return min(min(min(texture2D(u_fogTex, v_uv + vec2(r, 0.0)).a, texture2D(u_fogTex, v_uv - vec2(r, 0.0)).a),',
+  '                 min(texture2D(u_fogTex, v_uv + vec2(0.0, r)).a, texture2D(u_fogTex, v_uv - vec2(0.0, r)).a)),',
+  '             min(min(texture2D(u_fogTex, v_uv + vec2(d, d)).a, texture2D(u_fogTex, v_uv - vec2(d, d)).a),',
+  '                 min(texture2D(u_fogTex, v_uv + vec2(d, -d)).a, texture2D(u_fogTex, v_uv + vec2(-d, d)).a)));',
+  '}',
   'void main() {',
   '  float center = texture2D(u_fogTex, v_uv).a;',
   // If this pixel is explored (alpha ~0), keep it fully clear
   '  if (center < 0.5) discard;',
+  // Outline: a fogged pixel with clear ground within the stroke width is on the edge.
+  '  if (u_stroke > 0.0 && min(clearNear(u_stroke), clearNear(u_stroke * 0.5)) < 0.5) {',
+  '    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.9);',
+  '    return;',
+  '  }',
   // Sample neighbours to detect fog edge — soften only on the fog side
   '  float texel = 1.0 / u_gridSize;',
   '  float n1 = texture2D(u_fogTex, v_uv + vec2(texel * 3.0, 0.0)).a;',
@@ -556,6 +570,7 @@ function render(viewScale, panX, panY, canvasW, canvasH) {
     gl.uniformMatrix3fv(fogu_mvp, false, mvp);
     gl.uniform1f(fogu_gridSize, gridSize);
     gl.uniform1f(fogu_opacity, _fogOpacity);
+    gl.uniform1f(fogu_stroke, _fogStrokePx > 0 ? _fogStrokePx / (viewScale * gridSize) : 0);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, fogTex);
@@ -967,6 +982,7 @@ function destroy() {
   _patternCols = 1;
   _patternRows = 1;
   _fogOpacity = 1.0;
+  _fogStrokePx = 0;
   prog = null;
   forestProg = null;
   fogProg = null;
@@ -990,6 +1006,11 @@ function setFog(imgEl, opacity) {
 
 function setFogOpacity(opacity) {
   _fogOpacity = opacity;
+}
+
+// White outline (CSS px wide, the same at every zoom) around the clear part of the fog; 0 for none.
+function setFogStroke(px) {
+  _fogStrokePx = px || 0;
 }
 
 // initFromData — same as init() but accepts pre-parsed data (same shape as parseBinary output)
@@ -1025,6 +1046,7 @@ window.VectorMap = {
   getGridSize: getGridSize,
   setFog: setFog,
   setFogOpacity: setFogOpacity,
+  setFogStroke: setFogStroke,
   setPatternOverlay: setPatternOverlay,
   setVariantLuts: setVariantLuts,
   isPulsing: isPulsing,
@@ -1092,6 +1114,7 @@ function initShaders() {
   fogu_fogTex = gl.getUniformLocation(fogProg, 'u_fogTex');
   fogu_opacity = gl.getUniformLocation(fogProg, 'u_opacity');
   fogu_gridSize = gl.getUniformLocation(fogProg, 'u_gridSize');
+  fogu_stroke = gl.getUniformLocation(fogProg, 'u_stroke');
   foga_pos = gl.getAttribLocation(fogProg, 'a_pos');
 
   return true;
