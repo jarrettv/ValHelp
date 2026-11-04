@@ -25,8 +25,8 @@ export interface RunItem {
   latest: RunLatest | null;
 }
 
-// The inventory is 8 x 4; the traders' pocket upgrades add rows (to 6), shown locked until bought.
-const COLS = 8, MIN_ROWS = 6, THUMB = 148;
+// The inventory is 8 x 4; the traders' pocket upgrades add rows, shown once bought.
+const COLS = 8, THUMB = 148;
 // The playable world is a disc of radius 10 km; the explored map counts 12 m cells.
 const WORLD_KM2 = Math.PI * 10 * 10;
 
@@ -72,7 +72,7 @@ export default function RunCard({ run }: { run: RunItem }) {
   }, [run.id, l, world?.seed]);
 
   const km2 = l?.explored != null ? l.explored * 144 / 1e6 : null;
-  const rows = l?.inventoryRows ?? 4, shownRows = Math.max(MIN_ROWS, rows);
+  const shownRows = Math.max(1, l?.inventoryRows ?? 4);
   const slots: (RunLatest['items'][number] | undefined)[] = Array.from({ length: COLS * shownRows });
   for (const it of l?.items ?? []) if (it.gridX < COLS && it.gridY < shownRows) slots[it.gridY * COLS + it.gridX] = it;
 
@@ -109,10 +109,8 @@ export default function RunCard({ run }: { run: RunItem }) {
           const def = it && (it.name ? items.byCode.get(it.name) : items.byHash.get(it.prefabHash));
           const code = def?.code ?? it?.name;
           const label = def?.name ?? code ?? (it ? 'Unknown item' : '');
-          const locked = Math.floor(i / COLS) >= rows;
           return (
-            <div key={i} className={`run-slot${it?.equipped ? ' equipped' : ''}${locked ? ' locked' : ''}`}
-              title={it ? label : locked ? 'Locked: more pockets are sold by traders' : undefined}>
+            <div key={i} className={`run-slot${it?.equipped ? ' equipped' : ''}`} title={it ? label : undefined}>
               {i < COLS && <span className="run-hotkey">{i + 1}</span>}
               {it && (code && def?.hasIcon !== false
                 ? <img src={iconUrl(code)} alt={label} loading="lazy" />
