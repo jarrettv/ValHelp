@@ -423,7 +423,10 @@
 .ctl-label small { color: #8b949e; }
 
 @media (max-width: 640px) {
-  .ct-panel { width: auto; right: 12px; }
+  /* Stop short of the Feedback and Maximize buttons (top right), both icons here. */
+  .ct-panel { width: auto; right: 104px; }
+  .ct-view .wfb-pill { width: 36px; padding: 0; justify-content: center; }
+  .ct-view .wfb-pill-label { display: none; }
   .ct-facts { display: none; }
   .ctl-label { min-width: 0; }
   .ctl-label small { display: none; }
