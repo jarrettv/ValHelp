@@ -121,11 +121,12 @@
   height: 12px;
   max-width: 220px;
   border-radius: 6px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(140, 140, 140, 0.22);   /* the ceiling not reached */
   border: 1px solid rgba(0, 0, 0, 0.8);
   overflow: hidden;
 }
-.run-bar div { height: 100%; }
+.run-bar div { position: absolute; left: 0; top: 0; height: 100%; }
+.run-bar .run-bar-max { opacity: 0.5; }
 .run-bar.hp div { background: linear-gradient(180deg, #e0504a, #8f1d18); }
 .run-bar.stam div { background: linear-gradient(180deg, #f3cf55, #a87b12); }
 .run-bar.eitr div { background: linear-gradient(180deg, #a37bff, #5733b0); }

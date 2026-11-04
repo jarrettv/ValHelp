@@ -78,12 +78,20 @@ export function Bars({ l }: { l: RunLatest }) {
   );
 }
 
+/**
+ * Bars run to a fixed ceiling so runs compare at a glance: the rest of the
+ * ceiling is grey, the character's current maximum half-lit, the actual value lit.
+ */
+const BAR_CEILING = { hp: 300, stam: 400, eitr: 300 } as const;
+
 function Bar({ kind, value, max }: { kind: 'hp' | 'stam' | 'eitr'; value: number; max: number }) {
-  const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
+  const ceiling = Math.max(BAR_CEILING[kind], max);
+  const pct = (v: number) => `${Math.max(0, Math.min(100, (v / ceiling) * 100))}%`;
   const name = kind === 'hp' ? 'Health' : kind === 'stam' ? 'Stamina' : 'Eitr';
   return (
-    <div className={`run-bar ${kind}`} title={`${name} ${Math.round(value)} / ${Math.round(max)}`}>
-      <div style={{ width: `${pct}%` }} />
+    <div className={`run-bar ${kind}`} title={`${name} ${Math.round(value)} / ${Math.round(max)} (of ${BAR_CEILING[kind]})`}>
+      <div className="run-bar-max" style={{ width: pct(max) }} />
+      <div className="run-bar-now" style={{ width: pct(Math.min(value, max)) }} />
       <span>{Math.round(max)}</span>
     </div>
   );
