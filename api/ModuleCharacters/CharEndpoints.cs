@@ -33,9 +33,10 @@ public static class CharEndpoints
     /// WorldId: the world it was played in (else the most explored one); Explored:
     /// explored cells there (12 m each); X/Z: its logout point there.
     /// </summary>
+    /// InventoryRows: rows of the inventory the player has (4, more with the traders' pocket upgrades).
     public record LatestOut(long SnapshotId, long? WorldId, int? Explored, float? X, float? Z,
         float Health, float MaxHealth, float Stamina, float MaxStamina, float Eitr, float MaxEitr,
-        string? GuardianPower, FoodOut[] Foods, ItemOut[] Items);
+        string? GuardianPower, FoodOut[] Foods, ItemOut[] Items, int InventoryRows);
     public record FoodOut(string Name, float Time);
     /// <summary>Name for older saves; 1.0 saves have only the prefab's StableHash.</summary>
     public record ItemOut(string? Name, int PrefabHash, int Stack, int Quality, int GridX, int GridY, bool Equipped);
@@ -108,10 +109,19 @@ public static class CharEndpoints
                 i.GetProperty("stack").GetInt32(), i.GetProperty("quality").GetInt32(),
                 i.GetProperty("gridX").GetInt32(), i.GetProperty("gridY").GetInt32(), i.GetProperty("equipped").GetBoolean())).ToArray()
             : [];
+        // Player.SetInventorySize keeps the rows as the unique key "invrows N" (absent before 1.0: 4).
+        int rows = 4;
+        if (p.ValueKind == JsonValueKind.Object && p.TryGetProperty("uniques", out var uniques))
+            foreach (var u in uniques.EnumerateArray())
+            {
+                var parts = (u.GetString() ?? "").Split(' ');
+                if (parts.Length >= 2 && parts[0].Equals("invrows", StringComparison.OrdinalIgnoreCase)
+                    && int.TryParse(parts[1], out var n)) rows = Math.Clamp(n, 0, 9);
+            }
         return new LatestOut(snap.Id, worldId, world?.GetProperty("explored").GetInt32(), x, z,
             F(p, "health"), F(p, "maxHealth"), F(p, "stamina"), F(p, "maxStamina"), F(p, "eitr"), F(p, "maxEitr"),
             p.ValueKind == JsonValueKind.Object && p.TryGetProperty("guardianPower", out var gp) ? gp.GetString() : null,
-            foods, inv);
+            foods, inv, rows);
     }
 
     public record SeedReq(string Seed);
