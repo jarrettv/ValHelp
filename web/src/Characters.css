@@ -332,7 +332,8 @@
   .nav-eye-btn.ct-spoiler { width: 34px; padding: 0; }
   .ct-spoiler-label { display: none; }
 }
-.nav-eye-btn.ct-spoiler.on { color: #f87171; border-color: #f87171; background: rgba(248, 113, 113, 0.12); }
+.nav-eye-btn.ct-spoiler.on { color: #7ee787; border-color: #3fb950; background: rgba(63, 185, 80, 0.15); }
+.nav-eye-btn.ct-spoiler.on:hover { color: #fff; background: rgba(63, 185, 80, 0.28); }
 .nav-eye-btn.ct-spoiler:disabled { opacity: 0.4; cursor: default; }
 
 .ct-seed-form { max-width: 420px; }

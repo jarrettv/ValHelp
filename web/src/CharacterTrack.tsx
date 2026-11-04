@@ -365,7 +365,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
           <button className={`nav-eye-btn ct-spoiler${spoilers ? ' open on' : ''}`} onClick={toggleSpoilers} disabled={!ready}
             aria-pressed={spoilers} title={spoilers ? 'Spoilers on: click to hide what they haven’t explored' : 'Show spoilers: the whole map and every location'}>
             <EyeIcon />
-            <span className="ct-spoiler-label">Reveal map</span>
+            <span className="ct-spoiler-label">{spoilers ? 'Hide map' : 'Reveal map'}</span>
           </button>
         </CharTimeline>
       </div>
