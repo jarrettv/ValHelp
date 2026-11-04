@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# The character tracker exe: built locally or by CI (job "tracker"), never committed
+public/downloads/

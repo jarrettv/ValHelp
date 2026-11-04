@@ -59,5 +59,7 @@ app.MapEndpointsStuff();
 app.MapEndpointsTrack();
 app.MapEndpointsWorlds();
 app.MapDefaultEndpoints();
+// A download that isn't there is a 404, not the SPA's index.html saved as the file.
+app.MapGet("downloads/{**path}", () => Results.NotFound());
 app.MapFallbackToFile("index.html");
 app.Run();
