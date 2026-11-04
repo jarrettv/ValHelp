@@ -13,6 +13,7 @@ namespace ValHelpApi.ModuleCharacters;
 ///   GET api/char/{id}                                   the character, its worlds and its save timeline
 ///   GET api/char/{id}/worlds/{worldId}/tiles            every fog tile the character's saves changed (binary, below)
 ///   GET api/char/{id}/snapshots/{sid}/worlds/{worldId}  that world's pins and points at one save
+///   GET api/char/{id}/snapshots/{sid}/player            the character at one save (vitals, food, inventory)
 ///   GET api/char/worlds/{worldId}/map                   whether the world's map is generated yet
 ///
 /// Tiles: "VHT1", int32 count, then per tile (oldest save first) int64 snapshot id,
@@ -29,6 +30,7 @@ public static class CharRead
         api.MapGet("{id:long}", Get);
         api.MapGet("{id:long}/worlds/{worldId:long}/tiles", Tiles);
         api.MapGet("{id:long}/snapshots/{sid:long}/worlds/{worldId:long}", SnapshotWorld);
+        api.MapGet("{id:long}/snapshots/{sid:long}/player", SnapshotPlayer);
         api.MapGet("worlds/{worldId:long}/map", MapStatus);
     }
 
@@ -139,6 +141,15 @@ public static class CharRead
             LIMIT 1
             """).ToListAsync();
         return json.Count == 0 ? Results.NotFound() : Results.Text(json[0], "application/json");
+    }
+
+    public static async Task<Results<Ok<CharEndpoints.LatestOut>, NotFound>> SnapshotPlayer(long id, long sid, AppDbContext db)
+    {
+        var snap = await db.Set<CharSnapshot>().AsNoTracking().SingleOrDefaultAsync(s => s.Id == sid && s.CharacterId == id);
+        if (snap == null) return TypedResults.NotFound();
+        var worldIds = await WorldIdsOf(db, [id]);
+        var byUid = await db.Set<CharWorld>().AsNoTracking().Where(w => worldIds.Contains(w.Id)).ToDictionaryAsync(w => w.Uid, w => w.Id);
+        return TypedResults.Ok(CharEndpoints.Latest(snap, byUid));
     }
 
     /// <summary>"noSeed" (ask for it), "notQueued" (over the daily allowance so far), else seedgen's status.</summary>

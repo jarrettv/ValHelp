@@ -230,6 +230,8 @@
   left: 12px;
   z-index: 10;
   width: 240px;
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
   max-width: calc(100% - 24px);
   padding: 12px;
   background: rgba(20, 24, 32, 0.88);
@@ -237,11 +239,47 @@
   border-radius: 8px;
   font-size: 13px;
 }
-.ct-who { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.ct-who { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.ct-who-text { flex: 1; min-width: 0; }
+.ct-expand {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ddd;
+  cursor: pointer;
+  font-size: 14px;
+}
+.ct-expand:hover { border-color: #ffb347; color: #fff; }
+.ct-world {
+  width: 100%;
+  background: #0d1117;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+.ct-line { color: #8b949e; font-size: 12px; margin: 4px 0 8px; overflow-wrap: anywhere; }
+.ct-line strong { color: #e6edf3; font-weight: 600; }
+.ct-panel .run-bar { max-width: none; margin-bottom: 4px; }
+.ct-panel .run-foods { margin: 2px 0 8px; }
+.ct-panel .run-inv { margin-bottom: 8px; }
+/* Collapsed: food, power and what's equipped, in small slots. */
+.ct-compact { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.ct-compact .run-foods { margin: 0; gap: 4px; }
+.ct-compact .run-food, .ct-compact .run-gp { width: 28px; height: 28px; }
+.ct-compact .run-food img { width: 21px; height: 21px; }
+.ct-compact .run-gp img { width: 23px; height: 23px; }
+.run-equipped { display: flex; flex-wrap: wrap; gap: 3px; }
+.run-equipped .run-slot { width: 26px; height: 26px; }
+.run-equipped .run-slot img { width: 21px; height: 21px; }
+.run-equipped.empty { color: #6e7681; font-size: 12px; }
 .ct-who img { width: 36px; height: 36px; border-radius: 50%; }
 .ct-name { font-weight: 700; font-size: 16px; }
 .ct-owner { color: #8b949e; }
 .ct-owner a { color: #ffb347; }
+.ct-panel.expanded { width: 290px; }
 .ct-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; color: #8b949e; }
 .ct-field select {
   background: #0d1117;

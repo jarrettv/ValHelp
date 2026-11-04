@@ -5,6 +5,7 @@ import WorldMap, { type MapView, type PoiMarker } from './components/WorldMap';
 import { worldToUnit } from './components/poiLayer';
 import { Fog, parseTiles } from './components/charFog';
 import CharTimeline, { formatPlay } from './components/CharTimeline';
+import { Bars, Equipped, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex, type RunLatest } from './components/RunParts';
 import './Characters.css';
 
 // One tracked character on one of its worlds: the fog as it was at a save,
@@ -88,6 +89,24 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     },
     staleTime: Infinity,
   });
+  // The character at the selected save: vitals, food, inventory.
+  const player = useQuery({
+    queryKey: ['char-player', char.id, snap.id],
+    queryFn: () => getJson<RunLatest>(`/api/char/${char.id}/snapshots/${snap.id}/player`),
+    placeholderData: prev => prev,
+    staleTime: Infinity,
+  });
+  const items = useItemIndex();
+  const [expanded, setExpanded] = useState(() => {
+    try { return localStorage.getItem('run-panel-expanded') === '1'; } catch { return false; }
+  });
+  function toggleExpanded() {
+    setExpanded(e => {
+      try { localStorage.setItem('run-panel-expanded', e ? '0' : '1'); } catch { /* private mode */ }
+      return !e;
+    });
+  }
+
   const at = useQuery({
     queryKey: ['char-at', char.id, snap.id, world.id],
     queryFn: () => getJson<WorldAt>(`/api/char/${char.id}/snapshots/${snap.id}/worlds/${world.id}`).catch(() => null),
@@ -260,27 +279,42 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         </div>
       )}
 
-      <div className="ct-panel">
+      <div className={`ct-panel${expanded ? ' expanded' : ''}`}>
         <div className="ct-who">
           {char.owner.avatarUrl && <img src={char.owner.avatarUrl} alt="" />}
-          <div>
+          <div className="ct-who-text">
             <div className="ct-name">{char.name}</div>
             <div className="ct-owner">by <Link to={`/players/${char.owner.id}`}>{char.owner.username}</Link></div>
           </div>
+          <button className="ct-expand" onClick={toggleExpanded} aria-expanded={expanded}
+            title={expanded ? 'Less' : 'Inventory and details'}>{expanded ? '▴' : '▾'}</button>
         </div>
-        <label className="ct-field">
-          <span>World</span>
-          <select value={world.id} onChange={e => onWorld(Number(e.target.value))}>
-            {char.worlds.map(w => <option key={w.id} value={w.id}>{w.name ?? `World ${w.uid}`}</option>)}
-          </select>
-        </label>
-        <dl className="ct-facts">
-          <dt>Seed</dt><dd>{seed ?? 'unknown'}</dd>
-          <dt>Save</dt><dd>{new Date(snap.fileTime).toLocaleString()}</dd>
-          <dt>Played</dt><dd>{formatPlay(snap.axis)} · session {snap.session}</dd>
-          {explored != null && <><dt>Explored</dt><dd>{(explored * 144 / 1e6).toFixed(1)} km²</dd></>}
-          <dt>Saves here</dt><dd>{worldSnaps.length} of {snaps.length}</dd>
-        </dl>
+        <select className="ct-world" value={world.id} onChange={e => onWorld(Number(e.target.value))} aria-label="World">
+          {char.worlds.map(w => <option key={w.id} value={w.id}>{w.name ?? `World ${w.uid}`}</option>)}
+        </select>
+        <div className="ct-line">
+          {seed ? <>seed <strong>{seed}</strong></> : 'seed unknown'} · {formatPlay(snap.axis)}
+        </div>
+        {player.data && (expanded ? (
+          <>
+            <Bars l={player.data} />
+            <Foods l={player.data} items={items} />
+            <Inventory l={player.data} items={items} />
+          </>
+        ) : (
+          <div className="ct-compact">
+            <Foods l={player.data} items={items} />
+            <Equipped l={player.data} items={items} />
+          </div>
+        ))}
+        {expanded && (
+          <dl className="ct-facts">
+            <dt>Save</dt><dd>{new Date(snap.fileTime).toLocaleString()}</dd>
+            <dt>Played</dt><dd>{formatPlay(snap.axis)} · session {snap.session}</dd>
+            {explored != null && <><dt>Explored</dt><dd>{exploredKm2(explored)!.toFixed(1)} km² ({pctOfWorld(exploredKm2(explored)!)})</dd></>}
+            <dt>Saves here</dt><dd>{worldSnaps.length} of {snaps.length}</dd>
+          </dl>
+        )}
         {snap.worldId !== world.id && snap.worldId != null && (
           <p className="ct-note">At this save {char.name} was in another world.</p>
         )}

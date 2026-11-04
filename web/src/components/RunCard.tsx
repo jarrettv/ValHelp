@@ -1,70 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { fetchVhItems, iconUrl } from '../guides/vh/data';
-import type { VhItem } from '../guides/vh/types';
 import { formatPlay } from './CharTimeline';
 import { mapThumb } from './mapThumb';
+import { Bars, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex, type RunLatest } from './RunParts';
 
-// One run in the runs list, laid out like the game's inventory screen: health,
-// stamina and eitr bars, the three food slots with the time left on each, and
-// the 8 x 4 inventory with equipped items lit and the hotbar numbered; beside it
-// the world as explored so far.
+// One run in the runs list, laid out like the game's inventory screen (the
+// pieces are in RunParts); beside it the world as explored so far.
 
-export interface RunLatest {
-  snapshotId: number; worldId: number | null; explored: number | null; x: number | null; z: number | null;
-  health: number; maxHealth: number; stamina: number; maxStamina: number; eitr: number; maxEitr: number;
-  guardianPower: string | null;
-  inventoryRows: number;
-  foods: { name: string; time: number }[];
-  items: { name: string | null; prefabHash: number; stack: number; quality: number; gridX: number; gridY: number; equipped: boolean }[];
-}
 export interface RunItem {
   id: number; name: string; latestFileTime: string; snapshots: number; sessions: number; playSeconds: number;
   worlds: { id: number; name: string | null; seed: string | null; needsSeed: boolean }[];
   latest: RunLatest | null;
 }
 
-// The inventory is 8 x 4; the traders' pocket upgrades add rows, shown once bought.
-const COLS = 8, THUMB = 148;
-// The playable world is a disc of radius 10 km; the explored map counts 12 m cells.
-const WORLD_KM2 = Math.PI * 10 * 10;
-
-/** Forsaken powers by the boss whose trophy grants them (shown as that trophy). */
-const POWER_TROPHY: Record<string, { trophy: string; boss: string }> = {
-  GP_Eikthyr: { trophy: 'TrophyEikthyr', boss: 'Eikthyr' },
-  GP_TheElder: { trophy: 'TrophyTheElder', boss: 'The Elder' },
-  GP_Bonemass: { trophy: 'TrophyBonemass', boss: 'Bonemass' },
-  GP_Moder: { trophy: 'TrophyDragonQueen', boss: 'Moder' },
-  GP_Yagluth: { trophy: 'TrophyGoblinKing', boss: 'Yagluth' },
-  GP_Queen: { trophy: 'TrophySeekerQueen', boss: 'The Queen' },
-  GP_Ashlands: { trophy: 'TrophyFader', boss: 'Fader' },
-};
-
-function pctOfWorld(km2: number): string {
-  const pct = km2 / WORLD_KM2 * 100;
-  return `${pct.toFixed(pct < 1 ? 2 : 1)}% of the world`;
-}
-
-/** string.GetStableHashCode, as the game hashes prefab names (Vh.Character WorldFile.StableHash). */
-export function stableHash(s: string): number {
-  let h1 = 5381, h2 = 5381;
-  for (let i = 0; i < s.length; i += 2) {
-    h1 = (((h1 << 5) + h1) | 0) ^ s.charCodeAt(i);
-    if (i + 1 < s.length) h2 = (((h2 << 5) + h2) | 0) ^ s.charCodeAt(i + 1);
-  }
-  return (h1 + Math.imul(h2, 1566083941)) | 0;
-}
-
-/** Items by code and by prefab hash (1.0 saves keep only the hash). */
-function useItemIndex() {
-  const { data } = useQuery({ queryKey: ['vh-items'], queryFn: fetchVhItems, staleTime: Infinity });
-  return useMemo(() => {
-    const byCode = new Map<string, VhItem>(), byHash = new Map<number, VhItem>();
-    for (const it of data ?? []) { byCode.set(it.code, it); byHash.set(stableHash(it.code), it); }
-    return { byCode, byHash, ready: !!data };
-  }, [data]);
-}
+const THUMB = 148;
 
 export default function RunCard({ run }: { run: RunItem }) {
   const items = useItemIndex();
@@ -82,10 +31,7 @@ export default function RunCard({ run }: { run: RunItem }) {
     return () => { alive = false; };
   }, [run.id, l, world?.seed]);
 
-  const km2 = l?.explored != null ? l.explored * 144 / 1e6 : null;
-  const shownRows = Math.max(1, l?.inventoryRows ?? 4);
-  const slots: (RunLatest['items'][number] | undefined)[] = Array.from({ length: COLS * shownRows });
-  for (const it of l?.items ?? []) if (it.gridX < COLS && it.gridY < shownRows) slots[it.gridY * COLS + it.gridX] = it;
+  const km2 = exploredKm2(l?.explored);
 
   return (
     <Link to={`/runs/${run.id}${world ? `?world=${world.id}` : ''}`} className="run-card">
@@ -104,68 +50,14 @@ export default function RunCard({ run }: { run: RunItem }) {
         </div>
         {l && (
           <>
-            <Bar kind="hp" value={l.health} max={l.maxHealth} />
-            <Bar kind="stam" value={l.stamina} max={l.maxStamina} />
-            {l.maxEitr > 0 && <Bar kind="eitr" value={l.eitr} max={l.maxEitr} />}
-            <div className="run-foods">
-              {[0, 1, 2].map(i => <FoodSlot key={i} food={l.foods[i]} item={l.foods[i] && items.byCode.get(l.foods[i].name)} />)}
-              {l.guardianPower && <Power name={l.guardianPower} />}
-            </div>
+            <Bars l={l} />
+            <Foods l={l} items={items} />
           </>
         )}
       </div>
 
-      <div className="run-inv" aria-label="Inventory">
-        {slots.map((it, i) => {
-          const def = it && (it.name ? items.byCode.get(it.name) : items.byHash.get(it.prefabHash));
-          const code = def?.code ?? it?.name;
-          const label = def?.name ?? code ?? (it ? 'Unknown item' : '');
-          return (
-            <div key={i} className={`run-slot${it?.equipped ? ' equipped' : ''}`} title={it ? label : undefined}>
-              {i < COLS && <span className="run-hotkey">{i + 1}</span>}
-              {it && (code && def?.hasIcon !== false
-                ? <img src={iconUrl(code)} alt={label} loading="lazy" />
-                : <span className="run-slot-text">{label.slice(0, 4)}</span>)}
-              {it && it.stack > 1 && <span className="run-stack">{it.stack}</span>}
-              {it && it.quality > 1 && <span className="run-quality">{it.quality}</span>}
-            </div>
-          );
-        })}
-      </div>
+      {l && <Inventory l={l} items={items} />}
     </Link>
   );
 }
 
-function Power({ name }: { name: string }) {
-  const p = POWER_TROPHY[name];
-  const boss = p?.boss ?? name.replace(/^GP_/, '');
-  return (
-    <div className="run-gp" title={`Forsaken power: ${boss}`}>
-      {p ? <img src={iconUrl(p.trophy)} alt={boss} loading="lazy" /> : <span className="run-slot-text">{boss}</span>}
-    </div>
-  );
-}
-
-function Bar({ kind, value, max }: { kind: 'hp' | 'stam' | 'eitr'; value: number; max: number }) {
-  const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
-  const name = kind === 'hp' ? 'Health' : kind === 'stam' ? 'Stamina' : 'Eitr';
-  return (
-    <div className={`run-bar ${kind}`} title={`${name} ${Math.round(value)} / ${Math.round(max)}`}>
-      <div style={{ width: `${pct}%` }} />
-      <span>{Math.round(max)}</span>
-    </div>
-  );
-}
-
-function FoodSlot({ food, item }: { food?: { name: string; time: number }; item?: VhItem & { food?: { duration?: number } } }) {
-  if (!food) return <div className="run-food empty" />;
-  const duration = item?.food?.duration ?? 0;
-  const left = duration > 0 ? Math.max(0, Math.min(1, food.time / duration)) : 1;
-  return (
-    <div className="run-food" title={`${item?.name ?? food.name}: ${Math.ceil(food.time / 60)} min left`}>
-      {item?.hasIcon !== false ? <img src={iconUrl(food.name)} alt={item?.name ?? food.name} loading="lazy" />
-        : <span className="run-slot-text">{food.name.slice(0, 4)}</span>}
-      <div className="run-food-left" style={{ width: `${left * 100}%` }} />
-    </div>
-  );
-}
