@@ -295,6 +295,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         <div className="ct-line">
           {seed ? <>seed <strong>{seed}</strong></> : 'seed unknown'} · {formatPlay(snap.axis)}
         </div>
+        {player.isError && !player.data && <p className="ct-line">Inventory unavailable for this save.</p>}
         {player.data && (expanded ? (
           <>
             <Bars l={player.data} />

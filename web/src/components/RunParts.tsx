@@ -36,10 +36,6 @@ const POWER_TROPHY: Record<string, { trophy: string; boss: string }> = {
   GP_Ashlands: { trophy: 'TrophyFader', boss: 'Fader' },
 };
 
-/** Equipped items in the order of the game's character slots. */
-const SLOT_ORDER = ['OneHandedWeapon', 'TwoHandedWeapon', 'TwoHandedWeaponLeft', 'Bow', 'Torch', 'Tool', 'Shield',
-  'Helmet', 'Chest', 'Legs', 'Shoulder', 'Utility', 'Trinket', 'Ammo'];
-
 export function exploredKm2(cells: number | null | undefined): number | null {
   return cells != null ? cells * 144 / 1e6 : null;
 }
@@ -164,13 +160,9 @@ export function Inventory({ l, items, className }: { l: RunLatest; items: ItemIn
   );
 }
 
-/** Only what the character wears and holds, in the game's slot order. */
+/** Only what the character wears and holds, in inventory order (hotbar first, row by row). */
 export function Equipped({ l, items }: { l: RunLatest; items: ItemIndex }) {
-  const rank = (it: RunInvItem) => {
-    const i = SLOT_ORDER.indexOf(items.of(it)?.type ?? '');
-    return i < 0 ? SLOT_ORDER.length : i;
-  };
-  const worn = l.items.filter(it => it.equipped).sort((a, b) => rank(a) - rank(b));
+  const worn = l.items.filter(it => it.equipped).sort((a, b) => a.gridY - b.gridY || a.gridX - b.gridX);
   if (worn.length === 0) return <div className="run-equipped empty">Nothing equipped</div>;
   return (
     <div className="run-equipped" aria-label="Equipped">
