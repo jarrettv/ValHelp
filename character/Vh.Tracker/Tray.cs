@@ -10,7 +10,10 @@ sealed unsafe class Tray
 {
     const uint WM_TRAY = Native.WM_APP + 1, WM_REFRESH = Native.WM_APP + 2;
     const uint IconId = 1;
-    const int CmdOpen = 1, CmdLink = 2, CmdUnlink = 3, CmdStartup = 4, CmdLog = 5, CmdExit = 6, CmdCharacter = 100;
+    const int CmdOpen = 1, CmdLink = 2, CmdUnlink = 3, CmdStartup = 4, CmdLog = 5, CmdExit = 6, CmdAbout = 7, CmdCharacter = 100;
+    const string SourceUrl = "https://github.com/jarrettv/ValHelp/tree/main/character/Vh.Tracker";
+    const uint MB_YESNO = 0x04, MB_ICONINFORMATION = 0x40;
+    const int IDYES = 6;
 
     static Tray? self;
     readonly Tracker tracker;
@@ -123,7 +126,7 @@ sealed unsafe class Tray
             Native.AppendMenuW(menu, Native.MF_GRAYED, 0, "No Valheim characters found");
         else
         {
-            Native.AppendMenuW(menu, Native.MF_GRAYED, 0, "Track these characters:");
+            Native.AppendMenuW(menu, Native.MF_GRAYED, 0, "Track these characters (latest played):");
             for (int i = 0; i < characters.Count; i++)
                 Native.AppendMenuW(menu, characters[i].Enabled ? Native.MF_CHECKED : Native.MF_STRING,
                     (nuint)(CmdCharacter + i), characters[i].Save.Display);
@@ -134,8 +137,9 @@ sealed unsafe class Tray
         else Native.AppendMenuW(menu, tracker.Linking ? Native.MF_GRAYED : Native.MF_STRING, CmdLink, "Link to ValHelp account...");
         Native.AppendMenuW(menu, startup ? Native.MF_CHECKED : Native.MF_STRING, CmdStartup, "Start with Windows");
         Native.AppendMenuW(menu, Native.MF_STRING, CmdLog, "Open log");
+        Native.AppendMenuW(menu, Native.MF_STRING, CmdAbout, "About ValHelp Tracker...");
         Native.AppendMenuW(menu, Native.MF_SEPARATOR, 0, null);
-        Native.AppendMenuW(menu, Native.MF_STRING, CmdExit, "Exit");
+        Native.AppendMenuW(menu, Native.MF_STRING, CmdExit, "Exit (stop tracking)");
 
         Native.POINT p;
         Native.GetCursorPos(&p);
@@ -155,12 +159,41 @@ sealed unsafe class Tray
                 break;
             case CmdStartup: Tracker.StartsWithWindows = !startup; break;
             case CmdLog: if (File.Exists(logPath)) Native.Open(logPath); break;
+            case CmdAbout: ShowAbout(); break;
             case CmdExit: Native.PostQuitMessage(0); break;
             case >= CmdCharacter when cmd - CmdCharacter < characters.Count:
                 tracker.Toggle(characters[cmd - CmdCharacter].Save);
                 break;
         }
         Refresh();
+    }
+
+    /// <summary>Exactly what the app reads, sends and changes, and where to check its source.</summary>
+    void ShowAbout()
+    {
+        var v = typeof(Tray).Assembly.GetName().Version;
+        var text = $"""
+            ValHelp Tracker {v?.ToString(3)}
+
+            What it does
+            - Watches Valheim's character save folders (characters_local, characters, and Steam cloud saves).
+            - When the game saves a character you ticked, it uploads that character's save file (.fch, gzipped) to {tracker.Server}. Ticking a character also sends its existing .old and backup saves, so the timeline starts earlier.
+            - With each upload it sends the small world files (.fwl / .fwl2 and cacheMinimapMeta) so the site can tell which seed each world is.
+
+            What it doesn't do
+            - It never uploads characters you haven't ticked, or any other file: no screenshots, keystrokes, game memory or other programs.
+            - It never changes your saves. It only reads them.
+            - It talks to nothing but {tracker.Server}, using the link you approved there. Unlink it from the menu or from your account on the site.
+
+            On this PC it keeps its settings and log in {tracker.DataDir}. "Start with Windows" adds it to your startup programs (HKCU Run).
+
+            Source code: {SourceUrl}
+            You can read it, and build the exe yourself with: dotnet publish character/Vh.Tracker -c Release
+
+            Open the source code on GitHub?
+            """;
+        if (Native.MessageBoxW(hwnd, text, "About ValHelp Tracker", MB_YESNO | MB_ICONINFORMATION) == IDYES)
+            Native.Open(SourceUrl);
     }
 
     [System.Runtime.InteropServices.UnmanagedCallersOnly]

@@ -60,6 +60,8 @@ public sealed class Tracker
     public bool Linking => linking;
     public string Status { get { lock (gate) return status; } }
     public string PageUrl => config.Server + "/characters";
+    public string Server => config.Server;
+    public string DataDir => Path.GetDirectoryName(configPath)!;
 
     public void Start()
     {
@@ -68,12 +70,22 @@ public sealed class Tracker
         new Thread(Loop) { IsBackground = true, Name = "tracker" }.Start();
     }
 
-    /// <summary>Characters on disk with whether each is tracked, for the menu.</summary>
+    /// <summary>How many characters the menu offers: the most recently played.</summary>
+    public const int MenuCharacters = 6;
+
+    /// <summary>
+    /// The most recently saved characters with whether each is tracked, for the
+    /// menu. A tracked character stays listed even when older, so it can be unticked.
+    /// </summary>
     public List<(CharacterSave Save, bool Enabled)> Characters()
     {
-        var found = Saves.FindCharacters();
+        var found = Saves.FindCharacters().OrderByDescending(c => File.GetLastWriteTimeUtc(c.Key)).ToList();
         lock (gate)
-            return found.Select(c => (c, config.Characters.TryGetValue(c.Key, out var s) && s.Enabled)).ToList();
+        {
+            bool Tracked(CharacterSave c) => config.Characters.TryGetValue(c.Key, out var s) && s.Enabled;
+            return found.Take(MenuCharacters).Concat(found.Skip(MenuCharacters).Where(Tracked))
+                .Select(c => (c, Tracked(c))).ToList();
+        }
     }
 
     public void Toggle(CharacterSave c)
