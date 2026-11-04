@@ -5,6 +5,7 @@ import WorldMap, { type MapView, type PoiMarker } from './components/WorldMap';
 import { worldToUnit } from './components/poiLayer';
 import { Fog, parseTiles } from './components/charFog';
 import CharTimeline, { formatPlay } from './components/CharTimeline';
+import { EyeIcon } from './components/SpoilerMenu';
 import { Bars, Equipped, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex, type RunLatest } from './components/RunParts';
 import './Characters.css';
 
@@ -283,17 +284,22 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         <div className="ct-who">
           {char.owner.avatarUrl && <img src={char.owner.avatarUrl} alt="" />}
           <div className="ct-who-text">
-            <div className="ct-name">{char.name}</div>
-            <div className="ct-owner">by <Link to={`/players/${char.owner.id}`}>{char.owner.username}</Link></div>
+            <span className="ct-name">{char.name}</span>
+            <span className="ct-owner"> · <Link to={`/players/${char.owner.id}`}>{char.owner.username}</Link></span>
           </div>
           <button className="ct-expand" onClick={toggleExpanded} aria-expanded={expanded}
             title={expanded ? 'Less' : 'Inventory and details'}>{expanded ? '▴' : '▾'}</button>
         </div>
-        <select className="ct-world" value={world.id} onChange={e => onWorld(Number(e.target.value))} aria-label="World">
-          {char.worlds.map(w => <option key={w.id} value={w.id}>{w.name ?? `World ${w.uid}`}</option>)}
-        </select>
         <div className="ct-line">
-          {seed ? <>seed <strong>{seed}</strong></> : 'seed unknown'} · {formatPlay(snap.axis)}
+          {/* Local worlds are named after their seed; a character played on several worlds picks one here. */}
+          {char.worlds.length > 1 ? (
+            <select className="ct-world" value={world.id} onChange={e => onWorld(Number(e.target.value))} aria-label="World">
+              {char.worlds.map(w => <option key={w.id} value={w.id}>{w.name ?? `World ${w.uid}`}</option>)}
+            </select>
+          ) : <strong>{world.name ?? 'Unnamed world'}</strong>}
+          {seed && seed !== world.name && <span title="Seed"> · {seed}</span>}
+          {!seed && <span> · seed unknown</span>}
+          <span> · {formatPlay(snap.axis)}</span>
         </div>
         {player.isError && !player.data && <p className="ct-line">Inventory unavailable for this save.</p>}
         {player.data && (expanded ? (
@@ -320,13 +326,15 @@ function TrackView({ char, world, initialIndex, onWorld }: {
           <p className="ct-note">At this save {char.name} was in another world.</p>
         )}
         {snap.rewind && <p className="ct-note">This save was restored from a backup (play time went back).</p>}
-        <button className={`ct-spoiler${spoilers ? ' on' : ''}`} onClick={toggleSpoilers} disabled={!ready}>
-          {spoilers ? 'Hide unexplored' : 'Show spoilers'}
-        </button>
       </div>
 
       <div className="ct-timeline">
-        <CharTimeline snapshots={snaps} index={index} onChange={setIndex} worldId={world.id} />
+        <CharTimeline snapshots={snaps} index={index} onChange={setIndex} worldId={world.id}>
+          <button className={`nav-eye-btn ct-spoiler${spoilers ? ' open on' : ''}`} onClick={toggleSpoilers} disabled={!ready}
+            aria-pressed={spoilers} title={spoilers ? 'Spoilers on: click to hide what they haven’t explored' : 'Show spoilers: the whole map and every location'}>
+            <EyeIcon />
+          </button>
+        </CharTimeline>
       </div>
     </div>
   );

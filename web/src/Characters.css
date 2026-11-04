@@ -229,21 +229,22 @@
   top: 12px;
   left: 12px;
   z-index: 10;
-  width: 240px;
+  width: 250px;
   max-height: calc(100% - 100px);
   overflow-y: auto;
   max-width: calc(100% - 24px);
-  padding: 12px;
+  padding: 8px 10px;
   background: rgba(20, 24, 32, 0.88);
   border: 1px solid #30363d;
   border-radius: 8px;
   font-size: 13px;
 }
-.ct-who { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
-.ct-who-text { flex: 1; min-width: 0; }
+.ct-who { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.ct-who-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ct-expand {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -253,21 +254,23 @@
 }
 .ct-expand:hover { border-color: #ffb347; color: #fff; }
 .ct-world {
-  width: 100%;
+  max-width: 140px;
   background: #0d1117;
   color: #e6edf3;
   border: 1px solid #30363d;
   border-radius: 6px;
   padding: 4px 6px;
 }
-.ct-line { color: #8b949e; font-size: 12px; margin: 4px 0 8px; overflow-wrap: anywhere; }
+.ct-line { color: #8b949e; font-size: 12px; margin: 0 0 6px; overflow-wrap: anywhere; }
 .ct-line strong { color: #e6edf3; font-weight: 600; }
 .ct-panel .run-bar { max-width: none; margin-bottom: 4px; }
 .ct-panel .run-foods { margin: 2px 0 8px; }
 .ct-panel .run-inv { margin-bottom: 8px; }
 /* Collapsed: food, power and what's equipped, in small slots. */
-.ct-compact { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-.ct-compact .run-foods { margin: 0; gap: 4px; }
+.ct-compact { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.ct-compact .run-foods { margin: 0 4px 0 0; gap: 3px; }
+.ct-compact .run-gp { margin-left: 2px; }
+.ct-compact .run-food.empty { display: none; }
 .ct-compact .run-food, .ct-compact .run-gp { width: 28px; height: 28px; }
 .ct-compact .run-food img { width: 21px; height: 21px; }
 .ct-compact .run-gp img { width: 23px; height: 23px; }
@@ -275,8 +278,8 @@
 .run-equipped .run-slot { width: 26px; height: 26px; }
 .run-equipped .run-slot img { width: 21px; height: 21px; }
 .run-equipped.empty { color: #6e7681; font-size: 12px; }
-.ct-who img { width: 36px; height: 36px; border-radius: 50%; }
-.ct-name { font-weight: 700; font-size: 16px; }
+.ct-who img { width: 24px; height: 24px; border-radius: 50%; }
+.ct-name { font-weight: 700; font-size: 15px; }
 .ct-owner { color: #8b949e; }
 .ct-owner a { color: #ffb347; }
 .ct-panel.expanded { width: 290px; }
@@ -291,18 +294,11 @@
 .ct-facts { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0 0 10px; }
 .ct-facts dt { color: #8b949e; }
 .ct-facts dd { margin: 0; word-break: break-word; }
-.ct-note { color: #ffd28a; margin: 0 0 8px; }
-.ct-spoiler {
-  width: 100%;
-  padding: 7px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ddd;
-  cursor: pointer;
-}
-.ct-spoiler.on { border-color: #f87171; color: #f87171; }
-.ct-spoiler:disabled { opacity: 0.5; cursor: default; }
+.ct-note { color: #ffd28a; margin: 6px 0 0; font-size: 12px; }
+/* Spoiler toggle (the site's eye button) at the end of the timeline. */
+.nav-eye-btn.ct-spoiler { flex-shrink: 0; }
+.nav-eye-btn.ct-spoiler.on { color: #f87171; border-color: #f87171; background: rgba(248, 113, 113, 0.12); }
+.nav-eye-btn.ct-spoiler:disabled { opacity: 0.4; cursor: default; }
 
 .ct-seed-form { max-width: 420px; }
 .ct-seed-title { font-weight: 700; margin-bottom: 8px; }

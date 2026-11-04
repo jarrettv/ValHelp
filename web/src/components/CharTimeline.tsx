@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { CharSnapshot } from '../CharacterTrack';
 import './TimelineSlider.css';
 
@@ -15,8 +15,10 @@ export function formatPlay(seconds: number): string {
 
 const PLAY_MS = 700;
 
-export default function CharTimeline({ snapshots, index, onChange, worldId }: {
+export default function CharTimeline({ snapshots, index, onChange, worldId, children }: {
   snapshots: CharSnapshot[]; index: number; onChange: (i: number) => void; worldId: number;
+  /** Extra controls at the end of the bar. */
+  children?: ReactNode;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -106,6 +108,7 @@ export default function CharTimeline({ snapshots, index, onChange, worldId }: {
       <div className="ctl-label">
         {cur ? <>{formatPlay(cur.axis)}<small> · save {index + 1}/{n}</small></> : '–'}
       </div>
+      {children}
     </div>
   );
 }

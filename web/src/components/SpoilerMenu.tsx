@@ -3,7 +3,7 @@ import CompactSpoilerSlider from '../guides/vh/CompactSpoilerSlider';
 
 // Eye button in the top bar: drops down the compact spoiler slider so the
 // reader can adjust their progress from anywhere, not just the guides pages.
-const EyeIcon = () => (
+export const EyeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
        strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
