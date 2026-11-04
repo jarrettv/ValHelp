@@ -20,13 +20,13 @@ export default function Characters() {
   const loggedIn = !!status?.id;
   return (
     <div className="chars-page">
-      <h1>Character tracking</h1>
+      <h1>Runs</h1>
       <p>
         Follow a character through a world: the map uncovers as they explore, with their path and map pins,
         save by save across every play session. Places they haven&apos;t found stay hidden unless you ask for spoilers.
       </p>
       {status === null ? <p>Loading…</p> : loggedIn ? <Mine /> : (
-        <p><a className="chars-btn" href="/api/auth/discord?returnUrl=%2Fcharacters">Log in with Discord</a> to track your characters.</p>
+        <p><a className="chars-btn" href="/api/auth/discord?returnUrl=%2Fruns">Log in with Discord</a> to track your characters.</p>
       )}
       <GetTracker />
     </div>
@@ -59,7 +59,7 @@ function Mine() {
         <ul className="chars-list">
           {chars.data.map(c => (
             <li key={c.id}>
-              <Link to={`/characters/${c.id}`} className="chars-card">
+              <Link to={`/runs/${c.id}`} className="chars-card">
                 <div className="chars-card-name">{c.name}</div>
                 <div className="chars-card-meta">
                   {formatPlay(c.playSeconds)} played · {c.sessions} session{c.sessions === 1 ? '' : 's'} · {c.snapshots} saves

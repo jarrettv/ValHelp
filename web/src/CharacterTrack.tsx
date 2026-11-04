@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useParams, useSearchParams } from 'react-router';
+import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router';
 import WorldMap, { type MapView, type PoiMarker } from './components/WorldMap';
 import { worldToUnit } from './components/poiLayer';
 import { Fog, parseTiles } from './components/charFog';
@@ -42,13 +42,20 @@ const PIN_GLYPH: Record<string, string> = {
 };
 const PATH_COLOR = '#ffb347';
 
+/** /characters/:id, the first address of this page (the tracker opened it): now /runs/:id. */
+export function CharacterRedirect() {
+  const { id } = useParams<{ id: string }>();
+  const { search } = useLocation();
+  return <Navigate to={`/runs/${id}${search}`} replace />;
+}
+
 export default function CharacterTrack() {
   const { id } = useParams<{ id: string }>();
   const [params, setParams] = useSearchParams();
   const char = useQuery({ queryKey: ['char', id], queryFn: () => getJson<CharResp>(`/api/char/${id}`) });
 
   if (char.isPending) return <div className="chars-page"><p>Loading…</p></div>;
-  if (char.isError) return <div className="chars-page"><h1>Character not found</h1><p><Link to="/characters">Character tracking</Link></p></div>;
+  if (char.isError) return <div className="chars-page"><h1>Character not found</h1><p><Link to="/runs">Runs</Link></p></div>;
   const c = char.data;
   if (c.worlds.length === 0)
     return <div className="chars-page"><h1>{c.name}</h1><p>No explored worlds uploaded yet.</p></div>;

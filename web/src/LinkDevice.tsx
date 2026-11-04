@@ -46,7 +46,7 @@ export default function LinkDevice() {
           <p className="link-ok">Linked <strong>{state.device}</strong> to {status.username}.</p>
           <p>
             You can close this tab. Right-click the tracker&apos;s tray icon to choose which characters to track;
-            they&apos;ll show up on <Link to="/characters">your characters</Link>.
+            they&apos;ll show up on <Link to="/runs">Runs</Link>.
           </p>
         </>
       ) : (

@@ -38,7 +38,7 @@ import EventTrophies from './EventTrophies.tsx'
 import TrophyCalc from './TrophyCalc.tsx'
 import Worlds from './Worlds.tsx'
 import Characters from './Characters.tsx'
-import CharacterTrack from './CharacterTrack.tsx'
+import CharacterTrack, { CharacterRedirect } from './CharacterTrack.tsx'
 import LinkDevice from './LinkDevice.tsx'
 import GuidesLayout from './guides/vh/GuidesLayout'
 import GuideArticle from './GuideArticle'
@@ -90,12 +90,14 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/calc" element={<TrophyCalc />} />
             <Route path="/worlds" element={<Worlds />} />
             <Route path="/worlds/:seed" element={<Worlds />} />
-            <Route path="/characters" element={<Characters />} />
-            <Route path="/characters/:id" element={<CharacterTrack />} />
+            <Route path="/runs" element={<Characters />} />
+            <Route path="/runs/log" element={<Runs />} />
+            <Route path="/runs/:id" element={<CharacterTrack />} />
+            <Route path="/characters" element={<Navigate to="/runs" replace />} />
+            <Route path="/characters/:id" element={<CharacterRedirect />} />
             <Route path="/link" element={<LinkDevice />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
             <Route path="/leaderboard/:category" element={<PlayerLeaderboard />} />
-            <Route path="/runs" element={<Runs />} />
             <Route path="/speedruns" element={<SpeedRuns />} />
             <Route path="/guides" element={<GuidesLayout />}>
               <Route index element={<Navigate to="/guides/articles" replace />} />

@@ -59,7 +59,7 @@ public sealed class Tracker
     public bool Linked { get { lock (gate) return config.Token != null; } }
     public bool Linking => linking;
     public string Status { get { lock (gate) return status; } }
-    public string PageUrl => config.Server + "/characters";
+    public string PageUrl => config.Server + "/runs";
     public string Server => config.Server;
     public string DataDir => Path.GetDirectoryName(configPath)!;
 

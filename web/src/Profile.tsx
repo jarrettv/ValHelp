@@ -151,7 +151,7 @@ export default function Profile() {
               />
             </li>
             <li>
-              <Link to="/characters">
+              <Link to="/runs">
                 <span className="tool-icon" aria-hidden="true">🗺️</span>
                 <span>Character tracking</span>
                 <small>Your characters' explored maps and paths, save by save</small>

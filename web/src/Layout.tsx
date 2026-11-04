@@ -24,12 +24,12 @@ const BookIcon = () => (
     <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 7v14m4-9h2m-2-4h2M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4a4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3a3 3 0 0 0-3-3zm3-6h2M6 8h2" />
   </svg>
 );
-const CalcIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-      <rect width="16" height="20" x="4" y="2" rx="2" />
-      <path d="M8 6h8m0 8v4m0-8h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01" />
-    </g>
+// A route between two points: a character's path through a world.
+const RunsIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="6" cy="19" r="3" />
+    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+    <circle cx="18" cy="5" r="3" />
   </svg>
 );
 const WorldIcon = () => (
@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/leaderboard', label: 'Leaderboard', icon: ListIcon },
   { to: '/guides', label: 'Guides', icon: BookIcon },
   { to: '/worlds', label: 'Worlds', icon: WorldIcon },
-  { to: '/trophy/calc', label: 'Calc', icon: CalcIcon },
+  { to: '/runs', label: 'Runs', icon: RunsIcon },
 ];
 
 export default function Layout() {
