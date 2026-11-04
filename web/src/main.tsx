@@ -37,6 +37,9 @@ import EventRedirect from './EventRedirect.tsx'
 import EventTrophies from './EventTrophies.tsx'
 import TrophyCalc from './TrophyCalc.tsx'
 import Worlds from './Worlds.tsx'
+import Characters from './Characters.tsx'
+import CharacterTrack from './CharacterTrack.tsx'
+import LinkDevice from './LinkDevice.tsx'
 import GuidesLayout from './guides/vh/GuidesLayout'
 import GuideArticle from './GuideArticle'
 import ArticlesPage from './guides/vh/ArticlesPage'
@@ -87,6 +90,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/calc" element={<TrophyCalc />} />
             <Route path="/worlds" element={<Worlds />} />
             <Route path="/worlds/:seed" element={<Worlds />} />
+            <Route path="/characters" element={<Characters />} />
+            <Route path="/characters/:id" element={<CharacterTrack />} />
+            <Route path="/link" element={<LinkDevice />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
             <Route path="/leaderboard/:category" element={<PlayerLeaderboard />} />
             <Route path="/runs" element={<Runs />} />

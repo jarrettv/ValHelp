@@ -9,6 +9,7 @@ public static class CharActivate
         CharDevices.Map(app);
         CharUpload.Map(app);
         CharEndpoints.Map(app);
+        CharRead.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)

@@ -69,9 +69,12 @@ public static class AdminEndpointsAuth
         return TypedResults.Ok(users);
     }
 
-    public static async Task GetDiscord(HttpContext ctx)
+    /// <summary>?returnUrl=/some/path comes back there after login (site paths only).</summary>
+    public static async Task GetDiscord(HttpContext ctx, string? returnUrl)
     {
-        await ctx.ChallengeAsync("Discord");
+        var props = new AuthenticationProperties();
+        if (Auth.IsSitePath(returnUrl)) props.Items[Auth.ReturnUrlKey] = returnUrl;
+        await ctx.ChallengeAsync("Discord", props);
     }
 
     public static async Task GetLogout(HttpContext ctx)

@@ -15,6 +15,8 @@ declare global {
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
+      /// Fog of war: alpha 255 fogged, 0 clear (row 0 = north). null clears it.
+      setFog: (img: TexImageSource | null, opacity?: number) => void;
       isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;
@@ -45,10 +47,24 @@ interface WorldMapProps {
   onPoisLoaded?: (pois: PoiMarker[]) => void;
   /// The zoom after each redraw, relative to the whole map fitted in view (1).
   onZoom?: (zoom: number) => void;
+  /// Fog of war over the map (see VectorMap.setFog); a new object redraws it.
+  fog?: { image: TexImageSource } | null;
+  /// Only the POIs this accepts are drawn (e.g. the explored ones under fog).
+  poiFilter?: ((poi: PoiMarker) => boolean) | null;
+  /// Draws on top of the POIs each frame; `view.size` is the whole map's size in
+  /// CSS px, so a unit point (ux, uy) is at (panX + ux * size, panY + uy * size).
+  drawOverlay?: (ctx: CanvasRenderingContext2D, view: MapView) => void;
+  /// Change it to redraw the overlay.
+  overlayVersion?: unknown;
+  /// Start the view on this part of the map (unit coordinates, y down) instead of all of it.
+  fitTo?: { x0: number; y0: number; x1: number; y1: number } | null;
 }
+
+export interface MapView { size: number; panX: number; panY: number; scale: number; width: number; height: number }
 
 const WorldMap: React.FC<WorldMapProps> = ({
   seed, baseUrl, forestUrl, poisUrl, assets, className, onPoiClick, onPoiHover, hiddenIcons, onPoisLoaded, onZoom,
+  fog, poiFilter, drawOverlay, overlayVersion, fitTo,
 }) => {
   const mapAreaRef = useRef<HTMLDivElement>(null);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,7 +72,16 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const allPoisRef = useRef<PoiMarker[]>([]);
+  // allPoisRef through poiFilter; a stable array between filter changes (the
+  // POI layer re-indexes when it gets a different one).
   const poisRef = useRef<PoiMarker[]>([]);
+  const poiFilterRef = useRef(poiFilter);
+  poiFilterRef.current = poiFilter;
+  const fitToRef = useRef(fitTo);
+  fitToRef.current = fitTo;
+  const drawOverlayRef = useRef(drawOverlay);
+  drawOverlayRef.current = drawOverlay;
   const layerRef = useRef(new PoiLayer());
   // Biome variant data, for the hover card (null until loaded / none for this seed).
   const overlayRef = useRef<PatternOverlay | null>(null);
@@ -102,6 +127,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     // Only the POIs in view, decluttered by LOD (see poiLayer.ts).
     layerRef.current.draw(ctx, poisRef.current, hiddenIconsRef.current,
       { size: imgW * scale, panX, panY, scale, width: w, height: h });
+    drawOverlayRef.current?.(ctx, { size: imgW * scale, panX, panY, scale, width: w, height: h });
   }, []);
 
   const applyTransform = useCallback(() => {
@@ -147,9 +173,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
     const s = stateRef.current;
     if (!area || s.imgW === 0) return;
     const vw = area.clientWidth, vh = area.clientHeight;
-    s.scale = Math.min(vw / s.imgW, vh / s.imgH);
-    s.panX = (vw - s.imgW * s.scale) / 2;
-    s.panY = (vh - s.imgH * s.scale) / 2;
+    const f = fitToRef.current;
+    if (f) {
+      const w = Math.max(f.x1 - f.x0, 0.01), h = Math.max(f.y1 - f.y0, 0.01);
+      s.scale = Math.min(MAP_MAX_SCALE, Math.min(vw / (w * s.imgW), vh / (h * s.imgH)));
+      s.panX = vw / 2 - (f.x0 + w / 2) * s.imgW * s.scale;
+      s.panY = vh / 2 - (f.y0 + h / 2) * s.imgH * s.scale;
+    } else {
+      s.scale = Math.min(vw / s.imgW, vh / s.imgH);
+      s.panX = (vw - s.imgW * s.scale) / 2;
+      s.panY = (vh - s.imgH * s.scale) / 2;
+    }
     scheduleUpdate();
   }, [scheduleUpdate]);
 
@@ -181,7 +215,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
         fetch(poisUrl ?? `${baseUrl}/pois`)
           .then(r => r.ok ? r.json() : [])
           .then((pois: PoiMarker[]) => {
-            poisRef.current = pois;
+            allPoisRef.current = pois;
+            const filter = poiFilterRef.current;
+            poisRef.current = filter ? pois.filter(filter) : pois;
             onPoisLoaded?.(pois);
             scheduleUpdate();
           })
@@ -243,6 +279,18 @@ const WorldMap: React.FC<WorldMapProps> = ({
     window.VectorMap.setVariantLuts(lut, strokeLut);
     scheduleUpdate();
   }, [configVersion, mapReady, scheduleUpdate]);
+
+  // Fog of war and the POIs it hides.
+  useEffect(() => {
+    if (!mapReady) return;
+    window.VectorMap.setFog(fog?.image ?? null, 1);
+    scheduleUpdate();
+  }, [fog, mapReady, scheduleUpdate]);
+  useEffect(() => {
+    poisRef.current = poiFilter ? allPoisRef.current.filter(poiFilter) : allPoisRef.current;
+    if (mapReady) scheduleUpdate();
+  }, [poiFilter, mapReady, scheduleUpdate]);
+  useEffect(() => { if (mapReady) scheduleUpdate(); }, [overlayVersion, mapReady, scheduleUpdate]);
 
   // Redraw when colored POI icons finish loading.
   useEffect(() => subscribeIconRedraw(scheduleUpdate), [scheduleUpdate]);

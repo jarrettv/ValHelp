@@ -5,7 +5,7 @@ namespace Vh.Tracker;
 
 /// <summary>
 /// ValHelpTracker.exe [--server URL] [--data DIR]
-///   --server  site to upload to (remembered); default https://valhelp.azurewebsites.net
+///   --server  site to upload to (remembered); default https://valheim.help
 ///   --data    where tracker.json and tracker.log live; default %LOCALAPPDATA%\ValHelp\Tracker
 /// One instance per data folder.
 /// </summary>

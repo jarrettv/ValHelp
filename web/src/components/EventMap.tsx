@@ -17,6 +17,8 @@ declare global {
       getGridSize: () => number;
       setPatternOverlay: (o: import('./biomePatterns').PatternOverlay | null) => void;
       setVariantLuts: (lut: Uint8Array, strokeLut: Uint8Array) => void;
+      /// Fog of war: alpha 255 fogged, 0 clear (row 0 = north). null clears it.
+      setFog: (img: TexImageSource | null, opacity?: number) => void;
       isPulsing: () => boolean;
       destroy: () => void;
       ready: boolean;

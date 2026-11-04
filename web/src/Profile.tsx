@@ -150,6 +150,13 @@ export default function Profile() {
                 isRegenerating={regenObsCode.isPending}
               />
             </li>
+            <li>
+              <Link to="/characters">
+                <span className="tool-icon" aria-hidden="true">🗺️</span>
+                <span>Character tracking</span>
+                <small>Your characters' explored maps and paths, save by save</small>
+              </Link>
+            </li>
             {(isAdmin || isMod) && (
               <li className="tool-section-label">Admin</li>
             )}

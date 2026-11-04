@@ -6,7 +6,7 @@ namespace Vh.Tracker;
 /// <summary>What the tracker remembers, in &lt;data dir&gt;\tracker.json.</summary>
 public sealed class Config
 {
-    public const string DefaultServer = "https://valhelp.azurewebsites.net";
+    public const string DefaultServer = "https://valheim.help";
 
     public string Server { get; set; } = DefaultServer;
     /// <summary>Bearer token from device pairing; null until linked.</summary>

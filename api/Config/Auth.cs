@@ -10,6 +10,12 @@ namespace ValHelpApi.Config;
 
 public static class Auth
 {
+    public const string ReturnUrlKey = "returnUrl";
+
+    /// <summary>A path on this site ("/x"), not another host ("//x", "/\x") — safe to redirect to.</summary>
+    public static bool IsSitePath(string? url) =>
+        !string.IsNullOrEmpty(url) && url.Length <= 512 && url[0] == '/' && (url.Length == 1 || url[1] != '/' && url[1] != '\\');
+
     public static void AddAuth(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthentication(options =>
@@ -81,7 +87,8 @@ public static class Auth
           };
               options.Events.OnTicketReceived = context =>
           {
-              context.Response.Redirect("/?auth=success");
+              var back = context.Properties?.Items.TryGetValue(ReturnUrlKey, out var r) == true && IsSitePath(r) ? r! : "/?auth=success";
+              context.Response.Redirect(back);
               context.HandleResponse();
               return Task.CompletedTask;
           };
