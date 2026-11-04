@@ -84,7 +84,121 @@
 .link-hint { font-size: 13px; color: #8b949e !important; }
 .ct-error { color: #f87171 !important; margin: 8px 0 0; }
 
-/* ── /characters/:id — map with panels ──────────────────── */
+/* ── Run cards (/runs list): like the game's inventory screen ── */
+.chars-page.runs-page { max-width: 960px; }
+.run-list { display: grid; gap: 10px; }
+.run-card {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(40, 32, 24, 0.55), rgba(20, 18, 16, 0.55));
+  color: inherit !important;
+  text-decoration: none;
+}
+.run-card:hover { border-color: #ffb347; }
+.run-thumb {
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.run-thumb img { display: block; }
+.run-thumb span { color: #6e7681; font-size: 12px; }
+.run-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.run-name { font-weight: 700; font-size: 17px; }
+.run-meta { display: flex; flex-wrap: wrap; gap: 2px 10px; color: #a6adb5; font-size: 12px; }
+.run-meta span:first-child { color: #e6edf3; }
+
+.run-bar {
+  position: relative;
+  height: 12px;
+  max-width: 220px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+.run-bar div { height: 100%; }
+.run-bar.hp div { background: linear-gradient(180deg, #e0504a, #8f1d18); }
+.run-bar.stam div { background: linear-gradient(180deg, #f3cf55, #a87b12); }
+.run-bar.eitr div { background: linear-gradient(180deg, #a37bff, #5733b0); }
+.run-bar span {
+  position: absolute;
+  right: 6px;
+  top: -1px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+
+.run-foods { display: flex; gap: 5px; align-items: center; margin-top: 2px; }
+.run-food {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.run-food img { width: 26px; height: 26px; }
+.run-food-left { position: absolute; left: 0; bottom: 0; height: 3px; background: #7ee787; }
+.run-food.empty { opacity: 0.4; }
+.run-gp { margin-left: 4px; font-size: 11px; color: #c9b2ff; }
+
+.run-inv {
+  display: grid;
+  grid-template-columns: repeat(8, 30px);
+  grid-auto-rows: 30px;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.run-slot {
+  position: relative;
+  background: rgba(60, 50, 40, 0.55);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.run-slot.equipped { background: rgba(61, 106, 166, 0.85); box-shadow: inset 0 0 0 1px #8fb4e8; }
+.run-slot img { width: 24px; height: 24px; }
+.run-slot-text { font-size: 9px; color: #a6adb5; overflow: hidden; }
+.run-hotkey { position: absolute; left: 2px; top: 0; font-size: 8px; color: rgba(255, 255, 255, 0.55); }
+.run-stack, .run-quality {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 2px #000;
+}
+.run-stack { right: 2px; bottom: 0; }
+.run-quality { right: 2px; top: 0; color: #ffd27a; }
+
+@media (max-width: 720px) {
+  .run-card { grid-template-columns: 148px minmax(0, 1fr); }
+  .run-inv { grid-column: 1 / -1; justify-self: start; }
+}
+@media (max-width: 420px) {
+  .run-card { grid-template-columns: 96px minmax(0, 1fr); }
+  .run-thumb, .run-thumb img { width: 96px !important; height: 96px !important; }
+  .run-inv { grid-template-columns: repeat(8, minmax(0, 1fr)); width: 100%; }
+}
+
+/* ── /runs/:id — map with panels ──────────────────── */
 .ct-view {
   position: absolute;
   inset: 0;

@@ -40,7 +40,8 @@ public static class CharRead
     /// <summary>One save. X/Z: the logout point in the world the save was made in; Explored: its explored cells.</summary>
     public record SnapshotItem(long Id, DateTime FileTime, int Session, float Axis, bool Rewind, long? WorldId,
         float? X, float? Z, int? Explored);
-    public record CharacterResp(long Id, string Name, Owner Owner, bool IsMine, WorldItem[] Worlds, SnapshotItem[] Snapshots);
+    public record CharacterResp(long Id, string Name, Owner Owner, bool IsMine, WorldItem[] Worlds, SnapshotItem[] Snapshots,
+        CharEndpoints.LatestOut? Latest);
 
     public static async Task<Results<Ok<CharacterResp>, NotFound>> Get(long id, ClaimsPrincipal user, AppDbContext db)
     {
@@ -78,7 +79,10 @@ public static class CharRead
         var items = worlds.OrderByDescending(w => lastPlayed.GetValueOrDefault(w.Id))
             .Select(w => new WorldItem(w.Id, w.Uid, w.Name, w.Seed, w.Seed == null, viewerWorlds.Contains(w.Id)))
             .ToArray();
-        return TypedResults.Ok(new CharacterResp(c.Id, c.Name, owner, viewer == c.UserId, items, snapshots));
+        var last = await db.Set<CharSnapshot>().AsNoTracking().Where(s => s.CharacterId == id)
+            .OrderByDescending(s => s.FileTime).FirstOrDefaultAsync();
+        var latest = last == null ? null : CharEndpoints.Latest(last, worlds.ToDictionary(w => w.Uid, w => w.Id));
+        return TypedResults.Ok(new CharacterResp(c.Id, c.Name, owner, viewer == c.UserId, items, snapshots, latest));
     }
 
     /// <summary>Worlds the characters have fog in.</summary>

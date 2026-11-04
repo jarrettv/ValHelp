@@ -3,6 +3,7 @@ import '../lib/vector-map.js';
 import './WorldMap.css';
 import { PoiMarker, subscribeIconRedraw, usePoiConfigVersion, MAP_MAX_SCALE, WHEEL_ZOOM_STEP } from './poiIcons';
 import { PoiLayer } from './poiLayer';
+import { thumbsIdle } from './mapThumb';
 import { loadPatternOverlay, variantLuts, type PatternOverlay, type AltSector } from './biomePatterns';
 import AltBiomeCard from './AltBiomeCard';
 
@@ -196,6 +197,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
         setError(null);
         const glCanvas = glCanvasRef.current;
         if (!glCanvas) return;
+        // The runs list may be drawing a thumbnail with the shared renderer.
+        await thumbsIdle();
+        if (cancelled) return;
 
         await window.VectorMap.init(glCanvas, seed, baseUrl, forestUrl,
           assets ? { biomes: assets.biomes, mask: assets.mask } : undefined);

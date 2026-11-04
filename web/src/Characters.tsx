@@ -1,25 +1,31 @@
+import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
-import { formatPlay } from './components/CharTimeline';
+import RunCard, { type RunItem } from './components/RunCard';
+import { cancelThumbs } from './components/mapThumb';
 import './Characters.css';
 
-// Character tracking home: what it is, the tracker download, your tracked
-// characters and the PCs linked to your account.
+// Runs (character tracking) home: what it is, the tracker download, your
+// tracked characters and the PCs linked to your account. ?player=<user id>
+// lists another player's runs instead (characters are public).
 
 export const TRACKER_DOWNLOAD = '/downloads/ValHelpTracker.exe';
 
-interface MineItem {
-  id: number; name: string; latestFileTime: string; snapshots: number; sessions: number; playSeconds: number;
-  worlds: { id: number; name: string | null; seed: string | null; needsSeed: boolean }[];
-}
 interface Device { id: number; name: string; createdAt: string; lastSeenAt: string }
 
 export default function Characters() {
   const { status } = useAuth();
   const loggedIn = !!status?.id;
+  const player = Number(useSearchParams()[0].get('player')) || null;
+  if (player && player !== status?.id) return (
+    <div className="chars-page runs-page">
+      <h1>Runs</h1>
+      <PlayerRuns userId={player} />
+    </div>
+  );
   return (
-    <div className="chars-page">
+    <div className="chars-page runs-page">
       <h1>Runs</h1>
       <p>
         Follow a character through a world: the map uncovers as they explore, with their path and map pins,
@@ -33,10 +39,23 @@ export default function Characters() {
   );
 }
 
+function PlayerRuns({ userId }: { userId: number }) {
+  const runs = useQuery({
+    queryKey: ['char-player', userId],
+    queryFn: () => fetch(`/api/char/players/${userId}`).then(r => r.json() as Promise<RunItem[]>),
+  });
+  return runs.isPending ? <p>Loading…</p> : !runs.data?.length ? <p>No tracked characters.</p> : <RunList runs={runs.data} />;
+}
+
+function RunList({ runs }: { runs: RunItem[] }) {
+  useEffect(() => cancelThumbs, []);
+  return <div className="run-list">{runs.map(r => <RunCard key={r.id} run={r} />)}</div>;
+}
+
 function Mine() {
   const chars = useQuery({
     queryKey: ['char-mine'],
-    queryFn: () => fetch('/api/char/mine', { credentials: 'include' }).then(r => r.json() as Promise<MineItem[]>),
+    queryFn: () => fetch('/api/char/mine', { credentials: 'include' }).then(r => r.json() as Promise<RunItem[]>),
   });
   const devices = useQuery({
     queryKey: ['char-devices'],
@@ -56,25 +75,7 @@ function Mine() {
       {chars.isPending ? <p>Loading…</p> : !chars.data?.length ? (
         <p>None yet. Install the tracker below and tick the characters you want to follow.</p>
       ) : (
-        <ul className="chars-list">
-          {chars.data.map(c => (
-            <li key={c.id}>
-              <Link to={`/runs/${c.id}`} className="chars-card">
-                <div className="chars-card-name">{c.name}</div>
-                <div className="chars-card-meta">
-                  {formatPlay(c.playSeconds)} played · {c.sessions} session{c.sessions === 1 ? '' : 's'} · {c.snapshots} saves
-                </div>
-                <div className="chars-card-worlds">
-                  {c.worlds.map(w => (
-                    <span key={w.id} className={w.needsSeed ? 'needs-seed' : ''} title={w.needsSeed ? 'Seed unknown: open to enter it' : w.seed ?? ''}>
-                      {w.name ?? 'Unnamed world'}{w.needsSeed ? ' (seed?)' : ''}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <RunList runs={chars.data} />
       )}
 
       <h2>Linked PCs</h2>
