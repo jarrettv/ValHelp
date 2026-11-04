@@ -155,7 +155,20 @@
 .run-food img { width: 26px; height: 26px; }
 .run-food-left { position: absolute; left: 0; bottom: 0; height: 3px; background: #7ee787; }
 .run-food.empty { opacity: 0.4; }
-.run-gp { margin-left: 4px; font-size: 11px; color: #c9b2ff; }
+/* Forsaken power: the boss's trophy in its own slot, set apart from the food. */
+.run-gp {
+  width: 34px;
+  height: 34px;
+  margin-left: 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(201, 178, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.run-gp img { width: 28px; height: 28px; }
 
 .run-inv {
   display: grid;

@@ -30,6 +30,17 @@ const COLS = 8, THUMB = 148;
 // The playable world is a disc of radius 10 km; the explored map counts 12 m cells.
 const WORLD_KM2 = Math.PI * 10 * 10;
 
+/** Forsaken powers by the boss whose trophy grants them (shown as that trophy). */
+const POWER_TROPHY: Record<string, { trophy: string; boss: string }> = {
+  GP_Eikthyr: { trophy: 'TrophyEikthyr', boss: 'Eikthyr' },
+  GP_TheElder: { trophy: 'TrophyTheElder', boss: 'The Elder' },
+  GP_Bonemass: { trophy: 'TrophyBonemass', boss: 'Bonemass' },
+  GP_Moder: { trophy: 'TrophyDragonQueen', boss: 'Moder' },
+  GP_Yagluth: { trophy: 'TrophyGoblinKing', boss: 'Yagluth' },
+  GP_Queen: { trophy: 'TrophySeekerQueen', boss: 'The Queen' },
+  GP_Ashlands: { trophy: 'TrophyFader', boss: 'Fader' },
+};
+
 function pctOfWorld(km2: number): string {
   const pct = km2 / WORLD_KM2 * 100;
   return `${pct.toFixed(pct < 1 ? 2 : 1)}% of the world`;
@@ -98,7 +109,7 @@ export default function RunCard({ run }: { run: RunItem }) {
             {l.maxEitr > 0 && <Bar kind="eitr" value={l.eitr} max={l.maxEitr} />}
             <div className="run-foods">
               {[0, 1, 2].map(i => <FoodSlot key={i} food={l.foods[i]} item={l.foods[i] && items.byCode.get(l.foods[i].name)} />)}
-              {l.guardianPower && <span className="run-gp" title="Forsaken power">{l.guardianPower.replace(/^GP_/, '')}</span>}
+              {l.guardianPower && <Power name={l.guardianPower} />}
             </div>
           </>
         )}
@@ -122,6 +133,16 @@ export default function RunCard({ run }: { run: RunItem }) {
         })}
       </div>
     </Link>
+  );
+}
+
+function Power({ name }: { name: string }) {
+  const p = POWER_TROPHY[name];
+  const boss = p?.boss ?? name.replace(/^GP_/, '');
+  return (
+    <div className="run-gp" title={`Forsaken power: ${boss}`}>
+      {p ? <img src={iconUrl(p.trophy)} alt={boss} loading="lazy" /> : <span className="run-slot-text">{boss}</span>}
+    </div>
   );
 }
 
