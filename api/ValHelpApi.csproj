@@ -42,4 +42,9 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- .fch / .fwl parser shared with the character tests (ModuleCharacters). -->
+    <ProjectReference Include="../character/Vh.Character/Vh.Character.csproj" />
+  </ItemGroup>
+
 </Project>

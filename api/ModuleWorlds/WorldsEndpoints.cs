@@ -123,7 +123,7 @@ public static class WorldsEndpoints
     /// Asks seedgen for a seed's status — POST /api/seedgen/submit is idempotent and acts as
     /// both "ensure queued" and "check status".
     /// </summary>
-    static async Task<VisitResp> SubmitToSeedGen(IConfiguration config, IHttpClientFactory httpFactory, string seed)
+    internal static async Task<VisitResp> SubmitToSeedGen(IConfiguration config, IHttpClientFactory httpFactory, string seed)
     {
         var seedHash = Vh.Numerics.StableHash.GetStableHashCode(seed);
         var seedGenUrl = config["SeedGenUrl"];
