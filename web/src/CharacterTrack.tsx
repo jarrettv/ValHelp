@@ -6,6 +6,7 @@ import { worldToUnit } from './components/poiLayer';
 import { Fog, parseTiles } from './components/charFog';
 import CharTimeline, { formatPlay } from './components/CharTimeline';
 import { EyeIcon } from './components/SpoilerMenu';
+import { WorldIcon } from './Layout';
 import { Bars, Equipped, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex, type RunLatest } from './components/RunParts';
 import './Characters.css';
 
@@ -301,6 +302,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
             title={expanded ? 'Less' : 'Inventory and details'}>{expanded ? '▴' : '▾'}</button>
         </div>
         <div className="ct-line">
+          <span className="ct-globe" title="World seed"><WorldIcon /></span>
           {/* Local worlds are named after their seed; a character played on several worlds picks one here. */}
           {char.worlds.length > 1 ? (
             <select className="ct-world" value={world.id} onChange={e => onWorld(Number(e.target.value))} aria-label="World">

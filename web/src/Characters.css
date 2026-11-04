@@ -264,6 +264,8 @@
 }
 .ct-line { color: #8b949e; font-size: 12px; margin: 0 0 6px; overflow-wrap: anywhere; }
 .ct-line strong { color: #e6edf3; font-weight: 600; }
+.ct-globe { display: inline-flex; vertical-align: -3px; margin-right: 4px; color: #8b949e; }
+.ct-globe svg { width: 14px; height: 14px; }
 .ct-panel .run-bar { max-width: none; margin-bottom: 4px; }
 .ct-panel .run-foods { margin: 2px 0 8px; }
 /* Expanded: the inventory fills the panel's width, square slots. */
