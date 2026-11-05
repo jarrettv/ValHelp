@@ -9,6 +9,7 @@ import { EyeIcon } from './components/SpoilerMenu';
 import { WorldIcon } from './Layout';
 import PoiLegend from './components/PoiLegend';
 import PoiCard from './components/PoiCard';
+import { pinIcon } from './components/pinIcons';
 import WorldsFeedback from './components/WorldsFeedback';
 import { MaximizeButton, useMapMaximized } from './components/MapMaximize';
 import './Worlds.css';
@@ -46,10 +47,6 @@ const getJson = async <T,>(url: string): Promise<T> => {
   return r.json() as Promise<T>;
 };
 
-const PIN_GLYPH: Record<string, string> = {
-  Icon0: '🔥', Icon1: '🏠', Icon2: '🔨', Icon3: '•', Icon4: '🌀', Death: '💀', Bed: '🛏', Boss: '👑',
-  Hildir1: '🛍', Hildir2: '🛍', Hildir3: '🛍', Memorial: '🪦',
-};
 const PATH_COLOR = '#ffb347';
 /** With spoilers on, the unexplored stays veiled and the explored is outlined, so it still reads. */
 const SPOILER_FOG = 0.3;
@@ -210,33 +207,45 @@ function TrackView({ char, world, initialIndex, onWorld }: {
       ctx.fillStyle = p.logout ? PATH_COLOR : 'rgba(255,179,71,0.7)';
       ctx.fill();
     }
-    // Pins
+    // Pins, as the game draws them: white icons, crossed out once checked off.
     const big = v.scale > 1.2;
-    const r = Math.max(5, Math.min(10, 4 * v.scale));
+    const size = Math.max(16, Math.min(28, 9 * v.scale));
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     for (const pin of pins) {
       const [x, y] = px(pin.pos.x, pin.pos.z);
       if (x < -40 || y < -40 || x > v.width + 40 || y > v.height + 40) continue;
-      ctx.globalAlpha = pin.checked ? 0.45 : 1;
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(20,24,32,0.8)';
-      ctx.fill();
-      ctx.strokeStyle = pin.type === 4 ? '#f87171' : '#e6edf3';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.font = `${Math.round(r * 1.2)}px system-ui, "Segoe UI Emoji", sans-serif`;
-      ctx.fillStyle = '#fff';
-      ctx.fillText(PIN_GLYPH[pin.typeName] ?? '📍', x, y + 1);
+      const s = pin.typeName === 'Icon3' ? size * 0.6 : size;
+      ctx.globalAlpha = pin.checked ? 0.55 : 1;
+      ctx.shadowColor = 'rgba(0,0,0,0.85)';
+      ctx.shadowBlur = 4;
+      const img = pinIcon(pin.typeName);
+      if (img?.complete && img.naturalWidth > 0) ctx.drawImage(img, x - s / 2, y - s / 2, s, s);
+      else {
+        ctx.beginPath();
+        ctx.arc(x, y, s * 0.22, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+      if (pin.checked) {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#e04040';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - s * 0.45, y - s * 0.45); ctx.lineTo(x + s * 0.45, y + s * 0.45);
+        ctx.moveTo(x + s * 0.45, y - s * 0.45); ctx.lineTo(x - s * 0.45, y + s * 0.45);
+        ctx.stroke();
+      }
       const label = pin.name.startsWith('$') ? '' : pin.name;
       if (label && big) {
+        ctx.shadowBlur = 0;
         ctx.font = '600 12px system-ui, sans-serif';
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'rgba(0,0,0,0.8)';
-        ctx.strokeText(label, x, y + r + 10);
-        ctx.fillText(label, x, y + r + 10);
+        ctx.fillStyle = '#fff';
+        ctx.strokeText(label, x, y + s / 2 + 9);
+        ctx.fillText(label, x, y + s / 2 + 9);
       }
     }
     ctx.restore();
