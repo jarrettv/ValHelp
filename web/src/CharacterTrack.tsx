@@ -51,6 +51,9 @@ const PATH_COLOR = '#ffb347';
 /** With spoilers on, the unexplored stays veiled and the explored is outlined, so it still reads. */
 const SPOILER_FOG = 0.3;
 const SPOILER_STROKE_PX = 1.5;
+/** Pin types the map also shows as POI markers, and how close counts as the same place. */
+const DUPLICATE_PIN_TYPES = new Set(['Boss', 'Hildir1', 'Hildir2', 'Hildir3']);
+const PIN_ON_POI_M = 50;
 
 /** /characters/:id, the first address of this page (the tracker opened it): now /runs/:id. */
 export function CharacterRedirect() {
@@ -153,6 +156,9 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     return { x0, y0, x1, y1 };
   }, [fog, snaps]);
 
+  // POIs the map loaded (for the legend and to spot pins that duplicate a marker).
+  const [pois, setPois] = useState<PoiMarker[]>([]);
+  const [hiddenIcons, setHiddenIcons] = useState<Set<string>>(new Set());
   const poiFilter = useMemo(
     () => (spoilers || !fog || fogAt < 0 ? null : (p: PoiMarker) => fog.isExploredAt(p.x, p.z)),
     [spoilers, fog, fogAt]);
@@ -178,7 +184,16 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     return pts;
   }, [snaps, snap.id, world.id, fog]);
 
-  const pins = useMemo(() => at.data?.pins ?? [], [at.data]);
+  const pinsAt = at.data?.pins;
+  // A vegvisir's boss pin (or Hildir's) sits on the location's own POI marker:
+  // draw it only where that marker isn't shown (e.g. under fog).
+  const pins = useMemo(() => {
+    const all = pinsAt ?? [];
+    const shown = poiFilter ? pois.filter(poiFilter) : pois;
+    const onMarker = (p: Pin) => shown.some(m => Math.hypot(m.x - p.pos.x, m.z - p.pos.z) < PIN_ON_POI_M);
+    return all.filter(p => !(DUPLICATE_PIN_TYPES.has(p.typeName) && onMarker(p)));
+  }, [pinsAt, pois, poiFilter]);
+
   const drawOverlay = useCallback((ctx: CanvasRenderingContext2D, v: MapView) => {
     const px = (x: number, z: number): [number, number] => {
       const [ux, uy] = worldToUnit(x, z);
@@ -270,8 +285,6 @@ function TrackView({ char, world, initialIndex, onWorld }: {
   // Spoilers: the fog thins to a veil, every location shows, and the markers
   // legend (as on the world map) lets them be filtered.
   function toggleSpoilers() { setSpoilers(s => !s); }
-  const [pois, setPois] = useState<PoiMarker[]>([]);
-  const [hiddenIcons, setHiddenIcons] = useState<Set<string>>(new Set());
   function toggleIcon(icon: string) {
     setHiddenIcons(prev => {
       const next = new Set(prev);
