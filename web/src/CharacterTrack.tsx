@@ -8,6 +8,7 @@ import CharTimeline, { formatPlay } from './components/CharTimeline';
 import { EyeIcon } from './components/SpoilerMenu';
 import { WorldIcon } from './Layout';
 import PoiLegend from './components/PoiLegend';
+import PoiCard from './components/PoiCard';
 import WorldsFeedback from './components/WorldsFeedback';
 import { MaximizeButton, useMapMaximized } from './components/MapMaximize';
 import './Worlds.css';
@@ -270,6 +271,15 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     });
   }
   const [maximized, setMaximized] = useMapMaximized();
+
+  // POI card, as on the world map: follows the cursor on hover; a click (or tap) pins it.
+  type PoiAt = { poi: PoiMarker; x: number; y: number };
+  const viewRef = useRef<HTMLDivElement>(null);
+  const [hoverPoi, setHoverPoi] = useState<PoiAt | null>(null);
+  const [pinnedPoi, setPinnedPoi] = useState<PoiAt | null>(null);
+  const onPoiClick = useCallback((poi: PoiMarker | null, at: { x: number; y: number }) =>
+    setPinnedPoi(poi ? { poi, ...at } : null), []);
+  const onPoiHover = useCallback((h: PoiAt | null) => setHoverPoi(h), []);
   const shownFog = useMemo(
     () => (fogImage ? { image: fogImage.image, opacity: spoilers ? SPOILER_FOG : 1, strokePx: spoilers ? SPOILER_STROKE_PX : 0 } : null),
     [fogImage, spoilers]);
@@ -293,11 +303,12 @@ function TrackView({ char, world, initialIndex, onWorld }: {
   const explored = at.data?.explored ?? null;
 
   return (
-    <div className="ct-view">
+    <div className="ct-view" ref={viewRef}>
       {ready ? (
         <WorldMap seed={seed!} baseUrl={map.baseUrl} forestUrl={map.forestUrl} className="ct-map"
           fog={shownFog} poiFilter={poiFilter} drawOverlay={drawOverlay} fitTo={fitTo}
           hiddenIcons={spoilers ? hiddenIcons : undefined} onPoisLoaded={setPois}
+          onPoiClick={onPoiClick} onPoiHover={onPoiHover}
           overlayVersion={drawOverlay} />
       ) : (
         <div className="ct-pending">
@@ -353,6 +364,12 @@ function TrackView({ char, world, initialIndex, onWorld }: {
         )}
         {snap.rewind && <p className="ct-note">This save was restored from a backup (play time went back).</p>}
       </div>
+
+      {ready && [pinnedPoi, hoverPoi && hoverPoi.poi !== pinnedPoi?.poi ? hoverPoi : null].map((at, i) => at && viewRef.current && (
+        <PoiCard key={i ? 'hover' : 'pinned'} poi={at.poi} x={at.x} y={at.y}
+          width={viewRef.current.clientWidth} height={viewRef.current.clientHeight}
+          pinned={!i} onClose={() => setPinnedPoi(null)} />
+      ))}
 
       <MaximizeButton maximized={maximized} onClick={() => setMaximized()} />
       {seed && <WorldsFeedback seed={seed} className="worlds-feedback" />}
