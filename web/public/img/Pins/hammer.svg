@@ -1,5 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="currentColor">
-  <!-- First pass of the game's hammer map pin (Minimap.PinType.Icon2); rework freely. -->
-  <path d="M20 6h22a4 4 0 0 1 4 4v4h6a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-6v4a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4v-4H12a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4h4v-4a4 4 0 0 1 4-4z" transform="rotate(-35 32 24)"/>
-  <path d="M30.5 34.5l6 4.2-14.8 21.2a4 4 0 0 1-6.6-4.6z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16.93 16.93">
+  <!-- The game's hammer map pin (Minimap.PinType.Icon2): a wide wedge-shaped
+       head (thick in the middle, thin at the ends), a thick handle and a round
+       pommel. Low-poly: flat facets, lit on the top and left, grey underneath
+       and on the right. First pass; rework freely. -->
+
+  <!-- head: top bevel -->
+  <path d="M 1.8,2.7 L 2.8,1.7 L 14.1,1.7 L 15.1,2.7 Z" fill="#ffffff"/>
+  <!-- head: front band, full width -->
+  <path d="M 1.8,2.7 L 15.1,2.7 L 15.1,3.8 L 1.8,3.8 Z" fill="#e9ecef"/>
+  <!-- head: the thick middle under the band -->
+  <path d="M 6.4,3.8 L 10.5,3.8 L 10.5,6.2 L 6.4,6.2 Z" fill="#dde1e5"/>
+  <!-- head: left wing tapering into the middle -->
+  <path d="M 1.8,3.8 L 6.4,3.8 L 6.4,6.2 Z" fill="#bcc2c8"/>
+  <!-- head: right wing, in shade -->
+  <path d="M 10.5,3.8 L 15.1,3.8 L 10.5,6.2 Z" fill="#a4abb2"/>
+
+  <!-- handle: lit left half, shaded right half, narrowing a little -->
+  <path d="M 6.85,6.2 L 8.45,6.2 L 8.45,11.6 L 7.25,11.6 Z" fill="#f6f7f8"/>
+  <path d="M 8.45,6.2 L 10.05,6.2 L 9.65,11.6 L 8.45,11.6 Z" fill="#b3bac1"/>
+
+  <!-- pommel: an octagon, left facets lit, right facets shaded -->
+  <path d="M 8.45,10.9 L 6.85,11.55 L 6.2,13.15 L 6.85,14.75 L 8.45,15.4 Z" fill="#eef0f2"/>
+  <path d="M 8.45,10.9 L 10.05,11.55 L 10.7,13.15 L 10.05,14.75 L 8.45,15.4 Z" fill="#a4abb2"/>
 </svg>
