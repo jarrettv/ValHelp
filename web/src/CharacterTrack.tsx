@@ -17,7 +17,7 @@ import { Bars, Equipped, Foods, Inventory, exploredKm2, pctOfWorld, useItemIndex
 import './Characters.css';
 
 // One tracked character on one of its worlds: the fog as it was at a save,
-// the path between saves, the player's own map pins, and a timeline of saves
+// where they last logged out, the player's own map pins, and a timeline of saves
 // along play time. Unexplored areas stay dark (and their POIs hidden) unless
 // the viewer turns on spoilers.
 //
@@ -163,26 +163,16 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     () => (spoilers || !fog || fogAt < 0 ? null : (p: PoiMarker) => fog.isExploredAt(p.x, p.z)),
     [spoilers, fog, fogAt]);
 
-  // Path in this world up to the selected save: logout points where the game
-  // recorded one, else the middle of what that save newly explored.
-  const path = useMemo(() => {
-    const pts: { x: number; z: number; logout: boolean; id: number }[] = [];
-    if (!fog) return pts;
-    let lastLogout = '';
-    for (const s of snaps) {
-      if (s.id > snap.id) break;
-      if (s.worldId !== world.id) continue;
-      const key = s.x != null && s.z != null ? `${s.x},${s.z}` : '';
-      if (key && key !== lastLogout) {
-        pts.push({ x: s.x!, z: s.z!, logout: true, id: s.id });
-        lastLogout = key;
-        continue;
-      }
-      const g = fog.growth.get(s.id);
-      if (g && pts.length > 0) pts.push({ x: g.x, z: g.z, logout: false, id: s.id });
+  // Where the character is at this save: its last logout point in this world.
+  // (No path is drawn: saves only record where the player logged out; a path
+  // needs real-time positions, as events have.)
+  const here = useMemo(() => {
+    for (let i = index; i >= 0; i--) {
+      const s = snaps[i];
+      if (s.worldId === world.id && s.x != null && s.z != null) return { x: s.x, z: s.z };
     }
-    return pts;
-  }, [snaps, snap.id, world.id, fog]);
+    return null;
+  }, [snaps, index, world.id]);
 
   const pinsAt = at.data?.pins;
   // A vegvisir's boss pin (or Hildir's) sits on the location's own POI marker:
@@ -199,29 +189,6 @@ function TrackView({ char, world, initialIndex, onWorld }: {
       const [ux, uy] = worldToUnit(x, z);
       return [v.panX + ux * v.size, v.panY + uy * v.size];
     };
-    // Path
-    if (path.length > 1) {
-      ctx.save();
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = 'rgba(0,0,0,0.55)';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      path.forEach((p, i) => { const [x, y] = px(p.x, p.z); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
-      ctx.stroke();
-      ctx.strokeStyle = PATH_COLOR;
-      ctx.lineWidth = 2.5;
-      ctx.setLineDash([6, 5]);
-      ctx.stroke();
-      ctx.restore();
-    }
-    for (const p of path) {
-      const [x, y] = px(p.x, p.z);
-      ctx.beginPath();
-      ctx.arc(x, y, p.logout ? 4 : 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = p.logout ? PATH_COLOR : 'rgba(255,179,71,0.7)';
-      ctx.fill();
-    }
     // Pins, as the game draws them: white icons, crossed out once checked off.
     const big = v.scale > 1.2;
     const size = Math.max(16, Math.min(28, 9 * v.scale));
@@ -265,7 +232,6 @@ function TrackView({ char, world, initialIndex, onWorld }: {
     }
     ctx.restore();
     // Where the player is at this save
-    const here = path[path.length - 1];
     if (here && snap.worldId === world.id) {
       const [x, y] = px(here.x, here.z);
       ctx.save();
@@ -280,7 +246,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
       ctx.stroke();
       ctx.restore();
     }
-  }, [path, pins, snap.worldId, world.id]);
+  }, [here, pins, snap.worldId, world.id]);
 
   // Spoilers: the fog thins to a veil, every location shows, and the markers
   // legend (as on the world map) lets them be filtered.

@@ -48,15 +48,12 @@ export function worldOf(cx: number, cy: number): [number, number] {
 export class Fog {
   readonly explored = new Uint8Array(FOG_SIZE * FOG_SIZE / 8);
   readonly others = new Uint8Array(FOG_SIZE * FOG_SIZE / 8);
-  /** The newly explored cells' centre per save (where the player went that save), by snapshot id. */
-  readonly growth = new Map<number, { x: number; z: number; cells: number }>();
   private next = 0;           // index of the first tile not applied
   private at = -1;            // snapshot id the fog is at
   private readonly tiles: FogTile[];
 
   constructor(tiles: FogTile[]) {
     this.tiles = tiles;
-    this.measureGrowth();
   }
 
   get snapshotId() { return this.at; }
@@ -139,40 +136,5 @@ export class Fog {
       }
     }
     ctx.putImageData(img, 0, 0);
-  }
-
-  /**
-   * Where each save's newly explored cells are, for the path between logout
-   * points: the game only records a position when the player logs out.
-   */
-  private measureGrowth() {
-    const seen = new Uint8Array(FOG_SIZE * FOG_SIZE / 8);
-    let i = 0, first = true;
-    while (i < this.tiles.length) {
-      const sid = this.tiles[i].snapshotId;
-      let sx = 0, sy = 0, n = 0;
-      for (; i < this.tiles.length && this.tiles[i].snapshotId === sid; i++) {
-        const t = this.tiles[i];
-        const tx = t.tile % PER_SIDE, ty = Math.floor(t.tile / PER_SIDE);
-        for (let row = 0; row < TILE; row++) {
-          const at = ((ty * TILE + row) * FOG_SIZE + tx * TILE) / 8;
-          for (let b = 0; b < 8; b++) {
-            const now = t.explored[row * 8 + b], fresh = now & ~seen[at + b];
-            if (fresh) {
-              for (let bit = 0; bit < 8; bit++) if (fresh >> bit & 1) {
-                sx += tx * TILE + b * 8 + bit; sy += ty * TILE + row; n++;
-              }
-            }
-            seen[at + b] = now;
-          }
-        }
-      }
-      // The first save's cells are everything explored before tracking began: no one place.
-      if (n > 0 && !first) {
-        const [x, z] = worldOf(sx / n, sy / n);
-        this.growth.set(sid, { x, z, cells: n });
-      }
-      first = false;
-    }
   }
 }

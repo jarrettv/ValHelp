@@ -154,7 +154,7 @@ export default function Profile() {
               <Link to="/runs">
                 <span className="tool-icon" aria-hidden="true">🗺️</span>
                 <span>Character tracking</span>
-                <small>Your characters' explored maps and paths, save by save</small>
+                <small>Your characters' explored maps and gear, save by save</small>
               </Link>
             </li>
             {(isAdmin || isMod) && (

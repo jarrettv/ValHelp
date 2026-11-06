@@ -28,7 +28,7 @@ export default function Characters() {
     <div className="chars-page runs-page">
       <h1>Runs</h1>
       <p>
-        Follow a character through a world: the map uncovers as they explore, with their path and map pins,
+        Follow a character through a world: the map uncovers as they explore, with their map pins and gear,
         save by save across every play session. Places they haven&apos;t found stay hidden unless you ask for spoilers.
       </p>
       {status === null ? <p>Loading…</p> : loggedIn ? <Mine /> : (
