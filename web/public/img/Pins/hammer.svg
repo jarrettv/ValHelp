@@ -1,25 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16.93 16.93">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 16.93 16.93"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="hammer.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect10"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect9"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#353535"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="9.4023105"
+     inkscape:cx="9.5189369"
+     inkscape:cy="36.746287"
+     inkscape:window-width="1920"
+     inkscape:window-height="1111"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
   <!-- The game's hammer map pin (Minimap.PinType.Icon2): a wide wedge-shaped
        head (thick in the middle, thin at the ends), a thick handle and a round
        pommel. Low-poly: flat facets, lit on the top and left, grey underneath
        and on the right. First pass; rework freely. -->
-
   <!-- head: top bevel -->
-  <path d="M 1.8,2.7 L 2.8,1.7 L 14.1,1.7 L 15.1,2.7 Z" fill="#ffffff"/>
+  <path
+     id="path9"
+     style="stroke-width:0.954307;fill:#ffffff"
+     d="m 8.2541367,1.6896397 v 0.00371 C 6.3480228,2.7905042 2.1308137,3.5723108 2.1308137,3.5723108 h -0.019495 l 0.00139,0.00464 -0.0557,0.015317 h 0.060342 l 0.5862459,2.3324514 3.6363033,4.641e-4 0.9849675,6.4918737 c -0.3625246,0.361963 -0.7399734,1.062431 -0.739886,1.589316 -2.3e-5,0.534924 0.1271011,1.183371 0.5495765,1.404577 l 1.1195767,-0.01671 h 0.0065 l 1.0476303,0.01671 c 0.3954373,-0.221204 0.5143223,-0.869653 0.5143003,-1.404577 8.2e-5,-0.526885 -0.353218,-1.227354 -0.6925413,-1.589316 l 0.9218411,-6.4918737 3.403754,-4.641e-4 0.548648,-2.3324514 h 0.05663 l -0.05245,-0.015317 0.0014,-0.00464 h -0.0181 c 0,0 -3.946782,-0.7814739 -5.7310994,-1.8784936 v -0.00418 c -0.00112,6.445e-4 -0.00213,0.00121 -0.00325,0.00186 -0.00102,-6.258e-4 -0.00223,-0.00123 -0.00325,-0.00186 z" />
   <!-- head: front band, full width -->
-  <path d="M 1.8,2.7 L 15.1,2.7 L 15.1,3.8 L 1.8,3.8 Z" fill="#e9ecef"/>
   <!-- head: the thick middle under the band -->
-  <path d="M 6.4,3.8 L 10.5,3.8 L 10.5,6.2 L 6.4,6.2 Z" fill="#dde1e5"/>
   <!-- head: left wing tapering into the middle -->
-  <path d="M 1.8,3.8 L 6.4,3.8 L 6.4,6.2 Z" fill="#bcc2c8"/>
   <!-- head: right wing, in shade -->
-  <path d="M 10.5,3.8 L 15.1,3.8 L 10.5,6.2 Z" fill="#a4abb2"/>
-
   <!-- handle: lit left half, shaded right half, narrowing a little -->
-  <path d="M 6.85,6.2 L 8.45,6.2 L 8.45,11.6 L 7.25,11.6 Z" fill="#f6f7f8"/>
-  <path d="M 8.45,6.2 L 10.05,6.2 L 9.65,11.6 L 8.45,11.6 Z" fill="#b3bac1"/>
-
   <!-- pommel: an octagon, left facets lit, right facets shaded -->
-  <path d="M 8.45,10.9 L 6.85,11.55 L 6.2,13.15 L 6.85,14.75 L 8.45,15.4 Z" fill="#eef0f2"/>
-  <path d="M 8.45,10.9 L 10.05,11.55 L 10.7,13.15 L 10.05,14.75 L 8.45,15.4 Z" fill="#a4abb2"/>
 </svg>
