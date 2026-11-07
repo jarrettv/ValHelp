@@ -12,10 +12,15 @@ on:
 jobs:
   # The character tracker (character/Vh.Tracker): a NativeAOT Windows exe, so it
   # builds on Windows; the site serves it at /downloads/ValHelpTracker.exe.
+  # Signed with Azure Artifact Signing once the repo variables SIGNING_ENDPOINT,
+  # SIGNING_ACCOUNT and SIGNING_PROFILE are set (unsigned until then). It signs in
+  # through the same OIDC app as the deploy job, which needs the "Artifact Signing
+  # Certificate Profile Signer" role on the signing account.
   tracker:
     runs-on: windows-latest
     permissions:
       contents: read
+      id-token: write #For the signing step's Azure login
 
     steps:
       - uses: actions/checkout@v4
@@ -31,11 +36,53 @@ jobs:
           $env:PATH = "C:\Program Files (x86)\Microsoft Visual Studio\Installer;$env:PATH"
           dotnet publish character/Vh.Tracker -c Release -o tracker-out
 
+      - name: Login to Azure (signing)
+        if: vars.SIGNING_ACCOUNT != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_966B9118B3FC47E4AF3117BD1652D131 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_72A4417D23234231A649117CD13EF489 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_CF01EB49EBFE4E89BE40BA1B3AFF9132 }}
+
+      - name: Sign tracker
+        if: vars.SIGNING_ACCOUNT != ''
+        uses: azure/artifact-signing-action@v2.0.0
+        with:
+          endpoint: ${{ vars.SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.SIGNING_PROFILE }}
+          files: ${{ github.workspace }}\tracker-out\ValHelpTracker.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+          description: ValHelp Tracker
+          description-url: https://valheim.help/tracker
+
+      # What the download page shows: the hash of the exe as served (after signing)
+      # and the commit it was built from.
+      - name: Write tracker manifest
+        shell: pwsh
+        run: |
+          $exe = 'tracker-out/ValHelpTracker.exe'
+          $version = ([xml](Get-Content character/Vh.Tracker/Vh.Tracker.csproj)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          $sig = Get-AuthenticodeSignature $exe
+          [ordered]@{
+            version = $version
+            sha256  = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLower()
+            size    = (Get-Item $exe).Length
+            commit  = '${{ github.sha }}'
+            builtAt = (Get-Date).ToUniversalTime().ToString('o')
+            signed  = $sig.Status -eq 'Valid'
+            signer  = if ($sig.SignerCertificate) { $sig.SignerCertificate.GetNameInfo('SimpleName', $false) } else { $null }
+          } | ConvertTo-Json | Set-Content tracker-out/ValHelpTracker.json -Encoding utf8
+
       - name: Upload tracker
         uses: actions/upload-artifact@v4
         with:
           name: tracker
-          path: tracker-out/ValHelpTracker.exe
+          path: |
+            tracker-out/ValHelpTracker.exe
+            tracker-out/ValHelpTracker.json
 
   build:
     runs-on: ubuntu-latest

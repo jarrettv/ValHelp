@@ -12,6 +12,7 @@ sealed unsafe class Tray
     const uint IconId = 1;
     const int CmdOpen = 1, CmdLink = 2, CmdUnlink = 3, CmdStartup = 4, CmdLog = 5, CmdExit = 6, CmdAbout = 7, CmdCharacter = 100;
     const string SourceUrl = "https://github.com/jarrettv/ValHelp/tree/main/character/Vh.Tracker";
+    const string SafetyUrl = "https://valheim.help/tracker";
     const uint MB_YESNO = 0x04, MB_ICONINFORMATION = 0x40;
     const int IDYES = 6;
 
@@ -178,15 +179,17 @@ sealed unsafe class Tray
             What it does
             - Watches Valheim's character save folders (characters_local, characters, and Steam cloud saves).
             - When the game saves a character you ticked, it uploads that character's save file (.fch, gzipped) to {tracker.Server}. Ticking a character also sends its existing .old and backup saves, so the timeline starts earlier.
-            - With each upload it sends the small world files (.fwl / .fwl2 and cacheMinimapMeta) so the site can tell which seed each world is.
+            - With each upload it sends the small world files (.fwl / .fwl2 and cacheMinimapMeta) of every world on this PC so the site can tell which seed each world is, and the first 12 bytes of the world save written with it (the world's clock, for the in-game day).
+            - When you link it, it sends this PC's name so you can tell your PCs apart on the site.
 
             What it doesn't do
             - It never uploads characters you haven't ticked, or any other file: no screenshots, keystrokes, game memory or other programs.
             - It never changes your saves. It only reads them.
             - It talks to nothing but {tracker.Server}, using the link you approved there. Unlink it from the menu or from your account on the site.
 
-            On this PC it keeps its settings and log in {tracker.DataDir}. "Start with Windows" adds it to your startup programs (HKCU Run).
+            On this PC it keeps its settings and log in {tracker.DataDir}. "Start with Windows" (turned on when you first link it) adds it to your startup programs (HKCU Run).
 
+            Safety report: {SafetyUrl}
             Source code: {SourceUrl}
             You can read it, and build the exe yourself with: dotnet publish character/Vh.Tracker -c Release
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
 import RunCard, { type RunItem } from './components/RunCard';
 import { cancelThumbs } from './components/mapThumb';
@@ -104,7 +104,7 @@ function GetTracker() {
         uses a few MB of memory.
       </p>
       <ol className="chars-steps">
-        <li><a href={TRACKER_DOWNLOAD} download>Download ValHelpTracker.exe</a> and run it.</li>
+        <li><Link to="/tracker">Download ValHelpTracker.exe</Link> (with its safety report) and run it.</li>
         <li>Your browser opens to link it: log in and confirm the code it shows.</li>
         <li>Right-click the tray icon and tick the characters to track. Their earlier backups are sent too, so the timeline starts before you installed it.</li>
       </ol>

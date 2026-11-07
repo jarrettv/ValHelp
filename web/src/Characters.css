@@ -84,6 +84,53 @@
 .link-hint { font-size: 13px; color: #8b949e !important; }
 .ct-error { color: #f87171 !important; margin: 8px 0 0; }
 
+/* ── /tracker: download + safety report ─────────────── */
+.tracker-get { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 18px 0 14px; }
+.tracker-meta { color: #8b949e; font-size: 13px; }
+.tracker-note {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 179, 71, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 179, 71, 0.08);
+  color: #ffd28a !important;
+}
+.tracker-note strong { color: #fff; }
+.tracker-reviewed { font-size: 13px; color: #8b949e !important; margin: -4px 0 10px !important; }
+.tracker-audit { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; }
+.tracker-audit li {
+  position: relative;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #a6adb5;
+  line-height: 1.5;
+}
+.tracker-audit li::before {
+  content: "✓";
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  color: #7ee787;
+  font-weight: 700;
+}
+.tracker-audit strong { color: #e6edf3; }
+.tracker-page code {
+  font: 12.5px ui-monospace, monospace;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6edf3;
+}
+.tracker-page code.tracker-hash {
+  display: block;
+  margin: 0 0 14px;
+  padding: 8px 10px;
+  overflow-wrap: anywhere;
+  border: 1px solid #30363d;
+  background: #0d1117;
+}
+
 /* ── Run cards (/runs list): like the game's inventory screen ── */
 .chars-page.runs-page { max-width: 960px; }
 .run-list { display: grid; gap: 10px; }

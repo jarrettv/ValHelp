@@ -21,6 +21,7 @@ import AdminPrivateEvents from './AdminPrivateEvents.tsx'
 import AdminPois from './AdminPois.tsx'
 import AdminWorldgen from './AdminWorldgen.tsx'
 import SeedFinder from './SeedFinder.tsx'
+import TrackerDownload from './TrackerDownload.tsx'
 import AdminEvents from './AdminEvents.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
@@ -99,6 +100,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/characters" element={<Navigate to="/runs" replace />} />
             <Route path="/characters/:id" element={<CharacterRedirect />} />
             <Route path="/link" element={<LinkDevice />} />
+            <Route path="/tracker" element={<TrackerDownload />} />
             <Route path="/leaderboard" element={<PlayerLeaderboard />} />
             <Route path="/leaderboard/:category" element={<PlayerLeaderboard />} />
             <Route path="/speedruns" element={<SpeedRuns />} />

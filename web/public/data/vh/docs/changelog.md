@@ -5,6 +5,7 @@ Tracks notable changes to ValHelp data, docs, and detail screens.
 ## 2026-11-07
 
 * **New [seed finder](/seeds).** Give it a prefix and it works through every seed that starts with it, in your browser, looking for worlds where every boss altar (Fimbulbringer included) sits inside a north–south corridor through spawn. You set how wide the corridor is at spawn, how wide it is 10 km out, and how wide it is in the Deep North and Ash Lands. A second filter keeps seeds where Haldor is near an Elder altar and the Bog Witch is near a Bonemass altar, both inside the corridor. Each candidate links straight to its [world map](/worlds). The seed picker on the map now has a **Find a seed** link.
+* **The tracker has its own [download page](/tracker)** with a short safety report: what it reads, what it sends and where, and how to remove it. It also shows the file's fingerprint and links to a VirusTotal scan, so you can check the download yourself.
 * **Only an event's organizer sees Edit event.** Signing up for an event used to show you the edit link too.
 
 ## 2026-11-05
