@@ -58,7 +58,14 @@ public class WorldGenerator
     public static readonly float ashlandsMinDistance = 12000f;
     public static readonly float ashlandsYOffset = -4000f;
 
-    public WorldGenerator(int seed, int worldGenVersion)
+    public WorldGenerator(int seed, int worldGenVersion) : this(seed, worldGenVersion, rivers: true) { }
+
+    /// <summary>A generator good for <see cref="GetBiome"/> only: skips the lakes,
+    /// rivers and streams (most of construction's cost), which biomes don't use but
+    /// heights do. For quick per-seed biome screens (the seed finder).</summary>
+    public static WorldGenerator BiomesOnly(int seed, int worldGenVersion) => new(seed, worldGenVersion, rivers: false);
+
+    WorldGenerator(int seed, int worldGenVersion, bool rivers)
     {
         m_seed = seed;
         m_version = worldGenVersion;
@@ -81,7 +88,7 @@ public class WorldGenerator
         m_streamSeed = UnityRandom.Range(int.MinValue, int.MaxValue);
         m_offset4 = UnityRandom.Range(-10000, 10000);
 
-        Pregenerate();
+        if (rivers) Pregenerate();
     }
 
     private void VersionSetup(int version)

@@ -20,6 +20,7 @@ import AdminFeedback from './AdminFeedback.tsx'
 import AdminPrivateEvents from './AdminPrivateEvents.tsx'
 import AdminPois from './AdminPois.tsx'
 import AdminWorldgen from './AdminWorldgen.tsx'
+import SeedFinder from './SeedFinder.tsx'
 import AdminEvents from './AdminEvents.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
@@ -71,6 +72,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/private-events" element={<AdminPrivateEvents />} />
             <Route path="/auth/pois" element={<AdminPois />} />
             <Route path="/auth/worldgen" element={<AdminWorldgen />} />
+            <Route path="/auth/seeds" element={<Navigate to="/seeds" replace />} />
             <Route path="/auth/events" element={<AdminEvents />} />
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
@@ -89,6 +91,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/trophy/tracker" element={<Navigate to="/" replace />} />
             <Route path="/trophy/calc" element={<TrophyCalc />} />
             <Route path="/worlds" element={<Worlds />} />
+            <Route path="/seeds" element={<SeedFinder />} />
             <Route path="/worlds/:seed" element={<Worlds />} />
             <Route path="/runs" element={<Characters />} />
             <Route path="/runs/log" element={<Runs />} />

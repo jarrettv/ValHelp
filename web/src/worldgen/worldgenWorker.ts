@@ -9,10 +9,10 @@
 // then 'done' (or 'error'). Stages run in order; each reports 0-1.
 
 import type { WorldgenRequest, WorldgenMessage, WorldgenStage } from './worldgenTypes';
+import { loadWorldgenExports } from './wasmRuntime';
 
 declare const self: DedicatedWorkerGlobalScope;
 
-const FRAMEWORK = '/worldgen/_framework/dotnet.js';
 const SIZE = 2048;
 const BAND = 64;   // texture rows per call, so progress updates ~32 times
 const LOCATION_SLICE_MS = 150;   // location placement per call between progress updates
@@ -34,28 +34,6 @@ interface Exports {
   PoisJson(): string;
 }
 interface MemoryView { slice(): Uint8Array; dispose(): void }
-
-let exportsP: Promise<Exports> | null = null;
-
-// The runtime is a static file, not part of the bundle: an import Vite can't see,
-// since its dev server rewrites dynamic imports (adds ?import), which public/ files fail.
-const importStatic = new Function('url', 'return import(url)') as (url: string) => Promise<{ dotnet: DotnetHost }>;
-interface DotnetHost { create(): Promise<{ getAssemblyExports(name: string): Promise<{ Vh: { WorldGen: { Wasm: { Exports: Exports } } } }> }> }
-
-function loadRuntime(): Promise<Exports> {
-  exportsP ??= (async () => {
-    // dotnet.js takes a worker that already has onmessage set for one of the
-    // runtime's own threads and waits forever for its setup; this flag says
-    // we're a plain worker hosting the runtime ("sidecar").
-    (globalThis as { dotnetSidecar?: boolean }).dotnetSidecar = true;
-    const { dotnet } = await importStatic(new URL(FRAMEWORK, self.location.origin).href);
-    const runtime = await dotnet.create();
-    const all = await runtime.getAssemblyExports('Vh.WorldGen.Wasm.dll');
-    return all.Vh.WorldGen.Wasm.Exports;
-  })();
-  exportsP.catch(() => { exportsP = null; });
-  return exportsP;
-}
 
 function post(msg: WorldgenMessage, transfer: Transferable[] = []) { self.postMessage(msg, transfer); }
 
@@ -86,7 +64,7 @@ async function generate(seedName: string) {
   const lap = (stage: WorldgenStage) => { const now = performance.now(); timings[stage] = now - t; t = now; };
 
   progress('runtime', 0);
-  const ex = await loadRuntime();
+  const ex = await loadWorldgenExports<Exports>();
   lap('runtime');
 
   progress('generator', 0);

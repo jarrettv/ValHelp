@@ -191,6 +191,37 @@ public static partial class Exports
     [JSExport]
     public static string PoisJson() => System.Text.Json.JsonSerializer.Serialize(s_pois!, PoiJson.Default.ListPoiLocation);
 
+    // ── Seed finder (admin page /auth/seeds): the boss pass ──────────────────
+    // One BossScan per worker; ScanScreen is the quick estimate, ScanExact the game's placement.
+
+    static Vh.World.Locations.BossScan? s_scan;
+    static Vh.World.Locations.BossScan Scan => s_scan ??= new Vh.World.Locations.BossScan(2);
+
+    /// <summary>The boss prefabs, comma-separated, in the order ScanScreen reports them.</summary>
+    [JSExport]
+    public static string ScanBosses() => string.Join(',', Vh.World.Locations.BossScan.Prefabs);
+
+    /// <summary>Each boss's estimated chance (0-1) of an altar in the corridor (BossScan.Screen).</summary>
+    [JSExport]
+    [return: JSMarshalAs<JSType.Array<JSType.Number>>]
+    public static double[] ScanScreen(string seedName, double halfWidthCenter, double halfWidthEdge, double halfWidthPolar) =>
+        Scan.Screen(StableHash.GetStableHashCode(seedName),
+            new Vh.World.Locations.Corridor((float)halfWidthCenter, (float)halfWidthEdge, (float)halfWidthPolar));
+
+    /// <summary>Every boss altar and trader camp the game places for the seed: "prefab,x,z" joined by ';'.</summary>
+    [JSExport]
+    public static string ScanExact(string seedName)
+    {
+        var inv = System.Globalization.CultureInfo.InvariantCulture;
+        var sb = new System.Text.StringBuilder();
+        foreach (var p in Scan.Exact(StableHash.GetStableHashCode(seedName)))
+        {
+            if (sb.Length > 0) sb.Append(';');
+            sb.Append(p.Rule.Prefab).Append(',').Append(p.X.ToString("0.#", inv)).Append(',').Append(p.Z.ToString("0.#", inv));
+        }
+        return sb.ToString();
+    }
+
     // Building a generator (lakes, rivers, streams) is the slow part: keep the last one.
     static (int Seed, int Version, WorldGenerator Wg)? s_last;
     static WorldGenerator Generator(int seed, int version)

@@ -1,0 +1,130 @@
+/* Seed finder (SeedFinder.tsx), in the admin pages' palette (AdminWorldgen.css). */
+.asf-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.asf-page h1 { margin: 0; }
+.asf-page h2 { margin: 0; font-size: 1rem; }
+.asf-sub { margin: 0; color: #999; font-size: 0.9rem; max-width: 75ch; }
+.asf-muted { color: #999; }
+.asf-error { color: #ff8080; }
+.asf-num { font-variant-numeric: tabular-nums; text-align: right; }
+
+.asf-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+.asf-main { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+/* The diagram stays in view while the candidate list scrolls past (the page scrolls in <article>). */
+.asf-side { position: sticky; top: 0.75rem; align-items: center; }
+.asf-side .asf-diagram { max-width: min(520px, calc(100dvh - 15rem)); }
+@media (max-width: 860px) {
+  /* One column: controls, then the diagram, then the candidates. */
+  .asf-layout { grid-template-columns: minmax(0, 1fr); }
+  .asf-main { display: contents; }
+  .asf-main > :first-child { order: 1; }
+  .asf-side { order: 2; position: static; }
+  .asf-main > :last-child { order: 3; }
+  .asf-side .asf-diagram { max-width: 520px; }
+}
+
+.asf-panel {
+  background: #15152a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.asf-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem 0.75rem;
+  align-items: end;
+}
+.asf-controls label { display: flex; flex-direction: column; gap: 3px; font-size: 0.8rem; color: #bbb; }
+.asf-controls input {
+  background: #1a1a2e; border: 1px solid #444; border-radius: 4px;
+  color: #eee; padding: 4px 8px; width: 100%; box-sizing: border-box; margin: 0;
+}
+.asf-buttons { display: flex; gap: 0.5rem; grid-column: 1 / -1; }
+.asf-page button {
+  background: #2a2a44; border: 1px solid #555; border-radius: 4px;
+  color: #eee; padding: 4px 10px; cursor: pointer; width: auto; margin: 0;
+}
+.asf-page button:disabled { opacity: 0.5; cursor: default; }
+.asf-page button.asf-start { background: #2d5a3a; border-color: #4f8a5f; min-width: 6rem; }
+.asf-page button.asf-stop { background: #6a2d2d; border-color: #a04848; min-width: 6rem; }
+.asf-position { font-size: 0.9rem; overflow-wrap: anywhere; }
+.asf-position code, .asf-table code { color: #f0c75e; }
+
+.asf-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+@media (max-width: 520px) { .asf-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.asf-stat { background: #1a1a2e; border: 1px solid #2c2c48; border-radius: 4px; padding: 0.4rem 0.5rem; min-width: 0; }
+.asf-stat-label { font-size: 0.75rem; color: #999; }
+.asf-stat-value { font-size: 1.25rem; font-variant-numeric: tabular-nums; color: #eee; }
+.asf-stat.accent .asf-stat-value { color: #8fc99a; }
+.asf-stat-hint { font-size: 0.75rem; color: #888; font-variant-numeric: tabular-nums; }
+
+.asf-missing { display: flex; flex-direction: column; gap: 4px; }
+.asf-missing p { margin: 0 0 4px; font-size: 0.8rem; }
+.asf-bar { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 3rem; gap: 0.5rem; align-items: center; font-size: 0.85rem; }
+.asf-bar-track { height: 8px; background: #23233a; border-radius: 4px; overflow: hidden; }
+.asf-bar-track > span { display: block; height: 100%; border-radius: 4px; }
+
+.asf-diagram { width: 100%; height: auto; display: block; }
+.asf-d-world { fill: #1d2433; }
+.asf-d-dn { fill: rgba(200, 220, 255, 0.16); }
+.asf-d-ash { fill: rgba(255, 100, 60, 0.18); }
+.asf-d-band { fill: rgba(240, 199, 94, 0.16); stroke: #f0c75e; stroke-width: 50; stroke-dasharray: 240 160; }
+.asf-d-ring { fill: none; stroke: #ffffff22; stroke-width: 35; }
+.asf-d-axis { stroke: #f0c75e66; stroke-width: 35; }
+.asf-d-edge { fill: none; stroke: #555; stroke-width: 60; }
+.asf-d-label { fill: #ccc; font-size: 700px; text-anchor: middle; font-weight: 600; }
+.asf-d-small { fill: #999; font-size: 420px; }
+.asf-d-region { text-anchor: middle; }
+.asf-d-altar { stroke-width: 70; }
+.asf-d-altar.out { stroke-width: 60; opacity: 0.75; }
+.asf-d-spawn { fill: #fff; }
+.asf-d-trader { stroke: #111; stroke-width: 50; }
+.asf-d-pair { stroke-width: 70; }
+.asf-d-pair.far { stroke-dasharray: 160 160; opacity: 0.6; }
+.asf-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.75rem; font-size: 0.8rem; color: #ccc; }
+.asf-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.asf-legend i.square { border-radius: 1px; width: 9px; height: 9px; }
+.asf-legend i.diamond { border-radius: 1px; width: 8px; height: 8px; transform: rotate(45deg); }
+.asf-caption { margin: 0; font-size: 0.8rem; text-align: center; }
+
+.asf-cand-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.asf-cand-head h2 { margin-right: auto; }
+.asf-check { display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; color: #ccc; cursor: pointer; }
+.asf-check input { margin: 0; width: auto; }
+.asf-table-wrap { overflow-x: auto; }
+.asf-badge {
+  display: inline-block; margin-left: 0.4rem; padding: 0 5px; border-radius: 8px;
+  background: #2d5a3a; color: #bfe8c8; font-size: 0.7rem; vertical-align: 1px;
+}
+.asf-near { color: #8fc99a; }
+.asf-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.asf-table th { text-align: left; font-weight: 500; color: #999; font-size: 0.8rem; padding: 4px 6px; border-bottom: 1px solid #333; }
+.asf-table td { padding: 4px 6px; border-bottom: 1px solid #23233a; }
+.asf-table tbody tr { cursor: pointer; }
+.asf-table tbody tr:hover { background: #1d1d36; }
+.asf-table tbody tr.sel { background: #26264a; }
+.asf-table tr.asf-dim td { opacity: 0.55; }
+.asf-actions { white-space: nowrap; text-align: right; }
+.asf-actions a { color: #8ab4f8; margin-right: 0.5rem; }
+.asf-actions button { padding: 1px 6px; margin-left: 0.25rem; }

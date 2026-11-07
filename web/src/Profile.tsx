@@ -207,6 +207,15 @@ export default function Profile() {
             )}
             {isAdmin && (
               <li>
+                <Link to="/seeds">
+                  <span className="tool-icon" aria-hidden="true">🔎</span>
+                  <span>Seed finder</span>
+                  <small>Scan seeds for bosses near a north-south line through spawn</small>
+                </Link>
+              </li>
+            )}
+            {isAdmin && (
+              <li>
                 <Link to="/auth/events">
                   <span className="tool-icon" aria-hidden="true">📈</span>
                   <span>World usage</span>

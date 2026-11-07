@@ -71,7 +71,7 @@ export default function Event() {
       <div className={data.status === EventStatus.Live ? "competition live" : "competition"}>
         {/* Edits the whole event. Worded and styled apart from "Edit entry" in
             <Register>, which only changes your own registration. */}
-        { data.players.find(x => x.userId == status?.id) && <div className="alert info event-admin-bar"><div>Event last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
+        { status && (status.id === data.ownerId || status.id === 1) && <div className="alert info event-admin-bar"><div>Event last updated <TimeAgo targetTime={new Date(data.updatedAt)} /> ago by {data.updatedBy}</div>
 
         <Link className="event-edit-link" to={`/events/${data.id}/edit`}>✎ Edit event</Link>
         </div>}

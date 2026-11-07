@@ -431,6 +431,7 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         {
             hunt = new Event
             {
+                OwnerId = userId,
                 CreatedAt = now,
                 CreatedBy = user!.Username,
                 Players = [new Player { UserId = userId, Name = user.Username, AvatarUrl = user.AvatarUrl,
@@ -449,7 +450,6 @@ Point system (All trophies only count once) example: 37 deer trophies = 10 point
         hunt.Desc = req.Desc;
         hunt.Seed = req.Seed;
         hunt.IsPrivate = req.IsPrivate;
-        hunt.OwnerId = userId;
 
         // Generate password for private events
         if (req.IsPrivate && string.IsNullOrEmpty(hunt.PrivatePassword))

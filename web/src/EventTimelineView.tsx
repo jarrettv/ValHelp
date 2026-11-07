@@ -151,7 +151,7 @@ export default function EventTimelineView() {
       {/* Optional: Link back to standard event view or edit */}
       <div style={{ marginTop: '20px' }}>
         <Link to={`/events/${id}`}>View Standard Event</Link>
-        {eventData.players.find(x => x.userId === authStatus?.id) && (
+        {authStatus && (authStatus.id === eventData.ownerId || authStatus.id === 1) && (
           <Link to={`/events/${id}/edit`} style={{ marginLeft: '15px' }}>Edit Event</Link>
         )}
       </div>

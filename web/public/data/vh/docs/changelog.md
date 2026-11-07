@@ -2,6 +2,26 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-11-07
+
+* **New [seed finder](/seeds).** Give it a prefix and it works through every seed that starts with it, in your browser, looking for worlds where every boss altar (Fimbulbringer included) sits inside a north–south corridor through spawn. You set how wide the corridor is at spawn, how wide it is 10 km out, and how wide it is in the Deep North and Ash Lands. A second filter keeps seeds where Haldor is near an Elder altar and the Bog Witch is near a Bonemass altar, both inside the corridor. Each candidate links straight to its [world map](/worlds). The seed picker on the map now has a **Find a seed** link.
+* **Only an event's organizer sees Edit event.** Signing up for an event used to show you the edit link too.
+
+## 2026-11-05
+
+* **Track your runs.** **Runs** in the main menu replaces Calc. Install the small ValHelp Tracker app on Windows (no .NET needed; it sits in the tray), link it to your account, and choose which characters to share. Each time the game saves, the tracker uploads that character's save.
+* **Every run gets a card** with a fogged thumbnail of the map you've explored, your inventory, food, health and stamina, and your forsaken power shown as the boss's trophy.
+* **Every run has its own map**, fogged to what that character has explored. A timeline lets you step back through the saves, with the in-game day for each. It shows the character's own map pins in the game's icons, where they last logged out, and the same point-of-interest cards as the world map. **Reveal map** lifts the fog for spoilers. A side panel shows food, power and equipped items, and expands to the full inventory.
+
+## 2026-11-02
+
+* **Forests on the [world map](/worlds) are drawn as trees**: firs, leafy trees and burnt trunks, which now include the Deep North and the Ash Lands.
+
+## 2026-10-30
+
+* **Vegvisirs point to their boss.** On the [world map](/worlds), each vegvisir has an arrow toward the boss altar it reveals, the same one the game would mark. The longer the arrow, the farther away the boss.
+* **More accurate cards for points of interest**: more dungeons are worked out room by room, so their finds and chests match the game more closely. The map legend got a few more icons.
+
 ## 2026-10-28
 
 * **Updated for Valheim 1.0.21.** [OvenPancake]@"Oven Pancake", [KaleChips]@"Kale Chips" and [BakedPoteitr]@"Baked Poteitr" are now mixed at the [piece_preptable]@"Prep Table" instead of a level 6–7 cauldron, so they're on the Prep Table tab of the [food guide](/guides/food) and no longer need the Smoker. Upgrading the [HelmetDNMage]@"Headdress of the Caller" no longer costs a Moose trophy per level.

@@ -301,7 +301,7 @@ export default function SeedControl({ seed, source, isOwner, onOpen, onRemoved, 
           <div className={`seed-control-foot${blocked ? ' warn' : ''}`}>
             {blocked
               ? `This device holds ${LOCAL_WORLD_LIMIT} worlds. Remove one to make room.`
-              : 'Runs in your browser and takes about a minute.'}
+              : <>Runs in your browser and takes about a minute. <Link to="/seeds" onClick={() => setOpen(false)}>Find a seed</Link></>}
           </div>
         </div>
       )}
