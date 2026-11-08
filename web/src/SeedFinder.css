@@ -99,13 +99,13 @@
 .asf-d-altar { stroke-width: 70; }
 .asf-d-altar.out { stroke-width: 60; opacity: 0.75; }
 .asf-d-spawn { fill: #fff; }
-.asf-d-trader { stroke: #111; stroke-width: 50; }
 .asf-d-pair { stroke-width: 70; }
 .asf-d-pair.far { stroke-dasharray: 160 160; opacity: 0.6; }
 .asf-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.75rem; font-size: 0.8rem; color: #ccc; }
 .asf-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
-.asf-legend i.square { border-radius: 1px; width: 9px; height: 9px; }
-.asf-legend i.diamond { border-radius: 1px; width: 8px; height: 8px; transform: rotate(45deg); }
+.asf-legend-icon {
+  width: 14.4px; height: 14.4px; margin-right: 4px; vertical-align: -3px;
+}
 .asf-caption { margin: 0; font-size: 0.8rem; text-align: center; }
 
 .asf-cand-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
@@ -128,3 +128,26 @@
 .asf-actions { white-space: nowrap; text-align: right; }
 .asf-actions a { color: #8ab4f8; margin-right: 0.5rem; }
 .asf-actions button { padding: 1px 6px; margin-left: 0.25rem; }
+
+/* Sessions: one per prefix, newest first; the hearted seeds of every session below. */
+.asf-sessions { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.5rem; }
+.asf-session { display: flex; background: #1a1a2e; border: 1px solid #2c2c48; border-radius: 4px; min-width: 0; }
+.asf-session.active { border-color: #f0c75e88; background: #22223e; }
+.asf-page .asf-session-open {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  background: none; border: none; padding: 0.4rem 0.5rem; text-align: left;
+}
+.asf-session-open code { color: #f0c75e; font-size: 1rem; }
+.asf-session-meta { font-size: 0.75rem; color: #999; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.asf-page .asf-session-del { background: none; border: none; color: #888; align-self: flex-start; padding: 2px 8px; }
+.asf-page .asf-session-del:hover:not(:disabled) { color: #ff8080; }
+.asf-hearted { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; font-size: 0.85rem; }
+.asf-page .asf-hearted-seed { padding: 1px 8px; border-radius: 10px; background: #2a2032; border-color: #5a3a50; }
+.asf-hearted-seed code { color: #f0c75e; }
+.asf-heart-text { color: #ff6b8b; }
+.asf-heart-cell { width: 1.5rem; padding-right: 0 !important; }
+.asf-page .asf-heart {
+  background: none; border: none; padding: 0 2px; font-size: 1.1rem; line-height: 1; color: #777;
+}
+.asf-page .asf-heart:hover { color: #ff6b8b; }
+.asf-page .asf-heart.on { color: #ff6b8b; }

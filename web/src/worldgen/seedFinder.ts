@@ -23,19 +23,19 @@ export function seedName(prefix: string, n: number): string {
 /** The boss locations, in BossScan.Prefabs order (the worker checks it matches). */
 export const BOSSES = [
   { prefab: 'Eikthyrnir', label: 'Eikthyr', color: '#a3d977' },
-  { prefab: 'GDKing', label: 'The Elder', color: '#2fa37a' },
-  { prefab: 'Bonemass', label: 'Bonemass', color: '#9aa63a' },
-  { prefab: 'Dragonqueen', label: 'Moder', color: '#d8e6f2' },
+  { prefab: 'GDKing', label: 'The Elder', color: '#3a8f3e' },
+  { prefab: 'Bonemass', label: 'Bonemass', color: '#a0703c' },
+  { prefab: 'Dragonqueen', label: 'Moder', color: '#8fd3ff' },
   { prefab: 'GoblinKing', label: 'Yagluth', color: '#f0c75e' },
-  { prefab: 'Mistlands_DvergrBossEntrance1', label: 'The Queen', color: '#4fb3d9' },
+  { prefab: 'Mistlands_DvergrBossEntrance1', label: 'The Queen', color: '#9b5fd6' },
   { prefab: 'FaderLocation', label: 'Fader', color: '#ff6b4a' },
-  { prefab: 'DN_Bossroom', label: 'Fimbulbringer', color: '#b39ddb' },
+  { prefab: 'DN_Bossroom', label: 'Fimbulbringer', color: '#2ab5a5' },
 ] as const;
 
-/** Traders the second pass looks for, each near an altar (inside the corridor) of a boss. */
+/** Traders the second pass looks for, each near an altar (inside the corridor) of a boss; `icon` is their map icon in /img/Poi. */
 export const TRADERS = [
-  { prefab: 'Vendor_BlackForest', label: 'Haldor', color: '#e0a060', boss: 'GDKing' },
-  { prefab: 'BogWitch_Camp', label: 'Bog Witch', color: '#d070c0', boss: 'Bonemass' },
+  { prefab: 'Vendor_BlackForest', label: 'Haldor', color: '#e0a060', icon: 'haldor', boss: 'GDKing' },
+  { prefab: 'BogWitch_Camp', label: 'Bog Witch', color: '#d070c0', icon: 'bogwitch', boss: 'Bonemass' },
 ] as const;
 
 /**

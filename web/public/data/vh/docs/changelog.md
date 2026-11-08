@@ -2,6 +2,11 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-11-08
+
+* **The [seed finder](/seeds) keeps a session for each prefix.** Each one has its own settings, progress, totals and candidates. Pick a session to switch to it, and press **Resume** to carry on where it stopped. Everything stays in your browser.
+* **Heart the seeds you like.** Hearted seeds are listed across all your sessions, you can filter the candidates down to them, and **Clear** keeps them.
+
 ## 2026-11-07
 
 * **New [seed finder](/seeds).** Give it a prefix and it works through every seed that starts with it, in your browser, looking for worlds where every boss altar (Fimbulbringer included) sits inside a north–south corridor through spawn. You set how wide the corridor is at spawn, how wide it is 10 km out, and how wide it is in the Deep North and Ash Lands. A second filter keeps seeds where Haldor is near an Elder altar and the Bog Witch is near a Bonemass altar, both inside the corridor. Each candidate links straight to its [world map](/worlds). The seed picker on the map now has a **Find a seed** link.
