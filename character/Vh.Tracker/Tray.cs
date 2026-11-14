@@ -13,6 +13,7 @@ sealed unsafe class Tray
     const int CmdOpen = 1, CmdLink = 2, CmdUnlink = 3, CmdStartup = 4, CmdLog = 5, CmdExit = 6, CmdAbout = 7, CmdCharacter = 100;
     const string SourceUrl = "https://github.com/jarrettv/ValHelp/tree/main/character/Vh.Tracker";
     const string SafetyUrl = "https://valheim.help/tracker";
+    const string PrivacyUrl = "https://valheim.help/privacy";
     const uint MB_YESNO = 0x04, MB_ICONINFORMATION = 0x40;
     const int IDYES = 6;
 
@@ -119,7 +120,7 @@ sealed unsafe class Tray
     void ShowMenu()
     {
         var characters = tracker.Characters();
-        bool linked = tracker.Linked, startup = Tracker.StartsWithWindows;
+        bool linked = tracker.Linked, startup = !Tracker.Packaged && Tracker.StartsWithWindows;
         var menu = Native.CreatePopupMenu();
         Native.AppendMenuW(menu, Native.MF_GRAYED, 0, tracker.Status);
         Native.AppendMenuW(menu, Native.MF_SEPARATOR, 0, null);
@@ -136,7 +137,8 @@ sealed unsafe class Tray
         Native.AppendMenuW(menu, Native.MF_STRING, CmdOpen, "Open tracking page");
         if (linked) Native.AppendMenuW(menu, Native.MF_STRING, CmdUnlink, "Unlink this PC");
         else Native.AppendMenuW(menu, tracker.Linking ? Native.MF_GRAYED : Native.MF_STRING, CmdLink, "Link to ValHelp account...");
-        Native.AppendMenuW(menu, startup ? Native.MF_CHECKED : Native.MF_STRING, CmdStartup, "Start with Windows");
+        if (Tracker.Packaged) Native.AppendMenuW(menu, Native.MF_STRING, CmdStartup, "Start with Windows settings...");
+        else Native.AppendMenuW(menu, startup ? Native.MF_CHECKED : Native.MF_STRING, CmdStartup, "Start with Windows");
         Native.AppendMenuW(menu, Native.MF_STRING, CmdLog, "Open log");
         Native.AppendMenuW(menu, Native.MF_STRING, CmdAbout, "About ValHelp Tracker...");
         Native.AppendMenuW(menu, Native.MF_SEPARATOR, 0, null);
@@ -158,7 +160,10 @@ sealed unsafe class Tray
                         "ValHelp Tracker", Native.MB_ICONWARNING | 1 /* MB_OKCANCEL */) == 1)
                     tracker.Unlink();
                 break;
-            case CmdStartup: Tracker.StartsWithWindows = !startup; break;
+            case CmdStartup:
+                if (Tracker.Packaged) Native.Open("ms-settings:startupapps");
+                else Tracker.StartsWithWindows = !startup;
+                break;
             case CmdLog: if (File.Exists(logPath)) Native.Open(logPath); break;
             case CmdAbout: ShowAbout(); break;
             case CmdExit: Native.PostQuitMessage(0); break;
@@ -187,7 +192,11 @@ sealed unsafe class Tray
             - It never changes your saves. It only reads them.
             - It talks to nothing but {tracker.Server}, using the link you approved there. Unlink it from the menu or from your account on the site.
 
-            On this PC it keeps its settings and log in {tracker.DataDir}. "Start with Windows" (turned on when you first link it) adds it to your startup programs (HKCU Run).
+            On this PC it keeps its settings and log in {tracker.DataDir}. {(Tracker.Packaged
+                ? "It starts with Windows; turn that off in Settings, Apps, Startup."
+                : "\"Start with Windows\" (turned on when you first link it) adds it to your startup programs (HKCU Run).")}
+
+            Privacy policy: {PrivacyUrl}
 
             Safety report: {SafetyUrl}
             Source code: {SourceUrl}

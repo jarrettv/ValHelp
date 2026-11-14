@@ -111,6 +111,12 @@ public sealed class Tracker
         SetStatus("Not linked");
     }
 
+    /// <summary>
+    /// Running from the Store package. Its startup is the package's startup task, which
+    /// the user turns on or off in Settings, Apps, Startup, not the HKCU Run key.
+    /// </summary>
+    public static bool Packaged => Native.PackageFamilyName != null;
+
     public static bool StartsWithWindows
     {
         get

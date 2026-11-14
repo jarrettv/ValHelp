@@ -96,6 +96,23 @@ static unsafe partial class Native
 
     [LibraryImport("kernel32.dll")] public static partial nint GetModuleHandleW(char* name);
     [LibraryImport("kernel32.dll")] public static partial int SetProcessWorkingSetSize(nint process, nint min, nint max);
+    [LibraryImport("kernel32.dll")] private static partial int GetCurrentPackageFamilyName(ref uint length, char* name);
+
+    /// <summary>
+    /// The package family name when running from the MSIX (Microsoft Store) package,
+    /// null for the plain exe.
+    /// </summary>
+    public static readonly string? PackageFamilyName = ReadPackageFamilyName();
+
+    static string? ReadPackageFamilyName()
+    {
+        uint len = 0;
+        if (GetCurrentPackageFamilyName(ref len, null) != 122 /* ERROR_INSUFFICIENT_BUFFER */) return null;
+        var buf = new char[len];
+        fixed (char* p = buf)
+            if (GetCurrentPackageFamilyName(ref len, p) != 0) return null;
+        return new string(buf, 0, (int)len - 1);
+    }
 
     /// <summary>Copies a string into a fixed, NUL-terminated buffer, truncating it to fit.</summary>
     public static void Copy(char* dst, int capacity, string s)

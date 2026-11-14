@@ -62,7 +62,7 @@ export default function TrackerDownload() {
       )}
 
       <h2>Safety report</h2>
-      <p className="tracker-reviewed">From a review of the source code on {REVIEWED}.</p>
+      <p className="tracker-reviewed">From a review of the source code on {REVIEWED}. See also the <Link to="/privacy">privacy policy</Link>.</p>
       <ul className="tracker-audit">
         <li>
           <strong>No admin rights.</strong> It runs as you and never asks for permission to change your PC. It has

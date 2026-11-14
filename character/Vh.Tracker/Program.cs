@@ -14,8 +14,12 @@ static class Program
     static int Main(string[] args)
     {
         string? server = Arg(args, "--server");
-        string dataDir = Arg(args, "--data") ?? Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ValHelp", "Tracker");
+        // From the Store package, use the package's own LocalState folder: Windows would
+        // redirect writes under %LOCALAPPDATA% anyway, so "Open log" would miss them.
+        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string dataDir = Arg(args, "--data") ?? (Native.PackageFamilyName is { } pfn
+            ? Path.Combine(localAppData, "Packages", pfn, "LocalState")
+            : Path.Combine(localAppData, "ValHelp", "Tracker"));
         dataDir = Path.GetFullPath(dataDir);
         Directory.CreateDirectory(dataDir);
 
@@ -26,7 +30,9 @@ static class Program
         Log.Path = Path.Combine(dataDir, "tracker.log");
         Log.Write($"Started {Environment.ProcessPath}");
         // A first run of the installed copy (not a --data test copy) also starts with Windows.
-        var tracker = new Tracker(Path.Combine(dataDir, "tracker.json"), server, registerStartup: !args.Contains("--data"));
+        // The Store package declares its own startup task instead (Package/AppxManifest.xml).
+        var tracker = new Tracker(Path.Combine(dataDir, "tracker.json"), server,
+            registerStartup: !args.Contains("--data") && !Tracker.Packaged);
         var tray = new Tray(tracker, Log.Path);
         tracker.Start();
         if (tracker.FirstRun) tracker.StartLink();
