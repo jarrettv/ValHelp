@@ -28,7 +28,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '11.x'
 
       - name: Publish tracker (NativeAOT)
         shell: pwsh
@@ -106,7 +106,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '11.x'
 
       # Browser worldgen (seedgen/Vh.WorldGen.Wasm, AOT-compiled) into web/public/worldgen/,
       # which the web build copies into the site. Its output is gitignored, so it's built here.

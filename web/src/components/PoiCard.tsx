@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useVhItems } from '../guides/vh/data';
 import { poiIconSrc, usePoiConfigVersion, type PoiMarker } from './poiIcons';
 import {
-  contentVisible, creatureIcon, itemKey, possibleContents, usePoiContents, VEGVISIR_KEY,
+  contentVisible, creatureIcon, foldContents, itemKey, possibleContents, usePoiContents, VEGVISIR_KEY,
   type ContentObject, type PoiContentsCatalog,
 } from './poiContents';
 import { placeCard } from './mapCard';
@@ -154,7 +154,7 @@ function buildSections(poi: PoiMarker, cat: PoiContentsCatalog | null, n: Namers
   const simulated = poi.contents != null;
   const possible = simulated ? null : possibleContents(prefab, cat);
   const entries: [string, number, string | undefined][] = simulated
-    ? Object.entries(poi.contents!).map(([p, c]) => [p, c, undefined])
+    ? Object.entries(foldContents(poi.contents!, cat)).map(([p, c]) => [p, c, undefined])
     : Object.entries(possible!.objects).map(([p, o]) =>
         [p, o.max ?? 1, o.max == null ? 'maybe' : o.chance < 0.995 ? `up to ${o.max}, ${pct(o.chance)} each` : undefined]);
   if (possible && shown(VEGVISIR_KEY) && !poi.vegvisirs?.length) {

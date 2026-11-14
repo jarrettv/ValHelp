@@ -9,7 +9,7 @@
 
 import { fetchVhItems } from '../guides/vh/data';
 import { type PoiMarker, requestPoiRedraw } from './poiIcons';
-import { contentStarred, creatureIcon, getPoiContents, itemKey, VEGVISIR_KEY, type ContentObject } from './poiContents';
+import { contentStarred, creatureIcon, foldContents, getPoiContents, itemKey, VEGVISIR_KEY, type ContentObject } from './poiContents';
 
 /// Map art (an /img/Poi SVG, tinted) or an item icon (/api/icon/<code>.png).
 /// `glow`: its light's colour, when not the POI's dot colour.
@@ -91,9 +91,10 @@ export function poiAdornments(poi: PoiMarker): Adornment[] {
     poi.vegvisirs.forEach((v, i) => out.push({ key: `${VEGVISIR_KEY}#${i}:${v}`, svg: 'vegvisir', color: VEGVISIR_COLOR,
                                                glow: GLOW_COLORS[VEGVISIR_KEY] }));
 
-  const counted = Object.entries(poi.contents ?? {}).filter(([, n]) => n > 0);
-  const cat = counted.length || poi.chests?.length ? getPoiContents() : null;
+  const has = Object.values(poi.contents ?? {}).some(n => n > 0);
+  const cat = has || poi.chests?.length ? getPoiContents() : null;
   if (cat) {
+    const counted = Object.entries(foldContents(poi.contents ?? {}, cat)).filter(([, n]) => n > 0);
     for (const [p, n] of counted.sort(([a], [b]) => a.localeCompare(b))) {
       const obj = cat.objects[p];
       if (!obj || !contentStarred(prefab, p)) continue;

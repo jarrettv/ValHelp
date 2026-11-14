@@ -157,6 +157,24 @@ export function contentStarred(prefab: string | undefined, key: string): boolean
   return (prefab ? cfg[prefab]?.[k] : undefined) ?? cfg['*']?.[k] ?? defaultContentStarred(key);
 }
 
+/// The card entry an object belongs to. A respawning spawner (Spawner_SeekerBrute_respawn_240)
+/// is the same enemy as its plain one, so it is listed, shown/hidden and starred as that.
+/// Often it is the only one a place has (most infested mine rooms, rock spires).
+export function contentKey(prefab: string, cat: PoiContentsCatalog | null): string {
+  const base = prefab.replace(/_respawn_\d+$/, '');
+  return base !== prefab && cat?.objects[base] ? base : prefab;
+}
+
+/// Seedgen's object counts with respawning spawners folded into their plain one.
+export function foldContents(contents: Record<string, number>, cat: PoiContentsCatalog | null): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [p, n] of Object.entries(contents)) {
+    const k = contentKey(p, cat);
+    out[k] = (out[k] ?? 0) + n;
+  }
+  return out;
+}
+
 /// Everything a location prefab can hold: its own objects, plus (dungeons) any
 /// of its rooms' objects, which have no fixed count ("max" null).
 export function possibleContents(prefab: string | undefined, cat: PoiContentsCatalog | null):
@@ -165,12 +183,22 @@ export function possibleContents(prefab: string | undefined, cat: PoiContentsCat
   const vegvisirs = new Set<string>();
   const loc = prefab ? cat?.locations[prefab] : undefined;
   if (!cat || !loc) return { objects: out, vegvisirs: [] };
-  for (const [p, o] of Object.entries(loc.objects)) out[p] = { ...o };
+  for (const [p, o] of Object.entries(loc.objects)) {
+    const k = contentKey(p, cat), prev = out[k];
+    // Folded: the counts add up, and the chance keeps the expected number right.
+    if (prev?.max != null && o.max != null) {
+      const max = prev.max + o.max;
+      out[k] = { max, chance: max ? (prev.max * prev.chance + o.max * o.chance) / max : 1 };
+    } else out[k] = { ...o };
+  }
   loc.vegvisirs?.forEach(v => vegvisirs.add(v));
   for (const r of loc.rooms ?? []) {
     const room = cat.rooms[r];
     if (!room) continue;
-    for (const p of Object.keys(room.objects)) if (!(p in out)) out[p] = { max: null, chance: 0 };
+    for (const p of Object.keys(room.objects)) {
+      const k = contentKey(p, cat);
+      if (!(k in out)) out[k] = { max: null, chance: 0 };
+    }
     room.vegvisirs?.forEach(v => vegvisirs.add(v));
   }
   return { objects: out, vegvisirs: [...vegvisirs] };

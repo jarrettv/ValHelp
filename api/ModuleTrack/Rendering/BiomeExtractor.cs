@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using StbImageSharp;
 
 namespace ValHelpApi.ModuleTrack.Rendering;
 
@@ -641,26 +639,23 @@ public static class BiomeExtractor
     public static byte[] ExtractBinaryFromFile(string mapTexCachePath, string? heightTexCachePath = null,
         string? maskTexCachePath = null)
     {
-        using var img = Image.Load<Rgb24>(mapTexCachePath);
-        var px = new byte[img.Width * img.Height * 3];
-        img.CopyPixelDataTo(px);
+        var img = PngPixels.Decode(mapTexCachePath, ColorComponents.RedGreenBlue);
+        var px = img.Data;
 
         byte[]? hPx = null; int hW = 0, hH = 0;
         if (heightTexCachePath != null && File.Exists(heightTexCachePath))
         {
-            using var hImg = Image.Load<Rgba32>(heightTexCachePath);
+            var hImg = PngPixels.Decode(heightTexCachePath, ColorComponents.RedGreenBlueAlpha);
             hW = hImg.Width; hH = hImg.Height;
-            hPx = new byte[hW * hH * 4];
-            hImg.CopyPixelDataTo(hPx);
+            hPx = hImg.Data;
         }
 
         byte[]? mPx = null; int mW = 0, mH = 0;
         if (maskTexCachePath != null && File.Exists(maskTexCachePath))
         {
-            using var mImg = Image.Load<Rgba32>(maskTexCachePath);
+            var mImg = PngPixels.Decode(maskTexCachePath, ColorComponents.RedGreenBlueAlpha);
             mW = mImg.Width; mH = mImg.Height;
-            mPx = new byte[mW * mH * 4];
-            mImg.CopyPixelDataTo(mPx);
+            mPx = mImg.Data;
         }
 
         return ExtractBinary(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH);
@@ -669,26 +664,23 @@ public static class BiomeExtractor
     /// <summary>Load from in-memory PNG byte arrays (e.g. from database blobs).</summary>
     public static byte[] ExtractBinaryFromMemory(byte[] mapPng, byte[] heightPng, byte[] maskPng)
     {
-        using var img = Image.Load<Rgb24>(mapPng);
-        var px = new byte[img.Width * img.Height * 3];
-        img.CopyPixelDataTo(px);
+        var img = PngPixels.Decode(mapPng, ColorComponents.RedGreenBlue);
+        var px = img.Data;
 
         byte[]? hPx = null; int hW = 0, hH = 0;
         if (heightPng.Length > 0)
         {
-            using var hImg = Image.Load<Rgba32>(heightPng);
+            var hImg = PngPixels.Decode(heightPng, ColorComponents.RedGreenBlueAlpha);
             hW = hImg.Width; hH = hImg.Height;
-            hPx = new byte[hW * hH * 4];
-            hImg.CopyPixelDataTo(hPx);
+            hPx = hImg.Data;
         }
 
         byte[]? mPx = null; int mW = 0, mH = 0;
         if (maskPng.Length > 0)
         {
-            using var mImg = Image.Load<Rgba32>(maskPng);
+            var mImg = PngPixels.Decode(maskPng, ColorComponents.RedGreenBlueAlpha);
             mW = mImg.Width; mH = mImg.Height;
-            mPx = new byte[mW * mH * 4];
-            mImg.CopyPixelDataTo(mPx);
+            mPx = mImg.Data;
         }
 
         return ExtractBinary(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH);
@@ -700,26 +692,23 @@ public static class BiomeExtractor
 
     public static byte[] ExtractBinaryFromMemory(byte[] mapPng, byte[] heightPng, byte[] maskPng, ExtractionMode mode)
     {
-        using var img = Image.Load<Rgb24>(mapPng);
-        var px = new byte[img.Width * img.Height * 3];
-        img.CopyPixelDataTo(px);
+        var img = PngPixels.Decode(mapPng, ColorComponents.RedGreenBlue);
+        var px = img.Data;
 
         byte[]? hPx = null; int hW = 0, hH = 0;
         if (heightPng.Length > 0)
         {
-            using var hImg = Image.Load<Rgba32>(heightPng);
+            var hImg = PngPixels.Decode(heightPng, ColorComponents.RedGreenBlueAlpha);
             hW = hImg.Width; hH = hImg.Height;
-            hPx = new byte[hW * hH * 4];
-            hImg.CopyPixelDataTo(hPx);
+            hPx = hImg.Data;
         }
 
         byte[]? mPx = null; int mW = 0, mH = 0;
         if (maskPng.Length > 0)
         {
-            using var mImg = Image.Load<Rgba32>(maskPng);
+            var mImg = PngPixels.Decode(maskPng, ColorComponents.RedGreenBlueAlpha);
             mW = mImg.Width; mH = mImg.Height;
-            mPx = new byte[mW * mH * 4];
-            mImg.CopyPixelDataTo(mPx);
+            mPx = mImg.Data;
         }
 
         return ExtractBinary(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH, mode);
@@ -757,26 +746,23 @@ public static class BiomeExtractor
     public static string ExtractFromFile(string mapTexCachePath, string? heightTexCachePath = null,
         string? maskTexCachePath = null)
     {
-        using var img = Image.Load<Rgb24>(mapTexCachePath);
-        var px = new byte[img.Width * img.Height * 3];
-        img.CopyPixelDataTo(px);
+        var img = PngPixels.Decode(mapTexCachePath, ColorComponents.RedGreenBlue);
+        var px = img.Data;
 
         byte[]? hPx = null; int hW = 0, hH = 0;
         if (heightTexCachePath != null && File.Exists(heightTexCachePath))
         {
-            using var hImg = Image.Load<Rgba32>(heightTexCachePath);
+            var hImg = PngPixels.Decode(heightTexCachePath, ColorComponents.RedGreenBlueAlpha);
             hW = hImg.Width; hH = hImg.Height;
-            hPx = new byte[hW * hH * 4];
-            hImg.CopyPixelDataTo(hPx);
+            hPx = hImg.Data;
         }
 
         byte[]? mPx = null; int mW = 0, mH = 0;
         if (maskTexCachePath != null && File.Exists(maskTexCachePath))
         {
-            using var mImg = Image.Load<Rgba32>(maskTexCachePath);
+            var mImg = PngPixels.Decode(maskTexCachePath, ColorComponents.RedGreenBlueAlpha);
             mW = mImg.Width; mH = mImg.Height;
-            mPx = new byte[mW * mH * 4];
-            mImg.CopyPixelDataTo(mPx);
+            mPx = mImg.Data;
         }
 
         return ExtractJson(px, img.Width, img.Height, hPx, hW, hH, mPx, mW, mH);
