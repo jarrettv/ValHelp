@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  MSIX package for the Microsoft Store. scripts/pack_tracker_msix.ps1 fills in the
-  $...$ placeholders (identity values come from Partner Center, Product identity).
-  The Store signs the package, so it is uploaded unsigned.
+  MSIX package for the Microsoft Store (ValHelp Tracker, Store ID 9NT24F1X6223).
+  The identity is from Partner Center, Product identity, and must match it exactly.
+  scripts/pack_tracker_msix.ps1 fills in $Version$ from the csproj. The Store signs
+  the package, so it is uploaded unsigned.
 -->
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -11,11 +12,12 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap desktop rescap">
 
-  <Identity Name="$IdentityName$" Publisher="$Publisher$" Version="$Version$" ProcessorArchitecture="x64" />
+  <Identity Name="ValheimHelp.ValHelpTracker" Publisher="CN=50F20251-2E09-4F69-BA06-7FD316EFF2E3"
+    Version="$Version$" ProcessorArchitecture="x64" />
 
   <Properties>
     <DisplayName>ValHelp Tracker</DisplayName>
-    <PublisherDisplayName>$PublisherDisplayName$</PublisherDisplayName>
+    <PublisherDisplayName>Valheim Help</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

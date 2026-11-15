@@ -84,21 +84,14 @@ jobs:
             tracker-out/ValHelpTracker.exe
             tracker-out/ValHelpTracker.json
 
-      # Microsoft Store package: download the tracker-msix artifact from the run and
-      # submit it in Partner Center (the Store signs it). Built once the repo variables
-      # MSIX_IDENTITY_NAME, MSIX_PUBLISHER and MSIX_PUBLISHER_DISPLAY_NAME are set,
-      # copied from Partner Center, Product identity. Bump <Version> in the csproj for
-      # each submission.
+      # Microsoft Store package (ValHelp Tracker, 9NT24F1X6223): download the
+      # tracker-msix artifact from the run and submit it in Partner Center (the Store
+      # signs it). Bump <Version> in the csproj for each submission.
       - name: Pack tracker MSIX
-        if: vars.MSIX_IDENTITY_NAME != ''
         shell: pwsh
-        run: >
-          ./scripts/pack_tracker_msix.ps1 -Exe tracker-out/ValHelpTracker.exe -Out tracker-msix/ValHelpTracker.msix
-          -IdentityName '${{ vars.MSIX_IDENTITY_NAME }}' -Publisher '${{ vars.MSIX_PUBLISHER }}'
-          -PublisherDisplayName '${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}'
+        run: ./scripts/pack_tracker_msix.ps1 -Exe tracker-out/ValHelpTracker.exe -Out tracker-msix/ValHelpTracker.msix
 
       - name: Upload tracker MSIX
-        if: vars.MSIX_IDENTITY_NAME != ''
         uses: actions/upload-artifact@v4
         with:
           name: tracker-msix

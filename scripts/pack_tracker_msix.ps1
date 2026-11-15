@@ -1,17 +1,13 @@
 # Packs a published ValHelpTracker.exe into an MSIX for the Microsoft Store.
 #
-#   pwsh scripts/pack_tracker_msix.ps1 -Exe tracker-out/ValHelpTracker.exe -Out tracker-msix/ValHelpTracker.msix `
-#     -IdentityName <Package/Identity/Name> -Publisher "CN=..." -PublisherDisplayName <name>
+#   pwsh scripts/pack_tracker_msix.ps1 -Exe tracker-out/ValHelpTracker.exe -Out tracker-msix/ValHelpTracker.msix
 #
-# The identity values are in Partner Center under the app's Product identity page.
+# The package identity is in character/Vh.Tracker/Package/AppxManifest.xml.
 # The version is the csproj <Version> plus a 4th part of 0 (the Store requires it).
 # Needs makeappx.exe from the Windows SDK (on GitHub's windows runners).
 param(
     [Parameter(Mandatory)] [string] $Exe,
-    [Parameter(Mandatory)] [string] $Out,
-    [string] $IdentityName = 'ValHelp.Tracker.Dev',
-    [string] $Publisher = 'CN=ValHelp Dev',
-    [string] $PublisherDisplayName = 'ValHelp'
+    [Parameter(Mandatory)] [string] $Out
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -26,12 +22,7 @@ New-Item -ItemType Directory $stage | Out-Null
 try {
     Copy-Item -Recurse (Join-Path $pkg 'Assets') $stage
     Copy-Item $Exe (Join-Path $stage 'ValHelpTracker.exe')
-    $esc = { param($s) [Security.SecurityElement]::Escape($s) }
-    (Get-Content -Raw (Join-Path $pkg 'AppxManifest.xml')).
-        Replace('$IdentityName$', (& $esc $IdentityName)).
-        Replace('$Publisher$', (& $esc $Publisher)).
-        Replace('$PublisherDisplayName$', (& $esc $PublisherDisplayName)).
-        Replace('$Version$', $version) |
+    (Get-Content -Raw (Join-Path $pkg 'AppxManifest.xml')).Replace('$Version$', $version) |
         Set-Content -Encoding utf8 (Join-Path $stage 'AppxManifest.xml')
 
     $makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" |
@@ -41,7 +32,7 @@ try {
     New-Item -ItemType Directory -Force (Split-Path $Out -Parent) | Out-Null
     & $makeappx.FullName pack /o /d $stage /p $Out
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed ($LASTEXITCODE)" }
-    Write-Host "Packed $Out (version $version, identity $IdentityName)"
+    Write-Host "Packed $Out (version $version)"
 }
 finally {
     Remove-Item -Recurse -Force $stage
