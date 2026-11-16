@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import ObsOverviewEdit from "./components/ObsOverviewEdit";
 import ObsScoreEdit from "./components/ObsScoreEdit";
 import ObsScoresEdit from "./components/ObsScoresEdit";
+import ObsBossesEdit from "./components/ObsBossesEdit";
 import { useAuth } from "./contexts/AuthContext";
 import { Event as Ev } from "./domain/event";
 
@@ -62,6 +63,8 @@ export default function Obs() {
           <ObsScoresEdit event={{} as Ev} playerId={status.id} obsCode={obsCode} />
           <br />
           <ObsOverviewEdit event={{} as Ev} playerId={status.id} obsCode={obsCode} />
+          <br />
+          <ObsBossesEdit obsCode={obsCode} />
         </>
       )}
     </section>

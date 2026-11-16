@@ -10,6 +10,7 @@ public static class CharActivate
         CharUpload.Map(app);
         CharEndpoints.Map(app);
         CharRead.Map(app);
+        CharObs.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)

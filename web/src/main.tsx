@@ -33,6 +33,7 @@ import Obs2Score from './Obs2Score.tsx'
 import Obs2Scoreboard from './Obs2Scoreboard.tsx'
 import Obs2Trophies from './Obs2Trophies.tsx'
 import Obs2Overview from './Obs2Overview.tsx'
+import Obs2Bosses from './Obs2Bosses.tsx'
 import Runs from './Runs.tsx'
 import SpeedRuns from './SpeedRuns.tsx'
 import PlayerLeaderboard from './PlayerLeaderboard';
@@ -133,6 +134,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/obs2/scores/:code" element={<Obs2Scoreboard />} />
           <Route path="/obs2/trophies/:code" element={<Obs2Trophies />} />
           <Route path="/obs2/overview/:code" element={<Obs2Overview />} />
+          <Route path="/obs2/bosses/:code" element={<Obs2Bosses />} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

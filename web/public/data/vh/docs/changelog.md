@@ -2,6 +2,10 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-11-16
+
+* **New speedrun boss overlay for OBS.** On the [OBS tools](/auth/obs) page, the **Speedrun Bosses** browser source puts a compact strip of every boss along the bottom of your stream. Before a kill, each boss shows whether you've found it (a Vegvisir pin) and the summon items you still need: Sealbreaker fragments then the Sealbreaker, bell fragments then the three bells, and for Kall the three Jotun invasions then the Malicious Blood. After the kill it shows a green check. It follows your latest tracked run, so it updates each time the game saves. You can set its size and colours.
+
 ## 2026-11-08
 
 * **The [seed finder](/seeds) keeps a session for each prefix.** Each one has its own settings, progress, totals and candidates. Pick a session to switch to it, and press **Resume** to carry on where it stopped. Everything stays in your browser.
