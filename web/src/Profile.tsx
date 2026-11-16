@@ -189,6 +189,15 @@ export default function Profile() {
             )}
             {isAdmin && (
               <li>
+                <Link to="/auth/obs-runs">
+                  <span className="tool-icon" aria-hidden="true">🎥</span>
+                  <span>Speedrun overlay control</span>
+                  <small>Push a run's boss overlay ahead of its last save</small>
+                </Link>
+              </li>
+            )}
+            {isAdmin && (
+              <li>
                 <Link to="/auth/pois">
                   <span className="tool-icon" aria-hidden="true">📍</span>
                   <span>POI icons</span>

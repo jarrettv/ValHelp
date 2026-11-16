@@ -11,6 +11,7 @@ public static class CharActivate
         CharEndpoints.Map(app);
         CharRead.Map(app);
         CharObs.Map(app);
+        CharObsAdmin.Map(app);
     }
 
     public static void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +22,8 @@ public static class CharActivate
         modelBuilder.Entity<Character>().ToTable("characters");
         modelBuilder.Entity<CharSnapshot>().ToTable("char_snapshots");
         modelBuilder.Entity<CharSnapshot>().Property(s => s.Data).HasColumnType("jsonb");
+        modelBuilder.Entity<CharObsOverride>().ToTable("char_obs_overrides").HasKey(o => o.CharacterId);
+        modelBuilder.Entity<CharObsOverride>().Property(o => o.Data).HasColumnType("jsonb");
         modelBuilder.Entity<CharMapTile>().ToTable("char_map_tiles")
             .HasKey(t => new { t.SnapshotId, t.WorldId, t.Tile });
     }

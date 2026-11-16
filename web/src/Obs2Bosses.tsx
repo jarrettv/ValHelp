@@ -103,7 +103,7 @@ export default function Obs2Bosses() {
       return res.json();
     },
     enabled: !!code && !demo,
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
   });
 
   if (demo) return <BossesView run={DEMO_RUN} params={sp} fixed />;

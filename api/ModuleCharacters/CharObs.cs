@@ -19,7 +19,8 @@ namespace ValHelpApi.ModuleCharacters;
 ///   craft     PlayerStats item crafts (Sealbreaker, Bells)
 ///   ready     Kall only: three Malicious Blood in the inventory
 ///   defeated  PlayerStats enemy kills (the player's own kills)
-/// A later stage done marks the earlier ones done too.
+/// A later stage done marks the earlier ones done too. An admin can push a run
+/// ahead of its last save (CharObsAdmin, <see cref="ObsOverride"/>).
 /// </summary>
 public static class CharObs
 {
@@ -76,21 +77,75 @@ public static class CharObs
             .Select(c => new { c.Id, c.Name })
             .FirstOrDefaultAsync(cancel);
         if (c == null) return TypedResults.NotFound();
+        var run = await Load(db, c.Id, c.Name, cancel);
+        if (run == null) return TypedResults.NotFound();
+
+        ctx.Response.Headers.CacheControl = "no-store";
+        return TypedResults.Ok(run.Value.Effective);
+    }
+
+    /// <summary>
+    /// A character's boss progress from its newest save (Auto) and with the admin's
+    /// manual progress on top (Effective). Null when it has no save yet.
+    /// </summary>
+    internal static async Task<(RunOut Auto, RunOut Effective, ObsOverride Override)?> Load(
+        AppDbContext db, long characterId, string name, CancellationToken cancel)
+    {
         var snap = await db.Set<CharSnapshot>().AsNoTracking()
-            .Where(s => s.CharacterId == c.Id)
+            .Where(s => s.CharacterId == characterId)
             .OrderByDescending(s => s.FileTime)
+            .Select(s => new { s.FileTime, s.AxisSeconds, s.WorldId, s.Data })
             .FirstOrDefaultAsync(cancel);
-        if (snap == null) return TypedResults.NotFound();
+        if (snap == null) return null;
         long? worldUid = snap.WorldId is { } wid
             ? await db.Set<CharWorld>().Where(w => w.Id == wid).Select(w => (long?)w.Uid).SingleOrDefaultAsync(cancel)
             : null;
+        var ovJson = await db.Set<CharObsOverride>().AsNoTracking()
+            .Where(o => o.CharacterId == characterId).Select(o => o.Data).SingleOrDefaultAsync(cancel);
+        var ov = ovJson == null ? new ObsOverride([])
+            : JsonSerializer.Deserialize<ObsOverride>(ovJson, CharSnapshotJson.Json) ?? new ObsOverride([]);
 
-        ctx.Response.Headers.CacheControl = "no-store";
-        return TypedResults.Ok(new RunOut(c.Id, c.Name, snap.FileTime, snap.AxisSeconds, Progress(snap.Data, worldUid)));
+        var auto = Progress(snap.Data, worldUid);
+        RunOut Out(BossState[] states) => new(characterId, name, snap.FileTime, snap.AxisSeconds, Build(states));
+        return (Out(auto), Out(Apply(auto, ov)), ov);
     }
 
-    /// <summary>Boss progress from a snapshot's JSON (CharSnapshotJson); worldUid: the world played, else the most explored.</summary>
-    internal static BossOut[] Progress(string data, long? worldUid)
+    /// <summary>What the save says about one boss, before the stages are worked out.</summary>
+    internal record BossState(string Key, bool Found, bool Defeated, int[] Have);
+
+    /// <summary>
+    /// Manual progress for a run (char_obs_overrides.data), per boss key. Each value is a
+    /// floor over the save: it can put a boss ahead of the last save, and later saves only
+    /// move it further. Steps: one count per summon step, null to leave it to the save.
+    /// </summary>
+    public record ObsOverride(Dictionary<string, BossOverride> Bosses);
+    public record BossOverride(bool? Found, bool? Defeated, int?[]? Steps);
+
+    internal static BossState[] Apply(BossState[] auto, ObsOverride ov) => auto.Select(a =>
+    {
+        if (!ov.Bosses.TryGetValue(a.Key, out var o)) return a;
+        var have = a.Have.Select((h, i) => o.Steps is { } s && i < s.Length && s[i] is { } m ? Math.Max(h, m) : h).ToArray();
+        return new BossState(a.Key, a.Found || o.Found == true, a.Defeated || o.Defeated == true, have);
+    }).ToArray();
+
+    internal static bool IsBoss(string key) => Bosses.Any(b => b.Key == key);
+    internal static int StepCount(string key) => Bosses.Single(b => b.Key == key).Steps.Length;
+
+    /// <summary>The overlay's view: a later stage done marks the earlier ones done; dead bosses count as found.</summary>
+    internal static BossOut[] Build(BossState[] states) => states.Select(st =>
+    {
+        var b = Bosses.Single(x => x.Key == st.Key);
+        var done = new bool[b.Steps.Length];
+        bool later = st.Defeated;
+        for (int i = b.Steps.Length - 1; i >= 0; i--)
+            later = done[i] = later || st.Have[i] >= b.Steps[i].Need;
+        var steps = b.Steps.Select((s, i) => new StepOut(s.Kind, s.Label, s.Item,
+            done[i] ? s.Need : Math.Min(st.Have[i], s.Need), s.Need, done[i])).ToArray();
+        return new BossOut(b.Key, b.Name, b.Icon, b.Phase, st.Found || st.Defeated, st.Defeated, steps);
+    }).ToArray();
+
+    /// <summary>Boss state from a snapshot's JSON (CharSnapshotJson); worldUid: the world played, else the most explored.</summary>
+    internal static BossState[] Progress(string data, long? worldUid)
     {
         using var doc = JsonDocument.Parse(data);
         var root = doc.RootElement;
@@ -139,14 +194,8 @@ public static class CharObs
                 "ready" => Held(s.Item),
                 _ => Math.Max((int)pickups.GetValueOrDefault(s.Token), Held(s.Item)),
             }).ToArray();
-            var done = new bool[b.Steps.Length];
-            bool later = defeated;
-            for (int i = b.Steps.Length - 1; i >= 0; i--)
-                later = done[i] = later || have[i] >= b.Steps[i].Need;
-            bool found = defeated || pins.Any(p => p == "$enemy_" + b.Key || p.StartsWith("$enemy_" + b.Key + "_"));
-            var steps = b.Steps.Select((s, i) => new StepOut(s.Kind, s.Label, s.Item,
-                done[i] ? s.Need : Math.Min(have[i], s.Need), s.Need, done[i])).ToArray();
-            return new BossOut(b.Key, b.Name, b.Icon, b.Phase, found, defeated, steps);
+            bool found = pins.Any(p => p == "$enemy_" + b.Key || p.StartsWith("$enemy_" + b.Key + "_"));
+            return new BossState(b.Key, found, defeated, have);
         }).ToArray();
     }
 

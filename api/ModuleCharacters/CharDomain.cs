@@ -80,6 +80,14 @@ public class CharSnapshot
     public string Data { get; set; } = "{}";
 }
 
+/// <summary>An admin's manual boss progress for a run's OBS overlay (CharObs.ObsOverride as JSON).</summary>
+public class CharObsOverride
+{
+    public long CharacterId { get; set; }
+    public string Data { get; set; } = "{}";
+    public DateTime UpdatedAt { get; set; }
+}
+
 public class CharMapTile
 {
     public long SnapshotId { get; set; }
