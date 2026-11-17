@@ -33,14 +33,6 @@ function progress(b: BossProgress): number {
   return b.steps.reduce((t, s) => t + Math.min(1, s.have / s.need), 0) / b.steps.length;
 }
 
-const SwordsIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <g stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" fill="none">
-      <path d="M4 4l11 11M20 4L9 15M13 17l4-4M11 17l-4-4M17.5 17.5l2.5 2.5M6.5 17.5L4 20" />
-    </g>
-  </svg>
-);
-
 export default function RunBosses({ charId, snapId, worldId }: { charId: number; snapId: number; worldId: number }) {
   const q = useQuery<BossProgress[]>({
     queryKey: ['char-bosses', charId, snapId, worldId],
@@ -79,7 +71,7 @@ export default function RunBosses({ charId, snapId, worldId }: { charId: number;
     return (
       <div className="rb" ref={ref}>
         <button className="rb-tab" onClick={() => setOpen(true)} title="Show bosses" aria-label={`Bosses: ${dead} of ${bosses.length} defeated. Show`}>
-          <SwordsIcon /><span>{dead}/{bosses.length}</span>
+          <span className="rb-tab-icon" aria-hidden="true" /><span>{dead}/{bosses.length}</span>
         </button>
       </div>
     );
