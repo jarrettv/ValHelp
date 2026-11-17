@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import StoreBadge from './components/StoreBadge';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router';
 import { useAuth } from './contexts/AuthContext';
@@ -9,8 +10,6 @@ import './Characters.css';
 // Runs (character tracking) home: what it is, the tracker download, your
 // tracked characters and the PCs linked to your account. ?player=<user id>
 // lists another player's runs instead (characters are public).
-
-export const TRACKER_DOWNLOAD = '/downloads/ValHelpTracker.exe';
 
 interface Device { id: number; name: string; createdAt: string; lastSeenAt: string }
 
@@ -97,17 +96,12 @@ function Mine() {
 function GetTracker() {
   return (
     <>
-      <h2>The tracker</h2>
-      <p>
-        A small Windows app that sits in the system tray while you play. It sends the character saves you choose
-        to this site whenever the game saves; nothing else on your PC is read. It needs nothing else installed and
-        uses a few MB of memory.
-      </p>
-      <ol className="chars-steps">
-        <li><Link to="/tracker">Download ValHelpTracker.exe</Link> (with its safety report) and run it.</li>
-        <li>Your browser opens to link it: log in and confirm the code it shows.</li>
-        <li>Right-click the tray icon and tick the characters to track. Their earlier backups are sent too, so the timeline starts before you installed it.</li>
-      </ol>
+      <h2>Get the tracker</h2>
+      <p>A Windows tray app that sends the saves of the characters you pick.</p>
+      <div className="tracker-get">
+        <StoreBadge />
+        <Link to="/tracker">More info</Link>
+      </div>
     </>
   );
 }

@@ -87,6 +87,19 @@
 /* ── /tracker: download + safety report ─────────────── */
 .tracker-get { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 18px 0 14px; }
 .tracker-meta { color: #8b949e; font-size: 13px; }
+.store-badge { display: inline-block; line-height: 0; }
+.store-badge img { display: block; height: auto; }
+.store-badge:hover img { filter: brightness(1.15); }
+.tracker-direct {
+  margin: 4px 0 18px;
+  padding: 8px 12px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #a6adb5;
+}
+.tracker-direct summary { cursor: pointer; color: #8b949e; font-size: 14px; }
+.tracker-direct[open] summary { margin-bottom: 6px; }
+.tracker-direct h3 { font-size: 15px; margin: 12px 0 6px; }
 .tracker-note {
   padding: 10px 12px;
   border: 1px solid rgba(255, 179, 71, 0.4);

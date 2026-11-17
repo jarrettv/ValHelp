@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
-import { TRACKER_DOWNLOAD } from './Characters';
+import StoreBadge from './components/StoreBadge';
+import { TRACKER_DOWNLOAD, TRACKER_STORE_APP } from './trackerLinks';
 import './Characters.css';
 
-// /tracker: the tracker download with a short safety report, what CI says about
-// the build (ValHelpTracker.json, written next to the exe), and how to check the
-// file yourself. The report describes character/Vh.Tracker as reviewed on the
-// date below; re-read the code and update it when the tracker changes what it
-// reads, sends or writes.
+// /tracker: get the tracker (Microsoft Store first), a short safety report, and
+// for the direct download what CI says about the build (ValHelpTracker.json,
+// written next to the exe) and how to check the file. The report describes
+// character/Vh.Tracker as reviewed on the date below; re-read the code and
+// update it when the tracker changes what it reads, sends or writes.
 
 const MANIFEST = '/downloads/ValHelpTracker.json';
 const SOURCE = 'https://github.com/jarrettv/ValHelp/tree/main/character/Vh.Tracker';
@@ -34,107 +35,90 @@ export default function TrackerDownload() {
     staleTime: 5 * 60_000,
   });
   const m = manifest.data;
+  const source = m ? `https://github.com/jarrettv/ValHelp/tree/${m.commit}/character/Vh.Tracker` : SOURCE;
 
   return (
     <div className="chars-page tracker-page">
       <h1>ValHelp Tracker</h1>
       <p>
-        A small Windows tray app for <Link to="/runs">Runs</Link>. Whenever Valheim saves a character you&apos;ve
-        chosen, it sends that save here so the site can draw the map you&apos;ve uncovered, your gear and your
-        timeline. You don&apos;t need to install anything else, and it uses a few MB of memory.
+        A Windows tray app for <Link to="/runs">Runs</Link>. When Valheim saves a character you picked, it uploads
+        that save. Free, Windows 10/11, a few MB of memory.
       </p>
 
       <div className="tracker-get">
-        <a className="chars-btn" href={TRACKER_DOWNLOAD} download>Download ValHelpTracker.exe</a>
+        <StoreBadge width={200} />
         <span className="tracker-meta">
-          {m ? <>v{m.version} · {(m.size / 1048576).toFixed(1)} MB · Windows 10/11, 64-bit</> : 'Windows 10/11, 64-bit'}
+          Updates through the Store. <a href={TRACKER_STORE_APP}>Open in the Store app</a>
         </span>
       </div>
       <ol className="chars-steps">
-        <li>Run it. Your browser opens to link it to your account: log in and confirm the code it shows.</li>
+        <li>Install it, then open <strong>ValHelp Tracker</strong> from Start.</li>
+        <li>Log in when your browser opens and confirm the code.</li>
         <li>Right-click the tray icon and tick the characters to track.</li>
       </ol>
-      {m && !m.signed && (
-        <p className="tracker-note">
-          This build isn&apos;t code-signed yet, so Windows may show &ldquo;Windows protected your PC&rdquo;. Choose
-          <strong> More info</strong>, then <strong>Run anyway</strong>, or check the file first with the steps below.
-        </p>
-      )}
 
-      <h2>Safety report</h2>
-      <p className="tracker-reviewed">From a review of the source code on {REVIEWED}. See also the <Link to="/privacy">privacy policy</Link>.</p>
+      <h2>Safety</h2>
+      <p className="tracker-reviewed">Source reviewed {REVIEWED}. See the <Link to="/privacy">privacy policy</Link>.</p>
       <ul className="tracker-audit">
+        <li><strong>No admin rights</strong>, no driver, no background service.</li>
         <li>
-          <strong>No admin rights.</strong> It runs as you and never asks for permission to change your PC. It has
-          no installer, no driver and no background service.
+          <strong>Reads only save folders</strong> (<code>characters_local</code>, <code>characters</code>, Steam
+          cloud), read-only.
         </li>
         <li>
-          <strong>Reads only Valheim&apos;s save folders</strong> (<code>characters_local</code>,{' '}
-          <code>characters</code> and Steam cloud saves), and opens files read-only. It never changes or deletes a save.
+          <strong>Sends only what you tick:</strong> those characters&apos; saves and backups, your worlds&apos;
+          small <code>.fwl</code> files (to tell the seed), and the in-game clock from each world save. Your PC&apos;s
+          name once, when linking.
         </li>
         <li>
-          <strong>Sends only what you tick:</strong> the save files of the characters you chose, including their
-          backups. It also sends your worlds&apos; small <code>.fwl</code> files, so the site can tell which seed each
-          one is, plus the first 12 bytes of a world save, which hold the in-game clock. Your PC&apos;s name is sent
-          once, when you link it.
+          <strong>Talks only to valheim.help</strong>, over HTTPS. No analytics, no ads, never downloads or runs code.
         </li>
         <li>
-          <strong>Talks to one place:</strong> valheim.help over HTTPS. It sends no analytics, has no ads and no
-          auto-update, and never downloads or runs code. The only other things it opens are this site in your browser
-          and its own log file.
+          <strong>No password stored.</strong> It holds a random token; the site keeps only its hash. Unlink any
+          time from the tray or <Link to="/runs">Runs</Link>.
         </li>
         <li>
-          <strong>No password stored.</strong> You approve the link in your browser and the app gets a random
-          token. The site keeps only a hash of that token. You can unlink the PC from the tray menu or
-          from <Link to="/runs">Runs</Link> at any time.
+          <strong>Easy to remove:</strong> right-click it in Start, <strong>Uninstall</strong>. It only writes a
+          settings file and a log (512 KB max).
         </li>
         <li>
-          <strong>Easy to remove.</strong> It writes only a settings file and a log (capped at 512 KB) in{' '}
-          <code>%LOCALAPPDATA%\ValHelp\Tracker</code>, plus a &ldquo;Start with Windows&rdquo; entry you can untick.
-          To remove it, untick that entry, exit, and delete the exe and that folder.
-        </li>
-        <li>
-          <strong>Open source.</strong> About 1,000 lines of C# under GPL-3.0, with no third-party packages.
-          The exe is built by GitHub Actions from the <a href={SOURCE}>public code</a> each time the site is updated.
-          {m && <> This download is from commit{' '}
-            <a href={`https://github.com/jarrettv/ValHelp/tree/${m.commit}/character/Vh.Tracker`}><code>{m.commit.slice(0, 7)}</code></a>
-            {m.signed ? <>, signed by {m.signer ?? 'ValHelp'}.</> : '.'}
-          </>}
+          <strong>Open source:</strong> ~1,000 lines of C#, GPL-3.0, no third-party packages.{' '}
+          <a href={SOURCE}>Read the code</a>.
         </li>
       </ul>
 
-      <h2>Check it yourself</h2>
-      {m ? (
-        <>
-          <p>The SHA-256 fingerprint of this download:</p>
-          <code className="tracker-hash">{m.sha256}</code>
-          <ul className="chars-steps">
-            <li>
-              In PowerShell, run <code>Get-FileHash .\ValHelpTracker.exe</code> in your Downloads folder. The hash
-              should match the one above.
-            </li>
-            <li>
-              Look it up on <a href={`https://www.virustotal.com/gui/file/${m.sha256}`} target="_blank" rel="noreferrer">VirusTotal</a>,
-              which scans it with about 70 antivirus engines. If it says it hasn&apos;t seen the file yet, upload your copy there.
-            </li>
-            <li>
-              Read the <a href={`https://github.com/jarrettv/ValHelp/tree/${m.commit}/character/Vh.Tracker`}>source for this build</a>,
-              or build it yourself with <code>dotnet publish character/Vh.Tracker -c Release</code>.
-            </li>
-          </ul>
-        </>
-      ) : (
+      <details className="tracker-direct">
+        <summary>Direct download (not recommended)</summary>
+        <p>
+          A single <code>.exe</code> for PCs without the Store. It <strong>doesn&apos;t update itself</strong>: download
+          it again for each new version. To remove it, turn off its Start with Windows entry, exit, and delete the exe
+          and <code>%LOCALAPPDATA%\ValHelp\Tracker</code>.
+        </p>
+        <p>
+          <a href={TRACKER_DOWNLOAD} download>Download ValHelpTracker.exe</a>
+          {m && <span className="tracker-meta"> · v{m.version} · {(m.size / 1048576).toFixed(1)} MB</span>}
+        </p>
+        {m && !m.signed && (
+          <p className="tracker-note">
+            Not code-signed, so Windows may say &ldquo;Windows protected your PC&rdquo;: choose <strong>More info</strong>,
+            then <strong>Run anyway</strong>.
+          </p>
+        )}
+        <h3>Check the file</h3>
+        {m && <code className="tracker-hash">SHA-256 {m.sha256}</code>}
         <ul className="chars-steps">
+          {m && <li>PowerShell: <code>Get-FileHash .\ValHelpTracker.exe</code> should match.</li>}
           <li>
-            Upload the file to <a href="https://www.virustotal.com/gui/home/upload" target="_blank" rel="noreferrer">VirusTotal</a>,
-            which scans it with about 70 antivirus engines.
+            Scan it on <a href={m ? `https://www.virustotal.com/gui/file/${m.sha256}` : 'https://www.virustotal.com/gui/home/upload'}
+              target="_blank" rel="noreferrer">VirusTotal</a>.
           </li>
           <li>
-            Read the <a href={SOURCE}>source code</a>, or build it yourself
+            Built by GitHub Actions from <a href={source}>{m ? <>commit <code>{m.commit.slice(0, 7)}</code></> : 'the public code'}</a>
+            {m?.signed ? <>, signed by {m.signer ?? 'ValHelp'}</> : null}. Build it yourself
             with <code>dotnet publish character/Vh.Tracker -c Release</code>.
           </li>
         </ul>
-      )}
+      </details>
     </div>
   );
 }
