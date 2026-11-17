@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import RunBosses from './components/RunBosses';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router';
 import WorldMap, { type MapView, type PoiMarker } from './components/WorldMap';
@@ -359,6 +360,7 @@ function TrackView({ char, world, initialIndex, onWorld }: {
           pinned={!i} onClose={() => setPinnedPoi(null)} />
       ))}
 
+      <RunBosses charId={char.id} snapId={snap.id} worldId={world.id} />
       <MaximizeButton maximized={maximized} onClick={() => setMaximized()} />
       {seed && <WorldsFeedback seed={seed} className="worlds-feedback" />}
       {ready && spoilers && (

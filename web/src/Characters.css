@@ -491,3 +491,125 @@
   .ctl-label { min-width: 0; }
   .ctl-label small { display: none; }
 }
+
+/* ── Run page boss tracker (RunBosses): docked right, folds to a tab ── */
+.rb {
+  --rb-tile: clamp(24px, calc((100vh - 280px) / 9), 34px);
+  position: absolute;
+  right: 12px;
+  top: 60px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.rb.open {
+  padding: 4px;
+  background: rgba(20, 24, 32, 0.88);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+.rb button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.rb-tab, .rb-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 0;
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #a6adb5;
+}
+.rb-tab {
+  flex-direction: column;
+  width: 36px;
+  padding: 6px 0 5px;
+  background: rgba(20, 24, 32, 0.88);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+.rb-tab svg { width: 18px; height: 18px; color: #ffb347; }
+.rb-tab:hover, .rb-head:hover { color: #fff; border-color: #ffb347; }
+.rb-head { width: 100%; height: 18px; padding: 0; border-radius: 4px; }
+.rb-fold { font-size: 15px; line-height: 1; }
+
+.rb-tile {
+  position: relative;
+  width: var(--rb-tile);
+  height: var(--rb-tile);
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.rb-tile:hover, .rb-tile.active { border-color: #ffb347; }
+.rb-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0.45);
+}
+.rb-tile.found img { filter: none; }
+.rb-tile.dead { background: rgba(63, 185, 80, 0.14); }
+.rb-tile.dead img { filter: brightness(0.8); }
+.rb-check {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3fb950;
+  color: #0d1117;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 14px;
+  text-align: center;
+  box-shadow: 0 0 0 2px #14181f;
+}
+.rb-bar {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 1px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+.rb-bar i { display: block; height: 100%; background: #ffb347; }
+
+.rb-tip {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: max-content;
+  max-width: 200px;
+  padding: 5px 8px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #14181f;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  text-align: left;
+  pointer-events: none;
+}
+.rb-tip strong { color: #e6edf3; }
+.rb-tip span { color: #a6adb5; }
+
+@media (max-width: 640px) {
+  .rb { right: 8px; top: 56px; }
+}

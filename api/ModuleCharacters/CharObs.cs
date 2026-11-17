@@ -27,6 +27,37 @@ public static class CharObs
     internal static void Map(WebApplication app)
     {
         app.MapGet("api/obs/run/{code}", Run);
+        app.MapGet("api/char/{id:long}/snapshots/{sid:long}/bosses", AtSave);
+    }
+
+    /// <summary>
+    /// The run page's boss tracker: boss progress at one save (characters are public). Pins are
+    /// read from ?world= (the world on screen), else the save's own world. The newest save also
+    /// carries the admin's manual progress, as the OBS overlay does.
+    /// </summary>
+    public static async Task<Results<Ok<BossOut[]>, NotFound>> AtSave(long id, long sid, long? world, AppDbContext db,
+        CancellationToken cancel)
+    {
+        var snap = await db.Set<CharSnapshot>().AsNoTracking()
+            .Where(s => s.Id == sid && s.CharacterId == id)
+            .Select(s => new { s.FileTime, s.WorldId, s.Data })
+            .SingleOrDefaultAsync(cancel);
+        if (snap == null) return TypedResults.NotFound();
+        long? worldId = world ?? snap.WorldId;
+        long? worldUid = worldId is { } wid
+            ? await db.Set<CharWorld>().Where(w => w.Id == wid).Select(w => (long?)w.Uid).SingleOrDefaultAsync(cancel)
+            : null;
+
+        var states = Progress(snap.Data, worldUid);
+        bool newest = !await db.Set<CharSnapshot>().AnyAsync(s => s.CharacterId == id && s.FileTime > snap.FileTime, cancel);
+        if (newest)
+        {
+            var ovJson = await db.Set<CharObsOverride>().AsNoTracking()
+                .Where(o => o.CharacterId == id).Select(o => o.Data).SingleOrDefaultAsync(cancel);
+            if (ovJson != null && JsonSerializer.Deserialize<ObsOverride>(ovJson, CharSnapshotJson.Json) is { } ov)
+                states = Apply(states, ov);
+        }
+        return TypedResults.Ok(Build(states));
     }
 
     /// <summary>Kind: gather | craft | ready. Item: prefab name (icon).</summary>
