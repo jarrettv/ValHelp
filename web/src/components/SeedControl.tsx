@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { Link } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
-import { usePublicWorlds } from './publicWorlds';
+import { PUBLIC_WORLDS_KEY, usePublicWorlds, type PublicWorldsResp } from './publicWorlds';
 import { usePinnedWorlds } from './pinnedWorlds';
 import { LOCAL_WORLD_LIMIT, deleteLocalWorld, useLocalWorlds } from '../worldgen/localWorlds';
 import { track } from '../lib/analytics';
@@ -72,6 +72,18 @@ const SOURCE: Record<WorldSource, { icon: () => ReactElement; label: string; tit
   pinned: { icon: CloudIcon, label: 'pinned', title: 'Pinned to your account: kept on this device and generated on your others' },
 };
 
+/** A public world's user (avatar) and tiny tag, between its name and the badges. */
+function PublicMeta({ info }: { info?: { tag: string | null; username: string | null; avatarUrl: string | null } }) {
+  if (!info || (!info.tag && !info.avatarUrl)) return null;
+  return (
+    <span className="seed-control-meta">
+      {info.avatarUrl && <img className="seed-control-avatar" src={info.avatarUrl} alt={info.username ?? ''}
+                              title={info.username ?? undefined} loading="lazy" />}
+      {info.tag && <span className="seed-control-tag">{info.tag}</span>}
+    </span>
+  );
+}
+
 /** Valheim seeds are at most 10 characters. */
 const SEED_MAX = 10;
 
@@ -95,7 +107,7 @@ export default function SeedControl({ seed, source, isOwner, onOpen, onRemoved, 
   const qc = useQueryClient();
   const { status: auth } = useAuth();
   const loggedIn = !!auth?.id;
-  const { seeds: publicSeeds } = usePublicWorlds();
+  const { seeds: publicSeeds, bySeed: publicInfo } = usePublicWorlds();
   const pub = publicSeeds ?? [];
   const pins = usePinnedWorlds(loggedIn);
   const locals = useLocalWorlds(open) ?? [];
@@ -117,9 +129,9 @@ export default function SeedControl({ seed, source, isOwner, onOpen, onRemoved, 
         body: JSON.stringify({ seeds }),
       });
       if (!r.ok) throw new Error(await r.text() || `HTTP ${r.status}`);
-      return (await r.json()).seeds as string[];
+      return (await r.json()) as PublicWorldsResp;
     },
-    onSuccess: seeds => qc.setQueryData(['public-worlds'], seeds),
+    onSuccess: resp => qc.setQueryData(PUBLIC_WORLDS_KEY, resp),
   });
 
   // Close on a click elsewhere or Escape.
@@ -184,6 +196,7 @@ export default function SeedControl({ seed, source, isOwner, onOpen, onRemoved, 
                   <button role="option" aria-selected={s === seed} className={`seed-control-pick${s === seed ? ' current' : ''}`}
                           onClick={() => go(s)}>
                     <span className="seed-control-name">{s}</span>
+                    <PublicMeta info={publicInfo.get(s)} />
                     {i === 0 && <span className="seed-control-badge">default</span>}
                   </button>
                   {isOwner && (

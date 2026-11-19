@@ -25,6 +25,7 @@ import TrackerDownload from './TrackerDownload.tsx'
 import Privacy from './Privacy.tsx'
 import AdminEvents from './AdminEvents.tsx'
 import AdminObsRuns from './AdminObsRuns.tsx'
+import AdminPublicWorlds from './AdminPublicWorlds.tsx'
 import PlayerComponent from './Player.tsx'
 import EventScore from './EventScore.tsx'
 import EventScoreboard from './EventScoreboard.tsx'
@@ -79,6 +80,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/seeds" element={<Navigate to="/seeds" replace />} />
             <Route path="/auth/events" element={<AdminEvents />} />
             <Route path="/auth/obs-runs" element={<AdminObsRuns />} />
+            <Route path="/auth/public-worlds" element={<AdminPublicWorlds />} />
             <Route path="/auth/obs" element={<Obs />} />
             <Route path="/auth/profile" element={<Profile />} />
             <Route path="/events/hunt" element={<EventRedirect mode="TrophyHunt" />} />

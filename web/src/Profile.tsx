@@ -207,6 +207,15 @@ export default function Profile() {
             )}
             {isAdmin && (
               <li>
+                <Link to="/auth/public-worlds">
+                  <span className="tool-icon" aria-hidden="true">🌍</span>
+                  <span>Public worlds</span>
+                  <small>Set each public world's user and tag</small>
+                </Link>
+              </li>
+            )}
+            {isAdmin && (
+              <li>
                 <Link to="/auth/worldgen">
                   <span className="tool-icon" aria-hidden="true">🗺️</span>
                   <span>Worldgen in the browser</span>
