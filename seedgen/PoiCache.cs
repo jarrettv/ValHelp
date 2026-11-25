@@ -22,7 +22,8 @@ public static class PoiCache
     // 8: wild beehives in contents.
     // 9: terrain heights bit-exact with the game (camp layouts and lava checks read them).
     // 10: POI adornments (plain locations' chests rolled, vegvisir arrows).
-    public const int Version = 10;
+    // 11: Valheim 1.0.30 (Death Plains tar pits, GoblinCamp2_1, new chest tables).
+    public const int Version = 11;
 
     static readonly ConcurrentDictionary<string, object> s_locks = new();
 

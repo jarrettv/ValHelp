@@ -573,6 +573,12 @@ public static class LocationFinder
         ["TarPit1"] = ("TarPit", "Tar Pit"),
         ["TarPit2"] = ("TarPit", "Tar Pit"),
         ["TarPit3"] = ("TarPit", "Tar Pit"),
+        // 1.0.30: Death Plains variants, placed only in that alt biome.
+        ["TarPit1_1"] = ("TarPit", "Tar Pit"),
+        ["TarPit2_1"] = ("TarPit", "Tar Pit"),
+        ["TarPit3_1"] = ("TarPit", "Tar Pit"),
+        // Alt-biome Fuling camp; its biome area was 0 (never placed) before 1.0.30.
+        ["GoblinCamp2_1"] = ("Totem", "Fuling Totem"),
         ["VoltureNest"] = ("VoltureNest", "Volture Nest"),
         ["Waymarker01"] = ("Waymarker", "Waymarker"),
         ["Waymarker02"] = ("Waymarker", "Waymarker"),

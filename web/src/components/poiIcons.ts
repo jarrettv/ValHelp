@@ -323,7 +323,8 @@ export function defaultPoiIcon(poi: PoiMarker): IconRule | null {
     case 'Totem':
       switch (poi.prefab) {
         case 'StoneTower1':  return { icon: 'stonetower', color: '#c8a050', lod: 2 };
-        case 'GoblinCamp2':  return { icon: 'goblincamp', color: '#c8a050', lod: 2 };
+        case 'GoblinCamp2':
+        case 'GoblinCamp2_1': return { icon: 'goblincamp', color: '#c8a050', lod: 2 };
         default:             return { icon: 'totem',      color: '#c8a050', lod: 2 };
       }
     case 'GoblinHut':        return { icon: 'goblinhut',      color: '#ffffff', lod: 3 };

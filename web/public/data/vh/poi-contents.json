@@ -1002,94 +1002,80 @@
     "items": [
      {
       "item": "AncientCoin",
-      "chance": 0.948,
-      "min": 11,
-      "max": 55,
-      "weight": 0.2852
+      "chance": 0.961,
+      "min": 5,
+      "max": 11,
+      "weight": 0.303
      },
      {
       "item": "Bronze",
-      "chance": 0.82,
+      "chance": 0.856,
       "min": 1,
       "max": 5,
-      "weight": 0.1426
-     },
-     {
-      "item": "Copper",
-      "chance": 0.819,
-      "min": 1,
-      "max": 5,
-      "weight": 0.1426
+      "weight": 0.1515
      },
      {
       "item": "Tin",
-      "chance": 0.817,
+      "chance": 0.851,
       "min": 1,
       "max": 5,
-      "weight": 0.1426
+      "weight": 0.1515
+     },
+     {
+      "item": "Copper",
+      "chance": 0.85,
+      "min": 1,
+      "max": 5,
+      "weight": 0.1515
      },
      {
       "item": "BlackCore",
-      "chance": 0.598,
+      "chance": 0.646,
       "min": 1,
       "max": 1,
-      "weight": 0.0713
+      "weight": 0.0758
      },
      {
       "item": "AncientGemstoneGreen",
-      "chance": 0.593,
+      "chance": 0.334,
       "min": 1,
       "max": 1,
-      "weight": 0.0713
+      "weight": 0.0303
      },
      {
       "item": "AncientGemstoneOrange",
-      "chance": 0.511,
+      "chance": 0.333,
       "min": 1,
       "max": 1,
-      "weight": 0.057
-     },
-     {
-      "item": "AncientGemstonePurple",
-      "chance": 0.412,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0428
-     },
-     {
-      "item": "AncientGemstoneBlack",
-      "chance": 0.293,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0285
-     },
-     {
-      "item": "Upgrader6Armor",
-      "chance": 0.082,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0071
-     },
-     {
-      "item": "Upgrader6Weapon",
-      "chance": 0.041,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0036
+      "weight": 0.0303
      },
      {
       "item": "Upgrader7Armor",
-      "chance": 0.04,
+      "chance": 0.33,
       "min": 1,
       "max": 1,
-      "weight": 0.0036
+      "weight": 0.0303
+     },
+     {
+      "item": "AncientGemstoneBlack",
+      "chance": 0.329,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0303
+     },
+     {
+      "item": "AncientGemstonePurple",
+      "chance": 0.328,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0303
      },
      {
       "item": "Upgrader7Weapon",
-      "chance": 0.021,
+      "chance": 0.175,
       "min": 1,
       "max": 1,
-      "weight": 0.0018
+      "weight": 0.0152
      }
     ]
    }
@@ -1919,6 +1905,19 @@
      "max": 1
     }
    ]
+  },
+  "Pickable_Forestlantern": {
+   "kind": "pickup",
+   "name": "Salvaged Lantern",
+   "items": [
+    {
+     "item": "Lantern_DN",
+     "chance": 1,
+     "min": 1,
+     "max": 1
+    }
+   ],
+   "respawnMinutes": 60.0
   },
   "Pickable_FrostCoreHanger": {
    "kind": "pickup",
@@ -3320,46 +3319,46 @@
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.555,
-      "min": 99,
-      "max": 199,
-      "weight": 0.1873
-     },
-     {
       "item": "CharredBone",
-      "chance": 0.553,
+      "chance": 0.552,
       "min": 3,
       "max": 12,
-      "weight": 0.1873
+      "weight": 0.1866
+     },
+     {
+      "item": "Coins",
+      "chance": 0.552,
+      "min": 99,
+      "max": 199,
+      "weight": 0.1866
      },
      {
       "item": "Blackwood",
-      "chance": 0.548,
-      "min": 1,
-      "max": 2,
-      "weight": 0.1873
-     },
-     {
-      "item": "ArrowCarapace",
-      "chance": 0.547,
-      "min": 3,
-      "max": 12,
-      "weight": 0.1873
-     },
-     {
-      "item": "MoltenCore",
       "chance": 0.546,
       "min": 1,
       "max": 2,
-      "weight": 0.1873
+      "weight": 0.1866
+     },
+     {
+      "item": "MoltenCore",
+      "chance": 0.544,
+      "min": 1,
+      "max": 2,
+      "weight": 0.1866
+     },
+     {
+      "item": "ArrowCarapace",
+      "chance": 0.543,
+      "min": 3,
+      "max": 12,
+      "weight": 0.1866
      },
      {
       "item": "Upgrader5Armor",
-      "chance": 0.141,
+      "chance": 0.139,
       "min": 1,
       "max": 1,
-      "weight": 0.0375
+      "weight": 0.0373
      },
      {
       "item": "Upgrader5Weapon",
@@ -3370,10 +3369,10 @@
      },
      {
       "item": "Upgrader6Armor",
-      "chance": 0.015,
+      "chance": 0.03,
       "min": 1,
       "max": 1,
-      "weight": 0.0037
+      "weight": 0.0075
      },
      {
       "item": "Upgrader6Weapon",
@@ -3398,63 +3397,63 @@
     "items": [
      {
       "item": "ArrowFlint",
-      "chance": 0.566,
+      "chance": 0.576,
       "min": 5,
       "max": 10,
-      "weight": 0.2288
+      "weight": 0.2328
      },
      {
       "item": "Amber",
-      "chance": 0.563,
+      "chance": 0.573,
       "min": 1,
       "max": 2,
-      "weight": 0.2288
-     },
-     {
-      "item": "Feathers",
-      "chance": 0.557,
-      "min": 2,
-      "max": 4,
-      "weight": 0.2288
+      "weight": 0.2328
      },
      {
       "item": "Coins",
-      "chance": 0.557,
+      "chance": 0.572,
       "min": 5,
       "max": 30,
-      "weight": 0.2288
+      "weight": 0.2328
+     },
+     {
+      "item": "Feathers",
+      "chance": 0.569,
+      "min": 2,
+      "max": 4,
+      "weight": 0.2328
      },
      {
       "item": "SpearWood",
-      "chance": 0.138,
+      "chance": 0.142,
       "min": 1,
       "max": 1,
-      "weight": 0.0458
+      "weight": 0.0466
+     },
+     {
+      "item": "Upgrader0Armor",
+      "chance": 0.036,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0116
+     },
+     {
+      "item": "Upgrader0Weapon",
+      "chance": 0.02,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0058
      },
      {
       "item": "Upgrader1Armor",
-      "chance": 0.069,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0229
-     },
-     {
-      "item": "Upgrader1Weapon",
-      "chance": 0.038,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0114
-     },
-     {
-      "item": "Upgrader2Weapon",
       "chance": 0.008,
       "min": 1,
       "max": 1,
       "weight": 0.0023
      },
      {
-      "item": "Upgrader2Armor",
-      "chance": 0.007,
+      "item": "Upgrader1Weapon",
+      "chance": 0.008,
       "min": 1,
       "max": 1,
       "weight": 0.0023
@@ -3475,66 +3474,66 @@
     "items": [
      {
       "item": "Coins",
-      "chance": 0.75,
+      "chance": 0.748,
       "min": 200,
       "max": 500,
-      "weight": 0.1553
-     },
-     {
-      "item": "Charredskull",
-      "chance": 0.745,
-      "min": 1,
-      "max": 2,
-      "weight": 0.1553
+      "weight": 0.1548
      },
      {
       "item": "FlametalOreNew",
-      "chance": 0.745,
+      "chance": 0.743,
       "min": 10,
       "max": 20,
-      "weight": 0.1553
+      "weight": 0.1548
+     },
+     {
+      "item": "Charredskull",
+      "chance": 0.742,
+      "min": 1,
+      "max": 2,
+      "weight": 0.1548
      },
      {
       "item": "CharredBone",
-      "chance": 0.742,
+      "chance": 0.738,
       "min": 5,
       "max": 10,
-      "weight": 0.1553
+      "weight": 0.1548
      },
      {
       "item": "GemstoneGreen",
-      "chance": 0.503,
+      "chance": 0.5,
       "min": 1,
       "max": 1,
-      "weight": 0.0776
+      "weight": 0.0774
      },
      {
       "item": "GemstoneRed",
-      "chance": 0.495,
+      "chance": 0.492,
       "min": 1,
       "max": 1,
-      "weight": 0.0776
+      "weight": 0.0774
      },
      {
       "item": "MoltenCore",
-      "chance": 0.494,
+      "chance": 0.49,
       "min": 1,
       "max": 2,
-      "weight": 0.0776
+      "weight": 0.0774
      },
      {
       "item": "GemstoneBlue",
-      "chance": 0.491,
+      "chance": 0.488,
       "min": 1,
       "max": 1,
-      "weight": 0.0776
+      "weight": 0.0774
      },
      {
       "item": "Upgrader5Armor",
       "chance": 0.23,
       "min": 1,
       "max": 1,
-      "weight": 0.0311
+      "weight": 0.031
      },
      {
       "item": "CelestialFeather",
@@ -3545,21 +3544,21 @@
      },
      {
       "item": "Upgrader5Weapon",
-      "chance": 0.121,
+      "chance": 0.118,
       "min": 1,
       "max": 1,
       "weight": 0.0155
      },
      {
-      "item": "Upgrader6Weapon",
-      "chance": 0.027,
+      "item": "Upgrader6Armor",
+      "chance": 0.05,
       "min": 1,
       "max": 1,
-      "weight": 0.0031
+      "weight": 0.0062
      },
      {
-      "item": "Upgrader6Armor",
-      "chance": 0.024,
+      "item": "Upgrader6Weapon",
+      "chance": 0.026,
       "min": 1,
       "max": 1,
       "weight": 0.0031
@@ -3580,38 +3579,38 @@
     "items": [
      {
       "item": "ArrowCharred",
-      "chance": 0.672,
+      "chance": 0.67,
       "min": 5,
       "max": 11,
-      "weight": 0.1934
-     },
-     {
-      "item": "Coins",
-      "chance": 0.67,
-      "min": 22,
-      "max": 99,
-      "weight": 0.1934
+      "weight": 0.1931
      },
      {
       "item": "BoltCharred",
-      "chance": 0.669,
+      "chance": 0.667,
       "min": 5,
       "max": 11,
-      "weight": 0.1934
+      "weight": 0.1931
+     },
+     {
+      "item": "Coins",
+      "chance": 0.667,
+      "min": 22,
+      "max": 99,
+      "weight": 0.1931
      },
      {
       "item": "Torch",
-      "chance": 0.667,
+      "chance": 0.666,
       "min": 1,
       "max": 1,
-      "weight": 0.1934
+      "weight": 0.1931
      },
      {
       "item": "Feathers",
-      "chance": 0.666,
+      "chance": 0.664,
       "min": 5,
       "max": 13,
-      "weight": 0.1934
+      "weight": 0.1931
      },
      {
       "item": "Upgrader6Armor",
@@ -3629,10 +3628,10 @@
      },
      {
       "item": "Upgrader7Armor",
-      "chance": 0.01,
+      "chance": 0.019,
       "min": 1,
       "max": 1,
-      "weight": 0.0019
+      "weight": 0.0039
      },
      {
       "item": "Upgrader7Weapon",
@@ -3649,60 +3648,67 @@
    "name": "Dvergr Treasure Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     4
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
+      "item": "ArrowNeedle",
+      "chance": 0.955,
+      "min": 5,
+      "max": 10,
+      "weight": 0.3697
+     },
+     {
       "item": "Coins",
-      "chance": 0.927,
+      "chance": 0.953,
       "min": 12,
       "max": 54,
-      "weight": 0.565
+      "weight": 0.3697
      },
      {
       "item": "Hook",
-      "chance": 0.806,
+      "chance": 0.858,
       "min": 1,
       "max": 1,
-      "weight": 0.2825
+      "weight": 0.1848
      },
      {
       "item": "THSwordWood",
-      "chance": 0.283,
+      "chance": 0.353,
       "min": 1,
       "max": 1,
-      "weight": 0.0565
+      "weight": 0.037
+     },
+     {
+      "item": "Upgrader4Armor",
+      "chance": 0.184,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0185
+     },
+     {
+      "item": "Upgrader4Weapon",
+      "chance": 0.087,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0092
      },
      {
       "item": "Upgrader5Armor",
-      "chance": 0.282,
+      "chance": 0.074,
       "min": 1,
       "max": 1,
-      "weight": 0.0565
+      "weight": 0.0074
      },
      {
       "item": "Upgrader5Weapon",
-      "chance": 0.145,
+      "chance": 0.039,
       "min": 1,
       "max": 1,
-      "weight": 0.0282
-     },
-     {
-      "item": "Upgrader6Weapon",
-      "chance": 0.032,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0056
-     },
-     {
-      "item": "Upgrader6Armor",
-      "chance": 0.028,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0056
+      "weight": 0.0037
      }
     ]
    }
@@ -3719,88 +3725,95 @@
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.884,
-      "min": 33,
-      "max": 66,
-      "weight": 0.287
-     },
-     {
-      "item": "Sausages",
-      "chance": 0.623,
-      "min": 3,
-      "max": 6,
-      "weight": 0.1435
+      "item": "MeadPoisonResist",
+      "chance": 0.644,
+      "min": 1,
+      "max": 2,
+      "weight": 0.147
      },
      {
       "item": "MeadHealthMinor",
-      "chance": 0.622,
+      "chance": 0.641,
       "min": 1,
       "max": 2,
-      "weight": 0.1435
+      "weight": 0.147
      },
      {
-      "item": "MeadPoisonResist",
-      "chance": 0.622,
-      "min": 1,
-      "max": 2,
-      "weight": 0.1435
+      "item": "Sausages",
+      "chance": 0.639,
+      "min": 3,
+      "max": 6,
+      "weight": 0.147
+     },
+     {
+      "item": "Coins",
+      "chance": 0.639,
+      "min": 33,
+      "max": 66,
+      "weight": 0.147
+     },
+     {
+      "item": "ArrowNeedle",
+      "chance": 0.638,
+      "min": 5,
+      "max": 15,
+      "weight": 0.147
      },
      {
       "item": "MeadStaminaMinor",
-      "chance": 0.617,
+      "chance": 0.634,
       "min": 1,
       "max": 2,
-      "weight": 0.1435
+      "weight": 0.147
      },
      {
       "item": "Hook",
-      "chance": 0.373,
+      "chance": 0.386,
       "min": 1,
       "max": 1,
-      "weight": 0.0717
+      "weight": 0.0735
      },
      {
       "item": "THSwordWood",
-      "chance": 0.169,
+      "chance": 0.091,
       "min": 1,
       "max": 1,
-      "weight": 0.0287
+      "weight": 0.0147
      },
      {
       "item": "Tankard_dvergr",
-      "chance": 0.088,
+      "chance": 0.09,
       "min": 1,
       "max": 1,
-      "weight": 0.0143
+      "weight": 0.0147
+     },
+     {
+      "item": "Upgrader4Armor",
+      "chance": 0.047,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0073
+     },
+     {
+      "item": "Upgrader4Weapon",
+      "chance": 0.024,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0037
      },
      {
       "item": "Upgrader5Armor",
-      "chance": 0.086,
+      "chance": 0.02,
       "min": 1,
       "max": 1,
-      "weight": 0.0143
+      "weight": 0.0029
      },
      {
       "item": "Upgrader5Weapon",
-      "chance": 0.046,
+      "chance": 0.01,
       "min": 1,
       "max": 1,
-      "weight": 0.0072
-     },
-     {
-      "item": "Upgrader6Armor",
-      "chance": 0.009,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0014
-     },
-     {
-      "item": "Upgrader6Weapon",
-      "chance": 0.009,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0014
+      "weight": 0.0015
      }
     ]
    }
@@ -3810,78 +3823,78 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     4
+     3,
+     5
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
-      "item": "ArrowFlint",
-      "chance": 0.551,
-      "min": 5,
-      "max": 10,
-      "weight": 0.1862
-     },
-     {
-      "item": "Coins",
-      "chance": 0.551,
-      "min": 10,
-      "max": 30,
-      "weight": 0.1862
-     },
-     {
       "item": "Amber",
-      "chance": 0.545,
+      "chance": 0.718,
       "min": 1,
       "max": 3,
-      "weight": 0.1862
+      "weight": 0.1859
      },
      {
       "item": "Feathers",
-      "chance": 0.542,
+      "chance": 0.717,
       "min": 1,
       "max": 10,
-      "weight": 0.1862
+      "weight": 0.1859
+     },
+     {
+      "item": "Coins",
+      "chance": 0.716,
+      "min": 10,
+      "max": 30,
+      "weight": 0.1859
      },
      {
       "item": "Ruby",
-      "chance": 0.542,
+      "chance": 0.715,
       "min": 1,
       "max": 2,
-      "weight": 0.1862
+      "weight": 0.1859
+     },
+     {
+      "item": "ArrowFlint",
+      "chance": 0.709,
+      "min": 5,
+      "max": 10,
+      "weight": 0.1859
      },
      {
       "item": "SilverNecklace",
-      "chance": 0.139,
+      "chance": 0.218,
       "min": 1,
       "max": 1,
       "weight": 0.0372
      },
      {
-      "item": "Upgrader1Armor",
-      "chance": 0.073,
+      "item": "Upgrader0Armor",
+      "chance": 0.109,
       "min": 1,
       "max": 1,
       "weight": 0.0186
      },
      {
-      "item": "Upgrader1Weapon",
-      "chance": 0.037,
+      "item": "Upgrader0Weapon",
+      "chance": 0.057,
       "min": 1,
       "max": 1,
       "weight": 0.0093
      },
      {
-      "item": "Upgrader2Armor",
-      "chance": 0.008,
+      "item": "Upgrader1Armor",
+      "chance": 0.023,
       "min": 1,
       "max": 1,
-      "weight": 0.0019
+      "weight": 0.0037
      },
      {
-      "item": "Upgrader2Weapon",
-      "chance": 0.007,
+      "item": "Upgrader1Weapon",
+      "chance": 0.012,
       "min": 1,
       "max": 1,
       "weight": 0.0019
@@ -3902,73 +3915,87 @@
     "items": [
      {
       "item": "BlackMetalScrap",
-      "chance": 0.787,
+      "chance": 0.616,
       "min": 2,
       "max": 5,
-      "weight": 0.2519
+      "weight": 0.1859
+     },
+     {
+      "item": "ArrowObsidian",
+      "chance": 0.614,
+      "min": 10,
+      "max": 15,
+      "weight": 0.1859
+     },
+     {
+      "item": "ArrowPoison",
+      "chance": 0.611,
+      "min": 5,
+      "max": 10,
+      "weight": 0.1859
      },
      {
       "item": "Coins",
-      "chance": 0.784,
+      "chance": 0.607,
       "min": 10,
       "max": 40,
-      "weight": 0.2519
-     },
-     {
-      "item": "Needle",
-      "chance": 0.781,
-      "min": 2,
-      "max": 5,
-      "weight": 0.2519
+      "weight": 0.1859
      },
      {
       "item": "Barley",
-      "chance": 0.545,
+      "chance": 0.371,
       "min": 2,
       "max": 4,
-      "weight": 0.1259
+      "weight": 0.0929
      },
      {
-      "item": "AtgeirWood",
-      "chance": 0.251,
+      "item": "Needle",
+      "chance": 0.369,
       "min": 1,
-      "max": 1,
-      "weight": 0.0504
+      "max": 3,
+      "weight": 0.0929
      },
      {
       "item": "SharpeningStone",
-      "chance": 0.133,
+      "chance": 0.084,
       "min": 1,
       "max": 1,
-      "weight": 0.0252
+      "weight": 0.0186
+     },
+     {
+      "item": "AtgeirWood",
+      "chance": 0.082,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0186
+     },
+     {
+      "item": "Upgrader3Armor",
+      "chance": 0.082,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0186
+     },
+     {
+      "item": "Upgrader3Weapon",
+      "chance": 0.043,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0093
      },
      {
       "item": "Upgrader4Armor",
-      "chance": 0.128,
+      "chance": 0.018,
       "min": 1,
       "max": 1,
-      "weight": 0.0252
+      "weight": 0.0037
      },
      {
       "item": "Upgrader4Weapon",
-      "chance": 0.068,
+      "chance": 0.009,
       "min": 1,
       "max": 1,
-      "weight": 0.0126
-     },
-     {
-      "item": "Upgrader5Armor",
-      "chance": 0.014,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0025
-     },
-     {
-      "item": "Upgrader5Weapon",
-      "chance": 0.014,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0025
+      "weight": 0.0019
      }
     ]
    }
@@ -3986,56 +4013,56 @@
     "items": [
      {
       "item": "AmberPearl",
-      "chance": 0.997,
+      "chance": 0.996,
       "min": 2,
       "max": 4,
-      "weight": 0.2725
+      "weight": 0.2717
      },
      {
       "item": "Chain",
-      "chance": 0.996,
+      "chance": 0.995,
       "min": 2,
       "max": 5,
-      "weight": 0.2725
+      "weight": 0.2717
      },
      {
       "item": "Coins",
-      "chance": 0.996,
+      "chance": 0.995,
       "min": 11,
       "max": 66,
-      "weight": 0.2725
+      "weight": 0.2717
      },
      {
       "item": "ChickenEgg",
-      "chance": 0.982,
+      "chance": 0.978,
       "min": 1,
       "max": 1,
-      "weight": 0.1362
+      "weight": 0.1359
      },
      {
-      "item": "Upgrader4Armor",
-      "chance": 0.755,
+      "item": "Upgrader3Armor",
+      "chance": 0.725,
       "min": 1,
       "max": 1,
       "weight": 0.0272
      },
      {
-      "item": "Upgrader4Weapon",
-      "chance": 0.528,
+      "item": "Upgrader3Weapon",
+      "chance": 0.483,
       "min": 1,
       "max": 1,
       "weight": 0.0136
      },
      {
-      "item": "Upgrader5Armor",
-      "chance": 0.118,
+      "item": "Upgrader4Armor",
+      "chance": 0.208,
       "min": 1,
       "max": 1,
-      "weight": 0.0027
+      "weight": 0.0054
      },
      {
-      "item": "Upgrader5Weapon",
-      "chance": 0.116,
+      "item": "Upgrader4Weapon",
+      "chance": 0.108,
       "min": 1,
       "max": 1,
       "weight": 0.0027
@@ -4048,81 +4075,67 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     4
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.408,
-      "min": 5,
-      "max": 15,
-      "weight": 0.1621
-     },
-     {
-      "item": "Torch",
-      "chance": 0.406,
-      "min": 1,
-      "max": 1,
-      "weight": 0.1621
-     },
-     {
-      "item": "Amber",
-      "chance": 0.405,
-      "min": 1,
-      "max": 1,
-      "weight": 0.1621
-     },
-     {
       "item": "ArrowFlint",
-      "chance": 0.402,
+      "chance": 0.579,
       "min": 10,
       "max": 20,
-      "weight": 0.1621
+      "weight": 0.1646
      },
      {
       "item": "Feathers",
-      "chance": 0.401,
+      "chance": 0.578,
       "min": 1,
       "max": 3,
-      "weight": 0.1621
+      "weight": 0.1646
+     },
+     {
+      "item": "Coins",
+      "chance": 0.578,
+      "min": 5,
+      "max": 15,
+      "weight": 0.1646
+     },
+     {
+      "item": "Torch",
+      "chance": 0.573,
+      "min": 1,
+      "max": 1,
+      "weight": 0.1646
+     },
+     {
+      "item": "Amber",
+      "chance": 0.57,
+      "min": 1,
+      "max": 1,
+      "weight": 0.1646
      },
      {
       "item": "Flint",
-      "chance": 0.4,
+      "chance": 0.57,
       "min": 2,
       "max": 4,
-      "weight": 0.1621
+      "weight": 0.1646
      },
      {
       "item": "Upgrader0Armor",
-      "chance": 0.046,
+      "chance": 0.039,
       "min": 1,
       "max": 1,
-      "weight": 0.0162
+      "weight": 0.0082
      },
      {
       "item": "Upgrader0Weapon",
-      "chance": 0.025,
+      "chance": 0.019,
       "min": 1,
       "max": 1,
-      "weight": 0.0081
-     },
-     {
-      "item": "Upgrader1Armor",
-      "chance": 0.005,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0016
-     },
-     {
-      "item": "Upgrader1Weapon",
-      "chance": 0.005,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0016
+      "weight": 0.0041
      }
     ]
    }
@@ -4132,60 +4145,74 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     4
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
       "item": "AxeHead1",
-      "chance": 0.555,
+      "chance": 0.708,
       "min": 1,
       "max": 1,
-      "weight": 0.25
+      "weight": 0.2477
      },
      {
       "item": "Coins",
-      "chance": 0.328,
+      "chance": 0.463,
       "min": 5,
       "max": 15,
-      "weight": 0.125
-     },
-     {
-      "item": "ArrowFlint",
-      "chance": 0.327,
-      "min": 10,
-      "max": 20,
-      "weight": 0.125
-     },
-     {
-      "item": "Amber",
-      "chance": 0.326,
-      "min": 1,
-      "max": 1,
-      "weight": 0.125
-     },
-     {
-      "item": "Flint",
-      "chance": 0.324,
-      "min": 2,
-      "max": 4,
-      "weight": 0.125
+      "weight": 0.1238
      },
      {
       "item": "Feathers",
-      "chance": 0.322,
+      "chance": 0.462,
       "min": 1,
       "max": 3,
-      "weight": 0.125
+      "weight": 0.1238
+     },
+     {
+      "item": "ArrowFlint",
+      "chance": 0.458,
+      "min": 10,
+      "max": 20,
+      "weight": 0.1238
+     },
+     {
+      "item": "Amber",
+      "chance": 0.457,
+      "min": 1,
+      "max": 1,
+      "weight": 0.1238
      },
      {
       "item": "Torch",
-      "chance": 0.321,
+      "chance": 0.457,
       "min": 1,
       "max": 1,
-      "weight": 0.125
+      "weight": 0.1238
+     },
+     {
+      "item": "Flint",
+      "chance": 0.456,
+      "min": 2,
+      "max": 4,
+      "weight": 0.1238
+     },
+     {
+      "item": "Upgrader0Weapon",
+      "chance": 0.029,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0062
+     },
+     {
+      "item": "Upgrader0Armor",
+      "chance": 0.015,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0031
      }
     ]
    }
@@ -4195,60 +4222,74 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     4
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
       "item": "AxeHead2",
-      "chance": 0.555,
+      "chance": 0.708,
       "min": 1,
       "max": 1,
-      "weight": 0.25
+      "weight": 0.2477
      },
      {
       "item": "Coins",
-      "chance": 0.328,
+      "chance": 0.463,
       "min": 5,
       "max": 15,
-      "weight": 0.125
-     },
-     {
-      "item": "ArrowFlint",
-      "chance": 0.327,
-      "min": 10,
-      "max": 20,
-      "weight": 0.125
-     },
-     {
-      "item": "Amber",
-      "chance": 0.326,
-      "min": 1,
-      "max": 1,
-      "weight": 0.125
-     },
-     {
-      "item": "Flint",
-      "chance": 0.324,
-      "min": 2,
-      "max": 4,
-      "weight": 0.125
+      "weight": 0.1238
      },
      {
       "item": "Feathers",
-      "chance": 0.322,
+      "chance": 0.462,
       "min": 1,
       "max": 3,
-      "weight": 0.125
+      "weight": 0.1238
+     },
+     {
+      "item": "ArrowFlint",
+      "chance": 0.458,
+      "min": 10,
+      "max": 20,
+      "weight": 0.1238
+     },
+     {
+      "item": "Amber",
+      "chance": 0.457,
+      "min": 1,
+      "max": 1,
+      "weight": 0.1238
      },
      {
       "item": "Torch",
-      "chance": 0.321,
+      "chance": 0.457,
       "min": 1,
       "max": 1,
-      "weight": 0.125
+      "weight": 0.1238
+     },
+     {
+      "item": "Flint",
+      "chance": 0.456,
+      "min": 2,
+      "max": 4,
+      "weight": 0.1238
+     },
+     {
+      "item": "Upgrader0Weapon",
+      "chance": 0.029,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0062
+     },
+     {
+      "item": "Upgrader0Armor",
+      "chance": 0.015,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0031
      }
     ]
    }
@@ -4258,88 +4299,74 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     5
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.445,
-      "min": 20,
-      "max": 50,
-      "weight": 0.1795
-     },
-     {
       "item": "SilverNecklace",
-      "chance": 0.444,
+      "chance": 0.703,
       "min": 1,
       "max": 1,
-      "weight": 0.1795
+      "weight": 0.1826
      },
      {
       "item": "ArrowFire",
-      "chance": 0.441,
+      "chance": 0.701,
       "min": 10,
       "max": 15,
-      "weight": 0.1795
-     },
-     {
-      "item": "Ruby",
-      "chance": 0.441,
-      "min": 1,
-      "max": 3,
-      "weight": 0.1795
+      "weight": 0.1826
      },
      {
       "item": "AmberPearl",
-      "chance": 0.438,
+      "chance": 0.701,
       "min": 1,
       "max": 2,
-      "weight": 0.1795
+      "weight": 0.1826
+     },
+     {
+      "item": "Ruby",
+      "chance": 0.699,
+      "min": 1,
+      "max": 3,
+      "weight": 0.1826
+     },
+     {
+      "item": "Coins",
+      "chance": 0.693,
+      "min": 20,
+      "max": 50,
+      "weight": 0.1826
      },
      {
       "item": "KnifeWood",
-      "chance": 0.103,
+      "chance": 0.209,
       "min": 1,
       "max": 1,
-      "weight": 0.0359
+      "weight": 0.0365
      },
      {
       "item": "AxeWood",
-      "chance": 0.101,
+      "chance": 0.206,
       "min": 1,
       "max": 1,
-      "weight": 0.0359
+      "weight": 0.0365
      },
      {
       "item": "Upgrader0Weapon",
-      "chance": 0.051,
+      "chance": 0.055,
       "min": 1,
       "max": 1,
-      "weight": 0.018
+      "weight": 0.0091
      },
      {
       "item": "Upgrader0Armor",
       "chance": 0.028,
       "min": 1,
       "max": 1,
-      "weight": 0.009
-     },
-     {
-      "item": "Upgrader1Armor",
-      "chance": 0.006,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0018
-     },
-     {
-      "item": "Upgrader1Weapon",
-      "chance": 0.005,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0018
+      "weight": 0.0046
      }
     ]
    }
@@ -4349,46 +4376,60 @@
    "name": "Chest",
    "table": {
     "rolls": [
-     2,
-     3
+     3,
+     5
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
-      "item": "ArrowFlint",
-      "chance": 0.609,
-      "min": 10,
-      "max": 20,
-      "weight": 0.2439
+      "item": "Torch",
+      "chance": 0.875,
+      "min": 1,
+      "max": 1,
+      "weight": 0.2395
      },
      {
       "item": "LeatherScraps",
-      "chance": 0.605,
+      "chance": 0.875,
       "min": 2,
       "max": 3,
-      "weight": 0.2439
+      "weight": 0.2395
      },
      {
       "item": "Feathers",
-      "chance": 0.604,
+      "chance": 0.87,
       "min": 1,
       "max": 3,
-      "weight": 0.2439
+      "weight": 0.2395
      },
      {
-      "item": "Torch",
-      "chance": 0.604,
-      "min": 1,
-      "max": 1,
-      "weight": 0.2439
+      "item": "ArrowFlint",
+      "chance": 0.87,
+      "min": 10,
+      "max": 20,
+      "weight": 0.2395
      },
      {
       "item": "MaceWood",
-      "chance": 0.082,
+      "chance": 0.288,
       "min": 1,
       "max": 1,
-      "weight": 0.0244
+      "weight": 0.024
+     },
+     {
+      "item": "Upgrader0Weapon",
+      "chance": 0.142,
+      "min": 1,
+      "max": 1,
+      "weight": 0.012
+     },
+     {
+      "item": "Upgrader0Armor",
+      "chance": 0.075,
+      "min": 1,
+      "max": 1,
+      "weight": 0.006
      }
     ]
    }
@@ -4559,67 +4600,67 @@
     "oneOfEach": true,
     "items": [
      {
-      "item": "MeadEitrMinor",
-      "chance": 0.589,
-      "min": 1,
-      "max": 1,
-      "weight": 0.1963
-     },
-     {
       "item": "MeadStaminaMedium",
-      "chance": 0.588,
+      "chance": 0.58,
       "min": 1,
       "max": 1,
-      "weight": 0.1963
+      "weight": 0.1942
      },
      {
-      "item": "MeadHealthMedium",
-      "chance": 0.582,
+      "item": "MeadEitrMinor",
+      "chance": 0.579,
       "min": 1,
       "max": 1,
-      "weight": 0.1963
+      "weight": 0.1942
      },
      {
       "item": "ArrowCharred",
-      "chance": 0.579,
+      "chance": 0.574,
       "min": 5,
       "max": 11,
-      "weight": 0.1963
+      "weight": 0.1942
+     },
+     {
+      "item": "MeadHealthMedium",
+      "chance": 0.572,
+      "min": 1,
+      "max": 1,
+      "weight": 0.1942
      },
      {
       "item": "AncientCoin",
-      "chance": 0.578,
-      "min": 4,
-      "max": 10,
-      "weight": 0.1963
+      "chance": 0.57,
+      "min": 3,
+      "max": 7,
+      "weight": 0.1942
      },
      {
       "item": "Upgrader6Armor",
-      "chance": 0.04,
+      "chance": 0.041,
       "min": 1,
       "max": 1,
-      "weight": 0.0098
+      "weight": 0.0097
+     },
+     {
+      "item": "Upgrader7Armor",
+      "chance": 0.039,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0097
      },
      {
       "item": "Upgrader6Weapon",
-      "chance": 0.021,
+      "chance": 0.02,
       "min": 1,
       "max": 1,
       "weight": 0.0049
      },
      {
-      "item": "Upgrader7Armor",
-      "chance": 0.008,
-      "min": 1,
-      "max": 1,
-      "weight": 0.002
-     },
-     {
       "item": "Upgrader7Weapon",
-      "chance": 0.008,
+      "chance": 0.02,
       "min": 1,
       "max": 1,
-      "weight": 0.002
+      "weight": 0.0049
      }
     ]
    }
@@ -4636,60 +4677,53 @@
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.966,
-      "min": 15,
-      "max": 35,
-      "weight": 0.4684
-     },
-     {
       "item": "Obsidian",
-      "chance": 0.933,
+      "chance": 0.967,
       "min": 1,
       "max": 9,
-      "weight": 0.3513
+      "weight": 0.4373
+     },
+     {
+      "item": "Coins",
+      "chance": 0.875,
+      "min": 15,
+      "max": 35,
+      "weight": 0.2915
      },
      {
       "item": "Ruby",
-      "chance": 0.58,
+      "chance": 0.687,
       "min": 1,
       "max": 2,
-      "weight": 0.1171
+      "weight": 0.1458
+     },
+     {
+      "item": "Upgrader2Armor",
+      "chance": 0.54,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0875
      },
      {
       "item": "SilverNecklace",
-      "chance": 0.152,
+      "chance": 0.21,
       "min": 1,
       "max": 1,
-      "weight": 0.0234
+      "weight": 0.0292
      },
      {
       "item": "Upgrader3Armor",
-      "chance": 0.151,
+      "chance": 0.044,
       "min": 1,
       "max": 1,
-      "weight": 0.0234
+      "weight": 0.0058
      },
      {
       "item": "Upgrader3Weapon",
-      "chance": 0.077,
+      "chance": 0.022,
       "min": 1,
       "max": 1,
-      "weight": 0.0117
-     },
-     {
-      "item": "Upgrader4Armor",
-      "chance": 0.018,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0023
-     },
-     {
-      "item": "Upgrader4Weapon",
-      "chance": 0.015,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0023
+      "weight": 0.0029
      }
     ]
    }
@@ -4700,94 +4734,94 @@
    "table": {
     "rolls": [
      3,
-     5
+     6
     ],
     "chance": 1.0,
     "oneOfEach": true,
     "items": [
      {
+      "item": "Coins",
+      "chance": 0.587,
+      "min": 46,
+      "max": 96,
+      "weight": 0.1328
+     },
+     {
       "item": "Amber",
-      "chance": 0.537,
+      "chance": 0.585,
       "min": 1,
       "max": 6,
-      "weight": 0.1357
-     },
-     {
-      "item": "Ruby",
-      "chance": 0.537,
-      "min": 1,
-      "max": 2,
-      "weight": 0.1357
-     },
-     {
-      "item": "Obsidian",
-      "chance": 0.535,
-      "min": 5,
-      "max": 10,
-      "weight": 0.1357
-     },
-     {
-      "item": "ArrowFrost",
-      "chance": 0.535,
-      "min": 5,
-      "max": 10,
-      "weight": 0.1357
+      "weight": 0.1328
      },
      {
       "item": "OnionSeeds",
-      "chance": 0.533,
+      "chance": 0.584,
       "min": 3,
       "max": 9,
-      "weight": 0.1357
+      "weight": 0.1328
+     },
+     {
+      "item": "ArrowFrost",
+      "chance": 0.584,
+      "min": 5,
+      "max": 10,
+      "weight": 0.1328
+     },
+     {
+      "item": "Ruby",
+      "chance": 0.583,
+      "min": 1,
+      "max": 2,
+      "weight": 0.1328
+     },
+     {
+      "item": "Obsidian",
+      "chance": 0.58,
+      "min": 5,
+      "max": 10,
+      "weight": 0.1328
      },
      {
       "item": "AmberPearl",
-      "chance": 0.533,
+      "chance": 0.576,
       "min": 2,
       "max": 5,
-      "weight": 0.1357
-     },
-     {
-      "item": "Coins",
-      "chance": 0.53,
-      "min": 46,
-      "max": 96,
-      "weight": 0.1357
+      "weight": 0.1328
      },
      {
       "item": "BattleaxeWood",
-      "chance": 0.134,
+      "chance": 0.161,
       "min": 1,
       "max": 1,
-      "weight": 0.0271
+      "weight": 0.0266
+     },
+     {
+      "item": "Upgrader2Armor",
+      "chance": 0.157,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0266
+     },
+     {
+      "item": "Upgrader2Weapon",
+      "chance": 0.082,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0133
      },
      {
       "item": "Upgrader3Armor",
-      "chance": 0.07,
+      "chance": 0.019,
       "min": 1,
       "max": 1,
-      "weight": 0.0136
+      "weight": 0.0027
      },
      {
       "item": "Upgrader3Weapon",
-      "chance": 0.036,
+      "chance": 0.008,
       "min": 1,
       "max": 1,
-      "weight": 0.0068
-     },
-     {
-      "item": "Upgrader4Armor",
-      "chance": 0.007,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0014
-     },
-     {
-      "item": "Upgrader4Weapon",
-      "chance": 0.007,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0014
+      "weight": 0.0013
      }
     ]
    }
@@ -4804,39 +4838,67 @@
     "oneOfEach": true,
     "items": [
      {
-      "item": "Coins",
-      "chance": 0.763,
-      "min": 66,
-      "max": 99,
-      "weight": 0.2778
-     },
-     {
       "item": "ArrowObsidian",
-      "chance": 0.762,
+      "chance": 0.723,
       "min": 5,
       "max": 10,
-      "weight": 0.2778
+      "weight": 0.2646
+     },
+     {
+      "item": "Coins",
+      "chance": 0.723,
+      "min": 66,
+      "max": 99,
+      "weight": 0.2646
      },
      {
       "item": "Feathers",
-      "chance": 0.76,
+      "chance": 0.716,
       "min": 5,
       "max": 10,
-      "weight": 0.2778
+      "weight": 0.2646
      },
      {
       "item": "SilverNecklace",
-      "chance": 0.569,
+      "chance": 0.499,
       "min": 1,
       "max": 1,
-      "weight": 0.1389
+      "weight": 0.1323
+     },
+     {
+      "item": "Upgrader3Armor",
+      "chance": 0.118,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0265
      },
      {
       "item": "GoblinTotem",
-      "chance": 0.14,
+      "chance": 0.114,
       "min": 1,
       "max": 1,
-      "weight": 0.0278
+      "weight": 0.0265
+     },
+     {
+      "item": "Upgrader3Weapon",
+      "chance": 0.062,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0132
+     },
+     {
+      "item": "Upgrader4Armor",
+      "chance": 0.025,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0053
+     },
+     {
+      "item": "Upgrader4Weapon",
+      "chance": 0.013,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0026
      }
     ]
    }
@@ -4854,97 +4916,97 @@
     "items": [
      {
       "item": "IronScrap",
-      "chance": 0.68,
+      "chance": 0.679,
       "min": 10,
       "max": 20,
-      "weight": 0.1874
+      "weight": 0.1873
      },
      {
       "item": "ArrowIron",
-      "chance": 0.44,
+      "chance": 0.439,
       "min": 10,
       "max": 15,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "ArrowPoison",
       "chance": 0.437,
       "min": 10,
       "max": 15,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "AmberPearl",
       "chance": 0.437,
       "min": 1,
       "max": 3,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "Amber",
       "chance": 0.436,
       "min": 1,
       "max": 5,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "Ruby",
       "chance": 0.435,
       "min": 1,
       "max": 3,
-      "weight": 0.0937
-     },
-     {
-      "item": "ElderBark",
-      "chance": 0.435,
-      "min": 20,
-      "max": 30,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "Coins",
       "chance": 0.434,
       "min": 20,
       "max": 60,
-      "weight": 0.0937
+      "weight": 0.0936
+     },
+     {
+      "item": "ElderBark",
+      "chance": 0.434,
+      "min": 20,
+      "max": 30,
+      "weight": 0.0936
      },
      {
       "item": "Chain",
-      "chance": 0.433,
+      "chance": 0.432,
       "min": 1,
       "max": 3,
-      "weight": 0.0937
+      "weight": 0.0936
      },
      {
       "item": "WitheredBone",
       "chance": 0.24,
       "min": 1,
       "max": 1,
-      "weight": 0.0469
+      "weight": 0.0468
      },
      {
-      "item": "Upgrader2Armor",
+      "item": "Upgrader1Armor",
       "chance": 0.054,
       "min": 1,
       "max": 1,
       "weight": 0.0094
      },
      {
-      "item": "Upgrader2Weapon",
-      "chance": 0.029,
+      "item": "Upgrader1Weapon",
+      "chance": 0.028,
       "min": 1,
       "max": 1,
       "weight": 0.0047
      },
      {
-      "item": "Upgrader3Armor",
-      "chance": 0.006,
+      "item": "Upgrader2Armor",
+      "chance": 0.011,
       "min": 1,
       "max": 1,
-      "weight": 0.0009
+      "weight": 0.0019
      },
      {
-      "item": "Upgrader3Weapon",
+      "item": "Upgrader2Weapon",
       "chance": 0.006,
       "min": 1,
       "max": 1,
@@ -4966,63 +5028,63 @@
     "items": [
      {
       "item": "Amber",
-      "chance": 0.431,
+      "chance": 0.43,
       "min": 1,
       "max": 5,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "ElderBark",
-      "chance": 0.431,
+      "chance": 0.43,
       "min": 20,
       "max": 30,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "ArrowIron",
-      "chance": 0.43,
+      "chance": 0.429,
       "min": 10,
       "max": 15,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "AmberPearl",
-      "chance": 0.43,
+      "chance": 0.429,
       "min": 1,
       "max": 3,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "Chain",
-      "chance": 0.429,
+      "chance": 0.428,
       "min": 1,
       "max": 1,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "ArrowPoison",
       "chance": 0.427,
       "min": 10,
       "max": 15,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "Ruby",
       "chance": 0.424,
       "min": 1,
       "max": 3,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "Coins",
-      "chance": 0.423,
+      "chance": 0.422,
       "min": 20,
       "max": 60,
-      "weight": 0.1091
+      "weight": 0.1089
      },
      {
       "item": "SledgeWood",
-      "chance": 0.241,
+      "chance": 0.24,
       "min": 1,
       "max": 1,
       "weight": 0.0545
@@ -5035,28 +5097,28 @@
       "weight": 0.0545
      },
      {
-      "item": "Upgrader2Armor",
-      "chance": 0.052,
+      "item": "Upgrader1Armor",
+      "chance": 0.051,
       "min": 1,
       "max": 1,
       "weight": 0.0109
      },
      {
+      "item": "Upgrader1Weapon",
+      "chance": 0.027,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0054
+     },
+     {
+      "item": "Upgrader2Armor",
+      "chance": 0.01,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0022
+     },
+     {
       "item": "Upgrader2Weapon",
-      "chance": 0.025,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0055
-     },
-     {
-      "item": "Upgrader3Armor",
-      "chance": 0.006,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0011
-     },
-     {
-      "item": "Upgrader3Weapon",
       "chance": 0.005,
       "min": 1,
       "max": 1,
@@ -5078,83 +5140,83 @@
     "items": [
      {
       "item": "Coins",
-      "chance": 0.599,
+      "chance": 0.608,
       "min": 20,
       "max": 50,
-      "weight": 0.157
+      "weight": 0.1589
      },
      {
       "item": "DeerHide",
-      "chance": 0.598,
+      "chance": 0.607,
       "min": 2,
       "max": 4,
-      "weight": 0.157
+      "weight": 0.1589
      },
      {
       "item": "LeatherScraps",
-      "chance": 0.597,
+      "chance": 0.605,
       "min": 3,
       "max": 5,
-      "weight": 0.157
+      "weight": 0.1589
      },
      {
       "item": "BoneFragments",
-      "chance": 0.592,
+      "chance": 0.601,
       "min": 10,
       "max": 15,
-      "weight": 0.157
+      "weight": 0.1589
      },
      {
       "item": "Ruby",
-      "chance": 0.585,
+      "chance": 0.593,
       "min": 1,
       "max": 2,
-      "weight": 0.157
+      "weight": 0.1589
      },
      {
       "item": "Stone",
-      "chance": 0.363,
+      "chance": 0.37,
       "min": 10,
       "max": 30,
-      "weight": 0.0785
+      "weight": 0.0794
      },
      {
       "item": "Wood",
-      "chance": 0.36,
+      "chance": 0.367,
       "min": 10,
       "max": 30,
-      "weight": 0.0785
+      "weight": 0.0794
      },
      {
       "item": "SilverNecklace",
-      "chance": 0.16,
+      "chance": 0.161,
       "min": 1,
       "max": 1,
-      "weight": 0.0314
+      "weight": 0.0318
+     },
+     {
+      "item": "Upgrader0Armor",
+      "chance": 0.043,
+      "min": 1,
+      "max": 1,
+      "weight": 0.0079
+     },
+     {
+      "item": "Upgrader0Weapon",
+      "chance": 0.021,
+      "min": 1,
+      "max": 1,
+      "weight": 0.004
      },
      {
       "item": "Upgrader1Armor",
-      "chance": 0.079,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0157
-     },
-     {
-      "item": "Upgrader1Weapon",
-      "chance": 0.044,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0078
-     },
-     {
-      "item": "Upgrader2Armor",
       "chance": 0.009,
       "min": 1,
       "max": 1,
       "weight": 0.0016
      },
      {
-      "item": "Upgrader2Weapon",
+      "item": "Upgrader1Weapon",
       "chance": 0.008,
       "min": 1,
       "max": 1,
@@ -6334,27 +6396,6 @@
     ]
    }
   },
-  "prop_Tankard": {
-   "kind": "smash",
-   "name": "prop Tankard",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 1.0,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0
-     }
-    ]
-   }
-  },
   "prop_ashwood_bed": {
    "kind": "smash",
    "name": "prop ashwood bed",
@@ -6568,139 +6609,6 @@
       "min": 1,
       "max": 5,
       "weight": 0.0
-     }
-    ]
-   }
-  },
-  "prop_itemstand": {
-   "kind": "smash",
-   "name": "prop itemstand",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 1.0,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0
-     }
-    ]
-   }
-  },
-  "prop_itemstand_TrophyDraugrElite": {
-   "kind": "smash",
-   "name": "prop itemstand TrophyDraugrElite",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 0.947,
-      "min": 1,
-      "max": 1,
-      "weight": 0.9474
-     },
-     {
-      "item": "TrophyDraugrElite",
-      "chance": 0.053,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0526
-     }
-    ]
-   }
-  },
-  "prop_itemstand_TrophyGoblinShaman": {
-   "kind": "smash",
-   "name": "prop itemstand TrophyGoblinShaman",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 0.947,
-      "min": 1,
-      "max": 1,
-      "weight": 0.9474
-     },
-     {
-      "item": "TrophyGoblinShaman",
-      "chance": 0.053,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0526
-     }
-    ]
-   }
-  },
-  "prop_itemstand_TrophyGreydwarf": {
-   "kind": "smash",
-   "name": "prop itemstand TrophyGreydwarf",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 0.9,
-      "min": 1,
-      "max": 1,
-      "weight": 0.9
-     },
-     {
-      "item": "TrophyGreydwarf",
-      "chance": 0.1,
-      "min": 1,
-      "max": 1,
-      "weight": 0.1
-     }
-    ]
-   }
-  },
-  "prop_itemstand_TrophySeekerBrute": {
-   "kind": "smash",
-   "name": "prop itemstand TrophySeekerBrute",
-   "table": {
-    "rolls": [
-     1,
-     1
-    ],
-    "chance": 1.0,
-    "oneOfEach": false,
-    "items": [
-     {
-      "item": "FineWood",
-      "chance": 0.947,
-      "min": 1,
-      "max": 1,
-      "weight": 0.9474
-     },
-     {
-      "item": "TrophySeekerBrute",
-      "chance": 0.053,
-      "min": 1,
-      "max": 1,
-      "weight": 0.0526
      }
     ]
    }
@@ -7745,6 +7653,14 @@
     "forestcrypt_room1",
     "forestcrypt_room_16"
    ]
+  },
+  "DN_forestlantern": {
+   "objects": {
+    "Pickable_Forestlantern": {
+     "max": 1,
+     "chance": 1.0
+    }
+   }
   },
   "DN_gammeltrollFrac01": {
    "objects": {
@@ -10433,10 +10349,6 @@
     },
     "prop_FeastMeadows": {
      "max": 1,
-     "chance": 1.0
-    },
-    "prop_Tankard": {
-     "max": 6,
      "chance": 1.0
     },
     "prop_bonfire": {
@@ -16273,10 +16185,6 @@
      "max": 1,
      "chance": 0.25
     },
-    "prop_Tankard": {
-     "max": 3,
-     "chance": 1.0
-    },
     "prop_bed02": {
      "max": 1,
      "chance": 0.25
@@ -16284,22 +16192,6 @@
     "prop_chest_warderobe": {
      "max": 1,
      "chance": 0.5
-    },
-    "prop_itemstand_TrophyDraugrElite": {
-     "max": 1,
-     "chance": 0.4
-    },
-    "prop_itemstand_TrophyGoblinShaman": {
-     "max": 1,
-     "chance": 0.5
-    },
-    "prop_itemstand_TrophyGreydwarf": {
-     "max": 1,
-     "chance": 0.75
-    },
-    "prop_itemstand_TrophySeekerBrute": {
-     "max": 1,
-     "chance": 0.3
     },
     "prop_piece_brazierfloor01": {
      "max": 1,
@@ -16341,10 +16233,6 @@
      "max": 1,
      "chance": 0.5
     },
-    "prop_Tankard": {
-     "max": 4,
-     "chance": 0.5
-    },
     "prop_bed02": {
      "max": 1,
      "chance": 0.25
@@ -16360,10 +16248,6 @@
     "prop_hearth": {
      "max": 1,
      "chance": 0.075
-    },
-    "prop_itemstand": {
-     "max": 3,
-     "chance": 0.5
     },
     "prop_piece_brazierfloor01": {
      "max": 1,
@@ -17019,6 +16903,7 @@
   "ArrowFlint": "Flinthead Arrow",
   "ArrowFrost": "Frost Arrow",
   "ArrowIron": "Ironhead Arrow",
+  "ArrowNeedle": "Needle Arrow",
   "ArrowObsidian": "Obsidian Arrow",
   "ArrowPoison": "Poison Arrow",
   "AskHide": "Asksvin Hide",
@@ -17099,6 +16984,7 @@
   "KaleSeeds": "Kale Seeds",
   "KnifeWood": "Wooden Knife",
   "Lantern": "Dvergr Lantern",
+  "Lantern_DN": "Salvaged Lantern",
   "LeatherScraps": "Leather Scraps",
   "Lingonberry": "Lingonberries",
   "LoxPelt": "Lox Pelt",
@@ -17160,10 +17046,6 @@
   "THSwordWood": "Wooden Greatsword",
   "Tankard_dvergr": "Dvergr Tankard",
   "TinOre": "Tin Ore",
-  "TrophyDraugrElite": "Draugr Elite Trophy",
-  "TrophyGoblinShaman": "Fuling Shaman Trophy",
-  "TrophyGreydwarf": "Greydwarf Trophy",
-  "TrophySeekerBrute": "Seeker Soldier Trophy",
   "TurnipSeeds": "Turnip Seeds",
   "Upgrader0Armor": "$item_upgrader_tier0 $item_upgrader_armor $item_upgrader_name",
   "Upgrader0Weapon": "$item_upgrader_tier0 $item_upgrader_weapon $item_upgrader_name",

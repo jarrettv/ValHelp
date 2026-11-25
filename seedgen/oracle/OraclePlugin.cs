@@ -230,7 +230,7 @@ public class OraclePlugin : BaseUnityPlugin
         // Disabled entries can have an empty prefab reference, whose Name throws.
         string Prefab(ZoneSystem.ZoneLocation l)
         {
-            try { return l.m_prefab.Name; } catch { return l.m_prefabName; }
+            try { return l.m_prefab.name; } catch { return l.m_prefabName; }
         }
 
         var sb = new StringBuilder("{\n\"locations\":[\n");
@@ -522,7 +522,7 @@ public class OraclePlugin : BaseUnityPlugin
                     // Rotation is saved as euler angles (Utils.Write(Quaternion)).
                     br.ReadSingle(); float ry = br.ReadSingle(); br.ReadSingle();
                     var room = DungeonDB.instance.GetRoom(hash);
-                    rooms.Add($"[\"{Escape(room != null ? room.m_prefab.Name : hash.ToString())}\",{F(x)},{F(y)},{F(z)},{F(ry)}]");
+                    rooms.Add($"[\"{Escape(room != null ? room.m_prefab.name : hash.ToString())}\",{F(x)},{F(y)},{F(z)},{F(ry)}]");
                 }
             }
 
@@ -549,7 +549,7 @@ public class OraclePlugin : BaseUnityPlugin
         {
             var inst = kv.Value;
             if (inst.m_location == null) continue;
-            string name = inst.m_location.m_prefab.Name ?? "";
+            string name = inst.m_location.m_prefab.name ?? "";
             // Dev probes: VALHELP_LOOT_ALL=1 samples every location (to check
             // seedgen's simulated POI contents against), camps with their zone.
             if (!s_all && !LootPrefabs.Contains(name) && !name.StartsWith("WoodHouse")
@@ -683,7 +683,7 @@ public class OraclePlugin : BaseUnityPlugin
         var seen = new HashSet<string>();
         foreach (var zl in ZoneSystem.instance.m_locations)
         {
-            if (zl == null || !zl.m_prefab.IsValid || !seen.Add(zl.m_prefab.Name ?? zl.m_prefabName)) continue;
+            if (zl == null || !zl.m_prefab.IsValid || !seen.Add(zl.m_prefab.name ?? zl.m_prefabName)) continue;
             zl.m_prefab.Load();
             try
             {
@@ -698,7 +698,7 @@ public class OraclePlugin : BaseUnityPlugin
                         $"{{\"prefab\":\"{g.Key.Item1}\",\"count\":{g.Count()},\"minLevel\":{g.Key.m_minLevel},\"maxLevel\":{g.Key.m_maxLevel}," +
                         $"\"levelupChance\":{F(g.Key.m_levelupChance)},\"spawnGroupID\":{g.Key.m_spawnGroupID}}}");
                 sb.Append(n++ == 0 ? "" : ",\n")
-                  .Append($"{{\"location\":\"{Escape(zl.m_prefab.Name ?? zl.m_prefabName)}\",\"enabled\":{B(zl.m_enable)},\"biome\":\"{zl.m_biome}\",\"quantity\":{zl.m_quantity},");
+                  .Append($"{{\"location\":\"{Escape(zl.m_prefab.name ?? zl.m_prefabName)}\",\"enabled\":{B(zl.m_enable)},\"biome\":\"{zl.m_biome}\",\"quantity\":{zl.m_quantity},");
                 if (loc)
                     sb.Append($"\"enemyMinLevelOverride\":{loc.m_enemyMinLevelOverride},\"enemyMaxLevelOverride\":{loc.m_enemyMaxLevelOverride}," +
                               $"\"enemyLevelUpOverride\":{F(loc.m_enemyLevelUpOverride)}," +
