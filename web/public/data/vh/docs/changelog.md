@@ -2,6 +2,11 @@
 
 Tracks notable changes to ValHelp data, docs, and detail screens.
 
+## 2026-11-25
+
+* **Updated for Valheim 1.0.30.** 19 items need a different idol at the Forge of Potential. The Nord weapons ([AtgeirGold]@"Nord Atgeir", [AxeGold]@"Nord Axe", [FistGold]@"Nord Knucklechains") now take the [Upgrader7Weapon]@"Bloodgold Battle Idol", and [SpearSplitner]@"Splitnir" moves up to Ashlands idols. The [HelmetBerserkerHood]@"Headdress of the Bear" drops to the [Upgrader1Armor]@"Bronze Protection Idol", and several early axes and the [SwordWood]@"Wooden Sword" move down a tier. The spoiler slider follows the new idols.
+* **Maps follow the patch's new location rules.** Worlds generated from now on get fewer Swamp huts, Fuling huts and Deep North villages, tar pits only at low altitude and spread apart, extra tar pits in the Death Plains, and the Forge of Potential site at least 2.5 km from spawn. Chest odds on location cards use the new loot tables. Maps already generated keep their old locations, which is where they are in worlds created before the patch.
+
 ## 2026-11-16
 
 * **New speedrun boss overlay for OBS.** On the [OBS tools](/auth/obs) page, the **Speedrun Bosses** browser source puts a compact strip of every boss along the bottom of your stream. Before a kill, each boss shows whether you've found it (a Vegvisir pin) and the summon items you still need: Sealbreaker fragments then the Sealbreaker, bell fragments then the three bells, and for Kall the three Jotun invasions then the Malicious Blood. After the kill it shows a green check. It follows your latest tracked run, so it updates each time the game saves. You can set its size and colours.
